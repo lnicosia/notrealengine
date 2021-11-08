@@ -1,0 +1,6 @@
+.*.sw*
+*.o
+*.a
+*.d
+lib/**/build
+**/.DS_STORE
