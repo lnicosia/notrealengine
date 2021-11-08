@@ -1,8 +1,8 @@
-S = src/
-O = obj/
-L = lib/
-I = inc/
-D = dep/
+S = src
+O = obj
+L = lib
+I = inc
+D = dep
 
 define n
 
@@ -13,38 +13,33 @@ include project.mk
 
 ifneq ($L,)
 	ifeq ($(wildcard $L),)
-		$(error lib directory not found : "$L"$n\
-			If you are calling make from another directory, please give the path to the lib folder to this makefile)
+$(error lib directory not found : "$L"$n\
+	If you are calling make from another directory, please give the path to the lib folder to this makefile)
 	endif
 endif
 
 CC = clang++ --std=c++17
-RM = rm -fv
-RMDIR = rm -Rfv
+RM = rm -fv $1
+RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
-DEP =	$(SRC:$S%.cpp=$D%.d)
-OBJ =	$(SRC:$S%.cpp=$O%.o)
+DEP =	$(SRC:$S/%.cpp=$D/%.d)
+OBJ =	$(SRC:$S/%.cpp=$O/%.o)
 
-LIB_TARGET_DEP = $(LIB_TARGET:%=%.d)
+INCLUDES += $I
 
-INCLUDE += -I$I
-
-$(eval $(foreach MOD,$(LIB_MOD),$(MOD)_DIR?=$L$(MOD)))
+$(eval $(foreach MOD,$(LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
 
 LIB = $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_LIB))
-CPPFLAGS += $(foreach MOD,$(LIB_MOD),-I$($(MOD)_DIR)/$($(MOD)_INC))
+INCLUDES += $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_INC))
 LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(notdir $(LIBRARY))))
 
 LIB_DEP = $(LIB:%=%.d)
 
-$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$(MOD)_DIR?=$L$(MOD)))
+$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
 
-CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$($(MOD)_DIR)/build/$($(MOD)_LIB))
-CPPFLAGS += $(foreach MOD,$(CMAKE_LIB_MOD),-I$($(MOD)_DIR)/$($(MOD)_INC))
+CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$($(MOD)_DIR)/build/$($(MOD)_LIB),))
+INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$($(MOD)_DIR)/$($(MOD)_INC),))
 LDFLAGS += $(foreach LIBRARY,$(CMAKE_LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(notdir $(LIBRARY))))
-
-TMP = $(DEP) $(OBJ) $(LIB_TARGET_DEP)
-TMP_DIR = $O $D
 
 UNAME_S = $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -54,7 +49,7 @@ else ifeq ($(UNAME_S),Darwin)
 	CPPFLAGS +=
 	LDFLAGS +=
 else
-err: $(error OS not supported)
+$(error OS not supported)
 endif
 
 .PHONY: all, clean, fclean, libclean, realclean, re, relib, space, force, $(LIB_DEP)
@@ -67,76 +62,69 @@ $D:
 $O:
 	@mkdir -p $O
 
-$D%.d: $S%.cpp | $D
-	@echo "Creating dep list for $<"
-	@set -e; rm -f $@; \
-		$(CC) -I$I -MM $(CPPFLAGS) $< | \
+$D/%.d: $S/%.cpp | $D $(INCLUDES)
+	$(info Updating dep list for $<)
+	@$(CC) -MM $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,\($*\)\.o[ :]*,$O\1.o $@ : ,g' > $@; \
 
-$O%.o: -include $D%.d
-$O%.o: $S%.cpp | $O
-	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDE) $<
+$O/%.o: $S/%.cpp | $O
+	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
-$(CMAKE_LIB): MOD = $(word 2,$(subst /, ,$@))
+define submodule_init
+$(if $(shell git submodule status $(1) | grep '^-'),@git submodule update --init $(1),@#)
+endef
+
+$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$($(MOD)_DIR)/build/$($(MOD)_LIB): MOD = $(MOD)))
 $(CMAKE_LIB): DIR = $($(MOD)_DIR)/build
 
 $(CMAKE_LIB):
+	$(call submodule_init,$(DIR))
 	@mkdir -p $(DIR)
 	@sh -c "cd $(DIR); cmake .."
 	@$(MAKE) -C $(DIR)
 
-$(eval $(foreach MOD,$(LIB_MOD),$(LIB) $(LIB_DEP): MOD = $(MOD)))
-$(LIB) $(LIB_DEP): DIR = $($(MOD)_DIR)
-$(LIB) $(LIB_DEP): RELATIVE = $(subst $($(MOD)_DIR)/,$(eval),$@)
-
-$(LIB_DEP):
-	@make -s -C $(DIR) $(RELATIVE) L='$(abspath $L)' --no-print-directory
+$(eval $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_LIB): MOD = $(MOD)))
+$(LIB): DIR = $($(MOD)_DIR)
 
 $(LIB):
-	make -C $(DIR) $(RELATIVE) L='$(abspath $L)'
+	$(call submodule_init,$(DIR))
+	make -C $(DIR) $($(MOD)_LIB) L='$(abspath $L)'
 
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
-
-$(LIB_TARGET_DEP): $(DEP)
-	@echo "Updating dependencies for $(LIB_TARGET)"
-	@echo $$(cat $(DEP) | sed "s/^.*://; s/\\\//g") | tr ' ' '\n' | sort -u | \
-		sed 's:^.*$$:$$($$(MOD)_DIR)/&:' | tr '\n' ' ' | \
-		echo '$$($$(MOD)_DIR)/$(LIB_TARGET):'" $$(cat -)" | \
-		fold -w80 -s | sed "s/^.*$$/&\\\/; 2,$$ s//\\t&/" > $@
 
 $(LIB_TARGET): $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
 
-clean:
-	@$(foreach file,$(wildcard $(TMP)), \
-		$(RM) $(file); \
-		)
+clean($O/% $D/%):
+	@$(call RM,$%)
 
-fclean: clean
-	@$(foreach file,$(wildcard $(EXEC_TARGET) $(LIB_TARGET)), \
-		$(RM) $(file); \
-		)
-	@$(foreach file,$(wildcard $(TMP_DIR)), \
-		rmdir $(file); \
-		)
+clean($(EXEC_TARGET) $(LIB_TARGET)):
+	@$(call RM,$%)
 
-libclean: fclean
-	@$(foreach lib,$(LIB_MOD:%=$L%), \
-		$(MAKE) -s -C $(lib) fclean "L="; \
-		)
+clean($O): $(foreach file,$(OBJ),clean($(file)))
+	@$(call RMDIR,$%)
 
-realclean: libclean
-	@$(foreach DIR,$(wildcard $(CMAKE_LIB_MOD:%=$L%/build)), \
-		$(RMDIR) $(DIR); \
-		)
+clean($D): $(foreach file,$(DEP),clean($(file)))
+	@$(call RMDIR,$%)
 
-re: fclean space all
-relib: libclean space all
+clean: clean($O $D)
 
-space:
-	@echo
+fclean: clean clean($(EXEC_TARGET) $(LIB_TARGET))
+
+libclean($(LIB_MOD:%=$L/%)):
+	$(MAKE) -s -C $% fclean "L="
+
+libclean($(CMAKE_LIB_MOD:%=$L/%/build)):
+	rm -Rf $%
+
+libclean: libclean($(LIB_MOD:%=$L/%))
+
+realclean: libclean($(CMAKE_LIB_MOD:%=$L/%/build))
+
+re: fclean all
+relib: libclean all
 
 force:
 	@true
@@ -145,9 +133,4 @@ force:
 
 ifeq ($(filter %clean relib re %.d,$(MAKECMDGOALS)),)
 -include $(patsubst $O%.o,$D%.d,$(wildcard $(OBJ)))
-endif
-ifeq ($(filter %clean relib %.d,$(MAKECMDGOALS)),)
-	ifneq ($(EXEC_TARGET),)
-		-include $(patsubst %,%.d,$(wildcard $(LIB)))
-	endif
 endif

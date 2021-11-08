@@ -1,10 +1,10 @@
 
-L = lib/
+L = ../lib
 
 LIB_TARGET =
 EXEC_TARGET = test
 
-SRC =	$Smain.cpp \
+SRC =	$S/main.cpp \
 
 CPPFLAGS =
 LDFLAGS =
