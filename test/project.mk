@@ -7,7 +7,7 @@ EXEC_TARGET = test
 SRC =	$S/main.cpp \
 
 CPPFLAGS =
-LDFLAGS =
+LDFLAGS = -lpthread -ldl
 INCLUDE =
 
 LIB_MOD = notrealengine
