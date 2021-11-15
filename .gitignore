@@ -4,3 +4,6 @@
 *.d
 lib/**/build
 **/.DS_STORE
+windows/x64
+windows/Debug
+.vs/
