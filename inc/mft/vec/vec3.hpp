@@ -1,6 +1,7 @@
 #ifndef _VEC3_H_
 # define _VEC3_H_
 
+#include <iostream>
 #include "mft/vec.hpp"
 
 namespace	mft
@@ -28,14 +29,42 @@ namespace	mft
 		{
 		}
 
-		// Conversion constructor
-
 		template <typename X, typename Y, typename Z>
 		vec(X x, Y y, Z z): x(static_cast<T>(x)), y(static_cast<T>(y)), z(static_cast<T>(z))
 		{
 		}
 
-		// Unary operators
+		T & operator[](int i)
+		{
+			if (!(i >= 0 && i < 3))
+				return x;
+			switch (i)
+			{
+			default:
+			case 0:
+				return x;
+			case 1:
+				return y;
+			case 2:
+				return z;
+			}
+		}
+
+		T const& operator[](int i) const
+		{
+			if (!(i >= 0 && i < 3))
+				return x;
+			switch (i)
+			{
+			default:
+			case 0:
+				return x;
+			case 1:
+				return y;
+			case 2:
+				return z;
+			}
+		}
 
 		template <typename U>
 		vec<3, T> &	operator=(vec<3, U> const & v)
@@ -70,7 +99,6 @@ namespace	mft
 		}
 	};
 
-
 	// Binary operators
 
 	template <typename T>
@@ -92,6 +120,15 @@ namespace	mft
 	}
 
 	template <typename T>
+	vec<3, T> operator+(vec<3, T> const& v1, vec<3, T> const & v2)
+	{
+		return vec<3, T>(
+			v1.x + v2.x,
+			v1.y + v2.y,
+			v1.z + v2.z);
+	}
+
+	template <typename T>
 	vec<3, T> operator-(vec<3, T> const & v, T scalar)
 	{
 		return vec<3, T>(
@@ -107,6 +144,15 @@ namespace	mft
 			scalar - v.x,
 			scalar - v.y,
 			scalar - v.z);
+	}
+
+	template <typename T>
+	vec<3, T> operator-(vec<3, T> const& v1, vec<3, T> const& v2)
+	{
+		return vec<3, T>(
+			v1.x - v2.x,
+			v1.y - v2.y,
+			v1.z - v2.z);
 	}
 
 	template <typename T>
@@ -128,6 +174,15 @@ namespace	mft
 	}
 
 	template <typename T>
+	vec<3, T> operator*(vec<3, T> const& v1, vec<3, T> const& v2)
+	{
+		return vec<3, T>(
+			v1.x * v2.x,
+			v1.y * v2.y,
+			v1.z * v2.z);
+	}
+
+	template <typename T>
 	vec<3, T> operator/(vec<3, T> const & v, T scalar)
 	{
 		return vec<3, T>(
@@ -146,6 +201,15 @@ namespace	mft
 	}
 
 	template <typename T>
+	vec<3, T> operator/(vec<3, T> const& v1, vec<3, T> const& v2)
+	{
+		return vec<3, T>(
+			v1.x / v2.x,
+			v1.y / v2.y,
+			v1.z / v2.z);
+	}
+
+	template <typename T>
 	bool operator==(vec<3, T> const & v1, vec<3, T> const & v2)
 	{
 		return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z);
@@ -160,7 +224,7 @@ namespace	mft
 	template <typename T>
 	std::ostream &		operator<<(std::ostream & o, vec<3, T> const & v)
 	{
-		std::cout << "{ " << v.x << ", " << v.y << ", " << v.z << " }";
+		std::cout << "{ " << v.x << " " << v.y << " " << v.z << " }";
 		return o;
 	}
 }

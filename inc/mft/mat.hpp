@@ -6,7 +6,7 @@
 namespace	mft
 {
 	template <int c, int r, typename T>
-	class	mat
+	struct	mat
 	{
 	};
 }

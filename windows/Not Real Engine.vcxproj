@@ -70,7 +70,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
   </PropertyGroup>
@@ -106,7 +106,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\inc\mft\mat.hpp" />
+    <ClInclude Include="..\inc\mft\mat\mat3.hpp" />
+    <ClInclude Include="..\inc\mft\mft.hpp" />
+    <ClInclude Include="..\inc\mft\vec.hpp" />
+    <ClInclude Include="..\inc\mft\vec\vec3.hpp" />
+    <ClInclude Include="..\inc\mft\vec\vec4.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

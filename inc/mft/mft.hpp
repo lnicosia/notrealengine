@@ -1,7 +1,7 @@
 #ifndef		_MFT_HPP_
 # define	_MFT_HPP_
 
-#include "mft/mat.hpp"
+#include "mft/mat/mat3.hpp"
 #include "mft/vec/vec3.hpp"
 
 namespace	mft
