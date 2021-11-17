@@ -14,7 +14,10 @@ namespace mft
 		typedef vec<4, T> col;
 		col	data[4];
 
-		mat() : data{ col(1, 0, 0, 0), col(0, 1, 0, 0), col(0, 0, 1, 0), col(0, 0, 0, 1) }
+		mat() : data{	col(static_cast<T>(1), 0, 0, 0),
+						col(0, static_cast<T>(1), 0, 0),
+						col(0, 0, static_cast<T>(1), 0),
+						col(0, 0, 0, static_cast<T>(1)) }
 		{
 
 		}
@@ -27,10 +30,10 @@ namespace mft
 
 		template <typename U>
 		mat(U scalar)
-			: data{	col(scalar, 0, 0, 0),
-					col(0, scalar, 0, 0),
-					col(0, 0, scalar, 0),
-					col(0, 0, 0, scalar)}
+			: data{	col(static_cast<T>(scalar), 0, 0, 0),
+					col(0, static_cast<T>(scalar), 0, 0),
+					col(0, 0, static_cast<T>(scalar), 0),
+					col(0, 0, 0, static_cast<T>(scalar))}
 		{
 
 		}
@@ -154,7 +157,7 @@ namespace mft
 		}
 		// Adding space for ',' and the single floating digit
 		padding += 2;
-		std::cout << std::fixed << std::setprecision(1) << std::left;
+		std::cout << std::fixed << std::left;
 		std::cout << "{ " << std::setw(padding) << m.data[0].x;
 		std::cout << "  " << std::setw(padding) << m.data[1].x;
 		std::cout << "  " << std::setw(padding) << m.data[2].x;

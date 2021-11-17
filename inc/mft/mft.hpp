@@ -12,12 +12,24 @@ namespace	mft
 	typedef vec<3, float>		vec3;
 	typedef vec<4, float>		vec4;
 
-	// Vertex utils
+	// Math utils
 
 	float		rsqrt(float nb);
 
 	template <int l, typename T>
-	vec<l, T>	rsqrt(vec<l, T> const & v);
+	vec<l, T>	rsqrt(vec<l, T> const& v);
+
+	float		radians(float degrees) {
+		return (degrees * 0.01745329251994329576923690768489);
+	}
+	float		degrees(float radians) {
+		return (radians * 57.295779513082320876798154814105);
+	}
+
+	// Vertex utils
+
+	template<typename T>
+	vec<3, T>	cross(vec<3, T> const& v1, vec<3, T> const& v2);
 
 	template<int l, typename T>
 	T	dot(vec<l, T> const& v1, vec<3, T> const& v2);
@@ -25,7 +37,7 @@ namespace	mft
 	template <int l, typename T>
 	vec<l, T>	normalize(vec<l, T> const & v);
 
-	// Transformation function
+	// Transformation functions
 
 	template<typename T>
 	mat<4, 4, T> translate(mat<4, 4, T> const& m, vec<3, T> const & v);
@@ -35,27 +47,20 @@ namespace	mft
 
 	template<typename T>
 	mat<4, 4, T> rotate(mat<4, 4, T> const& m, vec<3, T> const & v);
-	
-	// Transformation function
-	/*template<typename T>
-	mat<4, 4, T> translate(mat<4, 4, T> const & m, vec<3, T> const & v)
-	{
-		mat<4, 4, T>	res(m);
-		res[3][0] += v.x;
-		res[3][1] += v.y;
-		res[3][2] += v.z;
-		return res;
-	}
 
 	template<typename T>
-	mat<4, 4, T> scale(mat<4, 4, T> const & m, vec<3, T> const & v)
-	{
-		mat<4, 4, T>	res(m);
-		res[0][0] *= v.x;
-		res[1][1] *= v.y;
-		res[2][2] *= v.z;
-		return res;
-	}*/
+	mat<4, 4, T> look_at(vec<3, T> const& pos, vec<3, T> const& target, vec<3, T> const& up);
+
+	// Projection functions
+
+	template<typename T>
+	mat<4, 4, T> ortho(T left, T right, T bottom, T top);
+
+	template<typename T>
+	mat<4, 4, T> ortho(T left, T right, T bottom, T top, T near, T far);
+
+	template<typename T>
+	mat<4, 4, T> perspective(T fovy, T aspect, T near, T far);
 }
 
 #endif

@@ -13,7 +13,9 @@ namespace mft
 		typedef vec<3, T> col;
 		col	data[3];
 
-		mat() : data { col(1, 0, 0), col(0, 1, 0), col(0, 0, 1) }
+		mat() : data {	col(static_cast<T>(1), 0, 0),
+						col(0, static_cast<T>(1), 0),
+						col(0, 0, static_cast<T>(1)) }
 		{
 
 		}
@@ -26,7 +28,9 @@ namespace mft
 
 		template <typename U>
 		mat(U scalar)
-			: data {col(scalar, 0, 0), col(0, scalar, 0), col(0, 0, scalar)}
+			: data {col(static_cast<T>(scalar), 0, 0),
+					col(0, static_cast<T>(scalar), 0),
+					col(0, 0, static_cast<T>(scalar))}
 		{
 
 		}
