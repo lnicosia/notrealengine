@@ -15,23 +15,31 @@ namespace	mft
 
 		vec(): x(0), y(0), z(0)
 		{
+
 		}
 
 		vec(vec<3, T> const & v): x(v.x), y(v.y), z(v.z)
 		{
+
 		}
 
 		vec(T x, T y, T z): x(x), y(y), z(z)
 		{
+
 		}
 
 		vec(T scalar): x(scalar), y(scalar), z(scalar)
 		{
+
 		}
 
 		template <typename X, typename Y, typename Z>
-		vec(X x, Y y, Z z): x(static_cast<T>(x)), y(static_cast<T>(y)), z(static_cast<T>(z))
+		vec(X x, Y y, Z z):
+			x(static_cast<T>(x)),
+			y(static_cast<T>(y)),
+			z(static_cast<T>(z))
 		{
+
 		}
 
 		T & operator[](int i)
@@ -50,7 +58,7 @@ namespace	mft
 			}
 		}
 
-		T const& operator[](int i) const
+		T const & operator[](int i) const
 		{
 			if (!(i >= 0 && i < 3))
 				return x;
@@ -69,9 +77,9 @@ namespace	mft
 		template <typename U>
 		vec<3, T> &	operator=(vec<3, U> const & v)
 		{
-			x *= static_cast<T>(v.x);
-			y *= static_cast<T>(v.y);
-			z *= static_cast<T>(v.z);
+			x = static_cast<T>(v.x);
+			y = static_cast<T>(v.y);
+			z = static_cast<T>(v.z);
 			return *this;
 		}
 
@@ -93,7 +101,7 @@ namespace	mft
 			return *this;
 		}
 
-		static int length()
+		static int size()
 		{
 			return 3;
 		}
@@ -207,6 +215,44 @@ namespace	mft
 			v1.x / v2.x,
 			v1.y / v2.y,
 			v1.z / v2.z);
+	}
+
+	//	Bit operators, needed for fast rsqrt calculations
+
+	template <typename T>
+	vec<3, T> operator<<(vec<3, T> const& v1, T scalar)
+	{
+		return vec<3, T>(
+			v1.x << scalar,
+			v1.y << scalar,
+			v1.z << scalar);
+	}
+
+	template <typename T>
+	vec<3, T> operator<<(T scalar, vec<3, T> const& v1)
+	{
+		return vec<3, T>(
+			scalar << v1.x,
+			scalar << v1.y,
+			scalar << v1.z);
+	}
+
+	template <typename T>
+	vec<3, T> operator>>(vec<3, T> const& v1, T scalar)
+	{
+		return vec<3, T>(
+			v1.x >> scalar,
+			v1.y >> scalar,
+			v1.z >> scalar);
+	}
+
+	template <typename T>
+	vec<3, T> operator>>(T scalar, vec<3, T> const& v1)
+	{
+		return vec<3, T>(
+			scalar >> v1.x,
+			scalar >> v1.y,
+			scalar >> v1.z);
 	}
 
 	template <typename T>

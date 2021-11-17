@@ -15,11 +15,13 @@ namespace mft
 
 		mat() : data { col(1, 0, 0), col(0, 1, 0), col(0, 0, 1) }
 		{
+
 		}
 
 		mat(mat<3, 3, T> const& m)
 			: data { col(m[0]), col(m[1]), col(m[2]) }
 		{
+
 		}
 
 		template <typename U>
@@ -66,7 +68,7 @@ namespace mft
 	mat<3, 3, T> operator*(vec<3, T> const& v, mat<3, 3, T> const& m)
 	{
 		return vec<3, T>(
-			m[0][0] * v.x + m[1][0] * v.y + m[0][2] * v.z,
+			m[0][0] * v.x + m[1][1] * v.y + m[0][2] * v.z,
 			m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
 			m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z);
 	}
