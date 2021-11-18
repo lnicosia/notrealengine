@@ -5,9 +5,9 @@ LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/mft/matrix_project.cpp $S/mft/matrix_transform.cpp \
-		$S/mft/vertex_utils.cpp $S/Object/Mesh.cpp
+		$S/mft/vertex_utils.cpp $S/Object/Mesh.cpp $S/Object/MeshObject.cpp \
 
-CPPFLAGS =
+CPPFLAGS = -Wconversion 
 LDFLAGS =
 INCLUDE =
 

@@ -2,6 +2,9 @@
 # define _MESH_OBJECT_H_
 
 #include "Object/Mesh.hpp"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 
 class MeshObject
 {
@@ -12,6 +15,8 @@ class MeshObject
 		~MeshObject();
 		MeshObject& operator=(MeshObject const& meshObject);
 
+		void	draw();
+
 	private:
 		std::vector<Mesh>	meshes;
 
@@ -19,8 +24,8 @@ class MeshObject
 
 		//	Object loading
 		void	loadObject(std::string path);
-		//void	processNode(aiNode* node, const aiScene* scene);
-		//void	processMesh(aiNode* node, const aiScene* scene);
+		void	processNode(aiNode* node, const aiScene* scene);
+		Mesh	processMesh(aiMesh* mesh, const aiScene* scene);
 };
 
 #endif
