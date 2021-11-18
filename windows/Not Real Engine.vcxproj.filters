@@ -62,8 +62,5 @@
     <ClInclude Include="..\inc\Object\Mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\Object\Vertex.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
