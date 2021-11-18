@@ -4,8 +4,10 @@ L = lib
 LIB_TARGET = libnre.a
 EXEC_TARGET =
 
-SRC =	$S/test.cpp \
+SRC =	$S/NRE_SDL.class.cpp \
+		$S/NRE_SDLWindow.class.cpp \
 
+CC = clang++ --std=c++20
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

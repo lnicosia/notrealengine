@@ -6,6 +6,7 @@ EXEC_TARGET = test
 
 SRC =	$S/main.cpp \
 
+CC = clang++ --std=c++20
 CPPFLAGS =
 LDFLAGS = -lpthread -ldl
 INCLUDE =
