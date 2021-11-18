@@ -70,7 +70,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
     <LibraryPath>..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
@@ -108,7 +108,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc142-mtd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@ if not exist lib\SDL\build-windows\Debug\SDL2d.lib (
 	)
 )
 
-if not exist lib\assimp\build-windows\lib\Debug\assimpd.lib (
+if not exist lib\assimp\build-windows\lib\Debug\assimp-vc142-mtd.lib (
 
 	if not exist lib\assimp\build-windows\Assimp.sln (
 
@@ -31,7 +31,7 @@ if not exist lib\assimp\build-windows\lib\Debug\assimpd.lib (
 		if not exist lib\assimp\build-windows (
 			md lib\assimp\build-windows
 		)
-		cmake -S lib\assimp\ -B lib\assimp\build-windows
+		cmake -S lib\assimp\ -D GENERATE_SHARED_LIBDS=OFF -B lib\assimp\build-windows
 		
 	)
 	for /f "delims=" %%i in ('lib\vswhere.exe -version 16 -property installationPath -nologo') do (
