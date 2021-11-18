@@ -107,6 +107,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\test.cpp" />
