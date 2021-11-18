@@ -29,7 +29,7 @@ TMP_DIRS=$(sort $(foreach DIRS,$(OBJ) $(DEP),$(dir $(shell echo '$(DIRS)' | sed 
 
 INCLUDES += $I
 
-$(eval $(foreach MOD,$(LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
 LIB = $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_LIB))
 INCLUDES += $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_INC))
@@ -37,7 +37,7 @@ LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(
 
 LIB_DEP = $(LIB:%=%.d)
 
-$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(CMAKE_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
 CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$($(MOD)_DIR)/build/$($(MOD)_LIB),))
 INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$($(MOD)_DIR)/$($(MOD)_INC),))
