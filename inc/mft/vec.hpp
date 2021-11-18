@@ -1,5 +1,5 @@
-#ifndef		_VEC_H_
-# define	_VEC_H_
+#ifndef _VEC_H_
+# define _VEC_H_
 
 namespace	mft
 {

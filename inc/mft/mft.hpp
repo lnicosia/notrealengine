@@ -1,5 +1,5 @@
-#ifndef		_MFT_HPP_
-# define	_MFT_HPP_
+#ifndef	_MFT_HPP_
+# define _MFT_HPP_
 
 #include "mft/mat/mat3.hpp"
 #include "mft/mat/mat4.hpp"
@@ -15,16 +15,11 @@ namespace	mft
 	// Math utils
 
 	float		rsqrt(float nb);
-
 	template <int l, typename T>
 	vec<l, T>	rsqrt(vec<l, T> const& v);
 
-	float		radians(float degrees) {
-		return (degrees * 0.01745329251994329576923690768489);
-	}
-	float		degrees(float radians) {
-		return (radians * 57.295779513082320876798154814105);
-	}
+	float		radians(float degrees);
+	float		degrees(float radians);
 
 	// Vertex utils
 
@@ -46,7 +41,7 @@ namespace	mft
 	mat<4, 4, T> scale(mat<4, 4, T> const& m, vec<3, T> const & v);
 
 	template<typename T>
-	mat<4, 4, T> rotate(mat<4, 4, T> const& m, vec<3, T> const & v);
+	mat<4, 4, T> rotate(mat<4, 4, T> const& m, float angle, vec<3, T> const & v);
 
 	template<typename T>
 	mat<4, 4, T> look_at(vec<3, T> const& pos, vec<3, T> const& target, vec<3, T> const& up);
