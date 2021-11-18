@@ -62,22 +62,22 @@ Mesh& Mesh::operator=(Mesh const& mesh)
 
 //	Accessors
 
-unsigned int const	Mesh::getVAO()
+unsigned int const	Mesh::getVAO() const
 {
 	return VAO;
 }
 
-unsigned int const	Mesh::getVBO()
+unsigned int const	Mesh::getVBO() const
 {
 	return VBO;
 }
 
-unsigned int const	Mesh::getEBO()
+unsigned int const	Mesh::getEBO() const
 {
 	return EBO;
 }
 
-unsigned int const	Mesh::getPolygonMode()
+unsigned int const	Mesh::getPolygonMode() const
 {
 	return polygon_mode;
 }
@@ -112,10 +112,13 @@ void	Mesh::setup()
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, (long)vertices.size() * ((long)sizeof(Vertex)), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,
+		(GLsizeiptr)(vertices.size() * sizeof(Vertex)),
+		&vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (long)indices.size() * ((long)sizeof(unsigned int)),
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+		(GLsizeiptr)(indices.size() * sizeof(unsigned int)),
 		&indices[0], GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);

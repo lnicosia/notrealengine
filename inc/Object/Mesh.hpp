@@ -1,5 +1,5 @@
-#ifndef _MESH_HPP_
-# define _MESH_HPP_
+#ifndef _MESH_H_
+# define _MESH_H_
 
 #include "mft/mft.hpp"
 #include <vector>
@@ -34,11 +34,11 @@ class Mesh
 
 		// Accessors
 
-		unsigned int const	getVAO();
-		unsigned int const	getVBO();
-		unsigned int const	getEBO();
+		unsigned int const	getVAO() const;
+		unsigned int const	getVBO() const;
+		unsigned int const	getEBO() const;
 
-		unsigned int const	getPolygonMode();
+		unsigned int const	getPolygonMode() const;
 
 	private:
 		std::vector<Vertex>			vertices;
