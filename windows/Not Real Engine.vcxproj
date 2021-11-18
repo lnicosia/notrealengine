@@ -73,6 +73,7 @@
     <IncludePath>..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
+    <LibraryPath>..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,8 +106,14 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
