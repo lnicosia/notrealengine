@@ -110,6 +110,7 @@
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
+    <ClCompile Include="..\src\Object\Mesh.cpp" />
     <ClCompile Include="..\src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +121,8 @@
     <ClInclude Include="..\inc\mft\vec.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec3.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec4.hpp" />
+    <ClInclude Include="..\inc\Object\Mesh.hpp" />
+    <ClInclude Include="..\inc\Object\Vertex.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
