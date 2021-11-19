@@ -108,7 +108,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc142-mtd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -117,8 +117,8 @@
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
-    <ClCompile Include="..\src\Object\Mesh.cpp" />
-    <ClCompile Include="..\src\Object\MeshObject.cpp" />
+    <ClCompile Include="..\src\Object\Mesh.class.cpp" />
+    <ClCompile Include="..\src\Object\MeshObject.class.cpp" />
     <ClCompile Include="..\src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -127,10 +127,11 @@
     <ClInclude Include="..\inc\mft\mat\mat4.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
+    <ClInclude Include="..\inc\mft\vec\vec2.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec3.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec4.hpp" />
-    <ClInclude Include="..\inc\Object\Mesh.hpp" />
-    <ClInclude Include="..\inc\Object\MeshObject.hpp" />
+    <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
+    <ClInclude Include="..\inc\Object\MeshObject.class.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

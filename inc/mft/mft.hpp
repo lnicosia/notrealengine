@@ -1,9 +1,11 @@
-#ifndef	_MFT_HPP_
-# define _MFT_HPP_
+#ifndef	_MFT_H_
+# define _MFT_H_
 
 #include "mft/mat/mat3.hpp"
 #include "mft/mat/mat4.hpp"
+#include "mft/vec/vec2.hpp"
 #include "mft/vec/vec3.hpp"
+#include "mft/vec/vec4.hpp"
 
 namespace	mft
 {

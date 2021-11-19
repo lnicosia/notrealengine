@@ -5,19 +5,23 @@ LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/mft/matrix_project.cpp $S/mft/matrix_transform.cpp \
-		$S/mft/vertex_utils.cpp $S/Object/Mesh.cpp $S/Object/MeshObject.cpp \
+		$S/mft/vertex_utils.cpp $S/Object/Mesh.class.cpp \
+		$S/Object/MeshObject.class.cpp \
 
 CPPFLAGS = -Wconversion 
 LDFLAGS =
 INCLUDE =
 
 LIB_MOD = 
-CMAKE_LIB_MOD = SDL
+CMAKE_LIB_MOD = SDL assimp
 
 #libft_LIB = libft.a
 #libft_INC = inc
 
 SDL_LIB =
 SDL_INC = include
+
+assimp_LIB = 
+assimp_INC = include
 
 LDFLAGS += 
