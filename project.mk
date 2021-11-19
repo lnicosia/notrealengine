@@ -22,6 +22,6 @@ SDL_LIB =
 SDL_INC = include
 
 assimp_LIB = 
-assimp_INC = include
+assimp_INC = include build/include
 
 LDFLAGS += 
