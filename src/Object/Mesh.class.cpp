@@ -66,6 +66,24 @@ namespace notrealengine
 
 	//	Accessors
 
+	std::vector<Vertex>
+		Mesh::getVertices() const
+	{
+		return vertices;
+	}
+
+	std::vector<unsigned int>
+		Mesh::getIndices() const
+	{
+		return indices;
+	}
+
+	std::vector<Texture>
+		Mesh::getTextures() const
+	{
+		return textures;
+	}
+
 	unsigned int const	Mesh::getVAO() const
 	{
 		return VAO;
@@ -85,6 +103,8 @@ namespace notrealengine
 	{
 		return polygon_mode;
 	}
+
+	//	Main functions
 
 	void	Mesh::draw() const
 	{
@@ -133,5 +153,28 @@ namespace notrealengine
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
 
 		glBindVertexArray(0);
+	}
+
+	std::ostream& operator<<(std::ostream& o, Mesh const& mesh)
+	{
+		std::vector<Vertex>			vertices = mesh.getVertices();
+		std::vector<unsigned int>	indices = mesh.getIndices();
+		std::vector<Texture>		textures = mesh.getTextures();
+		std::cout << "\t--Vertices--" << std::endl;
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			std::cout << "\t" << vertices[i].pos << vertices[i].norm << vertices[i].uv << std::endl;
+		}
+		std::cout << "\t--Indices--" << std::endl;
+		for (size_t i = 0; i < indices.size(); i++)
+		{
+			std::cout << "\t" << indices[i] << std::endl;
+		}
+		std::cout << "\t--Textures--" << std::endl;
+		for (size_t i = 0; i < textures.size(); i++)
+		{
+			std::cout << "\t" << textures[i].path << std::endl;
+		}
+		return o;
 	}
 }

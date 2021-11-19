@@ -22,7 +22,11 @@ namespace notrealengine
 
 	class Mesh
 	{
+
 	public:
+
+		std::string	name;
+
 		Mesh();
 		Mesh(Mesh const& mesh);
 		// Most important constructor, is going to be used
@@ -37,18 +41,21 @@ namespace notrealengine
 
 		// Accessors
 
+		std::vector<Vertex>			getVertices() const;
+		std::vector<unsigned int>	getIndices() const;
+		std::vector<Texture>		getTextures() const;
+
 		unsigned int const	getVAO() const;
 		unsigned int const	getVBO() const;
 		unsigned int const	getEBO() const;
 
 		unsigned int const	getPolygonMode() const;
 
+
 	private:
 		std::vector<Vertex>			vertices;
 		std::vector<unsigned int>	indices;
 		std::vector<Texture>		textures;
-
-		std::string	name;
 
 		unsigned int	VAO, VBO, EBO;
 
@@ -58,6 +65,8 @@ namespace notrealengine
 		//		Should not be called outside of the class scope
 		void	setup();
 	};
+
+	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);
 }
 
 	

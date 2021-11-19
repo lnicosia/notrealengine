@@ -129,10 +129,13 @@ namespace notrealengine
 			vector.z = mesh->mVertices[i].z;
 			vertex.pos = vector;
 
-			vector.x = mesh->mNormals[i].x;
-			vector.y = mesh->mNormals[i].y;
-			vector.z = mesh->mNormals[i].z;
-			vertex.norm = vector;
+			if (mesh->mNormals)
+			{
+				vector.x = mesh->mNormals[i].x;
+				vector.y = mesh->mNormals[i].y;
+				vector.z = mesh->mNormals[i].z;
+				vertex.norm = vector;
+			}
 
 			if (mesh->mTextureCoords[0])
 			{
@@ -185,7 +188,9 @@ namespace notrealengine
 
 	void	MeshObject::loadObject(std::string path)
 	{
-		std::cout << "Loading " << path << "..." << std::endl;
+		std::cout << "Loading '" << path << "'..." << std::endl;
+		name = path.substr(path.find_last_of('/'), name.size());
+
 		Assimp::Importer	importer;
 		const aiScene* scene;
 		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -199,11 +204,27 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 	}
 
-	void	MeshObject::draw()
+	void	MeshObject::draw() const
 	{
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			meshes[i].draw();
 		}
+	}
+
+	std::vector<Mesh>	MeshObject::getMeshes() const
+	{
+		return meshes;
+	}
+
+	std::ostream& operator<<(std::ostream& o, MeshObject const& obj)
+	{
+		std::vector<Mesh>	meshes = obj.getMeshes();
+		std::cout << obj.name;
+		for (size_t i = 0; i < meshes.size(); i++)
+		{
+			std::cout << "Mesh " << i << ":" << std::endl << meshes[i];
+		}
+		return o;
 	}
 }

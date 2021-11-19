@@ -11,19 +11,26 @@ namespace notrealengine
 	class MeshObject
 	{
 		public:
+
+			std::string	name;
+
 			MeshObject();
 			MeshObject(MeshObject const & meshObject);
 			MeshObject(std::string path);
 			~MeshObject();
 			MeshObject& operator=(MeshObject const& meshObject);
 
-			void	draw();
+			void	draw() const;
+
+			//	Accessors
+
+			std::vector<Mesh>
+				getMeshes() const;
 
 		private:
 			std::vector<Mesh>		meshes;
 			std::vector<Texture>	loadedTextures;
 
-			std::string	name;
 			std::string	directory;
 
 			//	Object loading
@@ -38,6 +45,8 @@ namespace notrealengine
 			std::vector<Texture>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 	};
+
+	std::ostream& operator<<(std::ostream& o, MeshObject const& obj);
 }
 
 #endif
