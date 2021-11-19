@@ -7,6 +7,9 @@ EXEC_TARGET =
 
 SRC =	$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
+		$S/GLException.class.cpp \
+		$S/GLContext.class.cpp \
+		$S/GLContext_SDL.class.cpp \
 
 CC = clang++ --std=c++20
 CPPFLAGS =

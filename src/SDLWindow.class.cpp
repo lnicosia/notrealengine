@@ -25,16 +25,12 @@ namespace notrealengine
 			SDL_DestroyWindow(windowHandle);
 			throw std::runtime_error( "SDL failed to initalize GL context : " + std::string(SDL_GetError()) );
 		}
-
-		return ;
 	}
 
 	SDLWindow::~SDLWindow( void )
 	{
 		SDL_GL_DeleteContext(glHandle);
 		SDL_DestroyWindow(windowHandle);
-
-		return ;
 	}
 
 }
