@@ -10,12 +10,12 @@ namespace notrealengine
 	class SDL {
 
 	public:
-		static void Init( void ) noexcept(false);
+		static void Init( void );
 		static void Quit( void );
 
 	private:
 		SDL( void ) {};
-		static void InitOpenGLContext( void ) noexcept(false);
+		static void InitOpenGLContext( void );
 
 		static bool initialized;
 	};
