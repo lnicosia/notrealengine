@@ -11,8 +11,7 @@ namespace notrealengine
 {
 	class SDLWindow {
 		public:
-			SDLWindow( std::string, std::vector<int> = {600, 800} )
-				noexcept(false);
+			SDLWindow( std::string, std::vector<int> = {600, 800} );
 			~SDLWindow( void );
 
 		private:
