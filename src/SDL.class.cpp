@@ -1,5 +1,5 @@
 
-#include "NRE_SDL.class.hpp"
+#include "SDL.class.hpp"
 
 #include <iostream>
 #include <cstdlib>

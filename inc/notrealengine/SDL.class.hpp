@@ -1,6 +1,6 @@
 
-#ifndef  __NRE_SDL_CLASS_H__
-# define __NRE_SDL_CLASS_H__
+#ifndef  __SDL_CLASS_H__
+# define __SDL_CLASS_H__
 
 # include "SDL.h"
 

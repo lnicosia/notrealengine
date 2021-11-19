@@ -2,8 +2,9 @@
 #ifndef  __NOTREALENGINE_HPP__
 # define __NOTREALENGINE_HPP__
 
-# include "NRE_SDL.class.hpp"
-# include "NRE_SDLWindow.class.hpp"
+# include "SDL.class.hpp"
+# include "SDLWindow.class.hpp"
+# include "GL.hpp"
 
 namespace nre = notrealengine;
 

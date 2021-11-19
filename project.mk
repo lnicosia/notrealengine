@@ -1,11 +1,12 @@
 
 L = lib
+I = inc/notrealengine
 
 LIB_TARGET = libnre.a
 EXEC_TARGET =
 
-SRC =	$S/NRE_SDL.class.cpp \
-		$S/NRE_SDLWindow.class.cpp \
+SRC =	$S/SDL.class.cpp \
+		$S/SDLWindow.class.cpp \
 
 CC = clang++ --std=c++20
 CPPFLAGS =

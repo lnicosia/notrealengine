@@ -1,9 +1,9 @@
 
-#ifndef  __NRE_SDLWINDOW_CLASS_H__
-# define __NRE_SDLWINDOW_CLASS_H__
+#ifndef  __SDLWINDOW_CLASS_H__
+# define __SDLWINDOW_CLASS_H__
 
 # include "SDL.h"
-# include "NRE_SDL.class.hpp"
+# include "SDL.class.hpp"
 # include <algorithm>
 # include <stdexcept>
 

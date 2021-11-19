@@ -1,5 +1,5 @@
 
-#include "NRE_SDLWindow.class.hpp"
+#include "SDLWindow.class.hpp"
 #include <stdexcept>
 #include <string>
 
