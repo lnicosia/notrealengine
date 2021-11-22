@@ -5,8 +5,8 @@ LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/mft/matrix_project.cpp $S/mft/matrix_transform.cpp \
-		$S/mft/vertex_utils.cpp $S/Object/Mesh.class.cpp \
-		$S/Object/MeshObject.class.cpp \
+		$S/mft/vertex_utils.cpp $S/Object/GLMesh.class.cpp \
+		$S/Object/GLObject.class.cpp $S/Object/MeshData.class.cpp \
 
 CPPFLAGS = 
 LDFLAGS =

@@ -1,34 +1,34 @@
 #ifndef _MESH_OBJECT_CLASS_H_
 # define _MESH_OBJECT_CLASS_H_
 
-#include "Object/Mesh.class.hpp"
+#include "Object/GLMesh.class.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
 namespace notrealengine
 {
-	class MeshObject
+	class GLObject
 	{
 		public:
 
 			std::string	name;
 
-			MeshObject();
-			MeshObject(MeshObject const & meshObject);
-			MeshObject(std::string path);
-			~MeshObject();
-			MeshObject& operator=(MeshObject const& meshObject);
+			GLObject();
+			GLObject(GLObject const & GLObject);
+			GLObject(std::string path);
+			~GLObject();
+			GLObject& operator=(GLObject const& GLObject);
 
 			void	draw() const;
 
 			//	Accessors
 
-			std::vector<Mesh>
+			std::vector<GLMesh>
 				getMeshes() const;
 
 		private:
-			std::vector<Mesh>		meshes;
+			std::vector<GLMesh>		meshes;
 			std::vector<Texture>	loadedTextures;
 
 			std::string	directory;
@@ -40,13 +40,13 @@ namespace notrealengine
 				loadObject(std::string path);
 			void
 				processNode(aiNode* node, const aiScene* scene);
-			Mesh
+			GLMesh
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<Texture>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 	};
 
-	std::ostream& operator<<(std::ostream& o, MeshObject const& obj);
+	std::ostream& operator<<(std::ostream& o, GLObject const& obj);
 }
 
 #endif

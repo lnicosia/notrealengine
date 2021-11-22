@@ -2,48 +2,32 @@
 # define _MESH_CLASS_H_
 
 #include "mft/mft.hpp"
+#include "Object/MeshData.class.hpp"
 #include <vector>
 
 namespace notrealengine
 {
-	struct Vertex
-	{
-		mft::vec3	pos;
-		mft::vec3	norm;
-		mft::vec2	uv;
-	};
 
-	struct Texture
-	{
-		unsigned int	id;
-		std::string		type;
-		std::string		path;
-	};
-
-	class Mesh
+	class GLMesh
 	{
 
 	public:
 
 		std::string	name;
 
-		Mesh();
-		Mesh(Mesh const& mesh);
+		GLMesh();
 		// Most important constructor, is going to be used
 		// to initiate meshes from assimp
-		Mesh(std::vector<Vertex> vertices,
-			std::vector<unsigned int> indices,
-			std::vector<Texture> textures);
-		~Mesh();
-		Mesh& operator=(Mesh const& mesh);
+		GLMesh(GLMesh const & mesh);
+		GLMesh(MeshData const& data);
+		~GLMesh();
+		GLMesh& operator=(GLMesh const& mesh);
 
 		void	draw() const;
 
 		// Accessors
 
-		std::vector<Vertex>			getVertices() const;
-		std::vector<unsigned int>	getIndices() const;
-		std::vector<Texture>		getTextures() const;
+		MeshData const	getData() const;
 
 		unsigned int const	getVAO() const;
 		unsigned int const	getVBO() const;
@@ -53,9 +37,7 @@ namespace notrealengine
 
 
 	private:
-		std::vector<Vertex>			vertices;
-		std::vector<unsigned int>	indices;
-		std::vector<Texture>		textures;
+		MeshData		data;
 
 		unsigned int	VAO, VBO, EBO;
 
@@ -66,7 +48,7 @@ namespace notrealengine
 		void	setup();
 	};
 
-	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);
+	std::ostream& operator<<(std::ostream& o, GLMesh const& mesh);
 }
 
 	

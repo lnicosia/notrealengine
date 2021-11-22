@@ -30,13 +30,16 @@
     <ClCompile Include="..\src\mft\matrix_project.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Object\Mesh.class.cpp">
+    <ClCompile Include="..\src\Object\GLMesh.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Object\MeshObject.class.cpp">
+    <ClCompile Include="..\src\object\GLObject.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Object\MeshData.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +65,16 @@
     <ClInclude Include="..\inc\mft\mat\mat4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\Object\Mesh.class.hpp">
+    <ClInclude Include="..\inc\Object\GLMesh.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\Object\MeshObject.class.hpp">
+    <ClInclude Include="..\inc\Object\GLObject.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\mft\vec\vec2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\Object\MeshData.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

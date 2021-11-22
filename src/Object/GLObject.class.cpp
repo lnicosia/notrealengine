@@ -1,4 +1,4 @@
-#include "Object/MeshObject.class.hpp"
+#include "Object/GLObject.class.hpp"
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -22,31 +22,31 @@
 
 namespace notrealengine
 {
-	MeshObject::MeshObject()
+	GLObject::GLObject()
 	{
 	}
 
-	MeshObject::~MeshObject()
+	GLObject::~GLObject()
 	{
 	}
 
-	MeshObject::MeshObject(MeshObject const& meshObject)
+	GLObject::GLObject(GLObject const& GLObject)
 	{
-		*this = meshObject;
+		*this = GLObject;
 	}
 
-	MeshObject::MeshObject(std::string path)
+	GLObject::GLObject(std::string path)
 	{
 		loadObject(path);
 	}
 
-	MeshObject& MeshObject::operator=(MeshObject const& meshObject)
+	GLObject& GLObject::operator=(GLObject const& GLObject)
 	{
-		this->meshes = meshObject.meshes;
+		this->meshes = GLObject.meshes;
 		return *this;
 	}
 
-	unsigned int	MeshObject::loadTexture(std::string file, std::string directory)
+	unsigned int	GLObject::loadTexture(std::string file, std::string directory)
 	{
 		unsigned int	id = 0;
 		std::string		path = file + '/' + directory;
@@ -80,7 +80,7 @@ namespace notrealengine
 		return id;
 	}
 
-	std::vector<Texture>	MeshObject::loadMaterialTextures(aiMaterial* mat,
+	std::vector<Texture>	GLObject::loadMaterialTextures(aiMaterial* mat,
 		aiTextureType type, std::string typeName)
 	{
 		std::vector<Texture>	textures;
@@ -111,7 +111,7 @@ namespace notrealengine
 		return textures;
 	}
 
-	Mesh	MeshObject::processMesh(aiMesh* mesh, const aiScene* scene)
+	GLMesh	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex>			vertices;
 		std::vector<unsigned int>	indices;
@@ -170,10 +170,12 @@ namespace notrealengine
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 
-		return Mesh(vertices, indices, textures);
+		//return Mesh(vertices, indices, textures);
+		MeshData	data = MeshData(vertices, indices, textures);
+		return GLMesh(data);
 	}
 
-	void	MeshObject::processNode(aiNode* node, const aiScene* scene)
+	void	GLObject::processNode(aiNode* node, const aiScene* scene)
 	{
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
@@ -186,7 +188,7 @@ namespace notrealengine
 		}
 	}
 
-	void	MeshObject::loadObject(std::string path)
+	void	GLObject::loadObject(std::string path)
 	{
 		std::cout << "Loading '" << path << "'..." << std::endl;
 		name = path.substr(path.find_last_of('/'), name.size());
@@ -204,7 +206,7 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 	}
 
-	void	MeshObject::draw() const
+	void	GLObject::draw() const
 	{
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
@@ -212,14 +214,14 @@ namespace notrealengine
 		}
 	}
 
-	std::vector<Mesh>	MeshObject::getMeshes() const
+	std::vector<GLMesh>	GLObject::getMeshes() const
 	{
 		return meshes;
 	}
 
-	std::ostream& operator<<(std::ostream& o, MeshObject const& obj)
+	std::ostream& operator<<(std::ostream& o, GLObject const& obj)
 	{
-		std::vector<Mesh>	meshes = obj.getMeshes();
+		std::vector<GLMesh>	meshes = obj.getMeshes();
 		std::cout << obj.name;
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
