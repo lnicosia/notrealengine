@@ -15,7 +15,7 @@ namespace notrealengine
 
 	private:
 		SDL( void ) {};
-		static void InitOpenGLContext( void );
+		static void SetupGLOptions( void );
 
 		static bool initialized;
 	};

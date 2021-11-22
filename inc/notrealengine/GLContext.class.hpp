@@ -21,9 +21,9 @@ namespace notrealengine
 
 	public:
 		virtual void
-			makeCurrent( void );
+			makeCurrent( void ) = 0;
 		virtual bool
-			isCurrent( void );
+			isCurrent( void ) = 0;
 
 		void
 			registerShader( std::string, std::filesystem::path, std::filesystem::path );

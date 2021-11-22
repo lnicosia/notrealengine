@@ -13,7 +13,7 @@ namespace notrealengine
 				throw std::runtime_error( "Couldn't initialize SDL : \n" + std::string(SDL_GetError()) );
 			}
 
-			InitOpenGLContext();
+			SetupGLOptions();
 
 			if (std::atexit(Quit) != 0)
 			{
@@ -25,7 +25,7 @@ namespace notrealengine
 		}
 	}
 
-	void SDL::InitOpenGLContext()
+	void SDL::SetupGLOptions()
 	{
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);

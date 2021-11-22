@@ -8,6 +8,7 @@ EXEC_TARGET =
 SRC =	$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
+		$S/GLShaderProgram.class.cpp \
 		$S/GLContext.class.cpp \
 		$S/GLContext_SDL.class.cpp \
 
