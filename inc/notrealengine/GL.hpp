@@ -21,6 +21,9 @@ namespace notrealengine
 	struct GLCallTemplate;
 
 	template<typename R, typename ... Args>
+	struct GLCallTemplate<R*(Args...)> : public struct GLCallTemplate<R(Args...)>;
+
+	template<typename R, typename ... Args>
 	struct GLCallTemplate<R(Args...)>
 	{
 		template<R GLFunction(Args ...)>
@@ -33,7 +36,7 @@ namespace notrealengine
 			R ret = GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
 			if (error != GL_NO_ERROR)
-				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
+	Open			throw GLException( "OpenGL function '" + func_name + "' failed.", error );
 			return ret;
 		};
 	};
