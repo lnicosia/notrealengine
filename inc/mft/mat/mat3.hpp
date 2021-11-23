@@ -26,11 +26,10 @@ namespace mft
 
 		}
 
-		template <typename U>
-		mat(U scalar)
-			: data {col(static_cast<T>(scalar), 0, 0),
-					col(0, static_cast<T>(scalar), 0),
-					col(0, 0, static_cast<T>(scalar))}
+		mat(T scalar)
+			: data {col(scalar, 0, 0),
+					col(0, scalar, 0),
+					col(0, 0, scalar)}
 		{
 
 		}

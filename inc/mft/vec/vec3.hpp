@@ -33,15 +33,6 @@ namespace	mft
 
 		}
 
-		template <typename X, typename Y, typename Z>
-		vec(X x, Y y, Z z):
-			x(static_cast<T>(x)),
-			y(static_cast<T>(y)),
-			z(static_cast<T>(z))
-		{
-
-		}
-
 		T & operator[](int i)
 		{
 			if (!(i >= 0 && i < 3))
