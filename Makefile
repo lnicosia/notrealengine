@@ -89,7 +89,7 @@ $(foreach MOD,$(CMAKE_LIB_MOD),$(eval $($(MOD)_DIR)/build/$($(MOD)_LIB): MOD = $
 $(CMAKE_LIB): DIR = $($(MOD)_DIR)/build
 
 $(CMAKE_LIB):
-	@$(call submodule_init,$(DIR))
+	@$(call submodule_init,$($(MOD)_DIR))
 	@mkdir -p $(DIR)
 	@sh -c "cd $(DIR); cmake .."
 	@$(MAKE) -C $(DIR)
