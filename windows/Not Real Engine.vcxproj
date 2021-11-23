@@ -113,12 +113,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
+    <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
+    <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
     <ClInclude Include="..\inc\mft\mat.hpp" />
     <ClInclude Include="..\inc\mft\mat\mat3.hpp" />
     <ClInclude Include="..\inc\mft\mat\mat4.hpp" />

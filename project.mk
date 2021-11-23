@@ -5,6 +5,8 @@ LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/test.cpp \
+		$S/Inputs/Binding.class.cpp \
+		$S/Inputs/SDLEvents.class.cpp \
 
 CPPFLAGS =
 LDFLAGS =
