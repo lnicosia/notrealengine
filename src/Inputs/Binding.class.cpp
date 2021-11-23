@@ -2,9 +2,10 @@
 
 namespace notrealengine
 {
-	Binding::Binding(uint8_t key1, uint8_t key2, bool editable)
-		: key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED),
-		onRelease(NULL), onPress(NULL), whenReleased(NULL), whenPressed(NULL)
+	Binding::Binding(std::string name, uint8_t key1, uint8_t key2, bool editable)
+		: name(name),
+		key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED),
+		onRelease(), onPress(), whenPressed(), whenReleased()
 	{
 
 	}
@@ -15,6 +16,11 @@ namespace notrealengine
 	}
 
 	//	Accessors
+
+	std::string const	Binding::getName() const
+	{
+		return name;
+	}
 
 	uint8_t const	Binding::getKey1() const
 	{
@@ -46,5 +52,10 @@ namespace notrealengine
 	void	Binding::setState(InputState state)
 	{
 		this->state = state;
+	}
+
+	Binding& Binding::operator=(Binding const& ref)
+	{
+		return *this;
 	}
 }

@@ -2,6 +2,7 @@
 # define _BINDING_CLASS_HPP_
 
 #include <string>
+#include <vector>
 
 enum class InputState
 {
@@ -17,11 +18,12 @@ namespace notrealengine
 	class Binding
 	{
 	public:
-		Binding(uint8_t key1, uint8_t key2, bool editable);
+		Binding(std::string name, uint8_t key1, uint8_t key2, bool editable);
 		~Binding();
 
 		//	Accessors
 
+		std::string const	getName() const;
 		uint8_t const	getKey1() const;
 		uint8_t const	getKey2() const;
 		InputState const	getState() const;
@@ -32,10 +34,12 @@ namespace notrealengine
 
 		//	Events
 		//	Actions to perform in each event type
-		int		(*onRelease)(void);
-		int		(*onPress)(void);
-		int		(*whenReleased)(void);
-		int		(*whenPressed)(void);
+		std::vector<int	(*)()>	onRelease;
+		std::vector<int	(*)()>	onPress;
+		std::vector<int	(*)()>	whenReleased;
+		std::vector<int	(*)()>	whenPressed;
+
+		Binding& operator=(Binding const& ref);
 
 	private:
 		uint8_t	key1;
