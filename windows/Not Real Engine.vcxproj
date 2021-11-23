@@ -70,7 +70,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
     <LibraryPath>..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
@@ -110,17 +110,26 @@
     <Link>
       <AdditionalDependencies>assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
+    <ClCompile Include="..\src\GLContext.class.cpp" />
+    <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
+    <ClCompile Include="..\src\GLException.class.cpp" />
+    <ClCompile Include="..\src\GLException.cpp" />
+    <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
-    <ClCompile Include="..\src\test.cpp" />
+    <ClCompile Include="..\src\SDL.class.cpp" />
+    <ClCompile Include="..\src\SDLWindow.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp" />
@@ -131,6 +140,14 @@
     <ClInclude Include="..\inc\mft\vec\vec2.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec3.hpp" />
     <ClInclude Include="..\inc\mft\vec\vec4.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GL.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLException.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLShaderProgram.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\notrealengine.hpp" />
+    <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />

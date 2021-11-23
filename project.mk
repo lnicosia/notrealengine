@@ -1,14 +1,25 @@
 
 L = lib
+I = inc/notrealengine inc
 
 LIB_TARGET = libnre.a
 EXEC_TARGET =
 
-SRC =	$S/mft/matrix_project.cpp $S/mft/matrix_transform.cpp \
-		$S/mft/vertex_utils.cpp $S/Object/GLMesh.class.cpp \
-		$S/Object/GLObject.class.cpp $S/Object/MeshData.class.cpp \
+SRC =	$S/mft/matrix_project.cpp \
+		$S/mft/matrix_transform.cpp \
+		$S/mft/vertex_utils.cpp \
+		$S/Object/GLMesh.class.cpp \
+		$S/Object/GLObject.class.cpp \
+		$S/Object/MeshData.class.cpp \
+		$S/SDL.class.cpp \
+		$S/SDLWindow.class.cpp \
+		$S/GLException.class.cpp \
+		$S/GLShaderProgram.class.cpp \
+		$S/GLContext.class.cpp \
+		$S/GLContext_SDL.class.cpp \
 
-CPPFLAGS = 
+CC = clang++ --std=c++20
+CPPFLAGS =
 LDFLAGS =
 INCLUDE =
 
