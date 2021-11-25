@@ -32,7 +32,9 @@ namespace notrealengine
 		shaderID(GLCallThrow(glCreateShader, Type))
 	{
 		try {
-			GLCallThrow(glShaderSource, shaderID, 1, (char *[1]){code.data()}, (GLint[1]){(GLint)std::size(code)});
+			char* string[1] = { code.data() };
+			GLint length[1] = { (GLint)std::size(code) };
+			GLCallThrow(glShaderSource, shaderID, 1, string, length);
 			GLCallThrow(glCompileShader, shaderID);
 		} catch (std::exception e) {
 			GLCallThrow(glDeleteShader, shaderID);

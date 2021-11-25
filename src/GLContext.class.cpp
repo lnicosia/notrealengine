@@ -8,6 +8,16 @@
 
 namespace notrealengine
 {
+	GLContext::GLContext()
+	{
+
+	}
+
+	GLContext::~GLContext()
+	{
+
+	}
+
 	void GLContext::registerShader( std::string name, std::filesystem::path vertex, std::filesystem::path fragment )
 	{
 		if (shaders.contains(name))
