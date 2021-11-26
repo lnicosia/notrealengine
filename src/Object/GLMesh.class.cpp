@@ -18,21 +18,9 @@ namespace notrealengine
 	{
 	}
 
-	GLMesh::GLMesh(GLMesh const & GLMesh)
+	GLMesh::GLMesh(GLMesh const & GLMesh) : data(GLMesh.data), VAO(0), VBO(0), EBO(0),
+		polygon_mode(GL_FILL)
 	{
-		// /!\ I don't know if we should copy a reference directly /!\
-
-		this->data = GLMesh.data;
-
-		/*this->vertices = GLMesh.vertices;
-		this->indices = GLMesh.indices;
-		this->textures = GLMesh.textures;
-
-		this->name = GLMesh.name;
-
-		this->VBO = GLMesh.VBO;
-		this->VAO = GLMesh.VAO;
-		this->EBO = GLMesh.EBO;*/
 	}
 
 	GLMesh::~GLMesh()
@@ -89,7 +77,7 @@ namespace notrealengine
 
 	//	Main functions
 
-	void	GLMesh::draw() const
+	void	GLMesh::draw(GLShaderProgram *shader) const
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
@@ -98,12 +86,16 @@ namespace notrealengine
 			glActiveTexture(GL_TEXTURE0 + (unsigned int)i);
 
 			std::string	nb;
-			if (data.getTextures()[i].type == "texture_diffuse")
+			std::string	name = data.getTextures()[i].type;
+			if (name == "texture_diffuse")
 				nb = std::to_string(diffuse);
-			else if (data.getTextures()[i].type == "texture_specular")
+			else if (name == "texture_specular")
 				nb = std::to_string(specular);
 			glBindTexture(GL_TEXTURE_2D, data.getTextures()[i].id);
+			glUniform1f(glGetUniformLocation(shader->programID, ("material." + name + nb).c_str()), i);
 		}
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(VAO);
 		glPolygonMode(GL_FRONT_AND_BACK, polygon_mode);
 		glDrawElements(GL_TRIANGLES, (int)data.getIndices().size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);

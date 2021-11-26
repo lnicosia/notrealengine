@@ -120,4 +120,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\test\shaders\test.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\test\shaders\test.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

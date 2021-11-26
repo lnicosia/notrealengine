@@ -153,6 +153,10 @@
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\test\shaders\test.fs" />
+    <None Include="..\test\shaders\test.vs" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

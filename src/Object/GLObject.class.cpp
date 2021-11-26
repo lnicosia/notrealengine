@@ -1,4 +1,5 @@
 #include "Object/GLObject.class.hpp"
+#include "mft/mft.hpp"
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -22,10 +23,6 @@
 
 namespace notrealengine
 {
-	GLObject::GLObject()
-	{
-	}
-
 	GLObject::~GLObject()
 	{
 	}
@@ -35,7 +32,8 @@ namespace notrealengine
 		*this = GLObject;
 	}
 
-	GLObject::GLObject(std::string path)
+	GLObject::GLObject(std::string path) : transform{ mft::vec3(0, 0, 0),
+		mft::vec3(0, 0, 0), mft::vec3(0, 0, 0) }
 	{
 		loadObject(path);
 	}
@@ -44,6 +42,32 @@ namespace notrealengine
 	{
 		this->meshes = GLObject.meshes;
 		return *this;
+	}
+
+	// Transforms
+
+	void	GLObject::update(void)
+	{
+		/*matrix = mft::mat4(1);
+		matrix = mft::translate(matrix, transform.pos);
+		matrix = mft::rotate(matrix, mft::radians(1), transform.rotation);
+		matrix = mft::scale(matrix, transform.scale);*/
+	}
+
+	void	GLObject::move(mft::vec3 move)
+	{
+		transform.pos = transform.pos + move;
+	}
+
+
+	void	GLObject::rotate(mft::vec3 rotation)
+	{
+		transform.rotation = transform.rotation + rotation;
+	}
+
+	void	GLObject::scale(mft::vec3 scale)
+	{
+		transform.scale = transform.scale + scale;
 	}
 
 	unsigned int	GLObject::loadTexture(std::string file, std::string directory)
@@ -206,11 +230,13 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 	}
 
-	void	GLObject::draw() const
+	void	GLObject::draw(GLShaderProgram *shader) const
 	{
+		glUseProgram(shader->programID);
+		//glUniformMatrix4fv(glGetUniformLocation(shader->programID, "model"), 1, GL_TRUE, matrix);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			meshes[i].draw();
+			meshes[i].draw(shader);
 		}
 	}
 

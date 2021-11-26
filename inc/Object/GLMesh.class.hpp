@@ -3,6 +3,7 @@
 
 #include "mft/mft.hpp"
 #include "Object/MeshData.class.hpp"
+#include "notrealengine/GLShaderProgram.class.hpp"
 #include <vector>
 
 namespace notrealengine
@@ -23,7 +24,7 @@ namespace notrealengine
 		~GLMesh();
 		GLMesh& operator=(GLMesh const& mesh);
 
-		void	draw() const;
+		void	draw(GLShaderProgram *shader) const;
 
 		// Accessors
 
