@@ -91,14 +91,14 @@ namespace notrealengine
 		else if (nChannels == 4)
 			format = GL_RGBA;
 
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
-		glTexImage2D(GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLCallThrow(glGenTextures, 1, &id);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, id);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		stbi_image_free(img);
 
 		return id;
@@ -232,7 +232,7 @@ namespace notrealengine
 
 	void	GLObject::draw(GLShaderProgram *shader) const
 	{
-		glUseProgram(shader->programID);
+		GLCallThrow(glUseProgram, shader->programID);
 		//glUniformMatrix4fv(glGetUniformLocation(shader->programID, "model"), 1, GL_TRUE, matrix);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
