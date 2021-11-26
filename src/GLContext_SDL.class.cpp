@@ -22,6 +22,11 @@ namespace notrealengine
 		CurrentContext = (long)glHandle;
 	}
 
+	void GLContext_SDL::swapWindow(void)
+	{
+		SDL_GL_SwapWindow(windowHandle);
+	}
+
 	bool GLContext_SDL::isCurrent( void )
 	{
 		return (CurrentContext == (long)glHandle);

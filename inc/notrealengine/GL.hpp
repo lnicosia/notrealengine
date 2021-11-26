@@ -2,7 +2,6 @@
 #ifndef  __NOTREALENGINE_GL_HPP__
 # define __NOTREALENGINE_GL_HPP__
 
-# include <filesystem>
 # if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #  include <windows.h>
 #  include <glad/glad.h>
@@ -12,8 +11,14 @@
 # endif
 
 # include "GLException.class.hpp"
+# include <filesystem>
+# include <iostream>
 
-# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call("func_name", func_name __VA_OPT__ (,) __VA_ARGS__)
+# if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call("func_name", func_name __VA_OPT__, __VA_ARGS__)
+# else
+# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call("func_name", func_name __VA_OPT__(,) __VA_ARGS__)
+#endif
 
 namespace notrealengine
 {
@@ -79,6 +84,7 @@ namespace notrealengine
 			error = glGetError();
 			if (error != GL_NO_ERROR)
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+			GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
 			if (error != GL_NO_ERROR)
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
