@@ -41,7 +41,7 @@ namespace notrealengine
 
 		frag_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {
-			frag_file.open(vertex);
+			frag_file.open(fragment);
 			std::stringstream frag_in_stream;
 			frag_in_stream << frag_file.rdbuf();
 			frag_file.close();

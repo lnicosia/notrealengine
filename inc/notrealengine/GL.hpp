@@ -83,6 +83,7 @@ namespace notrealengine
 			error = glGetError();
 			if (error != GL_NO_ERROR)
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+			GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
 			if (error != GL_NO_ERROR)
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );

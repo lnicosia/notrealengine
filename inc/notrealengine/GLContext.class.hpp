@@ -26,7 +26,7 @@ namespace notrealengine
 			isCurrent( void ) = 0;
 
 		void
-			registerShader( std::string, std::filesystem::path, std::filesystem::path );
+			registerShader( std::string name, std::filesystem::path, std::filesystem::path );
 		GLShaderProgram *
 			getShader( std::string );
 

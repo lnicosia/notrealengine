@@ -14,6 +14,8 @@ namespace notrealengine
 		~GLContext_SDL( void );
 
 		void
+			swapWindow(void);
+		void
 			makeCurrent( void ) override;
 		bool
 			isCurrent( void ) override;
