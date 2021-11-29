@@ -16,15 +16,21 @@ namespace notrealengine
 
 	GLMesh::GLMesh() : VAO(0), VBO(0), EBO(0), polygon_mode(GL_FILL)
 	{
+		setup();
 	}
 
-	GLMesh::GLMesh(GLMesh const & GLMesh) : data(GLMesh.data), VAO(0), VBO(0), EBO(0),
-		polygon_mode(GL_FILL)
+	GLMesh::GLMesh(GLMesh const & GLMesh) : data(GLMesh.data),
+		VAO(0), VBO(0), EBO(0),
+		polygon_mode(GLMesh.polygon_mode)
 	{
+
 	}
 
 	GLMesh::~GLMesh()
 	{
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteBuffers(1, &EBO);
 	}
 
 	GLMesh::GLMesh(MeshData const & data)
@@ -97,7 +103,7 @@ namespace notrealengine
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
 		GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, polygon_mode);
-		GLCallThrow(glDrawElements, GL_TRIANGLES, (int)data.getIndices().size(), GL_UNSIGNED_INT, 0);
+		GLCallThrow(glDrawElements, GL_TRIANGLES, data.getIndices().size(), GL_UNSIGNED_INT, 0);
 		GLCallThrow(glBindVertexArray, 0);
 	}
 
@@ -109,24 +115,26 @@ namespace notrealengine
 		GLCallThrow(glGenBuffers, 1, &EBO);
 
 		GLCallThrow(glBindVertexArray, VAO);
-		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
 
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
 		GLCallThrow(glBufferData, GL_ARRAY_BUFFER,
-			(GLsizeiptr)(data.getVertices().size() * sizeof(Vertex)),
+			data.getVertices().size() * sizeof(Vertex),
 			&data.getVertices()[0], GL_STATIC_DRAW);
 
 		GLCallThrow(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, EBO);
 		GLCallThrow(glBufferData, GL_ELEMENT_ARRAY_BUFFER,
-			(GLsizeiptr)(data.getIndices().size() * sizeof(unsigned int)),
-			&data.getIndices()[0], GL_STATIC_DRAW);
+			data.getIndices().size() * sizeof(unsigned int),
+			data.getIndices().data(), GL_STATIC_DRAW);
 
+		GLCallThrow(glVertexAttribPointer,
+			0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		GLCallThrow(glEnableVertexAttribArray, 0);
 		GLCallThrow(glVertexAttribPointer,
-			0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+			1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		GLCallThrow(glEnableVertexAttribArray, 1);
-		GLCallThrow(glVertexAttribPointer, 1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+		GLCallThrow(glVertexAttribPointer,
+			2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		GLCallThrow(glEnableVertexAttribArray, 2);
-		GLCallThrow(glVertexAttribPointer, 2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float)));
 
 		GLCallThrow(glBindVertexArray, 0);
 	}
@@ -151,6 +159,9 @@ namespace notrealengine
 		{
 			std::cout << "\t" << textures[i].path << std::endl;
 		}
+		std::cout << "\tVAO = " << GLMesh.getVAO() << std::endl;
+		std::cout << "\tVBO = " << GLMesh.getVBO() << std::endl;
+		std::cout << "\tEBO = " << GLMesh.getEBO() << std::endl;
 		return o;
 	}
 }

@@ -8,6 +8,8 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include <memory>
+
 namespace notrealengine
 {
 	class GLObject
@@ -32,7 +34,7 @@ namespace notrealengine
 
 			//	Accessors
 
-			std::vector<GLMesh>
+			std::vector<std::shared_ptr<GLMesh>>
 				getMeshes() const;
 
 			//	Transforms
@@ -43,7 +45,7 @@ namespace notrealengine
 			void	scale(mft::vec3 scale);
 
 		private:
-			std::vector<GLMesh>		meshes;
+			std::vector<std::shared_ptr<GLMesh>>		meshes;
 			std::vector<Texture>	loadedTextures;
 
 			std::string	directory;
@@ -60,7 +62,7 @@ namespace notrealengine
 				loadObject(std::string path);
 			void
 				processNode(aiNode* node, const aiScene* scene);
-			GLMesh
+			std::shared_ptr<GLMesh>
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<Texture>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);

@@ -135,7 +135,7 @@ namespace notrealengine
 		return textures;
 	}
 
-	GLMesh	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
+	std::shared_ptr<GLMesh>	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
 		std::vector<Vertex>			vertices;
 		std::vector<unsigned int>	indices;
@@ -143,6 +143,7 @@ namespace notrealengine
 
 		//	Vertices
 
+		//std::cout << "Mesh has " << mesh->mNumVertices << " vertices" << std::endl;
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex	vertex;
@@ -160,7 +161,9 @@ namespace notrealengine
 				vector.z = mesh->mNormals[i].z;
 				vertex.norm = vector;
 			}
-
+			else
+				//std::cout << "No normals" << std::endl;
+			//std::cout << "Texture[0] has " << mesh->mNumUVComponents[0] << " UV components" << std::endl;
 			if (mesh->mTextureCoords[0])
 			{
 				mft::vec2	uv;
@@ -168,7 +171,10 @@ namespace notrealengine
 				uv.y = mesh->mTextureCoords[0][i].y;
 			}
 			else
+			{
 				vertex.uv = mft::vec2();
+				//std::cout << "No uv" << std::endl;
+			}
 			vertices.push_back(vertex);
 		}
 
@@ -196,7 +202,7 @@ namespace notrealengine
 
 		//return Mesh(vertices, indices, textures);
 		MeshData	data = MeshData(vertices, indices, textures);
-		return GLMesh(data);
+		return std::shared_ptr<GLMesh>(new GLMesh(data));
 	}
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
@@ -228,6 +234,7 @@ namespace notrealengine
 		}
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
+		std::cout << path << " loaded successfully" << std::endl;
 	}
 
 	void	GLObject::draw(GLShaderProgram *shader) const
@@ -236,22 +243,22 @@ namespace notrealengine
 		//glUniformMatrix4fv(glGetUniformLocation(shader->programID, "model"), 1, GL_TRUE, matrix);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			meshes[i].draw(shader);
+			(*meshes[i]).draw(shader);
 		}
 	}
 
-	std::vector<GLMesh>	GLObject::getMeshes() const
+	std::vector<std::shared_ptr<GLMesh>>	GLObject::getMeshes() const
 	{
 		return meshes;
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)
 	{
-		std::vector<GLMesh>	meshes = obj.getMeshes();
+		std::vector<std::shared_ptr<GLMesh>>	meshes = obj.getMeshes();
 		std::cout << obj.name;
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			std::cout << "Mesh " << i << ":" << std::endl << meshes[i];
+			std::cout << "Mesh " << i << ":" << std::endl << *meshes[i];
 		}
 		return o;
 	}

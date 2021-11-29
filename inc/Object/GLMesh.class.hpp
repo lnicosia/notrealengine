@@ -36,7 +36,6 @@ namespace notrealengine
 
 		unsigned int const	getPolygonMode() const;
 
-
 	private:
 		MeshData		data;
 
