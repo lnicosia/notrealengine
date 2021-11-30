@@ -21,7 +21,7 @@ LDFLAGS =
 INCLUDE =
 
 LIB_MOD = 
-CMAKE_LIB_MOD = SDL assimp
+CMAKE_LIB_MOD = SDL assimp freetype
 
 #libft_LIB = libft.a
 #libft_INC = inc
