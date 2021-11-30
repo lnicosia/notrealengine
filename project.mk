@@ -4,7 +4,7 @@ L = lib
 LIB_TARGET = libnre.a
 EXEC_TARGET =
 
-SRC =	$S/test.cpp \
+SRC =	$S/mft/math_utils.cpp \
 
 CPPFLAGS =
 LDFLAGS =
