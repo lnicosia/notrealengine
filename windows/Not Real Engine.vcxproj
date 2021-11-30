@@ -123,9 +123,6 @@
     <ClCompile Include="..\src\GLException.class.cpp" />
     <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
-    <ClCompile Include="..\src\mft\matrix_project.cpp" />
-    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
-    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
