@@ -36,6 +36,13 @@ namespace notrealengine
 
 		unsigned int const	getPolygonMode() const;
 
+		//	Transforms
+
+		void	update(void);
+		void	move(mft::vec3 move);
+		void	rotate(mft::vec3 rotation);
+		void	scale(mft::vec3 scale);
+
 	private:
 		MeshData		data;
 

@@ -54,6 +54,28 @@ namespace notrealengine
 		return *this;
 	}
 
+	// Transforms
+
+	void	GLMesh::update(void)
+	{
+		data.update();
+	}
+
+	void	GLMesh::move(mft::vec3 move)
+	{
+		data.move(move);
+	}
+
+	void	GLMesh::rotate(mft::vec3 rotation)
+	{
+		data.rotate(rotation);
+	}
+
+	void	GLMesh::scale(mft::vec3 scale)
+	{
+		data.scale(scale);
+	}
+
 	//	Accessors
 
 	MeshData const		GLMesh::getData() const
@@ -87,6 +109,7 @@ namespace notrealengine
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
+		GLCallThrow(glUniformMatrix4fv, glGetUniformLocation(shader->programID, "mesh_model"), 1, GL_FALSE, &data.getMatrix()[0][0]);
 		for (size_t i = 0; i < data.getTextures().size(); i++)
 		{
 			GLCallThrow(glActiveTexture, GL_TEXTURE0 + (unsigned int)i);

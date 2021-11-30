@@ -20,6 +20,13 @@ namespace notrealengine
 		std::string		path;
 	};
 
+	struct Transform
+	{
+		mft::vec3	pos;
+		mft::vec3	rotation;
+		mft::vec3	scale;
+	};
+
 	class MeshData
 	{
 
@@ -43,10 +50,24 @@ namespace notrealengine
 		std::vector<unsigned int>	getIndices() const;
 		std::vector<Texture>		getTextures() const;
 
+		mft::mat4					getMatrix() const;
+
+		//	Transforms
+
+		void	update(void);
+		void	move(mft::vec3 move);
+		void	rotate(mft::vec3 rotation);
+		void	scale(mft::vec3 scale);
+
 	private:
 		std::vector<Vertex>			vertices;
 		std::vector<unsigned int>	indices;
 		std::vector<Texture>		textures;
+
+		//	Transforms
+
+		Transform	transform;
+		mft::mat4	matrix;
 
 		//		Initalize buffers and vertex array for the mesh
 		//		Should not be called outside of the class scope

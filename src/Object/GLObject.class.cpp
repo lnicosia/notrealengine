@@ -33,7 +33,7 @@ namespace notrealengine
 	}
 
 	GLObject::GLObject(std::string path) : transform{ mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(0, 0, 0) }
+		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) }, matrix()
 	{
 		loadObject(path);
 	}
@@ -48,26 +48,32 @@ namespace notrealengine
 
 	void	GLObject::update(void)
 	{
-		/*matrix = mft::mat4(1);
+		matrix = mft::mat4(1);
 		matrix = mft::translate(matrix, transform.pos);
-		matrix = mft::rotate(matrix, mft::radians(1), transform.rotation);
-		matrix = mft::scale(matrix, transform.scale);*/
+		matrix = mft::rotate(matrix, transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
+		matrix = mft::rotate(matrix, transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
+		matrix = mft::rotate(matrix, transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
+		matrix = mft::scale(matrix, transform.scale);
+		std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
 
 	void	GLObject::move(mft::vec3 move)
 	{
 		transform.pos = transform.pos + move;
+		update();
 	}
 
 
 	void	GLObject::rotate(mft::vec3 rotation)
 	{
 		transform.rotation = transform.rotation + rotation;
+		update();
 	}
 
 	void	GLObject::scale(mft::vec3 scale)
 	{
 		transform.scale = transform.scale + scale;
+		update();
 	}
 
 	unsigned int	GLObject::loadTexture(std::string file, std::string directory)
@@ -240,7 +246,7 @@ namespace notrealengine
 	void	GLObject::draw(GLShaderProgram *shader) const
 	{
 		GLCallThrow(glUseProgram, shader->programID);
-		//glUniformMatrix4fv(glGetUniformLocation(shader->programID, "model"), 1, GL_TRUE, matrix);
+		glUniformMatrix4fv(glGetUniformLocation(shader->programID, "obj_model"), 1, GL_FALSE, &matrix[0][0]);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			(*meshes[i]).draw(shader);
@@ -250,6 +256,11 @@ namespace notrealengine
 	std::vector<std::shared_ptr<GLMesh>>	GLObject::getMeshes() const
 	{
 		return meshes;
+	}
+
+	mft::mat4	GLObject::getMatrix() const
+	{
+		return matrix;
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)

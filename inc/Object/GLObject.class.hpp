@@ -14,12 +14,6 @@ namespace notrealengine
 {
 	class GLObject
 	{
-		struct Transform
-		{
-			mft::vec3	pos;
-			mft::vec3	rotation;
-			mft::vec3	scale;
-		};
 
 		public:
 
@@ -43,6 +37,8 @@ namespace notrealengine
 			void	move(mft::vec3 move);
 			void	rotate(mft::vec3 rotation);
 			void	scale(mft::vec3 scale);
+
+			mft::mat4	getMatrix() const;
 
 		private:
 			std::vector<std::shared_ptr<GLMesh>>		meshes;
