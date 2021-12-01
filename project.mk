@@ -14,6 +14,7 @@ SRC =	$S/Object/GLMesh.class.cpp \
 		$S/GLShaderProgram.class.cpp \
 		$S/GLContext.class.cpp \
 		$S/GLContext_SDL.class.cpp \
+		$S/mft/math_utils.cpp \
 
 CC = clang++ --std=c++20
 CPPFLAGS =

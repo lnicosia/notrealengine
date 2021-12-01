@@ -48,13 +48,13 @@ namespace notrealengine
 
 	void	GLObject::update(void)
 	{
-		matrix = mft::mat4(1);
-		matrix = mft::translate(matrix, transform.pos);
-		matrix = mft::rotate(matrix, transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix = mft::rotate(matrix, transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix = mft::rotate(matrix, transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
-		matrix = mft::scale(matrix, transform.scale);
-		std::cout << "Object matrix = " << std::endl << matrix << std::endl;
+		matrix = mft::mat4();
+		matrix *= mft::mat4::scale(transform.scale);
+		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
+		matrix *= mft::mat4::translate(transform.pos);
+		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
 
 	void	GLObject::move(mft::vec3 move)
