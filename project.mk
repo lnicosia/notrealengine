@@ -1,11 +1,19 @@
 
 L = lib
+I = inc/notrealengine
 
 LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/mft/math_utils.cpp \
+      $S/SDL.class.cpp \
+      $S/SDLWindow.class.cpp \
+      $S/GLException.class.cpp \
+      $S/GLShaderProgram.class.cpp \
+      $S/GLContext.class.cpp \
+      $S/GLContext_SDL.class.cpp \
 
+CC = clang++ --std=c++20
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

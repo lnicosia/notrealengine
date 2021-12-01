@@ -9,6 +9,8 @@ define n
 
 endef
 
+CC = clang++ --std=c++17
+
 include project.mk
 
 ifneq ($L,)
@@ -18,7 +20,6 @@ $(error lib directory not found : "$L"$n\
 	endif
 endif
 
-CC = clang++ --std=c++17
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
@@ -29,18 +30,18 @@ TMP_DIRS=$(sort $(foreach DIRS,$(OBJ) $(DEP),$(dir $(shell echo '$(DIRS)' | sed 
 
 INCLUDES += $I
 
-$(eval $(foreach MOD,$(LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
-LIB = $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_LIB))
-INCLUDES += $(foreach MOD,$(LIB_MOD),$($(MOD)_DIR)/$($(MOD)_INC))
+LIB = $(foreach MOD,$(LIB_MOD),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_LIB)))
+INCLUDES += $(foreach MOD,$(LIB_MOD),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_INC)))
 LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(notdir $(LIBRARY))))
 
 LIB_DEP = $(LIB:%=%.d)
 
-$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(CMAKE_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
-CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$($(MOD)_DIR)/build/$($(MOD)_LIB),))
-INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$($(MOD)_DIR)/$($(MOD)_INC),))
+CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$(patsubst %,$($(MOD)_DIR)/build/%,$($(MOD)_LIB))))
+INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_INC))))
 LDFLAGS += $(foreach LIBRARY,$(CMAKE_LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(notdir $(LIBRARY))))
 
 UNAME_S = $(shell uname -s)
@@ -66,7 +67,7 @@ $(TMP_DIRS) $I:
 $D/%.d: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
 	@$(CC) -MM $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
-		sed 's,\($*\)\.o[ :]*,$O\1.o $@ : ,g' > $@; \
+		sed 's,\($*\)\.o[ :]*,$O/\1.o $@ : ,g' > $@; \
 
 .SECONDEXPANSION:
 $(OBJ): $O/%.o: $S/%.cpp |  $$(dir $$@) $(INCLUDES)
@@ -82,13 +83,13 @@ $($(1)_DIR)/$($(1)_INC):
 
 endef
 
-$(eval $(foreach MOD,$(LIB_MOD) $(CMAKE_LIB_MOD),$(call init_includes,$(MOD))))
+$(foreach MOD,$(LIB_MOD) $(CMAKE_LIB_MOD),$(eval $(call init_includes,$(MOD))))
 
-$(eval $(foreach MOD,$(CMAKE_LIB_MOD),$($(MOD)_DIR)/build/$($(MOD)_LIB): MOD = $(MOD)))
+$(foreach MOD,$(CMAKE_LIB_MOD),$(eval $($(MOD)_DIR)/build/$($(MOD)_LIB): MOD = $(MOD)))
 $(CMAKE_LIB): DIR = $($(MOD)_DIR)/build
 
 $(CMAKE_LIB):
-	@$(call submodule_init,$(DIR))
+	@$(call submodule_init,$($(MOD)_DIR))
 	@mkdir -p $(DIR)
 	@sh -c "cd $(DIR); cmake .."
 	@$(MAKE) -C $(DIR)
