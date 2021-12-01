@@ -12,7 +12,7 @@ namespace mft
 	constexpr mat<T1,Tn...>::mat( void ):
 		Rows()
 	{
-		for (int i = 0; i < sizeof...(Tn); i++)
+		for (int i = 0; i <= sizeof...(Tn); i++)
 			Rows::data[i][i] = T1(1);
 	}
 
@@ -26,7 +26,7 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	mat<T1,Tn...> & mat<T1,Tn...>::operator=( const mat<T1,Tn...> & from )
 	{
-		Rows::operator=(*this, from);
+		Rows::operator=(from);
 		return *this;
 	}
 
@@ -42,7 +42,7 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index )
 	{
-		if (index >= 0 && index < sizeof...(Tn))
+		if (index >= 0 && index <= sizeof...(Tn))
 			return (Rows::data[index]);
 		else
 			throw std::runtime_error("Matrix index out of bounds");
@@ -51,7 +51,7 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	constexpr const vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index ) const
 	{
-		if (index >= 0 && index < sizeof...(Tn))
+		if (index >= 0 && index <= sizeof...(Tn))
 			return (Rows::data[index]);
 		else
 			throw std::runtime_error("Matrix index out of bounds");
@@ -68,8 +68,8 @@ namespace mft
 	{
 		vec<T1,Tn...> ret;
 
-		for (int i = 0; i < sizeof...(Tn); i++)
-			for (int j = 0; j < sizeof...(Tn); j++)
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
 			{
 				ret[i] += this[i][j] * v[i];
 			}
@@ -81,9 +81,9 @@ namespace mft
 	{
 		mat<T1,Tn...> ret;
 
-		for (int i = 0; i < sizeof...(Tn); i++)
-			for (int j = 0; j < sizeof...(Tn); j++)
-				for (int k = 0; k < sizeof...(Tn); k++)
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
 					ret[i][j] += this[k][j] * m2[i][k];
 				}
@@ -107,10 +107,10 @@ namespace mft
 	{
 		o << std::fixed << std::left;
 		o << "{" << std::endl;
-		for (int i = 0; i < sizeof...(Tn); i++)
+		for (int i = 0; i <= sizeof...(Tn); i++)
 		{
 			o << "{";
-			for (int j = 0; j < sizeof...(Tn); j++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
 				o << " " << std::setw(8) << m[i][j];
 			o << " }" << std::endl;
 		}
@@ -121,13 +121,16 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	mat<T1,Tn...> & mat<T1,Tn...>::operator*=( const mat<T1,Tn...> & m2 )
 	{
-		mat<T1,Tn...> ret;
+		mat<T1, Tn...> ret(vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0));
 
-		for (int i = 0; i < sizeof...(Tn); i++)
-			for (int j = 0; j < sizeof...(Tn); j++)
-				for (int k = 0; k < sizeof...(Tn); k++)
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += this[k][j] * m2[i][k];
+					ret[i][j] += (*this)[k][j] * m2[i][k];
 				}
 		*this = ret;
 		return *this;
