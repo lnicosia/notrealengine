@@ -12,12 +12,11 @@
 
 # include "GLException.class.hpp"
 # include <filesystem>
-# include <iostream>
 
 # if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call("func_name", func_name __VA_OPT__, __VA_ARGS__)
+# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call(#func_name, func_name __VA_OPT__, __VA_ARGS__)
 # else
-# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call("func_name", func_name __VA_OPT__(,) __VA_ARGS__)
+# define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call(#func_name, func_name __VA_OPT__(,) __VA_ARGS__)
 #endif
 
 namespace notrealengine
