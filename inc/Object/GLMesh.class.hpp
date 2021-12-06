@@ -26,7 +26,7 @@ namespace notrealengine
 
 		void	draw(GLShaderProgram *shader) const;
 
-		// Accessors
+		//	Accessors
 
 		MeshData const	getData() const;
 
@@ -35,6 +35,10 @@ namespace notrealengine
 		unsigned int const	getEBO() const;
 
 		unsigned int const	getPolygonMode() const;
+
+		//	Texture utility
+
+		void	addTexture(Texture text);
 
 		//	Transforms
 

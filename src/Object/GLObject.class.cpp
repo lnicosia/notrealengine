@@ -44,6 +44,16 @@ namespace notrealengine
 		return *this;
 	}
 
+	//	Texture utility
+
+	void	GLObject::addTexture(unsigned int mesh, Texture text)
+	{
+		if (mesh >= 0 && mesh < meshes.size())
+			(*meshes[mesh]).addTexture(text);
+		else
+			throw std::runtime_error("Mesh index out of bounds");
+	}
+
 	// Transforms
 
 	void	GLObject::update(void)
@@ -54,7 +64,7 @@ namespace notrealengine
 		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
 		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
 		matrix *= mft::mat4::translate(transform.pos);
-		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
+		std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
 
 	void	GLObject::move(mft::vec3 move)
@@ -76,16 +86,16 @@ namespace notrealengine
 		update();
 	}
 
-	unsigned int	GLObject::loadTexture(std::string file, std::string directory)
+	unsigned int	loadGLTexture(std::string path)
 	{
 		unsigned int	id = 0;
-		std::string		path = file + '/' + directory;
 
 		int	w, h, nChannels;
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
 		if (!img)
 		{
 			std::cerr << "Failed to load " + path << std::endl;
+			std::cerr << stbi_failure_reason() << std::endl;
 			stbi_image_free(img);
 			return id;
 		}
@@ -132,7 +142,8 @@ namespace notrealengine
 			if (exists)
 				continue;
 			Texture		texture;
-			texture.id = loadTexture(str.C_Str(), directory);
+			std::string		path = std::string(str.C_Str()) + '/' + directory;
+			texture.glId = loadGLTexture(path);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
@@ -149,7 +160,6 @@ namespace notrealengine
 
 		//	Vertices
 
-		//std::cout << "Mesh has " << mesh->mNumVertices << " vertices" << std::endl;
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex	vertex;
@@ -168,18 +178,17 @@ namespace notrealengine
 				vertex.norm = vector;
 			}
 			else
-				//std::cout << "No normals" << std::endl;
-			//std::cout << "Texture[0] has " << mesh->mNumUVComponents[0] << " UV components" << std::endl;
-			if (mesh->mTextureCoords[0])
 			{
-				mft::vec2	uv;
-				uv.x = mesh->mTextureCoords[0][i].x;
-				uv.y = mesh->mTextureCoords[0][i].y;
+				vertex.norm = mft::vec3();
+			}
+			if (mesh->mTextureCoords[0] != NULL)
+			{
+				vertex.uv.x = mesh->mTextureCoords[0][i].x;
+				vertex.uv.y = mesh->mTextureCoords[0][i].y;
 			}
 			else
 			{
 				vertex.uv = mft::vec2();
-				//std::cout << "No uv" << std::endl;
 			}
 			vertices.push_back(vertex);
 		}
@@ -231,7 +240,8 @@ namespace notrealengine
 
 		Assimp::Importer	importer;
 		const aiScene* scene;
-		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
+			| aiProcess_GenUVCoords);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -246,7 +256,7 @@ namespace notrealengine
 	void	GLObject::draw(GLShaderProgram *shader) const
 	{
 		GLCallThrow(glUseProgram, shader->programID);
-		glUniformMatrix4fv(glGetUniformLocation(shader->programID, "obj_model"), 1, GL_FALSE, &matrix[0][0]);
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "obj_model"), 1, GL_TRUE, &matrix[0][0]);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			(*meshes[i]).draw(shader);

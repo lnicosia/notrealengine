@@ -103,13 +103,20 @@ namespace notrealengine
 		return polygon_mode;
 	}
 
+	//	Texture utility
+
+	void	GLMesh::addTexture(Texture text)
+	{
+		data.addTexture(text);
+	}
+
 	//	Main functions
 
 	void	GLMesh::draw(GLShaderProgram *shader) const
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
-		GLCallThrow(glUniformMatrix4fv, glGetUniformLocation(shader->programID, "mesh_model"), 1, GL_FALSE, &data.getMatrix()[0][0]);
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "mesh_model"), 1, GL_FALSE, &data.getMatrix()[0][0]);
 		for (size_t i = 0; i < data.getTextures().size(); i++)
 		{
 			GLCallThrow(glActiveTexture, GL_TEXTURE0 + (unsigned int)i);
@@ -120,7 +127,7 @@ namespace notrealengine
 				nb = std::to_string(diffuse);
 			else if (name == "texture_specular")
 				nb = std::to_string(specular);
-			GLCallThrow(glBindTexture, GL_TEXTURE_2D, data.getTextures()[i].id);
+			GLCallThrow(glBindTexture, GL_TEXTURE_2D, data.getTextures()[i].glId);
 			GLCallThrow(glUniform1f, GLCallThrow(glGetUniformLocation, shader->programID, ("material." + name + nb).c_str()), i);
 		}
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);

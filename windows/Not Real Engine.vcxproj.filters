@@ -51,6 +51,9 @@
     <ClCompile Include="..\src\SDLWindow.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mft\math_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -62,25 +65,10 @@
     <ClInclude Include="..\inc\mft\vec.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\mft\vec\vec3.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\vec\vec4.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\mat\mat3.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\mat\mat4.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\Object\GLObject.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\vec\vec2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\Object\MeshData.class.hpp">
@@ -108,6 +96,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\mft\templates\mat.template.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\mft\templates\vec.template.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\mft\math_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

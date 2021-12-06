@@ -15,7 +15,7 @@ namespace notrealengine
 
 	struct Texture
 	{
-		unsigned int	id;
+		unsigned int	glId;
 		std::string		type;
 		std::string		path;
 	};
@@ -51,6 +51,10 @@ namespace notrealengine
 		std::vector<Texture>		getTextures() const;
 
 		mft::mat4					getMatrix() const;
+
+		//	Texture utility
+
+		void	addTexture(Texture text);
 
 		//	Transforms
 

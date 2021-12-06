@@ -30,6 +30,8 @@ namespace notrealengine
 
 			std::vector<std::shared_ptr<GLMesh>>
 				getMeshes() const;
+			mft::mat4
+				getMatrix() const;
 
 			//	Transforms
 
@@ -38,11 +40,13 @@ namespace notrealengine
 			void	rotate(mft::vec3 rotation);
 			void	scale(mft::vec3 scale);
 
-			mft::mat4	getMatrix() const;
+			//	Texture utility
+
+			void	addTexture(unsigned int mesh, Texture text);
 
 		private:
-			std::vector<std::shared_ptr<GLMesh>>		meshes;
-			std::vector<Texture>	loadedTextures;
+			std::vector<std::shared_ptr<GLMesh>>	meshes;
+			std::vector<Texture>					loadedTextures;
 
 			std::string	directory;
 
@@ -52,8 +56,6 @@ namespace notrealengine
 			mft::mat4	matrix;
 
 			//	Object loading
-			unsigned int
-				loadTexture(std::string file, std::string directory);
 			void
 				loadObject(std::string path);
 			void
@@ -65,6 +67,9 @@ namespace notrealengine
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);
+
+	unsigned int
+		loadGLTexture(std::string path);
 }
 
 #endif
