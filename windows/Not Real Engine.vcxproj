@@ -125,8 +125,11 @@
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
+    <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
+    <ClCompile Include="..\src\Object\Texture.class.cpp" />
+    <ClCompile Include="..\src\Object\TextureLoader.class.cpp" />
     <ClCompile Include="..\src\SDL.class.cpp" />
     <ClCompile Include="..\src\SDLWindow.class.cpp" />
   </ItemGroup>
@@ -146,8 +149,11 @@
     <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
+    <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
+    <ClInclude Include="..\inc\Object\Texture.class.hpp" />
+    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\test\shaders\test.fs" />

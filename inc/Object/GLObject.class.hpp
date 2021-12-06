@@ -1,7 +1,10 @@
-#ifndef _MESH_OBJECT_CLASS_H_
-# define _MESH_OBJECT_CLASS_H_
+#ifndef _GLOBJECT_CLASS_H_
+# define _GLOBJECT_CLASS_H_
 
-#include "Object/GLMesh.class.hpp"
+#include "Object/Mesh.class.hpp"
+#include "Object/Texture.class.hpp"
+
+//	Fix for assimp
 #undef max
 #undef min
 #include "assimp/Importer.hpp"
@@ -17,8 +20,7 @@ namespace notrealengine
 
 		public:
 
-			std::string	name;
-
+			GLObject() = delete;
 			GLObject(GLObject const & GLObject);
 			GLObject(std::string path);
 			~GLObject();
@@ -28,10 +30,18 @@ namespace notrealengine
 
 			//	Accessors
 
-			std::vector<std::shared_ptr<GLMesh>>
+			std::vector<std::shared_ptr<Mesh>> const&
 				getMeshes() const;
-			mft::mat4
+			mft::mat4 const&
 				getMatrix() const;
+			Transform const&
+				getTransform() const;
+			std::string const&
+				getName() const;
+
+			//	Setters
+
+			void	setName(std::string name);
 
 			//	Transforms
 
@@ -42,11 +52,12 @@ namespace notrealengine
 
 			//	Texture utility
 
-			void	addTexture(unsigned int mesh, Texture text);
+			void	addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
 
 		private:
-			std::vector<std::shared_ptr<GLMesh>>	meshes;
-			std::vector<Texture>					loadedTextures;
+			std::string	name;
+
+			std::vector<std::shared_ptr<Mesh>>	meshes;
 
 			std::string	directory;
 
@@ -60,16 +71,13 @@ namespace notrealengine
 				loadObject(std::string path);
 			void
 				processNode(aiNode* node, const aiScene* scene);
-			std::shared_ptr<GLMesh>
+			std::shared_ptr<Mesh>
 				processMesh(aiMesh* mesh, const aiScene* scene);
-			std::vector<Texture>
+			std::vector<std::shared_ptr<Texture>>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);
-
-	unsigned int
-		loadGLTexture(std::string path);
 }
 
 #endif
