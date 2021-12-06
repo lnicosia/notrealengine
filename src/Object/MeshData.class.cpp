@@ -4,14 +4,6 @@
 
 namespace notrealengine
 {
-	//	Constructors
-
-	MeshData::MeshData() 
-		: vertices(), indices(), textures(),
-			transform{ mft::vec3(0, 0, 0),
-			mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) }, matrix()
-	{
-	}
 
 	MeshData::MeshData(MeshData const& meshData)
 	{
@@ -23,22 +15,17 @@ namespace notrealengine
 	}
 
 	MeshData::MeshData(std::vector<Vertex> vertices,
-		std::vector<unsigned int> indices,
-		std::vector<Texture> textures)
-		: vertices(vertices), indices(indices), textures(textures),
+		std::vector<unsigned int> indices)
+		: vertices(vertices), indices(indices),
 			transform { mft::vec3(0, 0, 0), mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
 			matrix()
 	{
-		setup();
 	}
 
 	MeshData& MeshData::operator=(MeshData const& meshData)
 	{
 		this->vertices = meshData.vertices;
 		this->indices = meshData.indices;
-		this->textures = meshData.textures;
-
-		this->name = meshData.name;
 
 		this->transform = meshData.transform;
 		this->matrix = meshData.matrix;
@@ -47,34 +34,19 @@ namespace notrealengine
 
 	//	Accessors
 
-	std::vector<Vertex>
-		MeshData::getVertices() const
+	std::vector<Vertex> const&	MeshData::getVertices() const
 	{
 		return vertices;
 	}
 
-	std::vector<unsigned int>
-		MeshData::getIndices() const
+	std::vector<unsigned int> const&	MeshData::getIndices() const
 	{
 		return indices;
 	}
 
-	std::vector<Texture>
-		MeshData::getTextures() const
-	{
-		return textures;
-	}
-
-	mft::mat4	MeshData::getMatrix() const
+	mft::mat4 const& MeshData::getMatrix() const
 	{
 		return matrix;
-	}
-
-	//	Texture utility
-
-	void	MeshData::addTexture(Texture text)
-	{
-		textures.push_back(text);
 	}
 
 	void	MeshData::update(void)
@@ -108,16 +80,10 @@ namespace notrealengine
 
 	//	Main functions
 
-	//		Initalize buffers and vertex array for the mesh
-	void	MeshData::setup()
-	{
-	}
-
 	std::ostream& operator<<(std::ostream& o, MeshData const& meshData)
 	{
 		std::vector<Vertex>			vertices = meshData.getVertices();
 		std::vector<unsigned int>	indices = meshData.getIndices();
-		std::vector<Texture>		textures = meshData.getTextures();
 		std::cout << "\t--Vertices--" << std::endl;
 		for (size_t i = 0; i < vertices.size(); i++)
 		{
@@ -127,11 +93,6 @@ namespace notrealengine
 		for (size_t i = 0; i < indices.size(); i++)
 		{
 			std::cout << "\t" << indices[i] << std::endl;
-		}
-		std::cout << "\t--Textures--" << std::endl;
-		for (size_t i = 0; i < textures.size(); i++)
-		{
-			std::cout << "\t" << textures[i].path << std::endl;
 		}
 		return o;
 	}
