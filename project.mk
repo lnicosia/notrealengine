@@ -1,6 +1,6 @@
 
 L = lib
-I = inc/notrealengine
+I = inc/notrealengine inc
 
 LIB_TARGET = libnre.a
 EXEC_TARGET =

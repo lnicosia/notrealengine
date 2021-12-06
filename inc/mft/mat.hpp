@@ -58,6 +58,7 @@ namespace	mft
 		static constexpr mat<T1,T1,T1,T1> ortho( const T1 left, const T1 right, const T1 bottom, const T1 top );
 		static constexpr mat<T1,T1,T1,T1> ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far );
 		static constexpr mat<T1,T1,T1,T1> perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far);
+		static constexpr mat<T1, T1, T1, T1> perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far);
 	};
 }
 
