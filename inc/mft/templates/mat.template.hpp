@@ -60,13 +60,16 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	mat<T1,Tn...>::operator T1*()
 	{
-		return static_cast<T1 *>(this[0]);
+		return static_cast<T1 *>(&(*this)[0][0]);
 	}
 
 	template <typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v )
 	{
-		vec<T1,Tn...> ret;
+		vec<T1,Tn...> ret(	vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0));
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
@@ -79,7 +82,10 @@ namespace mft
 	template <typename T1, typename ... Tn>
 	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 )
 	{
-		mat<T1,Tn...> ret;
+		mat<T1,Tn...> ret(	vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0),
+							vec<T1, Tn...>(0));
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
@@ -121,7 +127,7 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	mat<T1,Tn...> & mat<T1,Tn...>::operator*=( const mat<T1,Tn...> & m2 )
 	{
-		mat<T1, Tn...> ret(vec<T1, Tn...>(0),
+		mat<T1, Tn...> ret(	vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0));
