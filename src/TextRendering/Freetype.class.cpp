@@ -36,7 +36,7 @@ namespace notrealengine
 		return ft;
 	}
 
-	FT_Library	ft = nullptr;
+	FT_Library	Freetype::ft = nullptr;
 
 	bool Freetype::initialized = false;
 }

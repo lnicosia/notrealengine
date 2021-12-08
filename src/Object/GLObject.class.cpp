@@ -1,4 +1,5 @@
 #include "Object/GLObject.class.hpp"
+#include "Object/TextureLoader.class.hpp"
 #include "mft/mft.hpp"
 
 //	OpenGL includes
@@ -10,19 +11,9 @@
 #include <GL/gl.h>
 #endif
 
-//	Image loading library
-#ifdef __unix__
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-#define STB_IMAGE_IMPLEMENTATION
-#include "../lib/stb_image.h"
-#ifdef __unix__
-	#pragma GCC diagnostic pop
-#endif
-
 namespace notrealengine
 {
+
 	GLObject::~GLObject()
 	{
 	}
@@ -44,16 +35,26 @@ namespace notrealengine
 		return *this;
 	}
 
+	//	Texture utility
+
+	void	GLObject::addTexture(unsigned int mesh, std::shared_ptr < Texture >& text)
+	{
+		if (mesh >= 0 && mesh < meshes.size())
+			(*meshes[mesh]).addTexture(text);
+		else
+			throw std::runtime_error("Mesh index out of bounds");
+	}
+
 	// Transforms
 
 	void	GLObject::update(void)
 	{
-		matrix = mft::mat4(1);
-		matrix = mft::translate(matrix, transform.pos);
-		matrix = mft::rotate(matrix, transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix = mft::rotate(matrix, transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix = mft::rotate(matrix, transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
-		matrix = mft::scale(matrix, transform.scale);
+		matrix = mft::mat4();
+		matrix *= mft::mat4::scale(transform.scale);
+		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
+		matrix *= mft::mat4::translate(transform.pos);
 		std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
 
@@ -76,80 +77,30 @@ namespace notrealengine
 		update();
 	}
 
-	unsigned int	GLObject::loadTexture(std::string file, std::string directory)
-	{
-		unsigned int	id = 0;
-		std::string		path = file + '/' + directory;
-
-		int	w, h, nChannels;
-		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
-		if (!img)
-		{
-			std::cerr << "Failed to load " + path << std::endl;
-			stbi_image_free(img);
-			return id;
-		}
-		GLenum	format;
-		if (nChannels == 1)
-			format = GL_RED;
-		else if (nChannels == 3)
-			format = GL_RGB;
-		else if (nChannels == 4)
-			format = GL_RGBA;
-
-		GLCallThrow(glGenTextures, 1, &id);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, id);
-		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
-		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		stbi_image_free(img);
-
-		return id;
-	}
-
-	std::vector<Texture>	GLObject::loadMaterialTextures(aiMaterial* mat,
+	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
 		aiTextureType type, std::string typeName)
 	{
-		std::vector<Texture>	textures;
+		std::vector<std::shared_ptr<Texture>>	textures;
 
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString	str;
 			mat->GetTexture(type, i, &str);
-			bool	exists = false;
-			for (unsigned int j = 0; j < loadedTextures.size(); j++)
-			{
-				if (std::strcmp(loadedTextures[i].path.c_str(), str.C_Str()) == 0)
-				{
-					textures.push_back(loadedTextures[i]);
-					exists = true;
-					break;
-				}
-			}
-			if (exists)
-				continue;
-			Texture		texture;
-			texture.id = loadTexture(str.C_Str(), directory);
-			texture.type = typeName;
-			texture.path = str.C_Str();
-			textures.push_back(texture);
-			loadedTextures.push_back(texture);
+			std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
+			std::string		path = directory + '/' + std::string(str.C_Str());
+			textures.push_back(TextureLoader::loadTexture(path, typeName));
 		}
 		return textures;
 	}
 
-	std::shared_ptr<GLMesh>	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
+	std::shared_ptr<Mesh>	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
-		std::vector<Vertex>			vertices;
-		std::vector<unsigned int>	indices;
-		std::vector<Texture>		textures;
+		std::vector<Vertex>						vertices;
+		std::vector<unsigned int>				indices;
+		std::vector<std::shared_ptr<Texture>>	textures;
 
 		//	Vertices
 
-		//std::cout << "Mesh has " << mesh->mNumVertices << " vertices" << std::endl;
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex	vertex;
@@ -168,18 +119,17 @@ namespace notrealengine
 				vertex.norm = vector;
 			}
 			else
-				//std::cout << "No normals" << std::endl;
-			//std::cout << "Texture[0] has " << mesh->mNumUVComponents[0] << " UV components" << std::endl;
-			if (mesh->mTextureCoords[0])
 			{
-				mft::vec2	uv;
-				uv.x = mesh->mTextureCoords[0][i].x;
-				uv.y = mesh->mTextureCoords[0][i].y;
+				vertex.norm = mft::vec3();
+			}
+			if (mesh->mTextureCoords[0] != NULL)
+			{
+				vertex.uv.x = mesh->mTextureCoords[0][i].x;
+				vertex.uv.y = mesh->mTextureCoords[0][i].y;
 			}
 			else
 			{
 				vertex.uv = mft::vec2();
-				//std::cout << "No uv" << std::endl;
 			}
 			vertices.push_back(vertex);
 		}
@@ -198,17 +148,23 @@ namespace notrealengine
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
 				aiTextureType_DIFFUSE, "texture_diffuse");
-			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			std::vector<Texture> specularMaps = loadMaterialTextures(material,
+			textures.insert(
+				textures.end(),
+				std::make_move_iterator(diffuseMaps.begin()),
+				std::make_move_iterator(diffuseMaps.end()));
+			std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
 				aiTextureType_SPECULAR, "texture_specular");
-			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			textures.insert(
+				textures.end(),
+				std::make_move_iterator(specularMaps.begin()),
+				std::make_move_iterator(specularMaps.end()));
 		}
 
-		//return Mesh(vertices, indices, textures);
-		MeshData	data = MeshData(vertices, indices, textures);
-		return std::shared_ptr<GLMesh>(new GLMesh(data));
+		MeshData	data = MeshData(vertices, indices);
+		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
+		return std::shared_ptr<Mesh>(new Mesh(glMesh));
 	}
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
@@ -231,7 +187,8 @@ namespace notrealengine
 
 		Assimp::Importer	importer;
 		const aiScene* scene;
-		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
+			| aiProcess_GenUVCoords);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -246,27 +203,46 @@ namespace notrealengine
 	void	GLObject::draw(GLShaderProgram *shader) const
 	{
 		GLCallThrow(glUseProgram, shader->programID);
-		glUniformMatrix4fv(glGetUniformLocation(shader->programID, "obj_model"), 1, GL_FALSE, &matrix[0][0]);
+		//GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, &matrix[0][0]);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			(*meshes[i]).draw(shader);
+			(*meshes[i]).draw(shader, matrix);
 		}
 	}
 
-	std::vector<std::shared_ptr<GLMesh>>	GLObject::getMeshes() const
+	//	Accessors
+
+	std::vector<std::shared_ptr<Mesh>> const&	GLObject::getMeshes() const
 	{
 		return meshes;
 	}
 
-	mft::mat4	GLObject::getMatrix() const
+	mft::mat4 const& GLObject::getMatrix() const
 	{
 		return matrix;
 	}
 
+	Transform const& GLObject::getTransform() const
+	{
+		return transform;
+	}
+
+	std::string const& GLObject::getName() const
+	{
+		return name;
+	}
+
+	//	Setters
+
+	void	GLObject::setName(std::string name)
+	{
+		this->name = name;
+	}
+
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)
 	{
-		std::vector<std::shared_ptr<GLMesh>>	meshes = obj.getMeshes();
-		std::cout << obj.name;
+		std::vector<std::shared_ptr<Mesh>>	meshes = obj.getMeshes();
+		std::cout << obj.getName();
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			std::cout << "Mesh " << i << ":" << std::endl << *meshes[i];
