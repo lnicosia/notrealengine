@@ -14,6 +14,9 @@ SRC =	$S/Object/GLMesh.class.cpp \
 		$S/GLShaderProgram.class.cpp \
 		$S/GLContext.class.cpp \
 		$S/GLContext_SDL.class.cpp \
+		$S/TextRendering/GLCharacter.class.cpp \
+		$S/TextRendering/GLFont.class.cpp \
+		$S/TextRendering/Freetype.class.cpp \
 
 CC = clang++ --std=c++20
 CPPFLAGS =

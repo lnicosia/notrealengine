@@ -51,6 +51,15 @@
     <ClCompile Include="..\src\SDLWindow.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TextRendering\GLFont.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TextRendering\Freetype.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -110,12 +119,27 @@
     <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\test\shaders\test.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\test\shaders\test.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\resources\shaders\text.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\resources\shaders\text.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
