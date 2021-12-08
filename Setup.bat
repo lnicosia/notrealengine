@@ -41,7 +41,7 @@ if not exist lib\freetype\build-windows\Debug\freetyped.lib (
 			git submodule update --init lib\freetype
 		)
 		if not exist lib\freetype\build-windows (
-			md lib\afreetypebuild-windows
+			md lib\freetype\build-windows
 		)
 		cmake -S lib\freetype\ -B lib\freetype\build-windows
 		cmake --build lib\freetype\build-windows

@@ -32,4 +32,7 @@ SDL_INC = include
 assimp_LIB = lib/libassimp.a
 assimp_INC = include build/include
 
+freetype_LIB = libfreetype.a
+freetype_INC = include
+
 LDFLAGS += 
