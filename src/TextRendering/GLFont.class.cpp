@@ -6,6 +6,7 @@ namespace notrealengine
 {
 	GLFont::GLFont(std::string path)
 	{
+		std::cout << "Loading font " << path << std::endl;
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();
@@ -22,6 +23,8 @@ namespace notrealengine
 			std::cerr << "Could not load Glyph" << std::endl;
 			return;
 		}
+
+		GLCallThrow(glPixelStorei, GL_UNPACK_ALIGNMENT, 1);
 
 		for (unsigned char c = 0; c < 128; c++)
 		{
@@ -42,6 +45,7 @@ namespace notrealengine
 
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
+
 	}
 
 	GLFont::GLFont(GLFont&& ref) noexcept
@@ -89,7 +93,7 @@ namespace notrealengine
 			{
 				{xpos,		ypos + h,	0.0f, 0.0f},
 				{xpos,		ypos,		0.0f, 1.0f},
-				{xpos + w,	ypos + h,	1.0f, 1.0f},
+				{xpos + w,	ypos,		1.0f, 1.0f},
 
 				{xpos,		ypos + h,	0.0f, 0.0f},
 				{xpos + w,	ypos,		1.0f, 1.0f},

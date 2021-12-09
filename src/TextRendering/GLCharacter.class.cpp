@@ -6,7 +6,7 @@ namespace notrealengine
 	GLCharacter::GLCharacter(FT_Face face, char c) :
         glId(0), size(mft::vec2(0, 0)), bearing(mft::vec2(0, 0)), next(0)
 	{
-       
+		setup(face, c);
 	}
 
 	GLCharacter::~GLCharacter()
