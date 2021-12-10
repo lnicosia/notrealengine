@@ -64,13 +64,13 @@ $(TMP_DIRS) $I:
 	@mkdir -p $@
 
 .SECONDEXPANSION:
-$D/%.d: $S/%.cpp | $$(dir $$@) $(INCLUDES)
+$D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
-	@$(CC) -MM $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
-		sed 's,\($*\)\.o[ :]*,$O/\1.o $@ : ,g' > $@; \
+	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
+		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
 
 .SECONDEXPANSION:
-$(OBJ): $O/%.o: $S/%.cpp |  $$(dir $$@) $(INCLUDES)
+$(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
@@ -89,6 +89,7 @@ $(foreach MOD,$(CMAKE_LIB_MOD),$(eval $($(MOD)_DIR)/build/$($(MOD)_LIB): MOD = $
 $(CMAKE_LIB): DIR = $($(MOD)_DIR)/build
 
 $(CMAKE_LIB):
+	@echo "Creating lib $@"
 	@$(call submodule_init,$($(MOD)_DIR))
 	@mkdir -p $(DIR)
 	@sh -c "cd $(DIR); cmake .."
@@ -99,7 +100,7 @@ $(LIB): DIR = $($(MOD)_DIR)
 
 $(LIB):
 	$(call submodule_init,$(DIR))
-	make -C $(DIR) $($(MOD)_LIB) L='$(abspath $L)'
+	$(MAKE) -C $(DIR) $($(MOD)_LIB) L='$(abspath $L)'
 
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
@@ -139,5 +140,5 @@ force:
 -include customrules.mk
 
 ifeq ($(filter %clean relib re %.d,$(MAKECMDGOALS)),)
--include $(patsubst $O%.o,$D%.d,$(wildcard $(OBJ)))
+-include $(patsubst $O/%.o,$D/%.d,$(wildcard $(OBJ)))
 endif

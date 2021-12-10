@@ -19,4 +19,8 @@ CMAKE_LIB_MOD = SDL
 SDL_LIB =
 SDL_INC = include
 
-LDFLAGS += 
+assimp_LIB = bin/libassimp.so
+assimp_INC = include build/include
+
+freetype_LIB = libfreetype.a
+freetype_INC = include
