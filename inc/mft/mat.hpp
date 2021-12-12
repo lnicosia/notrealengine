@@ -38,11 +38,11 @@ namespace	mft
 		// Conversion to data pointer
 		explicit operator T1*();
 
-		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v );
-		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 );
+		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v ) const;
+		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 ) const;
 
-		constexpr bool operator==( const mat<T1,Tn...> & m2 );
-		constexpr bool operator!=( const mat<T1,Tn...> & m2 );
+		constexpr bool operator==( const mat<T1,Tn...> & m2 ) const;
+		constexpr bool operator!=( const mat<T1,Tn...> & m2 ) const;
 
 		// Other operators
 		friend std::ostream & operator<< <>( std::ostream & o, const mat<T1,Tn...> & mat );
