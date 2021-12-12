@@ -147,7 +147,7 @@ namespace	mft
 	template<typename T1, typename ... Tn>
 	constexpr bool vec<T1,Tn...>::operator!=( const vec<T1,Tn...> & v2 ) const
 	{
-		return !(this == v2);
+		return !((*this) == v2);
 	}
 
 	template<typename T1, typename ... Tn>
