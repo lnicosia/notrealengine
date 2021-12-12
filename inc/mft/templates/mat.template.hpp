@@ -64,7 +64,7 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v )
+	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v ) const
 	{
 		vec<T1,Tn...> ret(	vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
@@ -80,7 +80,7 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 )
+	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 ) const
 	{
 		mat<T1,Tn...> ret(	vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
@@ -97,13 +97,13 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 )
+	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 ) const
 	{
 		return Rows::operator==(*this, m2);
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 )
+	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 ) const
 	{
 		return !(*this == m2);
 	}
