@@ -32,3 +32,19 @@ if not exist lib\assimp\build-windows\lib\Debug\assimp-vc142-mtd.lib (
 		
 	)
 )
+
+if not exist lib\freetype\build-windows\Debug\freetyped.lib (
+	if not exist lib\freetype\build-windows\include\freetype\freetype.h (
+
+		if not exist lib\freetype\include\freetype\freetype.h (
+			git config --global http.sslverify false
+			git submodule update --init lib\freetype
+		)
+		if not exist lib\freetype\build-windows (
+			md lib\freetype\build-windows
+		)
+		cmake -S lib\freetype\ -B lib\freetype\build-windows
+		cmake --build lib\freetype\build-windows
+		
+	)
+)
