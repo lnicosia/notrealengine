@@ -70,10 +70,10 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
-    <LibraryPath>..\lib\SDL\build-windows\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\lib\freetype\build-windows\Debug;..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,28 +108,71 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>opengl32.lib;SDL2d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetyped.lib;assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\src\glad\glad.c" />
+    <ClCompile Include="..\src\GLContext.class.cpp" />
+    <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
+    <ClCompile Include="..\src\GLException.class.cpp" />
+    <ClCompile Include="..\src\GLException.cpp" />
+    <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
+    <ClCompile Include="..\src\mft\math_utils.cpp" />
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
-    <ClCompile Include="..\src\test.cpp" />
+    <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
+    <ClCompile Include="..\src\Object\Mesh.class.cpp" />
+    <ClCompile Include="..\src\Object\MeshData.class.cpp" />
+    <ClCompile Include="..\src\object\GLObject.class.cpp" />
+    <ClCompile Include="..\src\Object\Texture.class.cpp" />
+    <ClCompile Include="..\src\Object\TextureLoader.class.cpp" />
+    <ClCompile Include="..\src\SDL.class.cpp" />
+    <ClCompile Include="..\src\SDLWindow.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
     <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
     <ClInclude Include="..\inc\mft\mat.hpp" />
-    <ClInclude Include="..\inc\mft\mat\mat3.hpp" />
-    <ClInclude Include="..\inc\mft\mat\mat4.hpp" />
+    <ClInclude Include="..\inc\mft\math_utils.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
+    <ClInclude Include="..\inc\mft\templates\mat.template.hpp" />
+    <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
-    <ClInclude Include="..\inc\mft\vec\vec3.hpp" />
-    <ClInclude Include="..\inc\mft\vec\vec4.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GL.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLException.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\GLShaderProgram.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\notrealengine.hpp" />
+    <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
+    <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
+    <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
+    <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
+    <ClInclude Include="..\inc\Object\Texture.class.hpp" />
+    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\shaders\text.fs" />
+    <None Include="..\resources\shaders\text.vs" />
+    <None Include="..\test\shaders\test.fs" />
+    <None Include="..\test\shaders\test.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
