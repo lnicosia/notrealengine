@@ -13,6 +13,14 @@ namespace notrealengine
 			GLCallThrow(glAttachShader, programID, vertex.shaderID);
 			GLCallThrow(glAttachShader, programID, fragment.shaderID);
 			GLCallThrow(glLinkProgram, programID);
+			int	success;
+			char	infoLog[512];
+			GLCallThrow(glGetProgramiv, programID, GL_LINK_STATUS, &success);
+			if (!success)
+			{
+				GLCallThrow(glGetProgramInfoLog, programID, 512, NULL, infoLog);
+				std::cerr << "Failed to link shader:" << infoLog << std::endl;
+			}
 		} catch (std::exception e) {
 			GLCallThrow(glDeleteProgram, programID);
 		}
@@ -22,6 +30,14 @@ namespace notrealengine
 	{
 		try {
 			GLCallThrow(glDeleteProgram, (programID));
+			int	success;
+			char	infoLog[512];
+			GLCallThrow(glGetProgramiv, programID, GL_DELETE_STATUS, &success);
+			if (!success)
+			{
+				GLCallThrow(glGetProgramInfoLog, programID, 512, NULL, infoLog);
+				std::cerr << "Failed to delete shader:" << infoLog << std::endl;
+			}
 		} catch (std::exception e) {
 			std::cerr << "Exception caught in destructor (!) :" << std::endl << e.what();
 		}
@@ -32,8 +48,17 @@ namespace notrealengine
 		shaderID(GLCallThrow(glCreateShader, Type))
 	{
 		try {
-			GLCallThrow(glShaderSource, shaderID, 1, (char *[1]){code.data()}, (GLint[1]){(GLint)std::size(code)});
+			const char* str = code.c_str();
+			GLCallThrow(glShaderSource, shaderID, 1, &str, NULL);
 			GLCallThrow(glCompileShader, shaderID);
+			int	success;
+			char	infoLog[512];
+			GLCallThrow(glGetShaderiv, shaderID, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				GLCallThrow(glGetShaderInfoLog, shaderID, 512, NULL, infoLog);
+				std::cerr << "Failed to compile shader:" << infoLog << std::endl;
+			}
 		} catch (std::exception e) {
 			GLCallThrow(glDeleteShader, shaderID);
 		}
@@ -44,6 +69,14 @@ namespace notrealengine
 	{
 		try {
 			GLCallThrow(glDeleteShader, shaderID);
+			int	success;
+			char	infoLog[512];
+			GLCallThrow(glGetShaderiv, shaderID, GL_DELETE_STATUS, &success);
+			if (!success)
+			{
+				GLCallThrow(glGetShaderInfoLog, shaderID, 512, NULL, infoLog);
+				std::cerr << "Failed to delete shader:" << infoLog << std::endl;
+			}
 		} catch (std::exception e) {
 			std::cerr << "Exception caught in destructor (!) :" << std::endl << e.what();
 		}

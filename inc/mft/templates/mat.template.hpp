@@ -85,7 +85,7 @@ namespace mft
 			for (int j = 0; j <= sizeof...(Tn); j++)
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += this[k][j] * m2[i][k];
+					ret[i][j] += (*this)[k][j] * m2[i][k];
 				}
 		return ret;
 	}
@@ -169,7 +169,7 @@ namespace mft
 		return mat<T1,T1,T1,T1>(
 				{ c + u.x * u.x * minc, u.x * u.y * minc - u.z * s, u.x * u.z * minc + u.y * s, 0 },
 				{ u.y * u.x * minc + u.z * s, c + u.y * u.y * minc, u.y * u.z * minc - u.x * s, 0 },
-				{ u.z * u.x * minc - u.y * s, u.z * u.y * minc - u.x * s, c + u.z * u.z * minc, 0 },
+				{ u.z * u.x * minc - u.y * s, u.z * u.y * minc + u.x * s, c + u.z * u.z * minc, 0 },
 				{ 0, 0, 0, 1 }
 				);
 	 }
@@ -185,7 +185,11 @@ namespace mft
 				{ up.x	  , up.y	, up.z	  , 0 },
 				{ target.x, target.y, target.z, 0 },
 				{ 0		  , 0		, 0		  , 1 }
-				) * mat<T1,T1,T1,T1>::translate(pos);
+				) * mat<T1, T1, T1, T1>(
+					{ 1, 0, 0, -pos.x },
+					{ 0, 1, 0, -pos.y },
+					{ 0, 0, 1, -pos.z },
+					{ 0, 0, 0, 1 });
 	 }
 
 	template<typename T1, typename ... Tn>
@@ -218,9 +222,20 @@ namespace mft
 		return mat<T1,T1,T1,T1>(
 				{ 1 / (aspect * tang), 0	   , 0	  , 0  },
 				{ 0					 , 1 / tang, 0	  , 0  },
-				{ 0					 , 0	   , -1	  , -1 },
-				{ 0					 , 0	   , -near, 1  }
+				{ 0					 , 0	   , far / (far - near)	  , 1 },
+				{ 0					 , 0	   , -(far * near) / (far - near), 0  }
 				);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far)
+	{
+		return mat<T1, T1, T1, T1>(
+			{ near / right, 0	   , 0	  , 0 },
+			{ 0					 , near / top, 0	  , 0 },
+			{ 0					 , 0	   , -(far + near) / (far - near)	  , 1 },
+			{ 0					 , 0	   , -(far * near) / (far - near), 0 }
+		);
 	}
 }
 
