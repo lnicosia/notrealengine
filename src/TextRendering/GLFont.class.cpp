@@ -6,7 +6,7 @@ namespace notrealengine
 {
 	GLFont::GLFont(std::string path)
 	{
-		std::cout << "Loading font " << path << std::endl;
+		std::cout << "Loading font '" << path << "'..." << std::endl;
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();

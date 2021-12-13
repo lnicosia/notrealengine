@@ -29,6 +29,7 @@ namespace notrealengine
 	{
 		
 		int	w, h, nChannels;
+		std::cout << "Loading texture '" << path << "'..." << std::endl;
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
 		if (!img)
 		{

@@ -55,7 +55,7 @@ namespace notrealengine
 		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
 		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
 		matrix *= mft::mat4::translate(transform.pos);
-		std::cout << "Object matrix = " << std::endl << matrix << std::endl;
+		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
 
 	void	GLObject::move(mft::vec3 move)
@@ -86,7 +86,7 @@ namespace notrealengine
 		{
 			aiString	str;
 			mat->GetTexture(type, i, &str);
-			std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
+			//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
 			std::string		path = directory + '/' + std::string(str.C_Str());
 			textures.push_back(TextureLoader::loadTexture(path, typeName));
 		}
@@ -182,7 +182,7 @@ namespace notrealengine
 
 	void	GLObject::loadObject(std::string path)
 	{
-		std::cout << "Loading '" << path << "'..." << std::endl;
+		std::cout << "Loading object '" << path << "'..." << std::endl;
 		name = path.substr(path.find_last_of('/'), name.size());
 
 		Assimp::Importer	importer;
@@ -197,7 +197,6 @@ namespace notrealengine
 		}
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
-		std::cout << path << " loaded successfully" << std::endl;
 	}
 
 	void	GLObject::draw(GLShaderProgram *shader) const

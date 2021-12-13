@@ -63,7 +63,7 @@ namespace notrealengine
 		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
 		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
 		matrix *= mft::mat4::translate(transform.pos);
-		std::cout << "Mesh matrix = " << std::endl << matrix << std::endl;
+		//std::cout << "Mesh matrix = " << std::endl << matrix << std::endl;
 	}
 
 	void	Mesh::move(mft::vec3 move)

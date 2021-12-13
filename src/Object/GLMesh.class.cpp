@@ -40,7 +40,6 @@ namespace notrealengine
 		polygonMode(GL_FILL),
 		nbIndices(0)
 	{
-		std::cout << "Mesh " << name << " has " << textures.size() << " textures" << std::endl;
 		setup(data);
 	}
 
