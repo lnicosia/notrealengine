@@ -116,6 +116,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
+    <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\GLContext.class.cpp" />
@@ -124,6 +126,9 @@
     <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
+    <ClCompile Include="..\src\mft\matrix_project.cpp" />
+    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
+    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
@@ -137,6 +142,8 @@
     <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
+    <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
     <ClInclude Include="..\inc\mft\mat.hpp" />
     <ClInclude Include="..\inc\mft\math_utils.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
