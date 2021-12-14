@@ -14,11 +14,6 @@ namespace notrealengine
 
 	}
 
-	void	Mesh::addTexture(std::shared_ptr < Texture >& text)
-	{
-		(*glMesh).addTexture(text);
-	}
-
 	//	Accessors
 
 	std::shared_ptr<GLMesh> const& Mesh::getGLMesh() const
@@ -26,7 +21,7 @@ namespace notrealengine
 		return glMesh;
 	}
 
-	std::vector<Mesh> const& Mesh::getChildren() const
+	std::vector<std::shared_ptr<Mesh>> const& Mesh::getChildren() const
 	{
 		return children;
 	}
@@ -92,8 +87,18 @@ namespace notrealengine
 		(*glMesh).draw(shader, tmp);
 		for (auto child: children)
 		{
-			child.draw(shader, tmp);
+			(*child).draw(shader, tmp);
 		}
+	}
+
+	void	Mesh::addTexture(std::shared_ptr < Texture >& text)
+	{
+		(*glMesh).addTexture(text);
+	}
+
+	void	Mesh::addMesh(std::shared_ptr<Mesh> mesh)
+	{
+		children.push_back(mesh);
 	}
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh)

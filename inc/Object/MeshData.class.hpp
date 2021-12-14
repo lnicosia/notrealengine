@@ -11,6 +11,25 @@ namespace notrealengine
 		mft::vec3	pos;
 		mft::vec3	norm;
 		mft::vec2	uv;
+
+		Vertex(): pos(), norm(), uv()
+		{
+		}
+
+		Vertex(mft::vec3 pos, mft::vec3 norm, mft::vec2 uv)
+			: pos(pos), norm(norm), uv(uv)
+		{
+		}
+
+		Vertex(float posX, float posY, float posZ,
+			float normX, float normY, float normZ,
+			float u, float v)
+			: pos(mft::vec3(posX, posY, posZ)),
+				norm(mft::vec3(normX, normY, normZ)),
+				uv(mft::vec2(u, v))
+		{
+
+		}
 	};
 
 	struct Transform
