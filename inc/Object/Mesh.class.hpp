@@ -51,6 +51,7 @@ namespace notrealengine
 
 		Transform	transform;
 		mft::mat4	matrix;
+
 	};
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);

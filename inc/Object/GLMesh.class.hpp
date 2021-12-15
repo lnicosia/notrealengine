@@ -57,6 +57,8 @@ namespace notrealengine
 
 		size_t			nbIndices;
 
+		mft::vec3	color;
+
 		//		Initalize buffers and vertex array for the mesh
 		//		Should not be called outside of the class scope
 		void	setup(MeshData const& data);

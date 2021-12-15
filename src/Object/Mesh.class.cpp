@@ -82,7 +82,8 @@ namespace notrealengine
 
 	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat)
 	{
-		mft::mat4	tmp = parentMat * matrix;
+		mft::mat4	tmp = matrix * parentMat;
+		//std::cout << name << " matrix:" << std::endl;
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
 		(*glMesh).draw(shader, tmp);
 		for (auto child: children)

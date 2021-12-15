@@ -78,6 +78,15 @@
     <ClCompile Include="..\src\Inputs\Binding.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\mft\matrix_project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mft\matrix_transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mft\vertex_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -155,18 +164,24 @@
     <ClInclude Include="..\inc\Object\Texture.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\test\shaders\test.fs">
+    <None Include="..\shaders\test.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\test\shaders\test.vs">
+    <None Include="..\shaders\test.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\resources\shaders\text.vs">
+    <None Include="..\shaders\text.fs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\resources\shaders\text.fs">
+    <None Include="..\shaders\text.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\colorShader.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
