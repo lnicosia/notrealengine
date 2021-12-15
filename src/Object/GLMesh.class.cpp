@@ -21,8 +21,7 @@ namespace notrealengine
 		VBO(std::exchange(GLMesh.VBO, 0)),
 		EBO(std::exchange(GLMesh.EBO, 0)),
 		nbIndices(std::exchange(GLMesh.nbIndices, 0)),
-		polygonMode(std::exchange(GLMesh.polygonMode, 0)),
-		color(std::move(GLMesh.color))
+		polygonMode(std::exchange(GLMesh.polygonMode, 0))
 	{
 
 	}
@@ -39,8 +38,7 @@ namespace notrealengine
 		textures(textures),
 		VAO(0), VBO(0), EBO(0),
 		polygonMode(GL_FILL),
-		nbIndices(0),
-		color(mft::vec3(0x3D / 255.0f, 0x48 / 255.0f, 0x49 / 255.0f))
+		nbIndices(0)
 	{
 		setup(data);
 	}
@@ -113,7 +111,6 @@ namespace notrealengine
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
-		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, shader->programID, "baseColor"), color.x, color.y, color.z);
 		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<float*>(transform));
 		for (size_t i = 0; i < textures.size(); i++)
 		{

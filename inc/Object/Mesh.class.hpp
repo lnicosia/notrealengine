@@ -25,10 +25,13 @@ namespace notrealengine
 			getTransform() const;
 		std::string const&
 			getName() const;
+		mft::vec3 const&
+			getColor() const;
 
 		//	Setters
 
 		void	setName(std::string name);
+		void	setColor(mft::vec3 color);
 
 		//	Tranform
 
@@ -51,6 +54,8 @@ namespace notrealengine
 
 		Transform	transform;
 		mft::mat4	matrix;
+
+		mft::vec3	color;
 
 	};
 
