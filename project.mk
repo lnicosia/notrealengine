@@ -21,8 +21,9 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/GLCharacter.class.cpp \
 		$S/TextRendering/GLFont.class.cpp \
 		$S/TextRendering/Freetype.class.cpp \
-    $S/Inputs/Binding.class.cpp \
+    	$S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
+		$S/Camera.class.cpp
 
 CC = clang++ --std=c++20 -g3
 CPPFLAGS =
