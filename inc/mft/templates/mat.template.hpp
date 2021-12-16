@@ -63,6 +63,12 @@ namespace mft
 		return static_cast<T1 *>(&(*this)[0][0]);
 	}
 
+	template<typename T1, typename ... Tn>
+	mat<T1,Tn...>::operator const T1*() const
+	{
+		return static_cast<const T1 *>(&(*this)[0][0]);
+	}
+
 	template <typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v ) const
 	{
