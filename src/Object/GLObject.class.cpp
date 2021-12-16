@@ -23,10 +23,22 @@ namespace notrealengine
 		*this = GLObject;
 	}
 
-	GLObject::GLObject(std::string path) : transform{ mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) }, matrix()
+	GLObject::GLObject(std::string path)
+		: name("Unkown object"),
+		transform{mft::vec3(0, 0, 0),
+		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
+		directory(""), matrix()
 	{
 		loadObject(path);
+	}
+
+	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
+		: name("Unkown object"),
+		transform{ mft::vec3(0, 0, 0),
+		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
+		directory(""), matrix(), meshes(meshes)
+	{
+
 	}
 
 	GLObject& GLObject::operator=(GLObject const& GLObject)

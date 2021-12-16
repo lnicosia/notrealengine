@@ -4,7 +4,8 @@ namespace notrealengine
 {
 	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
 		: transform{ mft::vec3(0, 0, 0), mft::vec3(0, 0, 0), mft::vec3(1, 1, 1)},
-		matrix(), glMesh(glMesh)
+		matrix(), glMesh(glMesh),
+		color(mft::vec3(0.239f, 0.282f, 0.286f))
 	{
 
 	}
@@ -14,11 +15,6 @@ namespace notrealengine
 
 	}
 
-	void	Mesh::addTexture(std::shared_ptr < Texture >& text)
-	{
-		(*glMesh).addTexture(text);
-	}
-
 	//	Accessors
 
 	std::shared_ptr<GLMesh> const& Mesh::getGLMesh() const
@@ -26,7 +22,7 @@ namespace notrealengine
 		return glMesh;
 	}
 
-	std::vector<Mesh> const& Mesh::getChildren() const
+	std::vector<std::shared_ptr<Mesh>> const& Mesh::getChildren() const
 	{
 		return children;
 	}
@@ -46,11 +42,21 @@ namespace notrealengine
 		return name;
 	}
 
+	mft::vec3 const& Mesh::getColor() const
+	{
+		return color;
+	}
+
 	//	Setters
 
 	void	Mesh::setName(std::string name)
 	{
 		this->name = name;
+	}
+
+	void	Mesh::setColor(mft::vec3 color)
+	{
+		this->color = color;
 	}
 
 	// Transforms
@@ -69,6 +75,7 @@ namespace notrealengine
 	void	Mesh::move(mft::vec3 move)
 	{
 		transform.pos = transform.pos + move;
+		//std::cout << name << " pos = " << std::endl << transform.pos << std::endl;
 		update();
 	}
 
@@ -76,24 +83,38 @@ namespace notrealengine
 	void	Mesh::rotate(mft::vec3 rotation)
 	{
 		transform.rotation = transform.rotation + rotation;
+		//std::cout << name << " rotation = " << std::endl << transform.rotation << std::endl;
 		update();
 	}
 
 	void	Mesh::scale(mft::vec3 scale)
 	{
 		transform.scale = transform.scale + scale;
+		//std::cout << name << " scale = " << std::endl << transform.scale << std::endl;
 		update();
 	}
 
 	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat)
 	{
-		mft::mat4	tmp = parentMat * matrix;
+		mft::mat4	tmp = matrix * parentMat;
+		//std::cout << name << " matrix:" << std::endl;
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
+		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, shader->programID, "baseColor"), color.x, color.y, color.z);
 		(*glMesh).draw(shader, tmp);
 		for (auto child: children)
 		{
-			child.draw(shader, tmp);
+			(*child).draw(shader, tmp);
 		}
+	}
+
+	void	Mesh::addTexture(std::shared_ptr < Texture >& text)
+	{
+		(*glMesh).addTexture(text);
+	}
+
+	void	Mesh::addMesh(std::shared_ptr<Mesh> mesh)
+	{
+		children.push_back(mesh);
 	}
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh)

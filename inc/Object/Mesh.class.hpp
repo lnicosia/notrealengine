@@ -17,7 +17,7 @@ namespace notrealengine
 
 		std::shared_ptr<GLMesh> const&
 			getGLMesh() const;
-		std::vector<Mesh> const&
+		std::vector<std::shared_ptr<Mesh>> const&
 			getChildren() const;
 		mft::mat4 const&
 			getMatrix() const;
@@ -25,10 +25,13 @@ namespace notrealengine
 			getTransform() const;
 		std::string const&
 			getName() const;
+		mft::vec3 const&
+			getColor() const;
 
 		//	Setters
 
 		void	setName(std::string name);
+		void	setColor(mft::vec3 color);
 
 		//	Tranform
 
@@ -40,15 +43,20 @@ namespace notrealengine
 		void	addTexture(std::shared_ptr < Texture >& text);
 		void	draw(GLShaderProgram *shader, mft::mat4 parentMat);
 
+		void	addMesh(std::shared_ptr<Mesh> mesh);
+
 	private:
 		std::string				name;
 
 		std::shared_ptr<GLMesh>	glMesh;
-		std::vector<Mesh>		children;
-		Mesh					*parent;
+		std::vector<std::shared_ptr<Mesh>>	children;
+		std::shared_ptr<Mesh>	*parent;
 
 		Transform	transform;
 		mft::mat4	matrix;
+
+		mft::vec3	color;
+
 	};
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);

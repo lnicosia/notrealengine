@@ -23,6 +23,7 @@ namespace notrealengine
 			GLObject() = delete;
 			GLObject(GLObject const & GLObject);
 			GLObject(std::string path);
+			GLObject(std::vector<std::shared_ptr<Mesh>>& meshes);
 			~GLObject();
 			GLObject& operator=(GLObject const& GLObject);
 

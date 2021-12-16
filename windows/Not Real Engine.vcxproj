@@ -167,12 +167,14 @@
     <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\resources\shaders\text.fs" />
-    <None Include="..\resources\shaders\text.vs" />
-    <None Include="..\test\shaders\test.fs" />
-    <None Include="..\test\shaders\test.vs" />
+    <None Include="..\shaders\colorShader.fs" />
+    <None Include="..\shaders\test.fs" />
+    <None Include="..\shaders\test.vs" />
+    <None Include="..\shaders\text.fs" />
+    <None Include="..\shaders\text.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
