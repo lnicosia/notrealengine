@@ -37,7 +37,7 @@ namespace	mft
 
 		// Conversion to data pointer
 		explicit operator T1*();
-		explicit const operator T1*() const;
+		explicit operator const T1*() const;
 
 		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v ) const;
 		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 ) const;
