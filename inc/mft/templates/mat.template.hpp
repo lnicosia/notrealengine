@@ -181,21 +181,18 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::look_at( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::lookAt( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
 	{ 
 		using vec3 = vec<T1,T1,T1>;
-		vec3 right = vec3::normalized(vec3::cross(vec3::normalized(up), target));
+		vec3 const Forward = vec3::normalized(target - pos);
+		vec3 const Right = vec3::normalized(vec3::cross(Forward, up));
+		vec3 const Up = vec3::cross(Right, Forward);
 
-		return mat<T1,T1,T1,T1>(
-				{ right.x , right.y , right.z , 0 },
-				{ up.x	  , up.y	, up.z	  , 0 },
-				{ target.x, target.y, target.z, 0 },
-				{ 0		  , 0		, 0		  , 1 }
-				) * mat<T1, T1, T1, T1>(
-					{ 1, 0, 0, -pos.x },
-					{ 0, 1, 0, -pos.y },
-					{ 0, 0, 1, -pos.z },
-					{ 0, 0, 0, 1 });
+		return mat<T1, T1, T1, T1>(
+			{ Right.x,	Up.x,	Forward.x,	-vec3::dot(Right, pos) },
+			{ Right.y,	Up.y,	Forward.y,	-vec3::dot(Up, pos) },
+			{ Right.z,	Up.z,	Forward.z,	vec3::dot(Forward, pos) },
+			{ 0,		0,		0,			1 });
 	 }
 
 	template<typename T1, typename ... Tn>
@@ -215,7 +212,7 @@ namespace mft
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0					  , -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0					  , -(top + bottom) / (top - bottom) },
-				{ 0					, 0					, -2.0f / (far - near), -(far + near) / (far - near)	 },
+				{ 0					, 0					, 1 / (far - near)	  ,	-near / (far - near)			 },
 				{ 0					, 0					, 0					  , 1								 }
 				);
 	 }
@@ -225,22 +222,23 @@ namespace mft
 	{ 
 		const T1 tang = std::tan(fovy * 0.5f);
 
-		return mat<T1,T1,T1,T1>(
-				{ 1 / (aspect * tang), 0	   , 0	  , 0  },
-				{ 0					 , 1 / tang, 0	  , 0  },
-				{ 0					 , 0	   , far / (far - near)	  , 1 },
-				{ 0					 , 0	   , -(far * near) / (far - near), 0  }
-				);
+		return mat<T1, T1, T1, T1>(
+			{ 1 / (aspect * tang), 0	   , 0	  , 0 },
+			{ 0					 , 1 / tang, 0	  , 0 },
+			{ 0					 , 0	   , far / (far - near)	  , -(far * near) / (far - near) },
+			{ 0					 , 0	   , 1, 0 }
+		);
 	}
 
+	// Does not work??
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far)
 	{
 		return mat<T1, T1, T1, T1>(
-			{ near / right, 0	   , 0	  , 0 },
-			{ 0					 , near / top, 0	  , 0 },
-			{ 0					 , 0	   , -(far + near) / (far - near)	  , 1 },
-			{ 0					 , 0	   , -(far * near) / (far - near), 0 }
+			{ (2 * near) / (right - left),	0,	(right + left) / (right - left), 0 },
+			{ 0,			(2 * near) / (top - bottom), (top + bottom) / (top - bottom), 0 },
+			{ 0,			0,			far / (far - near),	-(far * near) / (far - near) },
+			{ 0,			0,			1,								0 }
 		);
 	}
 }
