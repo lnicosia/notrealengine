@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -116,6 +116,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Camera.class.cpp" />
     <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
     <ClCompile Include="..\main.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\inc\mft\templates\mat.template.hpp" />
     <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
+    <ClInclude Include="..\inc\notrealengine\Camera.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GL.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
