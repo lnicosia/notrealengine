@@ -17,24 +17,24 @@ namespace notrealengine
 		mft::vec3	front;
 		mft::vec3	up;
 
-		void	update();
-
-	private:
-		float	vfov;
-		float	hfov;
-		float	ratio;
-		float	left;
-		float	right;
-		float	bottom;
-		float	top;
-		float	nearZ;
-		float	farZ;
-
 		float	yaw;
 		float	pitch;
 		//	We don't need roll for a first person camera
 
 		float	speed;
+
+		void	update();
+
+		//	Movements
+
+		void	forward(uint32_t time);
+		void	backward(uint32_t time);
+		void	left(uint32_t time);
+		void	right(uint32_t time);
+
+	private:
+
+		mft::mat4	view;
 
 	};
 }
