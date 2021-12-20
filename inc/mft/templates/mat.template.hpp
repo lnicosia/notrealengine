@@ -189,16 +189,16 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::lookAt( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
 	{ 
-		using vec3 = vec<T1,T1,T1>;
+		using vec3 = vec<T1, T1, T1>;
 		vec3 const Forward = vec3::normalized(target - pos);
 		vec3 const Right = vec3::normalized(vec3::cross(Forward, up));
 		vec3 const Up = vec3::cross(Right, Forward);
 
 		return mat<T1, T1, T1, T1>(
-			{ Right.x,	Up.x,	Forward.x,	-vec3::dot(Right, pos) },
-			{ Right.y,	Up.y,	Forward.y,	-vec3::dot(Up, pos) },
-			{ Right.z,	Up.z,	Forward.z,	vec3::dot(Forward, pos) },
-			{ 0,		0,		0,			1 });
+			{ Right.x,		Right.y,	Right.z,	-vec3::dot(Right, pos)},
+			{ Up.x,			Up.y,		Up.z,		-vec3::dot(Up, pos)},
+			{ -Forward.x,	-Forward.y,	-Forward.z,	vec3::dot(Forward, pos)},
+			{ 0,			0,			0,			1});
 	 }
 
 	template<typename T1, typename ... Tn>
