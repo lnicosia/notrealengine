@@ -75,7 +75,7 @@ namespace notrealengine
 			std::shared_ptr<Mesh>
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>
-				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene *scene);
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);

@@ -11,6 +11,8 @@
 #include <GL/gl.h>
 #endif
 
+#include <fstream>
+
 namespace notrealengine
 {
 
@@ -90,7 +92,7 @@ namespace notrealengine
 	}
 
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
-		aiTextureType type, std::string typeName)
+		aiTextureType type, std::string typeName, const aiScene *scene)
 	{
 		std::vector<std::shared_ptr<Texture>>	textures;
 
@@ -98,9 +100,15 @@ namespace notrealengine
 		{
 			aiString	str;
 			mat->GetTexture(type, i, &str);
-			//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
-			std::string		path = directory + '/' + std::string(str.C_Str());
-			textures.push_back(TextureLoader::loadTexture(path, typeName));
+			std::string	path = directory + '/' + std::string(str.C_Str());
+			std::string	finalPath = path;
+			if (path.find(".fbm") != std::string::npos)
+			{
+				finalPath = std::string(path, path.find(".fbm") + 5);
+				finalPath = directory + '/' + finalPath;
+			}
+			//std::cout << "Loading " << typeName << " " << finalPath << " from material" << std::endl;
+			textures.push_back(TextureLoader::loadTexture(finalPath, typeName));
 		}
 		return textures;
 	}
@@ -161,13 +169,13 @@ namespace notrealengine
 		{
 			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
-				aiTextureType_DIFFUSE, "texture_diffuse");
+				aiTextureType_DIFFUSE, "texture_diffuse", scene);
 			textures.insert(
 				textures.end(),
 				std::make_move_iterator(diffuseMaps.begin()),
 				std::make_move_iterator(diffuseMaps.end()));
 			std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
-				aiTextureType_SPECULAR, "texture_specular");
+				aiTextureType_SPECULAR, "texture_specular", scene);
 			textures.insert(
 				textures.end(),
 				std::make_move_iterator(specularMaps.begin()),

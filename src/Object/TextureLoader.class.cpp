@@ -24,7 +24,8 @@ namespace notrealengine
 		//	contain an equivalent path
 		for (const auto& pair : textures)
 		{
-			if (std::filesystem::equivalent(std::filesystem::path(pair.first),
+			if (std::filesystem::exists(std::filesystem::path(path))
+				&& std::filesystem::equivalent(std::filesystem::path(pair.first),
 				std::filesystem::path(path)))
 			{
 				//std::cout << "Texture '" << path << "' already exists, returning it" << std::endl;
