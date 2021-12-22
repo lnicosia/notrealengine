@@ -57,6 +57,38 @@ namespace notrealengine
 		stbi_image_free(img);
 	}
 
+	Texture::Texture(std::string const& path, unsigned char *data, unsigned int width, std::string const& type) : type(type), glId(0)
+	{
+
+		int	w, h, nChannels;
+		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
+		if (!img)
+		{
+			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			std::cerr << stbi_failure_reason() << std::endl;
+			stbi_image_free(img);
+			return;
+		}
+		GLenum	format;
+		if (nChannels == 1)
+			format = GL_RED;
+		else if (nChannels == 3)
+			format = GL_RGB;
+		else if (nChannels == 4)
+			format = GL_RGBA;
+
+		GLCallThrow(glGenTextures, 1, &glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		stbi_image_free(img);
+	}
+
 	Texture::Texture(Texture && ref) noexcept
 		: glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
 	{

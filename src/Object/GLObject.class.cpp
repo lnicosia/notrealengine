@@ -101,14 +101,23 @@ namespace notrealengine
 			aiString	str;
 			mat->GetTexture(type, i, &str);
 			std::string	path = directory + '/' + std::string(str.C_Str());
-			std::string	finalPath = path;
-			if (path.find(".fbm") != std::string::npos)
+			const aiTexture* texture;
+			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
 			{
-				finalPath = std::string(path, path.find(".fbm") + 5);
-				finalPath = directory + '/' + finalPath;
+				if (texture->mHeight == 0)
+					textures.push_back(TextureLoader::loadTexture(path,
+						reinterpret_cast<unsigned char*>(texture->pcData),
+						texture->mWidth, typeName));
+				else
+					textures.push_back(TextureLoader::loadTexture(path,
+						reinterpret_cast<unsigned char *>(texture->pcData),
+						texture->mWidth * texture->mHeight, typeName));
 			}
-			//std::cout << "Loading " << typeName << " " << finalPath << " from material" << std::endl;
-			textures.push_back(TextureLoader::loadTexture(finalPath, typeName));
+			else
+			{
+				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
+				textures.push_back(TextureLoader::loadTexture(path, typeName));
+			}
 		}
 		return textures;
 	}

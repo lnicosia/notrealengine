@@ -15,6 +15,8 @@ namespace notrealengine
 		//~TextureLoader();
 
 		static std::shared_ptr<Texture>	loadTexture(std::string path, std::string type);
+		static std::shared_ptr<Texture>	loadTexture(std::string path, unsigned char* data, unsigned int size, std::string type);
+
 
 
 	private:

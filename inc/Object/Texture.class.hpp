@@ -13,6 +13,7 @@ namespace notrealengine
 		Texture(Texture const& ref) = delete;
 		Texture(Texture && ref) noexcept;
 		Texture(std::string const& path, std::string const& type);
+		Texture(std::string const& path, unsigned char *data, unsigned int size, std::string const& type);
 		~Texture();
 		Texture& operator=(Texture const& text) = delete;
 		Texture& operator=(Texture && text) noexcept;
