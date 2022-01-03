@@ -91,6 +91,15 @@ namespace notrealengine
 		update();
 	}
 
+	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat)
+	{
+		return mft::mat4(
+			{ mat.a1, mat.a2, mat.a3, mat.a4 },
+			{ mat.b1, mat.b2, mat.b3, mat.b4 },
+			{ mat.c1, mat.c2, mat.c3, mat.c4 },
+			{ mat.d1, mat.d2, mat.d3, mat.d4 });
+	}
+
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
 		aiTextureType type, std::string typeName, const aiScene *scene)
 	{
@@ -120,6 +129,52 @@ namespace notrealengine
 			}
 		}
 		return textures;
+	}
+
+	void	GLObject::SetVertexBoneData(Vertex& vertex, int id, float weight)
+	{
+		for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+		{
+			if (vertex.boneIDs[i] == -1)
+			{
+				vertex.boneIDs[i] = id;
+				vertex.weights[i] = weight;
+				break;
+			}
+		}
+	}
+
+	void	GLObject::ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh,
+		const aiScene* scene)
+	{
+		std::cout << "Mesh " << mesh->mName.C_Str() << " has " << mesh->mNumBones << " bones" << std::endl;
+		for (int i = 0; i < mesh->mNumBones; i++)
+		{
+			BoneInfo	bone;
+			bone.id = -1;
+			std::string	boneName = mesh->mBones[i]->mName.C_Str();
+			std::cout << "Bone " << boneName << std::endl;
+			if (bones.find(boneName) == bones.end())
+			{
+				bone.id = i;
+				std::cout << "Id = " << i << std::endl;
+				bone.offset = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
+				bones[boneName] = bone;
+				nbBones++;
+			}
+			else
+			{
+				bone.id = bones[boneName].id;
+			}
+			aiVertexWeight *weights = mesh->mBones[i]->mWeights;
+			int	nbWeights = mesh->mBones[i]->mNumWeights;
+			for (int j = 0; j < nbWeights; j++)
+			{
+				if (weights[j].mVertexId >= vertices.size())
+					continue;
+				SetVertexBoneData(vertices[weights[j].mVertexId], bone.id, weights[j].mWeight);
+			}
+		}
 	}
 
 	std::shared_ptr<Mesh>	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
@@ -162,6 +217,7 @@ namespace notrealengine
 			}
 			vertices.push_back(vertex);
 		}
+		ExtractBoneInfo(vertices, mesh, scene);
 
 		//	Indices
 
@@ -228,13 +284,23 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 	}
 
+	//	Drawing functions
+
 	void	GLObject::draw(GLShaderProgram *shader) const
 	{
 		GLCallThrow(glUseProgram, shader->programID);
-		//GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, &matrix[0][0]);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			(*meshes[i]).draw(shader, matrix);
+		}
+	}
+
+	void	GLObject::drawBones(GLShaderProgram* shader) const
+	{
+		GLCallThrow(glUseProgram, shader->programID);
+		std::map<std::string, BoneInfo>::const_iterator it;
+		for (it = bones.begin(); it != bones.end(); it++)
+		{
 		}
 	}
 

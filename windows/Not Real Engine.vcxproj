@@ -172,6 +172,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\shaders\anim.vs" />
     <None Include="..\shaders\colorShader.fs" />
     <None Include="..\shaders\test.fs" />
     <None Include="..\shaders\test.vs" />

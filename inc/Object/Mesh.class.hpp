@@ -41,7 +41,7 @@ namespace notrealengine
 		void	scale(mft::vec3 scale);
 
 		void	addTexture(std::shared_ptr < Texture >& text);
-		void	draw(GLShaderProgram *shader, mft::mat4 parentMat);
+		void	draw(GLShaderProgram* shader, mft::mat4 parentMat) const;
 
 		void	addMesh(std::shared_ptr<Mesh> mesh);
 
