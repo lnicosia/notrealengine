@@ -94,7 +94,7 @@ namespace notrealengine
 		update();
 	}
 
-	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat)
+	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat) const
 	{
 		mft::mat4	tmp = matrix * parentMat;
 		//std::cout << name << " matrix:" << std::endl;

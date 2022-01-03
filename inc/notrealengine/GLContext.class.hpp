@@ -9,6 +9,7 @@
 # include <map>
 
 # include "GL.hpp"
+# include "Object/GLMesh.class.hpp"
 
 namespace notrealengine
 {
@@ -32,6 +33,9 @@ namespace notrealengine
 
 		static std::filesystem::path
 			DefaultShaderPath;
+
+		std::shared_ptr<GLMesh>
+			cube;
 
 	protected:
 		static long

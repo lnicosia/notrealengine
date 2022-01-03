@@ -153,15 +153,35 @@ namespace notrealengine
 
 		nbIndices = data.getIndices().size();
 
+		//	Pos
 		GLCallThrow(glVertexAttribPointer,
-			0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+			0, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vertex), (void*)0);
 		GLCallThrow(glEnableVertexAttribArray, 0);
+
+		//	Norm
 		GLCallThrow(glVertexAttribPointer,
-			1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+			1, 3, GL_FLOAT, GL_FALSE,
+			sizeof(Vertex), (void*)offsetof(Vertex, norm));
 		GLCallThrow(glEnableVertexAttribArray, 1);
+		
+		//	UV
 		GLCallThrow(glVertexAttribPointer,
-			2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+			2, 2, GL_FLOAT, GL_FALSE,
+			sizeof(Vertex), (void*)offsetof(Vertex, uv));
 		GLCallThrow(glEnableVertexAttribArray, 2);
+
+		//	Bone ID
+		GLCallThrow(glVertexAttribPointer,
+			3, MAX_BONE_INFLUENCE, GL_INT, GL_FALSE,
+			sizeof(Vertex), (void*)offsetof(Vertex, boneIDs));
+		GLCallThrow(glEnableVertexAttribArray, 3);
+
+		//	Bone weight
+		GLCallThrow(glVertexAttribPointer,
+			4, MAX_BONE_INFLUENCE, GL_FLOAT, GL_FALSE,
+			sizeof(Vertex), (void*)offsetof(Vertex, weights));
+		GLCallThrow(glEnableVertexAttribArray, 4);
 
 		GLCallThrow(glBindVertexArray, 0);
 	}

@@ -4,6 +4,8 @@
 #include "mft/mft.hpp"
 #include <vector>
 
+#define MAX_BONE_INFLUENCE 4
+
 namespace notrealengine
 {
 	struct Vertex
@@ -12,12 +14,15 @@ namespace notrealengine
 		mft::vec3	norm;
 		mft::vec2	uv;
 
-		Vertex(): pos(), norm(), uv()
+		int			boneIDs[MAX_BONE_INFLUENCE];
+		float		weights[MAX_BONE_INFLUENCE];
+
+		Vertex(): pos(), norm(), uv(), boneIDs{-1}, weights{0.0f}
 		{
 		}
 
 		Vertex(mft::vec3 pos, mft::vec3 norm, mft::vec2 uv)
-			: pos(pos), norm(norm), uv(uv)
+			: pos(pos), norm(norm), uv(uv), boneIDs{-1}, weights{0.0f}
 		{
 		}
 
@@ -26,7 +31,7 @@ namespace notrealengine
 			float u, float v)
 			: pos(mft::vec3(posX, posY, posZ)),
 				norm(mft::vec3(normX, normY, normZ)),
-				uv(mft::vec2(u, v))
+				uv(mft::vec2(u, v)), boneIDs{-1}, weights{0.0f}
 		{
 
 		}

@@ -12,9 +12,16 @@
 #include "assimp/postprocess.h"
 
 #include <memory>
+#include <map>
 
 namespace notrealengine
 {
+	struct BoneInfo
+	{
+		int	id;
+		mft::mat4	offset;
+	};
+
 	class GLObject
 	{
 
@@ -27,7 +34,14 @@ namespace notrealengine
 			~GLObject();
 			GLObject& operator=(GLObject const& GLObject);
 
-			void	draw(GLShaderProgram *shader) const;
+			//	Draw functions
+
+			void
+				draw(GLShaderProgram *shader) const;
+
+			//	Render all the object's bones	
+			void
+				drawBones(GLShaderProgram* shader, std::shared_ptr<GLMesh> mesh) const;
 
 			//	Accessors
 
@@ -62,12 +76,21 @@ namespace notrealengine
 
 			std::string	directory;
 
+			std::map<std::string, BoneInfo>	bones;
+			int	nbBones;
+
 			//	Transforms
 
 			Transform	transform;
 			mft::mat4	matrix;
 
 			//	Object loading
+			void
+				SetVertexBoneData(Vertex& vertex, int id, float weight);
+			mft::mat4
+				AssimpToMftMatrix(aiMatrix4x4 mat);
+			void
+				ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 			void
 				loadObject(std::string path);
 			void

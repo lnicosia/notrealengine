@@ -87,6 +87,9 @@
     <ClCompile Include="..\src\mft\vertex_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Camera.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -167,6 +170,9 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\inc\notrealengine\Camera.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\test.fs">
@@ -182,6 +188,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\colorShader.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\anim.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

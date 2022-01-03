@@ -10,7 +10,58 @@ namespace notrealengine
 {
 	GLContext::GLContext()
 	{
+		std::vector<Vertex>	vertices;
 
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+
+		vertices.push_back(Vertex(-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+
+		vertices.push_back(Vertex(-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+
+		vertices.push_back(Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		std::vector<unsigned int> indices;
+		for (unsigned int i = 0; i < vertices.size(); i++)
+		{
+			indices.push_back(i);
+		}
+
+		MeshData	data(vertices, indices);
+		std::vector<std::shared_ptr<Texture>> textures;
+		cube = std::shared_ptr<GLMesh>(new GLMesh(data, textures));
 	}
 
 	GLContext::~GLContext()
@@ -76,4 +127,5 @@ namespace notrealengine
 
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
 	long GLContext::CurrentContext = 0;
+
 }
