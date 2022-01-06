@@ -70,10 +70,10 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
     <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
-    <LibraryPath>..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\lib\freetype\build-windows\Debug;..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,7 +108,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetyped.lib;assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -116,6 +116,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
+    <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\GLContext.class.cpp" />
@@ -124,6 +126,9 @@
     <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
+    <ClCompile Include="..\src\mft\matrix_project.cpp" />
+    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
+    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
@@ -132,8 +137,13 @@
     <ClCompile Include="..\src\Object\TextureLoader.class.cpp" />
     <ClCompile Include="..\src\SDL.class.cpp" />
     <ClCompile Include="..\src\SDLWindow.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
+    <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
+    <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
     <ClInclude Include="..\inc\mft\mat.hpp" />
     <ClInclude Include="..\inc\mft\math_utils.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
@@ -154,8 +164,13 @@
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
     <ClInclude Include="..\inc\Object\Texture.class.hpp" />
     <ClInclude Include="..\inc\Object\TextureLoader.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
+    <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\resources\shaders\text.fs" />
+    <None Include="..\resources\shaders\text.vs" />
     <None Include="..\test\shaders\test.fs" />
     <None Include="..\test\shaders\test.vs" />
   </ItemGroup>
