@@ -41,6 +41,7 @@ namespace	mft
 
 		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v ) const;
 		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 ) const;
+		constexpr mat<T1, Tn...> operator*(const T1 & scalar) const;
 
 		constexpr bool operator==( const mat<T1,Tn...> & m2 ) const;
 		constexpr bool operator!=( const mat<T1,Tn...> & m2 ) const;
@@ -51,6 +52,8 @@ namespace	mft
 		mat<T1,Tn...> & operator*=( const mat<T1,Tn...> & m2 );
 
 		// 3D operations on mat4
+		static constexpr mat<T1,T1,T1,T1> inverse(const mat<T1,T1,T1,T1>& m);
+		static constexpr mat<T1, T1, T1, T1> transpose(const mat<T1, T1, T1, T1>& m);
 		static constexpr mat<T1,T1,T1,T1> translate( const vec<T1,T1,T1> & v );
 		static constexpr mat<T1,T1,T1,T1> scale( const vec<T1,T1,T1> & v );
 		static constexpr mat<T1,T1,T1,T1> rotate( const T1 angle, const vec<T1,T1,T1> & axis );
