@@ -72,10 +72,11 @@ namespace mft
 	template <typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v ) const
 	{
-		vec<T1,Tn...> ret(	vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0));
+		vec<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = 0;
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
@@ -88,10 +89,11 @@ namespace mft
 	template <typename T1, typename ... Tn>
 	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 ) const
 	{
-		mat<T1,Tn...> ret(	vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0));
+		mat<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = 0;
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
@@ -99,6 +101,18 @@ namespace mft
 				{
 					ret[i][j] += (*this)[k][j] * m2[i][k];
 				}
+		return ret;
+	}
+
+	template <typename T1, typename ... Tn>
+	constexpr mat<T1, Tn...> mat<T1, Tn...>::operator*(const T1 & scalar) const
+	{
+		mat<T1, Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = (*this)[i][j] * scalar;
+
 		return ret;
 	}
 
@@ -246,6 +260,76 @@ namespace mft
 			{ 0,			0,			far / (far - near),	-(far * near) / (far - near) },
 			{ 0,			0,			1,								0 }
 		);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::transpose(const mat<T1, T1, T1, T1>& m)
+	{
+		return mat<T1, T1, T1, T1>(
+			{ m[0][0], m[1][0], m[2][0], m[3][0] },
+			{ m[0][1], m[1][1], m[2][1], m[3][1] },
+			{ m[0][2], m[1][2], m[2][2], m[3][2] },
+			{ m[0][3], m[1][3], m[2][3], m[3][3] }
+		);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::inverse(const mat<T1, T1, T1, T1>& m2)
+	{
+		mat<T1, T1, T1, T1> m = transpose(m2);
+		T1 Coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+		T1 Coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+		T1 Coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+
+		T1 Coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+		T1 Coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+		T1 Coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+		
+		T1 Coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+		T1 Coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+		T1 Coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+
+		T1 Coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+		T1 Coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+		T1 Coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+
+		T1 Coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+		T1 Coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+		T1 Coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+
+		T1 Coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+		T1 Coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+		T1 Coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+
+		vec<T1,T1,T1,T1> Fac0(Coef00, Coef00, Coef02, Coef03);
+		vec<T1,T1,T1,T1> Fac1(Coef04, Coef04, Coef06, Coef07);
+		vec<T1,T1,T1,T1> Fac2(Coef08, Coef08, Coef10, Coef11);
+		vec<T1,T1,T1,T1> Fac3(Coef12, Coef12, Coef14, Coef15);
+		vec<T1,T1,T1,T1> Fac4(Coef16, Coef16, Coef18, Coef19);
+		vec<T1,T1,T1,T1> Fac5(Coef20, Coef20, Coef22, Coef23);
+
+		vec<T1,T1,T1,T1> Vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
+		vec<T1,T1,T1,T1> Vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
+		vec<T1,T1,T1,T1> Vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
+		vec<T1,T1,T1,T1> Vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
+
+		vec<T1,T1,T1,T1> Inv0(Vec1 * Fac0 - Vec2 * Fac1 + Vec3 * Fac2);
+		vec<T1,T1,T1,T1> Inv1(Vec0 * Fac0 - Vec2 * Fac3 + Vec3 * Fac4);
+		vec<T1,T1,T1,T1> Inv2(Vec0 * Fac1 - Vec1 * Fac3 + Vec3 * Fac5);
+		vec<T1,T1,T1,T1> Inv3(Vec0 * Fac2 - Vec1 * Fac4 + Vec2 * Fac5);
+
+		vec<T1,T1,T1,T1> SignA(+1, -1, +1, -1);
+		vec<T1,T1,T1,T1> SignB(-1, +1, -1, +1);
+		mat<T1,T1,T1,T1> Inverse(Inv0 * SignA, Inv1 * SignB, Inv2 * SignA, Inv3 * SignB);
+
+		vec<T1,T1,T1,T1> Row0(Inverse[0][0], Inverse[1][0], Inverse[2][0], Inverse[3][0]);
+
+		vec<T1,T1,T1,T1> Dot0(m[0] * Row0);
+		T1 Dot1 = (Dot0.x + Dot0.y) + (Dot0.z + Dot0.w);
+
+		T1 OneOverDeterminant = static_cast<T1>(1) / Dot1;
+
+		return transpose(Inverse * OneOverDeterminant);
 	}
 }
 
