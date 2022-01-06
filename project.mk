@@ -24,16 +24,24 @@ SRC =	$S/mft/math_utils.cpp \
     $S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 
-CC = clang++ --std=c++20 -g3
-CPPFLAGS =
+CPPFLAGS += --std=c++20
 LDFLAGS =
 INCLUDE =
 
-LIB_MOD = 
-CMAKE_LIB_MOD = SDL assimp freetype
+LIB_MOD = STBImage
+CMAKE_LIB_MOD = SDL assimp freetype glad KHR
 
 #libft_LIB = libft.a
 #libft_INC = inc
+
+STBImage_LIB =
+STBImage_INC = .
+
+glad_LIB =
+glad_INC = .
+
+KHR_LIB =
+KHR_INC = .
 
 SDL_LIB =
 SDL_INC = include

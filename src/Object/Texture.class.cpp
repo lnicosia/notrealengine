@@ -16,7 +16,7 @@
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
 #define STB_IMAGE_IMPLEMENTATION
-#include "../lib/stb_image.h"
+#include "stb_image.h"
 #ifdef __unix__
 #pragma GCC diagnostic pop
 #endif
@@ -27,7 +27,6 @@ namespace notrealengine
 {
 	Texture::Texture(std::string const& path, std::string const& type): type(type), glId(0)
 	{
-		
 		int	w, h, nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
@@ -38,7 +37,7 @@ namespace notrealengine
 			stbi_image_free(img);
 			return;
 		}
-		GLenum	format;
+		GLenum	format = 0;
 		if (nChannels == 1)
 			format = GL_RED;
 		else if (nChannels == 3)

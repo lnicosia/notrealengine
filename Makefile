@@ -9,7 +9,7 @@ define n
 
 endef
 
-CC = clang++ --std=c++17
+CC = clang++
 
 include project.mk
 
@@ -26,13 +26,15 @@ RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not e
 DEP =	$(SRC:$S/%.cpp=$D/%.d)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
 
+HEADERS = $(sort $(shell find $I -type f '(' -name "*.h" -or -name "*.hpp" ')' ))
+
 TMP_DIRS=$(sort $(foreach DIRS,$(OBJ) $(DEP),$(dir $(shell echo '$(DIRS)' | sed ':do;p;s,^\(.*\)/[^/]*$$,\1,;\%^\(.*\)/[^/]*$$%b do;d'))))
 
 INCLUDES += $I
 
 $(foreach MOD,$(LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
-LIB = $(foreach MOD,$(LIB_MOD),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_LIB)))
+LIB = $(foreach MOD,$(LIB_MOD),$(if $($(MOD)_LIB),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_LIB))))
 INCLUDES += $(foreach MOD,$(LIB_MOD),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_INC)))
 LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(notdir $(LIBRARY))))
 
@@ -55,8 +57,8 @@ else
 $(error OS not supported)
 endif
 
-.PHONY: all, clean, clean(), fclean, libclean, libclean(), realclean, re, relib, space, force
-.PHONY: $(foreach MOD,$(LIB_MOD),$(if $(filter 1,$(shell make -C $($(MOD)_DIR) -q $($(MOD)_LIB) >/dev/null; echo $$?)),$($(MOD)_DIR)/$($(MOD)_LIB),))
+.PHONY: all, clean, fclean, libclean, realclean, re, relib, space, force, stylecheck, stylefix
+.PHONY: $(foreach MOD,$(LIB_MOD),$(if $($(MOD)_LIB),$(if $(filter 1,$(shell make -C $($(MOD)_DIR) -q $($(MOD)_LIB) >/dev/null; echo $$?)),$($(MOD)_DIR)/$($(MOD)_LIB),)))
 
 all: $(LIB_TARGET) $(EXEC_TARGET)
 
@@ -67,14 +69,14 @@ $(TMP_DIRS) $I:
 $D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
 	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
-		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
+		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@;
 
 .SECONDEXPANSION:
 $(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
-$(if $(shell git submodule status $(1) | grep '^-'),git submodule update --init $(1),)
+$(if $(shell git submodule status $(1) 2>/dev/null | grep '^-'),git submodule update --init $(1),)
 endef
 
 define init_includes
@@ -108,6 +110,30 @@ $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 $(LIB_TARGET): $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
+
+.PHONY:
+$(SRC:%=stylecheck@%): stylecheck@%: %
+	@echo "\e[1;32m$(if $(filter --fix,$(LINTEROPTS)),Fixing style for,Stylechecking) $*\e[0m"
+	@clang-tidy --config-file=.clang-tidy -p=. $(LINTEROPTS) $* -- -c $(*:$S/%.cpp=$O/%.o) $(CPPFLAGS) $(INCLUDES:%=-I%) 2>&1 | \
+		grep -v "Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well." || true
+
+.PHONY:
+$(HEADERS:%=stylecheck@%): stylecheck@%: %
+	@echo "\e[1;32mStylechecking $*\e[0m"
+	@clang-tidy --config-file=.clang-tidy -p=. $(LINTEROPTS) $* -- $(CPPFLAGS) $(INCLUDES:%=-I%) 2>&1 | \
+		grep -v "Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well." || true
+
+stylecheck: $(foreach file,$(SRC) $(HEADERS),stylecheck@$(file))
+
+.PHONY:
+$(SRC:%=stylefix@%): LINTEROPTS += --fix
+$(SRC:%=stylefix@%): stylefix@%: stylecheck@%
+
+.PHONY:
+$(HEADERS:%=stylefix@%): LINTEROPTS += --fix
+$(HEADERS:%=stylefix@%): stylefix@%: stylecheck@%
+
+stylefix: $(foreach file,$(SRC) $(HEADERS),stylefix@$(file))
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)

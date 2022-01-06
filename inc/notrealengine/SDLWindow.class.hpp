@@ -2,6 +2,8 @@
 #ifndef  __SDLWINDOW_CLASS_H__
 # define __SDLWINDOW_CLASS_H__
 
+// This define is used to circumvent an SDL bug that messes up clang-tidy
+# define HAVE_STRING_H 1
 # include "SDL.h"
 # include "SDL.class.hpp"
 # include <algorithm>

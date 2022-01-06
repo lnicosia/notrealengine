@@ -17,7 +17,6 @@ namespace mft
 		float		x2, y;
 
 		x2 = nb * 0.5f;
-		y = nb;
 		unsigned int* p1 = reinterpret_cast<unsigned int*>(&nb);
 		i = 0x5f3759df - (*p1 >> 1);
 		float* p2 = reinterpret_cast<float*>(&i);

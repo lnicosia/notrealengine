@@ -231,7 +231,7 @@ namespace	mft
 	template<typename T1, typename ... Tn>
 	constexpr T1 vec<T1,Tn...>::dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 )
 	{
-		T1 ret; // Default-intialized
+		T1 ret = 0;
 		for (int i = 0; i < 1 + sizeof...(Tn); i++)
 			ret += v1[i] * v2[i];
 		return ret;
