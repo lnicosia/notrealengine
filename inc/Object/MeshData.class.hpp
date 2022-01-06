@@ -6,13 +6,6 @@
 
 namespace notrealengine
 {
-	struct Transform
-	{
-		mft::vec3	pos;
-		mft::vec3	rotation;
-		mft::vec2	scale;
-	};
-
 	struct Vertex
 	{
 		mft::vec3	pos;

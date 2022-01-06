@@ -11,6 +11,7 @@ SRC =	$S/Object/GLMesh.class.cpp \
 		$S/Object/Mesh.class.cpp \
 		$S/Object/Texture.class.cpp \
 		$S/Object/TextureLoader.class.cpp \
+		$S/Object/Transform.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \

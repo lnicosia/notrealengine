@@ -181,6 +181,17 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const quaternion<T1> r )
+	{ 
+		return mat<T1,T1,T1,T1>(
+				{ 1 - 2 * r.c * r.c - 2 * r.d * r.d, 2 * r.a * r.d + 2 * r.b * r.c	  , 2 * r.a * r.c + 2 * r.b * r.d	 , 0 },
+				{ 2 * r.a * r.d + 2 * r.b * r.c	   , 1 - 2 * r.b * r.b - 2 * r.d * r.d, 2 * r.a * r.b + 2 * r.c * r.d	 , 0 },
+				{ 2 * r.a * r.c + 2 * r.b * r.d	   , 2 * r.a * r.b + 2 * r.c * r.d	  , 1 - 2 * r.b * r.b - 2 * r.c * r.c, 0 },
+				{ 0								   , 0								  , 0								 , 1 }
+				);
+	 }
+
+	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::look_at( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
 	{ 
 		using vec3 = vec<T1,T1,T1>;
