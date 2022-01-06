@@ -29,7 +29,7 @@ namespace notrealengine
 
 			GLObject() = delete;
 			GLObject(GLObject const & GLObject);
-			GLObject(std::string path);
+			GLObject(const std::string& path);
 			GLObject(std::vector<std::shared_ptr<Mesh>>& meshes);
 			~GLObject();
 			GLObject& operator=(GLObject const& GLObject);
@@ -53,6 +53,8 @@ namespace notrealengine
 				getTransform() const;
 			std::string const&
 				getName() const;
+			int const&
+				getNbBones() const;
 
 			//	Setters
 
@@ -88,7 +90,7 @@ namespace notrealengine
 			void
 				SetVertexBoneData(Vertex& vertex, int id, float weight);
 			mft::mat4
-				AssimpToMftMatrix(aiMatrix4x4 mat);
+				AssimpToMftMatrix(aiMatrix4x4 mat) const;
 			void
 				ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 			void

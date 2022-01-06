@@ -25,11 +25,11 @@ namespace notrealengine
 		*this = GLObject;
 	}
 
-	GLObject::GLObject(std::string path)
+	GLObject::GLObject(const std::string& path)
 		: name("Unkown object"),
 		transform{mft::vec3(0, 0, 0),
 		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
-		directory(""), matrix()
+		directory(""), matrix(), bones(), nbBones(0)
 	{
 		loadObject(path);
 	}
@@ -38,7 +38,7 @@ namespace notrealengine
 		: name("Unkown object"),
 		transform{ mft::vec3(0, 0, 0),
 		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
-		directory(""), matrix(), meshes(meshes)
+		directory(""), matrix(), meshes(meshes), bones(), nbBones(0)
 	{
 
 	}
@@ -91,13 +91,14 @@ namespace notrealengine
 		update();
 	}
 
-	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat)
+	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat) const
 	{
-		return mft::mat4(
+		mft::mat4	res(
 			{ mat.a1, mat.a2, mat.a3, mat.a4 },
 			{ mat.b1, mat.b2, mat.b3, mat.b4 },
 			{ mat.c1, mat.c2, mat.c3, mat.c4 },
 			{ mat.d1, mat.d2, mat.d3, mat.d4 });
+		return res;
 	}
 
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
@@ -139,26 +140,28 @@ namespace notrealengine
 			{
 				vertex.boneIDs[i] = id;
 				vertex.weights[i] = weight;
+				//std::cout << "COUCOU" << std::endl;
 				break;
 			}
+			//std::cout << "\tid = " << vertex.boneIDs[i] << ", weight = ";
+			//std::cout << vertex.weights[i] << std::endl;
 		}
 	}
 
 	void	GLObject::ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh,
 		const aiScene* scene)
 	{
-		std::cout << "Mesh " << mesh->mName.C_Str() << " has " << mesh->mNumBones << " bones" << std::endl;
+		//std::cout << "Mesh " << mesh->mName.C_Str() << " has " << mesh->mNumBones << " bones" << std::endl;
 		for (int i = 0; i < mesh->mNumBones; i++)
 		{
 			BoneInfo	bone;
 			bone.id = -1;
 			std::string	boneName = mesh->mBones[i]->mName.C_Str();
-			std::cout << "Bone " << boneName << std::endl;
+			//std::cout << "Bone " << boneName << std::endl;
 			if (bones.find(boneName) == bones.end())
 			{
 				bone.id = i;
-				std::cout << "Id = " << i << std::endl;
-				bone.offset = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
+				bone.offset = mft::mat4::inverse(AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix));
 				bones[boneName] = bone;
 				nbBones++;
 			}
@@ -166,12 +169,15 @@ namespace notrealengine
 			{
 				bone.id = bones[boneName].id;
 			}
+			//std::cout << "Id = " << bone.id << std::endl;
 			aiVertexWeight *weights = mesh->mBones[i]->mWeights;
 			int	nbWeights = mesh->mBones[i]->mNumWeights;
 			for (int j = 0; j < nbWeights; j++)
 			{
-				if (weights[j].mVertexId >= vertices.size())
+				if (weights[j].mVertexId >= vertices.size()
+					|| weights[j].mWeight == 0)
 					continue;
+				//std::cout << "Vertex { " << weights[j].mVertexId << " } has the following bones:" << std::endl;
 				SetVertexBoneData(vertices[weights[j].mVertexId], bone.id, weights[j].mWeight);
 			}
 		}
@@ -247,6 +253,18 @@ namespace notrealengine
 				std::make_move_iterator(specularMaps.end()));
 		}
 
+		/*for (int i = 0; i < vertices.size(); i++)
+		{
+			std::cout << "Vertex " << i << ":" << std::endl;
+			std::cout << "Bone " << 0 << ": id = " << vertices[i].boneIDs[0];
+			std::cout << ", weight = " << vertices[i].weights[0] << std::endl;
+			std::cout << "Bone " << 1 << ": id = " << vertices[i].boneIDs[1];
+			std::cout << ", weight = " << vertices[i].weights[1] << std::endl;
+			std::cout << "Bone " << 2 << ": id = " << vertices[i].boneIDs[2];
+			std::cout << ", weight = " << vertices[i].weights[2] << std::endl;
+			std::cout << "Bone " << 3 << ": id = " << vertices[i].boneIDs[3];
+			std::cout << ", weight = " << vertices[i].weights[3] << std::endl;
+		}*/
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
 		return std::shared_ptr<Mesh>(new Mesh(glMesh));
@@ -254,9 +272,11 @@ namespace notrealengine
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
 	{
+		//std::cout << "Node " << node->mName.C_Str() << std::endl;
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			// OPTI !! Multiple nodes can refer to the same mesh
 			meshes.push_back(processMesh(mesh, scene));
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -282,6 +302,7 @@ namespace notrealengine
 		}
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
+
 	}
 
 	//	Drawing functions
@@ -305,6 +326,7 @@ namespace notrealengine
 			Mesh	cube(mesh);
 			cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 			cube.draw(shader, (*it).second.offset * matrix);
+			//return;
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
@@ -329,6 +351,11 @@ namespace notrealengine
 	std::string const& GLObject::getName() const
 	{
 		return name;
+	}
+
+	int const& GLObject::getNbBones() const
+	{
+		return nbBones;
 	}
 
 	//	Setters

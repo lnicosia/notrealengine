@@ -75,7 +75,7 @@ namespace notrealengine
 	void	Mesh::move(mft::vec3 move)
 	{
 		transform.pos = transform.pos + move;
-		std::cout << name << " pos = " << std::endl << transform.pos << std::endl;
+		//std::cout << name << " pos = " << std::endl << transform.pos << std::endl;
 		update();
 	}
 
@@ -83,14 +83,14 @@ namespace notrealengine
 	void	Mesh::rotate(mft::vec3 rotation)
 	{
 		transform.rotation = transform.rotation + rotation;
-		std::cout << name << " rotation = " << std::endl << transform.rotation << std::endl;
+		//std::cout << name << " rotation = " << std::endl << transform.rotation << std::endl;
 		update();
 	}
 
 	void	Mesh::scale(mft::vec3 scale)
 	{
 		transform.scale = transform.scale + scale;
-		std::cout << name << " scale = " << std::endl << transform.scale << std::endl;
+		//std::cout << name << " scale = " << std::endl << transform.scale << std::endl;
 		update();
 	}
 

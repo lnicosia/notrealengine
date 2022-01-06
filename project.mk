@@ -12,6 +12,8 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Mesh.class.cpp \
 		$S/Object/Texture.class.cpp \
 		$S/Object/TextureLoader.class.cpp \
+		$S/Object/Animation.class.cpp \
+		$S/Object/Bone.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \

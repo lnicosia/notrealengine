@@ -130,6 +130,7 @@
     <ClCompile Include="..\src\mft\matrix_project.cpp" />
     <ClCompile Include="..\src\mft\matrix_transform.cpp" />
     <ClCompile Include="..\src\mft\vertex_utils.cpp" />
+    <ClCompile Include="..\src\Object\Animation.class.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="..\inc\notrealengine\notrealengine.hpp" />
     <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="..\inc\Object\Animation.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
     <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
@@ -173,8 +175,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\anim.vs" />
+    <None Include="..\shaders\bones.fs" />
     <None Include="..\shaders\colorShader.fs" />
     <None Include="..\shaders\test.fs" />
+    <None Include="..\shaders\test.glsl" />
     <None Include="..\shaders\test.vs" />
     <None Include="..\shaders\text.fs" />
     <None Include="..\shaders\text.vs" />

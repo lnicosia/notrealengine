@@ -172,8 +172,8 @@ namespace notrealengine
 		GLCallThrow(glEnableVertexAttribArray, 2);
 
 		//	Bone ID
-		GLCallThrow(glVertexAttribPointer,
-			3, MAX_BONE_INFLUENCE, GL_INT, GL_FALSE,
+		GLCallThrow(glVertexAttribIPointer,
+			3, MAX_BONE_INFLUENCE, GL_INT,
 			sizeof(Vertex), (void*)offsetof(Vertex, boneIDs));
 		GLCallThrow(glEnableVertexAttribArray, 3);
 
