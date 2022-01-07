@@ -74,8 +74,10 @@ namespace notrealengine
 		mft::vec2 pos, float scale, mft::vec3 color)
 	{
 		GLCallThrow(glUseProgram, shader->programID);
+		mft::mat4	model;
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<float*>(model));
 		GLCallThrow(glUniform3f,
-			GLCallThrow(glGetUniformLocation, shader->programID, "textColor"), color.x, color.y, color.z);
+			GLCallThrow(glGetUniformLocation, shader->programID, "color"), color.x, color.y, color.z);
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
 

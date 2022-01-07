@@ -4,6 +4,9 @@
 #include <string>
 #include <set>
 
+#include "mft/mft.hpp"
+#include "GLShaderProgram.class.hpp"
+
 namespace notrealengine
 {
 	class Texture
@@ -26,8 +29,12 @@ namespace notrealengine
 
 		void	setType(std::string const& type);
 
+		void
+			draw(GLShaderProgram* shader, mft::vec2 pos,
+				mft::vec2 size, float rotation, mft::vec3 color) const;
+
 	private:
-		unsigned int	glId;
+		unsigned int	glId, VAO, VBO;
 		std::string		type;
 
 	};
