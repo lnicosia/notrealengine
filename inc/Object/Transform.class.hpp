@@ -37,9 +37,9 @@ namespace notrealengine
 		void setRotation( quat new_rotation );
 		void setScale( vec3 new_scale );
 
-		void moved( vec3 moved );
-		void rotated( quat rotated );
-		void scaled( vec3 scaled );
+		void move( vec3 translation );
+		void rotate( quat rotation );
+		void scale( vec3 magnitude );
 
 		/** Others **/
 

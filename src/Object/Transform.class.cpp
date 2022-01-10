@@ -84,19 +84,19 @@ namespace notrealengine
 		}
 	}
 
-	void Transform::moved( vec3 moved )
+	void Transform::move( vec3 m )
 	{
-		setPos(pos + moved);
+		setPos(pos + m);
 	}
 
-	void Transform::rotated( quat rotated )
+	void Transform::rotate( quat r )
 	{
-		setRotation(rotation * rotated);
+		setRotation(rotation * r);
 	}
 
-	void Transform::scaled( vec3 scaled )
+	void Transform::scale( vec3 s )
 	{
-		setScale(scale * scaled);
+		setScale(scale * s);
 	}
 
 	const mat4 & Transform::getPosMatrix( void ) const
