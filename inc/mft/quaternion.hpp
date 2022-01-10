@@ -3,6 +3,7 @@
 # define _QUATERNIONS_HPP_
 
 # include <type_traits>
+# include "mft/templates/vec.template.hpp"
 
 namespace mft
 {
@@ -50,6 +51,8 @@ namespace mft
 		quaternion<T> & operator+=( const quaternion<T> & v2 );
 		quaternion<T> & operator-=( const quaternion<T> & v2 );
 		quaternion<T> & operator*=( const quaternion<T> & v2 );
+
+		static constexpr quaternion<T> rotate( const vector<T,T,T> axis, T radians);
 	};
 }
 

@@ -142,6 +142,18 @@ namespace mft
 		(*this) = (*this) + q2;
 		return *this;
 	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr quaternion<T> quaternion<T>::rotate( const quaternion<T>, const vector<T,T,T> axis, T angle)
+	{
+		return quaternion<T>(
+				cos(angle / 2),
+				axis.x * sin(angle / 2),
+				axis.y * sin(angle / 2),
+				axis.z * sin(angle / 2)
+				);
+	}
 }
 
 #endif
