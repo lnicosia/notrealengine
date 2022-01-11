@@ -23,8 +23,8 @@ namespace notrealengine
 		*this = GLObject;
 	}
 
-	GLObject::GLObject(std::string path) : transform{ mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) }, matrix()
+	GLObject::GLObject(std::string path):
+		transform()
 	{
 		loadObject(path);
 	}
@@ -43,38 +43,6 @@ namespace notrealengine
 			(*meshes[mesh]).addTexture(text);
 		else
 			throw std::runtime_error("Mesh index out of bounds");
-	}
-
-	// Transforms
-
-	void	GLObject::update(void)
-	{
-		matrix = mft::mat4();
-		matrix *= mft::mat4::scale(transform.scale);
-		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
-		matrix *= mft::mat4::translate(transform.pos);
-		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
-	}
-
-	void	GLObject::move(mft::vec3 move)
-	{
-		transform.pos = transform.pos + move;
-		update();
-	}
-
-
-	void	GLObject::rotate(mft::vec3 rotation)
-	{
-		transform.rotation = transform.rotation + rotation;
-		update();
-	}
-
-	void	GLObject::scale(mft::vec3 scale)
-	{
-		transform.scale = transform.scale + scale;
-		update();
 	}
 
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
@@ -205,7 +173,7 @@ namespace notrealengine
 		//GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, &matrix[0][0]);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			(*meshes[i]).draw(shader, matrix);
+			(*meshes[i]).draw(shader, transform.getMatrix());
 		}
 	}
 
@@ -214,16 +182,6 @@ namespace notrealengine
 	std::vector<std::shared_ptr<Mesh>> const&	GLObject::getMeshes() const
 	{
 		return meshes;
-	}
-
-	mft::mat4 const& GLObject::getMatrix() const
-	{
-		return matrix;
-	}
-
-	Transform const& GLObject::getTransform() const
-	{
-		return transform;
 	}
 
 	std::string const& GLObject::getName() const

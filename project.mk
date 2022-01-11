@@ -12,6 +12,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Mesh.class.cpp \
 		$S/Object/Texture.class.cpp \
 		$S/Object/TextureLoader.class.cpp \
+		$S/Object/Transform.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -38,10 +39,8 @@ CMAKE_LIB_MOD = SDL assimp freetype
 SDL_LIB =
 SDL_INC = include
 
-assimp_LIB = lib/libassimp.a
+assimp_LIB = bin/libassimp.so
 assimp_INC = include build/include
 
 freetype_LIB = libfreetype.a
 freetype_INC = include
-
-LDFLAGS += 

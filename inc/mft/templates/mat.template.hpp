@@ -64,7 +64,7 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v )
+	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v ) const
 	{
 		vec<T1,Tn...> ret(	vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
@@ -80,7 +80,7 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 )
+	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 ) const
 	{
 		mat<T1,Tn...> ret(	vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0),
@@ -97,13 +97,13 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 )
+	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 ) const
 	{
 		return Rows::operator==(*this, m2);
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 )
+	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 ) const
 	{
 		return !(*this == m2);
 	}
@@ -177,6 +177,17 @@ namespace mft
 				{ u.y * u.x * minc + u.z * s, c + u.y * u.y * minc, u.y * u.z * minc - u.x * s, 0 },
 				{ u.z * u.x * minc - u.y * s, u.z * u.y * minc + u.x * s, c + u.z * u.z * minc, 0 },
 				{ 0, 0, 0, 1 }
+				);
+	 }
+
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const quaternion<T1> r )
+	{ 
+		return mat<T1,T1,T1,T1>(
+				{ 1 - 2 * r.c * r.c - 2 * r.d * r.d, 2 * r.a * r.d + 2 * r.b * r.c	  , 2 * r.a * r.c + 2 * r.b * r.d	 , 0 },
+				{ 2 * r.a * r.d + 2 * r.b * r.c	   , 1 - 2 * r.b * r.b - 2 * r.d * r.d, 2 * r.a * r.b + 2 * r.c * r.d	 , 0 },
+				{ 2 * r.a * r.c + 2 * r.b * r.d	   , 2 * r.a * r.b + 2 * r.c * r.d	  , 1 - 2 * r.b * r.b - 2 * r.c * r.c, 0 },
+				{ 0								   , 0								  , 0								 , 1 }
 				);
 	 }
 

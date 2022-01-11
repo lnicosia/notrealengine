@@ -2,6 +2,7 @@
 # define _MESH_CLASS_H_
 
 #include "GLMesh.class.hpp"
+#include "Transform.class.hpp"
 #include <memory>
 
 namespace notrealengine
@@ -19,23 +20,15 @@ namespace notrealengine
 			getGLMesh() const;
 		std::vector<Mesh> const&
 			getChildren() const;
-		mft::mat4 const&
-			getMatrix() const;
-		Transform const&
-			getTransform() const;
 		std::string const&
 			getName() const;
+
+		// Transform is public so its non-const operations can be called efficiently
+		Transform	transform;
 
 		//	Setters
 
 		void	setName(std::string name);
-
-		//	Tranform
-
-		void	update();
-		void	move(mft::vec3 move);
-		void	rotate(mft::vec3 rotation);
-		void	scale(mft::vec3 scale);
 
 		void	addTexture(std::shared_ptr < Texture >& text);
 		void	draw(GLShaderProgram *shader, mft::mat4 parentMat);
@@ -47,7 +40,6 @@ namespace notrealengine
 		std::vector<Mesh>		children;
 		Mesh					*parent;
 
-		Transform	transform;
 		mft::mat4	matrix;
 	};
 

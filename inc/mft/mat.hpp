@@ -2,6 +2,7 @@
 # define _MAT_H_
 
 # include "mft/templates/vec.template.hpp"
+# include "mft/templates/quaternion.template.hpp"
 
 # include <type_traits>
 
@@ -38,11 +39,11 @@ namespace	mft
 		// Conversion to data pointer
 		explicit operator T1*();
 
-		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v );
-		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 );
+		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v ) const;
+		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 ) const;
 
-		constexpr bool operator==( const mat<T1,Tn...> & m2 );
-		constexpr bool operator!=( const mat<T1,Tn...> & m2 );
+		constexpr bool operator==( const mat<T1,Tn...> & m2 ) const;
+		constexpr bool operator!=( const mat<T1,Tn...> & m2 ) const;
 
 		// Other operators
 		friend std::ostream & operator<< <>( std::ostream & o, const mat<T1,Tn...> & mat );
@@ -53,6 +54,7 @@ namespace	mft
 		static constexpr mat<T1,T1,T1,T1> translate( const vec<T1,T1,T1> & v );
 		static constexpr mat<T1,T1,T1,T1> scale( const vec<T1,T1,T1> & v );
 		static constexpr mat<T1,T1,T1,T1> rotate( const T1 angle, const vec<T1,T1,T1> & axis );
+		static constexpr mat<T1,T1,T1,T1> rotate( const quaternion<T1> rotation );
 		static constexpr mat<T1,T1,T1,T1> look_at( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up);
 
 		static constexpr mat<T1,T1,T1,T1> ortho( const T1 left, const T1 right, const T1 bottom, const T1 top );
