@@ -23,8 +23,11 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/Freetype.class.cpp \
     	$S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
+		$S/UI/Button.class.cpp \
+		$S/UI/UIElement.class.cpp \
+		$S/UI/UIManager.class.cpp \
 
-CC = clang++ --std=c++20 -g3
+CC = clang++ --std=c++20 -g3 
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

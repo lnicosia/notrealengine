@@ -26,7 +26,7 @@
 namespace notrealengine
 {
 	Texture::Texture(std::string const& path, std::string const& type)
-		: type(type), glId(0), VAO(0), VBO(0)
+		: type(type), glId(0), VAO(0), VBO(0), size(0, 0)
 	{
 		//	2D Image setup
 		float	vertices[] =
@@ -54,9 +54,9 @@ namespace notrealengine
 		GLCallThrow(glBindVertexArray, 0);
 
 
-		int	w, h, nChannels;
+		int	nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
-		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
+		unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
 		if (!img)
 		{
 			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
@@ -74,7 +74,7 @@ namespace notrealengine
 
 		GLCallThrow(glGenTextures, 1, &glId);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
-		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, img);
 		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -86,7 +86,8 @@ namespace notrealengine
 
 	Texture::Texture(Texture && ref) noexcept
 		:	glId(std::exchange(ref.glId, 0)), type(std::move(ref.type)),
-			VAO(std::exchange(ref.VAO, 0)), VBO(std::exchange(ref.VBO, 0))
+			VAO(std::exchange(ref.VAO, 0)), VBO(std::exchange(ref.VBO, 0)),
+			size(std::move(ref.size))
 	{
 
 	}
@@ -95,6 +96,7 @@ namespace notrealengine
 	{
 		this->glId = std::exchange(text.glId, 0);
 		this->type = std::move(text.type);
+		this->size = std::move(text.size);
 
 		return *this;
 	}
@@ -108,14 +110,19 @@ namespace notrealengine
 
 	//	Accessors
 
-	unsigned int const& Texture::getId() const
+	const unsigned int& Texture::getId() const
 	{
 		return glId;
 	}
 
-	std::string const& Texture::getType() const
+	const std::string& Texture::getType() const
 	{
 		return type;
+	}
+
+	const mft::vec2i& Texture::getSize() const
+	{
+		return size;
 	}
 
 	//	Setters
@@ -125,8 +132,8 @@ namespace notrealengine
 		this->type = type;
 	}
 
-	void	Texture::draw(GLShaderProgram* shader, mft::vec2 pos,
-		mft::vec2 size, float rotation, mft::vec3 color) const
+	void	Texture::draw(GLShaderProgram* shader, mft::vec2i pos,
+		mft::vec2i size, float rotation, mft::vec3 color) const
 	{
 		GLCallThrow(glUseProgram, shader->programID);
 

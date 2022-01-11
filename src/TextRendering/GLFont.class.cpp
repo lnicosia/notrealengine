@@ -60,6 +60,20 @@ namespace notrealengine
 	{
 		GLCallThrow(glDeleteVertexArrays, 1, &VAO);
 		GLCallThrow(glDeleteBuffers, 1, &VBO);
+		for (auto& c: characters)
+		{
+			delete c.second;
+		}
+	}
+
+	const std::map<char, GLCharacter*>& GLFont::getCharacters() const
+	{
+		return characters;
+	}
+
+	const GLCharacter* GLFont::getCharacter(char c)
+	{
+		return characters[c];
 	}
 
 	GLFont& GLFont::operator=(GLFont&& font) noexcept
@@ -71,7 +85,7 @@ namespace notrealengine
 	}
 
 	void	GLFont::RenderText(GLShaderProgram* shader, std::string text,
-		mft::vec2 pos, float scale, mft::vec3 color)
+		mft::vec2i pos, float scale, mft::vec3 color)
 	{
 		GLCallThrow(glUseProgram, shader->programID);
 		mft::mat4	model;

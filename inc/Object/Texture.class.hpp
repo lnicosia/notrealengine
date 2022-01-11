@@ -22,20 +22,25 @@ namespace notrealengine
 
 		//	Accessors
 
-		unsigned int const& getId() const;
-		std::string const& getType() const;
+		const unsigned int&
+			getId() const;
+		const std::string&
+			getType() const;
+		const mft::vec2i&
+			getSize() const;
 
 		//	Setters
 
 		void	setType(std::string const& type);
 
 		void
-			draw(GLShaderProgram* shader, mft::vec2 pos,
-				mft::vec2 size, float rotation, mft::vec3 color) const;
+			draw(GLShaderProgram* shader, mft::vec2i pos,
+				mft::vec2i size, float rotation, mft::vec3 color) const;
 
 	private:
 		unsigned int	glId, VAO, VBO;
 		std::string		type;
+		mft::vec2i		size;
 
 	};
 }

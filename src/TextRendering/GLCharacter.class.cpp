@@ -4,7 +4,7 @@
 namespace notrealengine
 {
 	GLCharacter::GLCharacter(FT_Face face, char c) :
-        glId(0), size(mft::vec2(0, 0)), bearing(mft::vec2(0, 0)), next(0)
+        glId(0), size(mft::vec2i(0, 0)), bearing(mft::vec2i(0, 0)), next(0)
 	{
 		setup(face, c);
 	}
@@ -52,8 +52,8 @@ namespace notrealengine
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		size = mft::vec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
-		bearing = mft::vec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
+		size = mft::vec2i(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+		bearing = mft::vec2i(face->glyph->bitmap_left, face->glyph->bitmap_top);
 		next = face->glyph->advance.x;
     }
 
@@ -62,12 +62,12 @@ namespace notrealengine
 		return glId;
 	}
 
-	mft::vec2 const& GLCharacter::getSize() const
+	mft::vec2i const& GLCharacter::getSize() const
 	{
 		return size;
 	}
 
-	mft::vec2 const& GLCharacter::getBearing() const
+	mft::vec2i const& GLCharacter::getBearing() const
 	{
 		return bearing;
 	}

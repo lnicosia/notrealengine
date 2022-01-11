@@ -21,7 +21,13 @@ namespace notrealengine
 		~GLFont();
 
 		void	RenderText(GLShaderProgram* shader, std::string text,
-			mft::vec2 pos, float scale, mft::vec3 color);
+			mft::vec2i pos, float scale, mft::vec3 color);
+
+		const std::map<char, GLCharacter*>&
+			getCharacters() const;
+
+		const GLCharacter*
+			getCharacter(char c);
 
 	private:
 		std::map<char, GLCharacter*>	characters;
