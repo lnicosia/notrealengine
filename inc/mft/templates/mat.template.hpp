@@ -175,7 +175,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::scale( const vec<T1,T1,T1> & v )
-	{ 
+	{
 		return mat<T1,T1,T1,T1>(
 				{ v.x, 0, 0, 0 },
 				{ 0, v.y, 0, 0 },
@@ -186,7 +186,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const T1 angle, const vec<T1,T1,T1> & axis )
-	{ 
+	{
 		const float			c = std::cos(angle);
 		const float			s = std::sin(angle);
 		const float			minc = 1 - c;
@@ -201,8 +201,19 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const quaternion<T1> r )
+	{
+		return mat<T1,T1,T1,T1>(
+				{ 1 - 2 * r.c * r.c - 2 * r.d * r.d, 2 * r.a * r.d + 2 * r.b * r.c	  , 2 * r.a * r.c + 2 * r.b * r.d	 , 0 },
+				{ 2 * r.a * r.d + 2 * r.b * r.c	   , 1 - 2 * r.b * r.b - 2 * r.d * r.d, 2 * r.a * r.b + 2 * r.c * r.d	 , 0 },
+				{ 2 * r.a * r.c + 2 * r.b * r.d	   , 2 * r.a * r.b + 2 * r.c * r.d	  , 1 - 2 * r.b * r.b - 2 * r.c * r.c, 0 },
+				{ 0								   , 0								  , 0								 , 1 }
+				);
+	 }
+
+	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::lookAt( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
-	{ 
+	{
 		using vec3 = vec<T1, T1, T1>;
 		vec3 const Forward = vec3::normalized(target - pos);
 		vec3 const Right = vec3::normalized(vec3::cross(Forward, up));
@@ -217,7 +228,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top )
-	{ 
+	{
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0, -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom) },
@@ -228,7 +239,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far )
-	{ 
+	{
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0					  , -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0					  , -(top + bottom) / (top - bottom) },
@@ -239,7 +250,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far)
-	{ 
+	{
 		const T1 tang = std::tan(fovy * 0.5f);
 
 		return mat<T1, T1, T1, T1>(
@@ -284,7 +295,7 @@ namespace mft
 		T1 Coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
 		T1 Coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
 		T1 Coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
-		
+
 		T1 Coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
 		T1 Coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
 		T1 Coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];

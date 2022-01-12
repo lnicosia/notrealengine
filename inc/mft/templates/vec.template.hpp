@@ -165,7 +165,7 @@ namespace	mft
 	template<typename T1, typename ... Tn>
 	std::ostream & operator<<( std::ostream & o, const vec<T1,Tn...> & v )
 	{
-		o << "{";
+		o << "{ ";
 		for (int i = 0; i < 1 + sizeof...(Tn); i++)
 			o << (i > 0 ? ", " : "") << v[i];
 		o << " }";

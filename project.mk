@@ -14,6 +14,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/TextureLoader.class.cpp \
 		$S/Object/Animation.class.cpp \
 		$S/Object/Bone.class.cpp \
+		$S/Object/Transform.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -23,7 +24,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/GLCharacter.class.cpp \
 		$S/TextRendering/GLFont.class.cpp \
 		$S/TextRendering/Freetype.class.cpp \
-    	$S/Inputs/Binding.class.cpp \
+    $S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp
 
@@ -32,7 +33,7 @@ CPPFLAGS =
 LDFLAGS =
 INCLUDE =
 
-LIB_MOD = 
+LIB_MOD =
 CMAKE_LIB_MOD = SDL assimp freetype
 
 #libft_LIB = libft.a
@@ -46,5 +47,3 @@ assimp_INC = include build/include
 
 freetype_LIB = libfreetype.a
 freetype_INC = include
-
-LDFLAGS += 

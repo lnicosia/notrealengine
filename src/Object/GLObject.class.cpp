@@ -27,18 +27,16 @@ namespace notrealengine
 
 	GLObject::GLObject(const std::string& path)
 		: name("Unkown object"),
-		transform{mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
-		directory(""), matrix(), bones(), nbBones(0)
+		transform(),
+		directory(""), bones(), nbBones(0)
 	{
 		loadObject(path);
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: name("Unkown object"),
-		transform{ mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) },
-		directory(""), matrix(), meshes(meshes), bones(), nbBones(0)
+		transform(),
+		directory(""), meshes(meshes), bones(), nbBones(0)
 	{
 
 	}
@@ -61,7 +59,7 @@ namespace notrealengine
 
 	// Transforms
 
-	void	GLObject::update(void)
+	/*void	GLObject::update(void)
 	{
 		matrix = mft::mat4();
 		matrix *= mft::mat4::scale(transform.scale);
@@ -89,7 +87,7 @@ namespace notrealengine
 	{
 		transform.scale = transform.scale + scale;
 		update();
-	}
+	}*/
 
 	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat) const
 	{
@@ -312,7 +310,8 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, shader->programID);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			(*meshes[i]).draw(shader, matrix);
+			//std::cout << "Drawing object " << name << " with matrix " << transform.getMatrix() << std::endl;
+			meshes[i]->draw(shader, transform.getMatrix());
 		}
 	}
 
@@ -325,7 +324,7 @@ namespace notrealengine
 		{
 			Mesh	cube(mesh);
 			cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
-			cube.draw(shader, (*it).second.offset * matrix);
+			cube.draw(shader, (*it).second.offset * transform.getMatrix());
 			//return;
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
@@ -336,16 +335,6 @@ namespace notrealengine
 	std::vector<std::shared_ptr<Mesh>> const&	GLObject::getMeshes() const
 	{
 		return meshes;
-	}
-
-	mft::mat4 const& GLObject::getMatrix() const
-	{
-		return matrix;
-	}
-
-	Transform const& GLObject::getTransform() const
-	{
-		return transform;
 	}
 
 	std::string const& GLObject::getName() const

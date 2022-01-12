@@ -3,6 +3,7 @@
 
 #include "Object/Mesh.class.hpp"
 #include "Object/Texture.class.hpp"
+#include "Object/Transform.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -39,7 +40,7 @@ namespace notrealengine
 			void
 				draw(GLShaderProgram *shader) const;
 
-			//	Render all the object's bones	
+			//	Render all the object's bones
 			void
 				drawBones(GLShaderProgram* shader, std::shared_ptr<GLMesh> mesh) const;
 
@@ -47,10 +48,6 @@ namespace notrealengine
 
 			std::vector<std::shared_ptr<Mesh>> const&
 				getMeshes() const;
-			mft::mat4 const&
-				getMatrix() const;
-			Transform const&
-				getTransform() const;
 			std::string const&
 				getName() const;
 			int const&
@@ -60,16 +57,12 @@ namespace notrealengine
 
 			void	setName(std::string name);
 
-			//	Transforms
-
-			void	update(void);
-			void	move(mft::vec3 move);
-			void	rotate(mft::vec3 rotation);
-			void	scale(mft::vec3 scale);
-
 			//	Texture utility
 
 			void	addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
+
+			// Transform is public so its non-const operations can be called efficiently
+			Transform	transform;
 
 		private:
 			std::string	name;
@@ -80,11 +73,6 @@ namespace notrealengine
 
 			std::map<std::string, BoneInfo>	bones;
 			int	nbBones;
-
-			//	Transforms
-
-			Transform	transform;
-			mft::mat4	matrix;
 
 			//	Object loading
 			void

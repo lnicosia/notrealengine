@@ -3,8 +3,8 @@
 namespace notrealengine
 {
 	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
-		: transform{ mft::vec3(0, 0, 0), mft::vec3(0, 0, 0), mft::vec3(1, 1, 1)},
-		matrix(), glMesh(glMesh),
+		: transform(),
+		glMesh(glMesh),
 		color(mft::vec3(0.239f, 0.282f, 0.286f))
 	{
 
@@ -25,16 +25,6 @@ namespace notrealengine
 	std::vector<std::shared_ptr<Mesh>> const& Mesh::getChildren() const
 	{
 		return children;
-	}
-
-	mft::mat4 const& Mesh::getMatrix() const
-	{
-		return matrix;
-	}
-
-	Transform const& Mesh::getTransform() const
-	{
-		return transform;
 	}
 
 	std::string const& Mesh::getName() const
@@ -61,7 +51,7 @@ namespace notrealengine
 
 	// Transforms
 
-	void	Mesh::update(void)
+	/*void	Mesh::update(void)
 	{
 		matrix = mft::mat4();
 		matrix *= mft::mat4::scale(transform.scale);
@@ -92,18 +82,18 @@ namespace notrealengine
 		transform.scale = transform.scale + scale;
 		//std::cout << name << " scale = " << std::endl << transform.scale << std::endl;
 		update();
-	}
+	}*/
 
 	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat) const
 	{
-		mft::mat4	tmp = matrix * parentMat;
-		//std::cout << name << " matrix:" << std::endl;
+		mft::mat4	transformMatrix = parentMat * transform.getMatrix();
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
 		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, shader->programID, "baseColor"), color.x, color.y, color.z);
-		(*glMesh).draw(shader, tmp);
+		//std::cout << "Drawing mesh " << name << " with matrix " << transformMatrix << std::endl;
+		glMesh->draw(shader, transformMatrix);
 		for (auto child: children)
 		{
-			(*child).draw(shader, tmp);
+			child->draw(shader, transformMatrix);
 		}
 	}
 
