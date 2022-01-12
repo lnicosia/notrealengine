@@ -4,14 +4,14 @@
 namespace notrealengine
 {
 	Transform::Transform( void ):
-		pos(), rotation(), scale(1),
+		tPos(), tRotation(), tScale(1),
 		pos_mat(), rotation_mat(), scale_mat(),
 		dirty_flags(DIRTY_FLAG_NONE)
 	{
 	}
 
 	Transform::Transform( const Transform & other ):
-		pos(other.pos), rotation(other.rotation), scale(other.scale),
+		tPos(other.tPos), tRotation(other.tRotation), tScale(other.tScale),
 		pos_mat(), rotation_mat(), scale_mat(),
 		dirty_flags(other.dirty_flags)
 	{
@@ -25,7 +25,7 @@ namespace notrealengine
 	}
 
 	Transform::Transform( vec3 pos, quat rotation, vec3 scale ):
-		pos(pos), rotation(rotation), scale(scale),
+		tPos(pos), tRotation(rotation), tScale(scale),
 		pos_mat(), rotation_mat(), scale_mat(),
 		dirty_flags(DIRTY_FLAG_ANY)
 	{
@@ -37,17 +37,17 @@ namespace notrealengine
 
 	const vec3 & Transform::getPos( void ) const
 	{
-		return pos;
+		return tPos;
 	}
 
 	const quat & Transform::getRotation( void ) const
 	{
-		return rotation;
+		return tRotation;
 	}
 
 	const vec3 & Transform::getScale( void ) const
 	{
-		return scale;
+		return tScale;
 	}
 
 	const mat4 & Transform::getMatrix( void ) const
@@ -59,64 +59,64 @@ namespace notrealengine
 
 	void Transform::setPos( vec3 new_pos )
 	{
-		if (pos != new_pos)
+		if (tPos != new_pos)
 		{
 			dirty_flags |= DIRTY_FLAG_POS;
-			pos = new_pos;
+			tPos = new_pos;
 		}
 	}
 
 	void Transform::setRotation( quat new_rotation )
 	{
-		if (rotation != new_rotation)
+		if (tRotation != new_rotation)
 		{
 			dirty_flags |= DIRTY_FLAG_ROTATION;
-			rotation = new_rotation;
+			tRotation = new_rotation;
 		}
 	}
 
 	void Transform::setScale( vec3 new_scale )
 	{
-		if (scale != new_scale)
+		if (tScale != new_scale)
 		{
 			dirty_flags |= DIRTY_FLAG_SCALE;
-			scale = new_scale;
+			tScale = new_scale;
 		}
 	}
 
 	void Transform::move( vec3 m )
 	{
-		setPos(pos + m);
+		setPos(tPos + m);
 	}
 
 	void Transform::rotate( quat r )
 	{
-		setRotation(rotation * r);
+		setRotation(tRotation * r);
 	}
 
 	void Transform::scale( vec3 s )
 	{
-		setScale(scale * s);
+		setScale(tScale * s);
 	}
 
 	const mat4 & Transform::getPosMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_POS)
-			pos_mat = mat4::translate(pos);
+			pos_mat = mat4::translate(tPos);
 		return pos_mat;
 	}
 
 	const mat4 & Transform::getRotationMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_ROTATION)
-			rotation_mat = mat4::rotate(rotation);
+			rotation_mat = mat4::rotate(tRotation);
 		return rotation_mat;
 	}
 
 	const mat4 & Transform::getScaleMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_SCALE)
-			scale_mat = mat4::scale(scale);
+			scale_mat = mat4::scale(tScale);
 		return scale_mat;
 	}
 }

@@ -44,9 +44,9 @@ namespace notrealengine
 		/** Others **/
 
 	private:
-		vec3 pos;
-		quat rotation;
-		vec3 scale;
+		vec3 tPos;
+		quat tRotation;
+		vec3 tScale;
 
 		// Used for caching, along with the dirty flags
 		mutable mat4
@@ -75,4 +75,3 @@ namespace notrealengine
 }
 
 #endif
-
