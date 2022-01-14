@@ -3,6 +3,7 @@
 
 #include "mft/mft.hpp"
 #include "Object/GLObject.class.hpp"
+#include "Object/Asset.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -16,7 +17,7 @@
 
 namespace notrealengine
 {
-	class Animation
+	class Animation: public Asset
 	{
 		enum Type
 		{
@@ -36,8 +37,10 @@ namespace notrealengine
 		mft::vec3
 			AssimpToMftVec3(aiVector3D& vec) const;
 
+		virtual const std::string
+			getAssetType() const;
+
 	private:
-		std::string	name;
 		double		duration;
 		double		ticksPerSecond;
 		int			type;

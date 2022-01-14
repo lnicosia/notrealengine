@@ -6,7 +6,8 @@
 
 namespace notrealengine
 {
-	class GLShaderProgram {
+	class GLShaderProgram
+	{
 	public:
 		template <GLenum Type>
 		class ShaderPart {

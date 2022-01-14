@@ -25,7 +25,8 @@
 
 namespace notrealengine
 {
-	Texture::Texture(std::string const& path, std::string const& type): type(type), glId(0)
+	Texture::Texture(const std::string& path, const std::string& type)
+		: Asset(path), type(type), glId(0)
 	{
 		
 		int	w, h, nChannels;
@@ -57,7 +58,8 @@ namespace notrealengine
 		stbi_image_free(img);
 	}
 
-	Texture::Texture(std::string const& path, unsigned char *data, unsigned int width, std::string const& type) : type(type), glId(0)
+	Texture::Texture(const std::string& path, unsigned char *data, unsigned int width, std::string const& type)
+		: Asset(path), type(type), glId(0)
 	{
 
 		int	w, h, nChannels;
@@ -90,7 +92,7 @@ namespace notrealengine
 	}
 
 	Texture::Texture(Texture && ref) noexcept
-		: glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
+		: Asset(ref.getPath()), glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
 	{
 
 	}
@@ -110,19 +112,24 @@ namespace notrealengine
 
 	//	Accessors
 
-	unsigned int const& Texture::getId() const
+	const unsigned int& Texture::getId() const
 	{
 		return glId;
 	}
 
-	std::string const& Texture::getType() const
+	const std::string& Texture::getType() const
 	{
 		return type;
 	}
 
+	const std::string	Texture::getAssetType() const
+	{
+		return std::string("Texture");
+	}
+
 	//	Setters
 
-	void	Texture::setType(std::string const& type)
+	void	Texture::setType(const std::string& type)
 	{
 		this->type = type;
 	}

@@ -11,10 +11,11 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/MeshData.class.cpp \
 		$S/Object/Mesh.class.cpp \
 		$S/Object/Texture.class.cpp \
-		$S/Object/TextureLoader.class.cpp \
 		$S/Object/Animation.class.cpp \
 		$S/Object/Bone.class.cpp \
 		$S/Object/Transform.class.cpp \
+		$S/Object/AssetManager.class.cpp \
+		$S/Object/Asset.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -24,9 +25,9 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/GLCharacter.class.cpp \
 		$S/TextRendering/GLFont.class.cpp \
 		$S/TextRendering/Freetype.class.cpp \
-    $S/Inputs/Binding.class.cpp \
+    	$S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
-		$S/Camera.class.cpp
+		$S/Camera.class.cpp \
 
 CC = clang++ --std=c++20 -g3
 CPPFLAGS =

@@ -4,6 +4,7 @@
 #include "Object/Mesh.class.hpp"
 #include "Object/Texture.class.hpp"
 #include "Object/Transform.class.hpp"
+#include "Object/Asset.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -23,7 +24,7 @@ namespace notrealengine
 		mft::mat4	offset;
 	};
 
-	class GLObject
+	class GLObject: public Asset
 	{
 
 		public:
@@ -48,10 +49,11 @@ namespace notrealengine
 
 			std::vector<std::shared_ptr<Mesh>> const&
 				getMeshes() const;
-			std::string const&
-				getName() const;
 			int const&
 				getNbBones() const;
+
+			virtual const std::string
+				getAssetType() const;
 
 			//	Setters
 
@@ -65,7 +67,6 @@ namespace notrealengine
 			Transform	transform;
 
 		private:
-			std::string	name;
 
 			std::vector<std::shared_ptr<Mesh>>	meshes;
 

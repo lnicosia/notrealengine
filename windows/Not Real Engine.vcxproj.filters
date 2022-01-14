@@ -93,6 +93,15 @@
     <ClCompile Include="..\src\Object\Animation.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Light.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Object\AssetManager.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Object\Asset.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -179,6 +188,15 @@
     <ClInclude Include="..\inc\Object\Animation.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\inc\Object\Light.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\Object\AssetManager.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\Object\Asset.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\test.fs">
@@ -203,6 +221,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\test.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\2dProjected.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\2dProjected.fs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

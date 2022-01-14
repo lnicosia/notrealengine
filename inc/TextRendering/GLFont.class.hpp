@@ -3,17 +3,18 @@
 
 #include "TextRendering/GLCharacter.class.hpp"
 #include "GLShaderProgram.class.hpp"
+#include "Object/Asset.class.hpp"
 
 #include <string>
 #include <map>
 
 namespace notrealengine
 {
-	class GLFont
+	class GLFont: public Asset
 	{
 	public:
 		GLFont() = delete;
-		GLFont(std::string path);
+		GLFont(const std::string& path);
 		GLFont(GLFont const& ref) = delete;
 		GLFont(GLFont&& ref) noexcept;
 		GLFont& operator=(GLFont const& font) = delete;
@@ -22,6 +23,9 @@ namespace notrealengine
 
 		void	RenderText(GLShaderProgram* shader, std::string text,
 			mft::vec2 pos, float scale, mft::vec3 color);
+
+		virtual const std::string
+			getAssetType() const;
 
 	private:
 		std::map<char, GLCharacter*>	characters;

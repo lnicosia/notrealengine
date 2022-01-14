@@ -1,5 +1,6 @@
 #include "Object/GLObject.class.hpp"
 #include "Object/TextureLoader.class.hpp"
+#include "Object/AssetManager.class.hpp"
 #include "mft/mft.hpp"
 
 //	OpenGL includes
@@ -20,13 +21,13 @@ namespace notrealengine
 	{
 	}
 
-	GLObject::GLObject(GLObject const& GLObject)
+	GLObject::GLObject(GLObject const& ref): Asset(std::filesystem::path(ref.getPath()))
 	{
-		*this = GLObject;
+		*this = ref;
 	}
 
 	GLObject::GLObject(const std::string& path)
-		: name("Unkown object"),
+		: Asset(path),
 		transform(),
 		directory(""), bones(), nbBones(0)
 	{
@@ -34,7 +35,7 @@ namespace notrealengine
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
-		: name("Unkown object"),
+		: Asset(std::filesystem::path()),
 		transform(),
 		directory(""), meshes(meshes), bones(), nbBones(0)
 	{
@@ -108,23 +109,25 @@ namespace notrealengine
 		{
 			aiString	str;
 			mat->GetTexture(type, i, &str);
-			std::string	path = directory + '/' + std::string(str.C_Str());
+			std::filesystem::path textPath(str.C_Str());
+			textPath.make_preferred();
+			std::string	path = directory + '/' + textPath.string();
 			const aiTexture* texture;
 			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
 			{
 				if (texture->mHeight == 0)
-					textures.push_back(TextureLoader::loadTexture(path,
+					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path.string(),
 						reinterpret_cast<unsigned char*>(texture->pcData),
 						texture->mWidth, typeName));
 				else
-					textures.push_back(TextureLoader::loadTexture(path,
+						textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path.string(),
 						reinterpret_cast<unsigned char *>(texture->pcData),
 						texture->mWidth * texture->mHeight, typeName));
 			}
 			else
 			{
 				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
-				textures.push_back(TextureLoader::loadTexture(path, typeName));
+				textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
 			}
 		}
 		return textures;
@@ -286,7 +289,6 @@ namespace notrealengine
 	void	GLObject::loadObject(std::string path)
 	{
 		std::cout << "Loading object '" << path << "'..." << std::endl;
-		name = path.substr(path.find_last_of('/'), name.size());
 
 		Assimp::Importer	importer;
 		const aiScene* scene;
@@ -337,14 +339,14 @@ namespace notrealengine
 		return meshes;
 	}
 
-	std::string const& GLObject::getName() const
-	{
-		return name;
-	}
-
 	int const& GLObject::getNbBones() const
 	{
 		return nbBones;
+	}
+
+	const std::string GLObject::getAssetType() const
+	{
+		return std::string("GLObject");
 	}
 
 	//	Setters

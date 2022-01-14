@@ -10,8 +10,9 @@
 namespace notrealengine
 {
 	Animation::Animation(const std::string& path, int index)
-		: type(Skeletal)
+		: Asset(path), type(Skeletal)
 	{
+		std::cout << "Loading animation " << index << " of " << path << std::endl;
 		for (int i = 0; i < MAX_BONES; i++)
 		{
 			mat[i] = mft::mat4();
@@ -51,6 +52,11 @@ namespace notrealengine
 	const mft::mat4* Animation::getMatrices() const
 	{
 		return mat;
+	}
+
+	const std::string Animation::getAssetType() const
+	{
+		return std::string("Animation");
 	}
 
 	mft::vec3	Animation::AssimpToMftVec3(aiVector3D& vec) const
