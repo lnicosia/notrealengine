@@ -52,7 +52,7 @@ namespace mft
 		quaternion<T> & operator-=( const quaternion<T> & v2 );
 		quaternion<T> & operator*=( const quaternion<T> & v2 );
 
-		static constexpr quaternion<T> rotate( const vec<T,T,T> axis, T radians);
+		static constexpr quaternion<T> rotate( const vec<T,T,T> axis, T radians );
 	};
 }
 

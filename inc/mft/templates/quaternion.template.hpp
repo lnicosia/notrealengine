@@ -9,7 +9,7 @@ namespace mft
 	template<typename T>
 		requires std::is_floating_point_v<T>
 	constexpr quaternion<T>::quaternion( void ):
-		data{0, 0, 0, 1}
+		data{1, 0, 0, 0}
 	{
 	}
 
@@ -145,7 +145,7 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
-	constexpr quaternion<T> quaternion<T>::rotate(const vec<T,T,T> axis, T angle)
+	constexpr quaternion<T> quaternion<T>::rotation(const vec<T,T,T> axis, T angle)
 	{
 		return quaternion<T>(
 				cos(angle / 2),
