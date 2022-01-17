@@ -69,9 +69,6 @@
     <ClCompile Include="..\src\Object\Texture.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Object\TextureLoader.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -93,13 +90,13 @@
     <ClCompile Include="..\src\Object\Animation.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Light.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Object\AssetManager.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Object\Asset.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Object\Light.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,9 +170,6 @@
     <ClInclude Include="..\inc\Object\Mesh.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\inc\Object\Texture.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -188,13 +182,13 @@
     <ClInclude Include="..\inc\Object\Animation.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\inc\Object\Light.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\inc\Object\AssetManager.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\Object\Asset.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\Object\Light.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

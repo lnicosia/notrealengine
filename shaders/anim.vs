@@ -9,12 +9,15 @@ layout (location = 4) in vec4 weights;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat3 normalMatrix;
 	
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 bonesMatrices[MAX_BONES];
 	
 out vec2 TextCoord;
+out vec3 Normal;
+out vec3 FragPos;
 flat out ivec4 boneIDs;
 out vec4    Weights;
 	
@@ -36,6 +39,9 @@ void main()
     }
 		
     gl_Position =  projection * view * model * totalPosition;
+    FragPos = vec3(model * totalPosition);
+    Normal = mat3(transpose(inverse(model))) * norm;
+    //Normal = normalMatrix * norm;
     TextCoord = tex;
     boneIDs = boneIds;
     Weights = weights;

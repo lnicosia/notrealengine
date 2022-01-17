@@ -31,6 +31,7 @@ namespace notrealengine
 		
 		int	w, h, nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		stbi_set_flip_vertically_on_load(true);
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
 		if (!img)
 		{
@@ -63,7 +64,7 @@ namespace notrealengine
 	{
 
 		int	w, h, nChannels;
-		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		std::cout << "Loading embedded texture in '" << path << "'..." << std::endl;
 		unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
 		if (!img)
 		{
@@ -112,7 +113,7 @@ namespace notrealengine
 
 	//	Accessors
 
-	const unsigned int& Texture::getId() const
+	const unsigned int& Texture::getGLId() const
 	{
 		return glId;
 	}

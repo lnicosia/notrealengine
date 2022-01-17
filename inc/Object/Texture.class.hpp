@@ -28,7 +28,7 @@ namespace notrealengine
 		//	Accessors
 
 		const unsigned int&
-			getId() const;
+			getGLId() const;
 		const std::string&
 			getType() const;
 		virtual const std::string

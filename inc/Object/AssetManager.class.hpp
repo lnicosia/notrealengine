@@ -14,7 +14,7 @@ namespace notrealengine
 		AssetManager(const AssetManager& ref) = delete;
 		AssetManager(const AssetManager&& ref) = delete;
 		AssetManager&	operator=(const AssetManager& ref) = delete;
-		AssetManager& operator=(const AssetManager&& ref) = delete;
+		AssetManager&	operator=(const AssetManager&& ref) = delete;
 		~AssetManager();
 
 		static AssetManager&

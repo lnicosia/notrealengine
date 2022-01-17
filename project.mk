@@ -16,6 +16,8 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Transform.class.cpp \
 		$S/Object/AssetManager.class.cpp \
 		$S/Object/Asset.class.cpp \
+		$S/Object/Light.class.cpp \
+		$S/Object/Scene.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -29,7 +31,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp \
 
-CC = clang++ --std=c++20 -g3
+CC = clang++ --std=c++20 -O3
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

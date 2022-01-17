@@ -112,18 +112,20 @@ namespace notrealengine
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
 		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<float*>(transform));
+		mft::mat4	normalMatrix = mft::mat4::transpose(mft::mat4::inverse(transform));
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "normalMatrix"), 1, GL_TRUE, static_cast<float*>(normalMatrix));
 		for (size_t i = 0; i < textures.size(); i++)
 		{
 			GLCallThrow(glActiveTexture, GL_TEXTURE0 + (unsigned int)i);
 
 			std::string	nb;
-			std::string	name = (*textures[i]).getType();
-			if (name == "texture_diffuse")
+			std::string	name = textures[i]->getType();
+			if (name == "material.diffuse")
 				nb = std::to_string(diffuse);
-			else if (name == "texture_specular")
+			else if (name == "material.specular")
 				nb = std::to_string(specular);
-			GLCallThrow(glBindTexture, GL_TEXTURE_2D, (*textures[i]).getId());
-			GLCallThrow(glUniform1f, GLCallThrow(glGetUniformLocation, shader->programID, ("material." + name + nb).c_str()), i);
+			GLCallThrow(glBindTexture, GL_TEXTURE_2D, textures[i]->getGLId());
+			GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, shader->programID, name.c_str()), i);
 		}
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
