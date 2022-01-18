@@ -63,7 +63,7 @@ namespace notrealengine
 			DIRTY_FLAG_ANY = DIRTY_FLAG_POS | DIRTY_FLAG_ROTATION | DIRTY_FLAG_SCALE
 		};
 
-		int dirty_flags;
+		mutable int dirty_flags;
 
 		const mat4 &
 			getPosMatrix( void ) const;

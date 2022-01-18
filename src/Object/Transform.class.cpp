@@ -106,21 +106,30 @@ namespace notrealengine
 	const mat4 & Transform::getPosMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_POS)
+		{
 			pos_mat = mat4::translate(tPos);
+			dirty_flags &= ~DIRTY_FLAG_POS;
+		}
 		return pos_mat;
 	}
 
 	const mat4 & Transform::getRotationMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_ROTATION)
+		{
 			rotation_mat = mat4::rotate(tRotation);
+			dirty_flags &= ~DIRTY_FLAG_ROTATION;
+		}
 		return rotation_mat;
 	}
 
 	const mat4 & Transform::getScaleMatrix( void ) const
 	{
 		if (dirty_flags & DIRTY_FLAG_SCALE)
+		{
 			scale_mat = mat4::scale(tScale);
+			dirty_flags &= ~DIRTY_FLAG_SCALE;
+		}
 		return scale_mat;
 	}
 }
