@@ -1,12 +1,12 @@
 #include "Object/Light.class.hpp"
 #include "Object/AssetManager.class.hpp"
+#include "GLContext.class.hpp"
 
 namespace notrealengine
 {
 	Light::Light(LightType type)
 		: transform(),
 		VBO(0), VAO(0), texture(0),
-		shader(nullptr),
 		name("")
 	{
 		name = "Light" + std::to_string(count);
@@ -37,7 +37,7 @@ namespace notrealengine
 
 		GLCallThrow(glEnableVertexAttribArray, 1);
 		GLCallThrow(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	
+
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 
@@ -50,14 +50,15 @@ namespace notrealengine
 		GLCallThrow(glDeleteVertexArrays, 1, &VBO);
 	}
 
-	void	Light::draw(GLShaderProgram* shader) const
+	void	Light::draw() const
 	{
-		GLCallThrow(glUseProgram, shader->programID);
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<const float*>(transform.getMatrix()));
+		unsigned int shader = GLContext::getShader("2dProjected")->programID;
+		GLCallThrow(glUseProgram, shader);
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<const float*>(transform.getMatrix()));
 
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, texture);
-		GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, shader->programID, ("image")), 0);
+		GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, shader, ("image")), 0);
 
 		GLCallThrow(glBindVertexArray, VAO);
 		GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 6);

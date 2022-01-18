@@ -62,6 +62,14 @@ namespace notrealengine
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
 		cube = std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+
+		registerShader("color", "shaders/test.vs", "shaders/colorShader.fs");
+		registerShader("bones", "shaders/anim.vs", "shaders/bones.fs");
+		registerShader("anim", "shaders/anim.vs", "shaders/test.fs");
+		//context.registerShader("default", "shaders/anim.vs", "shaders/test.fs");
+		registerShader("2dProjected", "shaders/2dProjected.vs", "shaders/2dProjected.fs");
+
+		registerShader("text", "shaders/text.vs", "shaders/text.fs");
 	}
 
 	GLContext::~GLContext()
@@ -71,6 +79,8 @@ namespace notrealengine
 
 	void GLContext::registerShader( std::string name, std::filesystem::path vertex, std::filesystem::path fragment )
 	{
+		std::cout << "Loading shader " << vertex << ", " << fragment << " as \"";
+ 		std::cout << name << "\"" << std::endl;
 		if (shaders.contains(name))
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
 		std::string
@@ -102,8 +112,8 @@ namespace notrealengine
 			throw std::runtime_error( "Could not read shader files '" + fragment.string() + "'" );
 		}
 
-		if (!isCurrent())
-			makeCurrent();
+		//if (!isCurrent())
+		//	makeCurrent();
 		shaders.emplace(std::piecewise_construct,
 				std::forward_as_tuple(name),
 				std::forward_as_tuple(
@@ -126,6 +136,8 @@ namespace notrealengine
 	}
 
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
+	std::map<std::string, GLShaderProgram> GLContext::shaders = std::map<std::string, GLShaderProgram>();
+	std::shared_ptr<GLMesh>	GLContext::cube = std::shared_ptr<GLMesh>();
 	long GLContext::CurrentContext = 0;
 
 }

@@ -37,12 +37,15 @@ namespace notrealengine
 			}
 
 			std::shared_ptr<T> ptr(new T(path, std::forward<Args>(args)...));
-			ptr->setLoaded(true);
 			assets.emplace(std::make_pair(ptr->getId(), ptr));
 			return ptr;
 		}
 
-		Asset*	getAsset(uint32_t id);
+		template <typename T, typename ... Args>
+		std::shared_ptr<T> getAsset(uint32_t id)
+		{
+			return assets[id];
+		}
 
 		void
 			printContent(void) const;

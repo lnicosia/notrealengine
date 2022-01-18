@@ -26,15 +26,15 @@ namespace notrealengine
 		virtual bool
 			isCurrent( void ) = 0;
 
-		void
+		static void
 			registerShader( std::string name, std::filesystem::path, std::filesystem::path );
-		GLShaderProgram *
+		static GLShaderProgram *
 			getShader( std::string );
 
 		static std::filesystem::path
 			DefaultShaderPath;
 
-		std::shared_ptr<GLMesh>
+		static std::shared_ptr<GLMesh>
 			cube;
 
 	protected:
@@ -44,11 +44,10 @@ namespace notrealengine
 		~GLContext( void );
 
 	private:
-		std::map<std::string,GLShaderProgram>
+		static std::map<std::string,GLShaderProgram>
 			shaders;
 
 	};
 }
 
 #endif
-

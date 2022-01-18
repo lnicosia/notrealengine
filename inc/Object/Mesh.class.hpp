@@ -24,19 +24,34 @@ namespace notrealengine
 			getName() const;
 		mft::vec3 const&
 			getColor() const;
+		unsigned int const&
+				getShader() const;
 
 		// Transform is public so its non-const operations can be called efficiently
 		Transform	transform;
 
 		//	Setters
 
-		void	setName(std::string name);
-		void	setColor(mft::vec3 color);
+		void
+			setName(std::string name);
+		void
+			setColor(mft::vec3 color);
+		void
+			setShader(unsigned int shader);
+		void
+			setShader(GLShaderProgram* shader);
 
-		void	addTexture(std::shared_ptr < Texture >& text);
-		void	draw(GLShaderProgram* shader, mft::mat4 parentMat) const;
+		void
+			addTexture(std::shared_ptr < Texture >& text);
+		/**	Draw the mesh from the given parent matrix
+		**	If a shader is given, the mesh will be drawn with it
+		**	instead of the mesh's shader data
+		*/
+		void
+			draw(mft::mat4 parentMat, unsigned int shader = 0) const;
 
-		void	addMesh(std::shared_ptr<Mesh> mesh);
+		void
+			addMesh(std::shared_ptr<Mesh> mesh);
 
 	private:
 		std::string				name;
@@ -48,6 +63,8 @@ namespace notrealengine
 		mft::mat4	matrix;
 
 		mft::vec3	color;
+
+		unsigned int	shader;
 
 	};
 

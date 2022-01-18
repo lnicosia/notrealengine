@@ -10,7 +10,7 @@
 namespace notrealengine
 {
 	Animation::Animation(const std::string& path, int index)
-		: Asset(path), type(Skeletal)
+		: Asset({path}), type(Skeletal)
 	{
 		std::cout << "Loading animation " << index << " of " << path << std::endl;
 		for (int i = 0; i < MAX_BONES; i++)

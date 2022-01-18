@@ -26,12 +26,11 @@ namespace notrealengine
 		Transform transform;
 
 		void
-			draw(GLShaderProgram* shader) const;
+			draw() const;
 
 	private:
 		int	type;
 		std::string	name;
-		GLShaderProgram* shader;
 
 		unsigned int	VBO, VAO, texture;
 

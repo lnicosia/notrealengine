@@ -6,7 +6,7 @@ namespace notrealengine
 	GLContext_SDL::GLContext_SDL( SDL_GLContext glHandle, SDL_Window * windowHandle ):
 		glHandle(glHandle), windowHandle(windowHandle)
 	{
-
+		makeCurrent();
 		return ;
 	}
 

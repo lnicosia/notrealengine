@@ -1,10 +1,12 @@
 #include "Object/Mesh.class.hpp"
+#include "GLContext.class.hpp"
 
 namespace notrealengine
 {
 	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
 		: transform(),
 		glMesh(glMesh),
+		shader(GLContext::getShader("default")->programID),
 		color(mft::vec3(0.239f, 0.282f, 0.286f))
 	{
 
@@ -37,6 +39,11 @@ namespace notrealengine
 		return color;
 	}
 
+	unsigned int const& Mesh::getShader() const
+	{
+		return shader;
+	}
+
 	//	Setters
 
 	void	Mesh::setName(std::string name)
@@ -47,6 +54,14 @@ namespace notrealengine
 	void	Mesh::setColor(mft::vec3 color)
 	{
 		this->color = color;
+	}
+
+	void 	Mesh::setShader(unsigned int shader) {
+		this->shader = shader;
+	}
+
+	void 	Mesh::setShader(GLShaderProgram* shader) {
+		this->shader = shader->programID;
 	}
 
 	// Transforms
@@ -84,16 +99,18 @@ namespace notrealengine
 		update();
 	}*/
 
-	void	Mesh::draw(GLShaderProgram* shader, mft::mat4 parentMat) const
+	void	Mesh::draw(mft::mat4 parentMat, unsigned int overrideShader) const
 	{
+		unsigned int finalShader = overrideShader == 0 ? this->shader : overrideShader;
 		mft::mat4	transformMatrix = parentMat * transform.getMatrix();
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
-		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, shader->programID, "baseColor"), color.x, color.y, color.z);
+		GLCallThrow(glUseProgram, finalShader);
+		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, finalShader, "baseColor"), color.x, color.y, color.z);
 		//std::cout << "Drawing mesh " << name << " with matrix " << transformMatrix << std::endl;
-		glMesh->draw(shader, transformMatrix);
+		glMesh->draw(finalShader, transformMatrix);
 		for (auto child: children)
 		{
-			child->draw(shader, transformMatrix);
+			child->draw(transformMatrix);
 		}
 	}
 

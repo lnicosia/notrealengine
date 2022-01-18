@@ -26,9 +26,9 @@
 namespace notrealengine
 {
 	Texture::Texture(const std::string& path, const std::string& type)
-		: Asset(path), type(type), glId(0)
+		: Asset({path}), type(type), glId(0)
 	{
-		
+
 		int	w, h, nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
 		stbi_set_flip_vertically_on_load(true);
@@ -60,7 +60,7 @@ namespace notrealengine
 	}
 
 	Texture::Texture(const std::string& path, unsigned char *data, unsigned int width, std::string const& type)
-		: Asset(path), type(type), glId(0)
+		: Asset({path}), type(type), glId(0)
 	{
 
 		int	w, h, nChannels;
@@ -93,13 +93,14 @@ namespace notrealengine
 	}
 
 	Texture::Texture(Texture && ref) noexcept
-		: Asset(ref.getPath()), glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
+		: Asset(std::move(ref)), glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
 	{
 
 	}
 
 	Texture& Texture::operator=(Texture&& text) noexcept
 	{
+		Asset::operator=(std::move(text));
 		this->glId = std::exchange(text.glId, 0);
 		this->type = std::move(text.type);
 

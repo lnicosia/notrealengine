@@ -1,6 +1,7 @@
 #include "Object/GLObject.class.hpp"
 #include "Object/TextureLoader.class.hpp"
 #include "Object/AssetManager.class.hpp"
+#include "GLContext.class.hpp"
 #include "mft/mft.hpp"
 
 //	OpenGL includes
@@ -21,30 +22,30 @@ namespace notrealengine
 	{
 	}
 
-	GLObject::GLObject(GLObject const& ref): Asset(std::filesystem::path(ref.getPath()))
+	GLObject::GLObject(GLObject const& ref): Asset(ref.getPaths())
 	{
 		*this = ref;
 	}
 
 	GLObject::GLObject(const std::string& path)
-		: Asset(path),
+		: Asset({path}),
 		transform(),
-		directory(""), bones(), nbBones(0)
+		directory(""), bones(), nbBones(0), shader(0)
 	{
 		loadObject(path);
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
-		: Asset(std::filesystem::path()),
+		: Asset({std::filesystem::path()}),
 		transform(),
-		directory(""), meshes(meshes), bones(), nbBones(0)
+		directory(""), meshes(meshes), bones(), nbBones(0), shader(0)
 	{
 
 	}
 
 	GLObject& GLObject::operator=(GLObject const& GLObject)
 	{
-		this->meshes = GLObject.meshes;
+		*this = GLObject;
 		return *this;
 	}
 
@@ -116,11 +117,11 @@ namespace notrealengine
 			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
 			{
 				if (texture->mHeight == 0)
-					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path.string(),
+					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->paths[0].string(),
 						reinterpret_cast<unsigned char*>(texture->pcData),
 						texture->mWidth, typeName));
 				else
-						textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path.string(),
+						textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->paths[0].string(),
 						reinterpret_cast<unsigned char *>(texture->pcData),
 						texture->mWidth * texture->mHeight, typeName));
 			}
@@ -307,26 +308,29 @@ namespace notrealengine
 
 	//	Drawing functions
 
-	void	GLObject::draw(GLShaderProgram *shader) const
+	void	GLObject::draw() const
 	{
-		GLCallThrow(glUseProgram, shader->programID);
+
+		//GLCallThrow(glUseProgram, shader->programID);
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			//std::cout << "Drawing object " << name << " with matrix " << transform.getMatrix() << std::endl;
-			meshes[i]->draw(shader, transform.getMatrix());
+			meshes[i]->draw(transform.getMatrix(), this->shader);
 		}
 	}
 
-	void	GLObject::drawBones(GLShaderProgram* shader, std::shared_ptr<GLMesh> mesh) const
+	void	GLObject::drawBones() const
 	{
-		GLCallThrow(glUseProgram, shader->programID);
+		unsigned int shader = GLContext::getShader("color")->programID;
+		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		std::map<std::string, BoneInfo>::const_iterator it;
+		Mesh	cube(GLContext::cube);
+		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
+		cube.setShader(shader);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			Mesh	cube(mesh);
-			cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
-			cube.draw(shader, (*it).second.offset * transform.getMatrix());
+			cube.draw((*it).second.offset * transform.getMatrix());
 			//return;
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
@@ -349,11 +353,26 @@ namespace notrealengine
 		return std::string("GLObject");
 	}
 
+	const	unsigned int GLObject::getShader() const
+	{
+		return shader;
+	}
+
 	//	Setters
 
 	void	GLObject::setName(std::string name)
 	{
 		this->name = name;
+	}
+
+	void GLObject::setShader(unsigned int shader)
+	{
+		this->shader = shader;
+	}
+
+	void GLObject::setShader(GLShaderProgram *shader)
+	{
+		this->shader = shader->programID;
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)

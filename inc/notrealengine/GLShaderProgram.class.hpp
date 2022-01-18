@@ -3,6 +3,7 @@
 # define __GLSHADERPROGRAM_CLASS_H__
 
 # include "GL.hpp"
+# include "Object/Asset.class.hpp"
 
 namespace notrealengine
 {
@@ -21,11 +22,13 @@ namespace notrealengine
 
 		GLShaderProgram( ShaderPart<GL_VERTEX_SHADER> vertex,
 						 ShaderPart<GL_FRAGMENT_SHADER> fragment );
+		//GLShaderProgram(std::string vertexPath,
+		//				 std::string fragmentPath, std::string name);
 		~GLShaderProgram( void );
 
 		const GLuint programID;
+
 	};
 }
 
 #endif
-

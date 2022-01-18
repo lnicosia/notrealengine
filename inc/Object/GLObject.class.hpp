@@ -39,11 +39,11 @@ namespace notrealengine
 			//	Draw functions
 
 			void
-				draw(GLShaderProgram *shader) const;
+				draw(void) const;
 
 			//	Render all the object's bones
 			void
-				drawBones(GLShaderProgram* shader, std::shared_ptr<GLMesh> mesh) const;
+				drawBones() const;
 
 			//	Accessors
 
@@ -51,13 +51,20 @@ namespace notrealengine
 				getMeshes() const;
 			int const&
 				getNbBones() const;
+			const unsigned int
+				getShader() const;
 
 			virtual const std::string
 				getAssetType() const;
 
 			//	Setters
 
-			void	setName(std::string name);
+			void
+				setName(std::string name);
+			void
+				setShader(unsigned int shader);
+			void
+				setShader(GLShaderProgram* shader);
 
 			//	Texture utility
 
@@ -65,6 +72,7 @@ namespace notrealengine
 
 			// Transform is public so its non-const operations can be called efficiently
 			Transform	transform;
+			Transform parentTransform;
 
 		private:
 
@@ -74,6 +82,8 @@ namespace notrealengine
 
 			std::map<std::string, BoneInfo>	bones;
 			int	nbBones;
+
+			unsigned int	shader;
 
 			//	Object loading
 			void

@@ -4,7 +4,7 @@
 
 namespace notrealengine
 {
-	GLFont::GLFont(const std::string& path): Asset(path)
+	GLFont::GLFont(const std::string& path): Asset({path})
 	{
 		std::cout << "Loading font '" << path << "'..." << std::endl;
 		Freetype::Init();
@@ -39,7 +39,7 @@ namespace notrealengine
 
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
 		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-		
+
 		GLCallThrow(glEnableVertexAttribArray, 0);
 		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 
@@ -49,7 +49,7 @@ namespace notrealengine
 	}
 
 	GLFont::GLFont(GLFont&& ref) noexcept
-		: Asset(ref.getPath()), characters(std::move(ref.characters)),
+		: Asset(std::move(ref)), characters(std::move(ref.characters)),
 		VAO(std::exchange(ref.VAO, 0)),
 		VBO(std::exchange(ref.VBO, 0))
 	{
@@ -69,6 +69,7 @@ namespace notrealengine
 
 	GLFont& GLFont::operator=(GLFont&& font) noexcept
 	{
+		Asset::operator=(std::move(font));
 		this->characters = std::move(font.characters);
 		this->VAO = std::exchange(font.VAO, 0);
 		this->VBO = std::exchange(font.VBO, 0);

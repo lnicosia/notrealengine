@@ -107,13 +107,14 @@ namespace notrealengine
 
 	//	Main functions
 
-	void	GLMesh::draw(GLShaderProgram *shader, mft::mat4 transform) const
+	void	GLMesh::draw(unsigned int shader, mft::mat4 transform) const
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<float*>(transform));
+		//GLCallThrow(glUseProgram, shader);
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<float*>(transform));
 		mft::mat4	normalMatrix = mft::mat4::transpose(mft::mat4::inverse(transform));
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "normalMatrix"), 1, GL_TRUE, static_cast<float*>(normalMatrix));
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "normalMatrix"), 1, GL_TRUE, static_cast<float*>(normalMatrix));
 		for (size_t i = 0; i < textures.size(); i++)
 		{
 			GLCallThrow(glActiveTexture, GL_TEXTURE0 + (unsigned int)i);
@@ -125,7 +126,7 @@ namespace notrealengine
 			else if (name == "material.specular")
 				nb = std::to_string(specular);
 			GLCallThrow(glBindTexture, GL_TEXTURE_2D, textures[i]->getGLId());
-			GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, shader->programID, name.c_str()), i);
+			GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, shader, name.c_str()), i);
 		}
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
@@ -166,7 +167,7 @@ namespace notrealengine
 			1, 3, GL_FLOAT, GL_FALSE,
 			sizeof(Vertex), (void*)offsetof(Vertex, norm));
 		GLCallThrow(glEnableVertexAttribArray, 1);
-		
+
 		//	UV
 		GLCallThrow(glVertexAttribPointer,
 			2, 2, GL_FLOAT, GL_FALSE,

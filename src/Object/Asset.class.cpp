@@ -4,12 +4,30 @@
 
 namespace notrealengine
 {
-	Asset::Asset(const std::filesystem::path& path): path(path), loaded(false)
+	Asset::Asset(const std::vector<std::filesystem::path>& paths): paths(paths), loaded(false)
 	{
 		id = count;
 		count++;
-		this->path.make_preferred();
-		name = this->path.filename().string();
+		for (int i = 0; i < paths.size(); i++)
+			this->paths[i].make_preferred();
+		name = this->paths[0].filename().string();
+	}
+
+	Asset::Asset(Asset&& ref):
+		name(std::move(ref.name)),
+		paths(std::move(ref.paths)),
+		id(std::exchange(ref.id, 0)),
+		loaded(std::exchange(ref.loaded, false))
+	{
+
+	}
+
+	Asset&	Asset::operator=(Asset&& ref)
+	{
+		this->name = std::move(ref.name);
+		this->paths = std::move(ref.paths);
+		this->id = std::exchange(ref.id, 0);
+		this->loaded = std::exchange(ref.loaded, false);
 	}
 
 	Asset::~Asset()
@@ -29,9 +47,19 @@ namespace notrealengine
 		return id;
 	}
 
-	const std::filesystem::path& Asset::getPath() const
+	const std::filesystem::path& Asset::getPath(int index) const
 	{
-		return path;
+		if (index >= paths.size())
+		{
+			std::cerr << "Error: requesting path #" << index << " of array of size ";
+			std::cerr << paths.size() << std::endl;
+		}
+		return paths[index];
+	}
+
+	const std::vector<std::filesystem::path>& Asset::getPaths() const
+	{
+		return paths;
 	}
 
 	const bool	Asset::isLoaded() const
@@ -46,14 +74,19 @@ namespace notrealengine
 		this->name = name;
 	}
 
-	void	Asset::setPath(const std::filesystem::path& path)
+	void	Asset::setPath(const std::filesystem::path& path, int index)
 	{
-		this->path = path;
+		if (index >= paths.size())
+		{
+			std::cerr << "Error: setting path #" << index << " of array of size ";
+			std::cerr << paths.size() << std::endl;
+		}
+		this->paths[index] = path;
 	}
 
-	void	Asset::setLoaded(bool state)
+	void	Asset::setPaths(const std::vector<std::filesystem::path>& paths)
 	{
-		this->loaded = state;
+		this->paths = paths;
 	}
 
 	std::ostream& operator<<(std::ostream& o, Asset const& asset)
