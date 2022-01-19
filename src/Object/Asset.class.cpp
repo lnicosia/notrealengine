@@ -4,7 +4,7 @@
 
 namespace notrealengine
 {
-	Asset::Asset(const std::vector<std::filesystem::path>& paths): paths(paths), loaded(false)
+	Asset::Asset(const std::vector<std::filesystem::path>& paths): paths(paths), loaded(true)
 	{
 		id = count;
 		count++;
@@ -28,6 +28,7 @@ namespace notrealengine
 		this->paths = std::move(ref.paths);
 		this->id = std::exchange(ref.id, 0);
 		this->loaded = std::exchange(ref.loaded, false);
+		return *this;
 	}
 
 	Asset::~Asset()

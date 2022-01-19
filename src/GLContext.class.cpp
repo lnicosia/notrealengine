@@ -66,7 +66,7 @@ namespace notrealengine
 		registerShader("color", "shaders/test.vs", "shaders/colorShader.fs");
 		registerShader("bones", "shaders/anim.vs", "shaders/bones.fs");
 		registerShader("anim", "shaders/anim.vs", "shaders/test.fs");
-		//context.registerShader("default", "shaders/anim.vs", "shaders/test.fs");
+		registerShader("default", "shaders/anim.vs", "shaders/test.fs");
 		registerShader("2dProjected", "shaders/2dProjected.vs", "shaders/2dProjected.fs");
 
 		registerShader("text", "shaders/text.vs", "shaders/text.fs");

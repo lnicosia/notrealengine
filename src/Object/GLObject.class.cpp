@@ -59,38 +59,6 @@ namespace notrealengine
 			throw std::runtime_error("Mesh index out of bounds");
 	}
 
-	// Transforms
-
-	/*void	GLObject::update(void)
-	{
-		matrix = mft::mat4();
-		matrix *= mft::mat4::scale(transform.scale);
-		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
-		matrix *= mft::mat4::translate(transform.pos);
-		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
-	}
-
-	void	GLObject::move(mft::vec3 move)
-	{
-		transform.pos = transform.pos + move;
-		update();
-	}
-
-
-	void	GLObject::rotate(mft::vec3 rotation)
-	{
-		transform.rotation = transform.rotation + rotation;
-		update();
-	}
-
-	void	GLObject::scale(mft::vec3 scale)
-	{
-		transform.scale = transform.scale + scale;
-		update();
-	}*/
-
 	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat) const
 	{
 		mft::mat4	res(
@@ -269,7 +237,9 @@ namespace notrealengine
 		}*/
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		return std::shared_ptr<Mesh>(new Mesh(glMesh));
+		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
+		res->setName(mesh->mName.C_Str());
+		return res;
 	}
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)

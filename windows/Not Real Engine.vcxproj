@@ -138,7 +138,9 @@
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
+    <ClCompile Include="..\src\Object\Scene.class.cpp" />
     <ClCompile Include="..\src\Object\Texture.class.cpp" />
+    <ClCompile Include="..\src\Object\Transform.class.cpp" />
     <ClCompile Include="..\src\SDL.class.cpp" />
     <ClCompile Include="..\src\SDLWindow.class.cpp" />
     <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
@@ -151,7 +153,9 @@
     <ClInclude Include="..\inc\mft\mat.hpp" />
     <ClInclude Include="..\inc\mft\math_utils.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
+    <ClInclude Include="..\inc\mft\quaternion.hpp" />
     <ClInclude Include="..\inc\mft\templates\mat.template.hpp" />
+    <ClInclude Include="..\inc\mft\templates\quaternion.template.hpp" />
     <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
     <ClInclude Include="..\inc\notrealengine\Camera.class.hpp" />
@@ -171,7 +175,9 @@
     <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
+    <ClInclude Include="..\inc\Object\Scene.class.hpp" />
     <ClInclude Include="..\inc\Object\Texture.class.hpp" />
+    <ClInclude Include="..\inc\Object\Transform.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />

@@ -6,6 +6,7 @@ namespace notrealengine
 	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
 		: transform(),
 		glMesh(glMesh),
+		parentMatrix(), transformMatrix(), normalMatrix(),
 		shader(GLContext::getShader("default")->programID),
 		color(mft::vec3(0.239f, 0.282f, 0.286f))
 	{
@@ -64,50 +65,21 @@ namespace notrealengine
 		this->shader = shader->programID;
 	}
 
-	// Transforms
-
-	/*void	Mesh::update(void)
-	{
-		matrix = mft::mat4();
-		matrix *= mft::mat4::scale(transform.scale);
-		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
-		matrix *= mft::mat4::translate(transform.pos);
-		//std::cout << "Mesh matrix = " << std::endl << matrix << std::endl;
-	}
-
-	void	Mesh::move(mft::vec3 move)
-	{
-		transform.pos = transform.pos + move;
-		//std::cout << name << " pos = " << std::endl << transform.pos << std::endl;
-		update();
-	}
-
-
-	void	Mesh::rotate(mft::vec3 rotation)
-	{
-		transform.rotation = transform.rotation + rotation;
-		//std::cout << name << " rotation = " << std::endl << transform.rotation << std::endl;
-		update();
-	}
-
-	void	Mesh::scale(mft::vec3 scale)
-	{
-		transform.scale = transform.scale + scale;
-		//std::cout << name << " scale = " << std::endl << transform.scale << std::endl;
-		update();
-	}*/
-
-	void	Mesh::draw(mft::mat4 parentMat, unsigned int overrideShader) const
+	void	Mesh::draw(mft::mat4 parentMat, unsigned int overrideShader)
 	{
 		unsigned int finalShader = overrideShader == 0 ? this->shader : overrideShader;
-		mft::mat4	transformMatrix = parentMat * transform.getMatrix();
+		//	Recompute transform matrix if parent's one has changed
+		if (parentMat != this->parentMatrix)
+		{
+			this->transformMatrix = parentMat * this->transform.getMatrix();
+			this->normalMatrix = mft::mat4::transpose(mft::mat4::inverse(this->transformMatrix));
+			this->parentMatrix = parentMat;
+		}
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
 		GLCallThrow(glUseProgram, finalShader);
 		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, finalShader, "baseColor"), color.x, color.y, color.z);
 		//std::cout << "Drawing mesh " << name << " with matrix " << transformMatrix << std::endl;
-		glMesh->draw(finalShader, transformMatrix);
+		glMesh->draw(finalShader, transformMatrix, normalMatrix);
 		for (auto child: children)
 		{
 			child->draw(transformMatrix);

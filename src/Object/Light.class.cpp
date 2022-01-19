@@ -7,7 +7,8 @@ namespace notrealengine
 	Light::Light(LightType type)
 		: transform(),
 		VBO(0), VAO(0), texture(0),
-		name("")
+		shader(GLContext::getShader("2dProjected")->programID),
+		name(""), dirty(false)
 	{
 		name = "Light" + std::to_string(count);
 		count++;
@@ -50,9 +51,29 @@ namespace notrealengine
 		GLCallThrow(glDeleteVertexArrays, 1, &VBO);
 	}
 
+	void	Light::move(mft::vec3 translation)
+	{
+		this->transform.move(translation);
+		this->dirty = true;
+	}
+
+	void	Light::setDirty(bool state)
+	{
+		this->dirty = state;
+	}
+
+	const Transform& Light::getTransform() const
+	{
+		return transform;
+	}
+
+	const bool	Light::isDirty() const
+	{
+		return dirty;
+	}
+
 	void	Light::draw() const
 	{
-		unsigned int shader = GLContext::getShader("2dProjected")->programID;
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<const float*>(transform.getMatrix()));
 

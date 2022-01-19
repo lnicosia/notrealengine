@@ -119,7 +119,7 @@ namespace mft
 	template <typename T1, typename ... Tn>
 	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 ) const
 	{
-		return Rows::operator==(*this, m2);
+		return Rows::operator==(m2);
 	}
 
 	template <typename T1, typename ... Tn>

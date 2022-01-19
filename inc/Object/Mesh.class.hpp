@@ -48,7 +48,7 @@ namespace notrealengine
 		**	instead of the mesh's shader data
 		*/
 		void
-			draw(mft::mat4 parentMat, unsigned int shader = 0) const;
+			draw(mft::mat4 parentMat, unsigned int shader = 0);
 
 		void
 			addMesh(std::shared_ptr<Mesh> mesh);
@@ -60,7 +60,9 @@ namespace notrealengine
 		std::vector<std::shared_ptr<Mesh>>	children;
 		std::shared_ptr<Mesh>	*parent;
 
-		mft::mat4	matrix;
+		mft::mat4	parentMatrix;
+		mft::mat4	transformMatrix;
+		mft::mat4	normalMatrix;
 
 		mft::vec3	color;
 

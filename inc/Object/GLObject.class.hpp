@@ -39,7 +39,7 @@ namespace notrealengine
 			//	Draw functions
 
 			void
-				draw(void) const;
+				draw() const;
 
 			//	Render all the object's bones
 			void
@@ -72,7 +72,6 @@ namespace notrealengine
 
 			// Transform is public so its non-const operations can be called efficiently
 			Transform	transform;
-			Transform parentTransform;
 
 		private:
 

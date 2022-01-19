@@ -107,13 +107,12 @@ namespace notrealengine
 
 	//	Main functions
 
-	void	GLMesh::draw(unsigned int shader, mft::mat4 transform) const
+	void	GLMesh::draw(unsigned int shader, mft::mat4 transform, mft::mat4 normalMatrix) const
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
 		//GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<float*>(transform));
-		mft::mat4	normalMatrix = mft::mat4::transpose(mft::mat4::inverse(transform));
 		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "normalMatrix"), 1, GL_TRUE, static_cast<float*>(normalMatrix));
 		for (size_t i = 0; i < textures.size(); i++)
 		{
@@ -191,27 +190,6 @@ namespace notrealengine
 
 	std::ostream& operator<<(std::ostream& o, GLMesh const& GLMesh)
 	{
-		/*std::vector<Vertex>			vertices = GLMesh.getData().getVertices();
-		std::vector<unsigned int>	indices = GLMesh.getData().getIndices();
-		std::vector<Texture>		textures = GLMesh.getData().getTextures();
-		std::cout << "\t--Vertices--" << std::endl;
-		for (size_t i = 0; i < vertices.size(); i++)
-		{
-			std::cout << "\t" << vertices[i].pos << vertices[i].norm << vertices[i].uv << std::endl;
-		}
-		std::cout << "\t--Indices--" << std::endl;
-		for (size_t i = 0; i < indices.size(); i++)
-		{
-			std::cout << "\t" << indices[i] << std::endl;
-		}
-		std::cout << "\t--Textures--" << std::endl;
-		for (size_t i = 0; i < textures.size(); i++)
-		{
-			std::cout << "\t" << textures[i].path << std::endl;
-		}
-		std::cout << "\tVAO = " << GLMesh.getVAO() << std::endl;
-		std::cout << "\tVBO = " << GLMesh.getVBO() << std::endl;
-		std::cout << "\tEBO = " << GLMesh.getEBO() << std::endl;*/
 		return o;
 	}
 }

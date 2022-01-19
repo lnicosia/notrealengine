@@ -23,10 +23,20 @@ namespace notrealengine
 		Light(LightType type);
 		~Light();
 
-		Transform transform;
-
 		void
 			draw() const;
+
+		void
+			move(mft::vec3 translation);
+
+		void
+			setDirty(bool state);
+
+		const Transform&
+			getTransform() const;
+
+		const bool
+			isDirty() const;
 
 	private:
 		int	type;
@@ -34,7 +44,13 @@ namespace notrealengine
 
 		unsigned int	VBO, VAO, texture;
 
+		unsigned int	shader;
+
 		static unsigned int count;
+
+		Transform transform;
+
+		bool	dirty;
 
 	};
 }

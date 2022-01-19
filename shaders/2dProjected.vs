@@ -12,5 +12,5 @@ out	vec2	TexCoords;
 void	main()
 {
 	TexCoords = tex;
-	gl_Position =  projection * view * vec4(pos, 1.0);
+	gl_Position =  projection * view * model * vec4(pos, 1.0);
 }

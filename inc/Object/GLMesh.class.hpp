@@ -50,7 +50,7 @@ namespace notrealengine
 			addTexture(std::shared_ptr<Texture>& text);
 
 		void
-			draw(unsigned int shader, mft::mat4 transform) const;
+			draw(unsigned int shader, mft::mat4 transform, mft::mat4 normalMatrix) const;
 
 	private:
 		std::string	name;
