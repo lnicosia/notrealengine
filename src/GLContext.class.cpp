@@ -32,7 +32,7 @@ namespace notrealengine
 	void GLContext::registerShader( std::string name, std::filesystem::path vertex, std::filesystem::path fragment )
 	{
 		std::cout << "Loading shader " << vertex << ", " << fragment << " as \"";
- 		std::cout << name << "\"" << std::endl;
+ 		std::cout << name << "\"";
 		if (shaders.contains(name))
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
 		std::string
@@ -73,6 +73,7 @@ namespace notrealengine
 					GLShaderProgram::ShaderPart<GL_FRAGMENT_SHADER>(frag_code)
 					)
 				);
+		std::cout << " (id = " << getShader(name)->programID << ")" << std::endl;
 	}
 
 	GLShaderProgram * GLContext::getShader( std::string name )

@@ -36,7 +36,7 @@ namespace notrealengine
 			if (!success)
 			{
 				GLCallThrow(glGetProgramInfoLog, programID, 512, NULL, infoLog);
-				std::cerr << "Failed to delete shader:" << infoLog << std::endl;
+				std::cerr << "Failed to delete shader " << std::to_string(programID) << ": " << infoLog << std::endl;
 			}
 		} catch (std::exception e) {
 			std::cerr << "Exception caught in destructor (!) :" << std::endl << e.what();
