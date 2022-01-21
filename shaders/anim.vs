@@ -40,8 +40,8 @@ void main()
 		
     gl_Position =  projection * view * model * totalPosition;
     FragPos = vec3(model * totalPosition);
-    Normal = mat3(transpose(inverse(model))) * norm;
-    //Normal = normalMatrix * norm;
+    //Normal = mat3(transpose(inverse(model))) * norm;
+    Normal = normalMatrix * norm;
     TextCoord = tex;
     boneIDs = boneIds;
     Weights = weights;

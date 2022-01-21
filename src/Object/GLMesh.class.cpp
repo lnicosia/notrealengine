@@ -107,13 +107,14 @@ namespace notrealengine
 
 	//	Main functions
 
-	void	GLMesh::draw(unsigned int shader, mft::mat4 transform, mft::mat4 normalMatrix) const
+	void	GLMesh::draw(unsigned int shader, const mft::mat4& transform,
+		const mft::mat3& normalMatrix) const
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
 		//GLCallThrow(glUseProgram, shader);
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<float*>(transform));
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "normalMatrix"), 1, GL_TRUE, static_cast<float*>(normalMatrix));
+		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader, "model"), 1, GL_TRUE, static_cast<const float*>(transform));
+		GLCallThrow(glUniformMatrix3fv, GLCallThrow(glGetUniformLocation, shader, "normalMatrix"), 1, GL_TRUE, static_cast<const float*>(normalMatrix));
 		for (size_t i = 0; i < textures.size(); i++)
 		{
 			GLCallThrow(glActiveTexture, GL_TEXTURE0 + (unsigned int)i);

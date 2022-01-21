@@ -12,13 +12,21 @@ namespace notrealengine
 	{
 		shaders.push_back(GLContext::getShader("2dProjected")->programID);
 		mft::mat4	ortho = mft::mat4::ortho(0.0f, 1600.0f, 0.0f, 900.0f);
+
 		GLCallThrow(glUseProgram, GLContext::getShader("text")->programID);
 		GLint location = GLCallThrow(glGetUniformLocation, GLContext::getShader("text")->programID, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(ortho));
+		//	Binding 2d shader manually
 		GLCallThrow(glUseProgram, GLContext::getShader("2dProjected")->programID);
 		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("2dProjected")->programID, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("2dProjected")->programID, "view");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		//	Binding color shader manually (default shader)
+		GLCallThrow(glUseProgram, GLContext::getShader("color")->programID);
+		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "projection");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "view");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
 	}
 
@@ -50,6 +58,12 @@ namespace notrealengine
 			location = GLCallThrow(glGetUniformLocation, shader, "projection");
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 		}
+		//	Bind color shader manually (default shader)
+		unsigned int shader = GLContext::getShader("color")->programID;
+		GLCallThrow(glUseProgram, shader);
+		GLint location;
+		location = GLCallThrow(glGetUniformLocation, shader, "projection");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 	}
 
 	void	Scene::forward(uint32_t time)
@@ -80,24 +94,28 @@ namespace notrealengine
 	{
 		this->camera.pitch += 1;
 		this->camera.update();
+		bindCamera();
 	}
 
 	void	Scene::lookUp(uint32_t time)
 	{
 		this->camera.pitch -= 1;
 		this->camera.update();
+		bindCamera();
 	}
 
 	void	Scene::lookLeft(uint32_t time)
 	{
 		this->camera.yaw += 1;
 		this->camera.update();
+		bindCamera();
 	}
 
 	void	Scene::lookRight(uint32_t time)
 	{
 		this->camera.yaw -= 1;
 		this->camera.update();
+		bindCamera();
 	}
 
 	void	Scene::setCameraSpeed(float speed)
@@ -114,6 +132,12 @@ namespace notrealengine
 			location = GLCallThrow(glGetUniformLocation, shader, "view");
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
 		}
+		//	Bind color shader manually (default shader)
+		unsigned int shader = GLContext::getShader("color")->programID;
+		GLCallThrow(glUseProgram, shader);
+		GLint location;
+		location = GLCallThrow(glGetUniformLocation, shader, "view");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
 	}
 
 	void	Scene::bindLights(unsigned int shader)
@@ -216,7 +240,15 @@ namespace notrealengine
 			{
 				bindLights(GLContext::getShader("default")->programID);
 			}
-			light->draw();
+			//light->draw();
+		}
+	}
+
+	void	Scene::renderBones()
+	{
+		for (const auto& object : objects)
+		{
+			object->drawBones();
 		}
 	}
 }

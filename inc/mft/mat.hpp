@@ -32,6 +32,10 @@ namespace	mft
 								 const vec<T1,Tn...> & r3,
 								 const vec<T1,Tn...> & r4 );
 
+		constexpr mat<T1,Tn...>( const vec<T1, Tn...>& r1,
+								 const vec<T1, Tn...>& r2,
+								 const vec<T1, Tn...>& r3);
+
 		// Accessor
 		constexpr vec<T1,Tn...> & operator[]( size_t index );
 		constexpr const vec<T1,Tn...> & operator[]( size_t index ) const;

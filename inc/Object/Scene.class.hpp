@@ -17,6 +17,8 @@ namespace notrealengine
 
 		void
 			render();
+		void
+			renderBones();
 
 		void
 			addMesh(const std::shared_ptr<Mesh>& mesh);

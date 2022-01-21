@@ -61,6 +61,13 @@ namespace notrealengine
 		return transform_mat;
 	}
 
+	const bool Transform::isDirty(void) const
+	{
+		if (dirty_flags & DIRTY_FLAG_ANY)
+			return true;
+		return false;
+	}
+
 	void Transform::setPos( vec3 new_pos )
 	{
 		if (tPos != new_pos)

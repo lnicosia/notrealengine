@@ -301,7 +301,6 @@ namespace notrealengine
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			cube.draw((*it).second.offset * transform.getMatrix());
-			//return;
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}

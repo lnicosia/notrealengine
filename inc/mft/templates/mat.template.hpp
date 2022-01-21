@@ -40,6 +40,14 @@ namespace mft
 	}
 
 	template<typename T1, typename ... Tn>
+	constexpr mat<T1, Tn...>::mat( const Row& r1,
+								   const Row& r2,
+								   const Row& r3) :
+		Rows(r1, r2, r3)
+	{
+	}
+
+	template<typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index )
 	{
 		if (index >= 0 && index <= sizeof...(Tn))

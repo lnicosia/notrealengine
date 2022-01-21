@@ -32,6 +32,8 @@ namespace notrealengine
 
 		const mat4 &
 			getMatrix( void ) const;
+		const bool
+			isDirty( void ) const;
 
 		void setPos( vec3 new_pos );
 		void setRotation( quat new_rotation );
