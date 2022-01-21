@@ -68,11 +68,10 @@ namespace notrealengine
 	void	Mesh::draw(const mft::mat4& parentMat, unsigned int overrideShader)
 	{
 		unsigned int finalShader = overrideShader == 0 ? this->shader : overrideShader;
-
 		//	Recompute transform matrix if parent's one has changed
-		//if (parentMat != this->parentMatrix || this->transform.isDirty())
-		//{
-			this->transformMatrix = parentMat * this->transform.getMatrix();
+		if (parentMat != this->parentMatrix || this->transform.isDirty())
+		{
+			this->transformMatrix = this->transform.getMatrix() * parentMat;
 			mft::mat4 tmp = mft::mat4::transpose(mft::mat4::inverse(this->transformMatrix));
 			this->normalMatrix = mft::mat3(
 				{ tmp[0][0], tmp[0][1], tmp[0][2] },
@@ -80,10 +79,11 @@ namespace notrealengine
 				{ tmp[2][0], tmp[2][1], tmp[2][2] }
 				);
 			this->parentMatrix = parentMat;
-		//}
+		}
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
 		GLCallThrow(glUseProgram, finalShader);
-		GLCallThrow(glUniform3f, GLCallThrow(glGetUniformLocation, finalShader, "baseColor"), color.x, color.y, color.z);
+		GLint location = GLCallThrow(glGetUniformLocation, finalShader, "baseColor");
+		GLCallThrow(glUniform3f, location, color.x, color.y, color.z);
 		//std::cout << "Drawing mesh " << name << " with matrix " << transformMatrix << std::endl;
 		glMesh->draw(finalShader, this->transformMatrix, normalMatrix);
 		for (auto child: children)

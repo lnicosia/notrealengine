@@ -29,6 +29,9 @@ namespace notrealengine
 
 		// Transform is public so its non-const operations can be called efficiently
 		Transform	transform;
+		mft::mat4	parentMatrix;
+		mft::mat4	transformMatrix;
+		mft::mat3	normalMatrix;
 
 		//	Setters
 
@@ -60,9 +63,7 @@ namespace notrealengine
 		std::vector<std::shared_ptr<Mesh>>	children;
 		std::shared_ptr<Mesh>	*parent;
 
-		mft::mat4	parentMatrix;
-		mft::mat4	transformMatrix;
-		mft::mat3	normalMatrix;
+
 
 		mft::vec3	color;
 

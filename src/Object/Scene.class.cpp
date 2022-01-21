@@ -28,6 +28,7 @@ namespace notrealengine
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "view");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		bindLights(GLContext::getShader("color")->programID);
 	}
 
 	Scene::~Scene()
@@ -239,8 +240,9 @@ namespace notrealengine
 			if (light->isDirty())
 			{
 				bindLights(GLContext::getShader("default")->programID);
+				bindLights(GLContext::getShader("color")->programID);
 			}
-			//light->draw();
+			light->draw();
 		}
 	}
 

@@ -18,6 +18,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Asset.class.cpp \
 		$S/Object/Light.class.cpp \
 		$S/Object/Scene.class.cpp \
+		$S/Object/InitBobby.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -27,7 +28,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/GLCharacter.class.cpp \
 		$S/TextRendering/GLFont.class.cpp \
 		$S/TextRendering/Freetype.class.cpp \
-    	$S/Inputs/Binding.class.cpp \
+    $S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp \
 
