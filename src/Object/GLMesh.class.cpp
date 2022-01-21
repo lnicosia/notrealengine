@@ -28,9 +28,9 @@ namespace notrealengine
 
 	GLMesh::~GLMesh()
 	{
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
+		GLCallThrow(glDeleteVertexArrays, 1, &VAO);
+		GLCallThrow(glDeleteBuffers, 1, &VBO);
+		GLCallThrow(glDeleteBuffers, 1, &EBO);
 	}
 
 	GLMesh::GLMesh(MeshData const & data, std::vector<std::shared_ptr<Texture>> textures)

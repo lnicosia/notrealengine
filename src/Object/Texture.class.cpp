@@ -109,7 +109,7 @@ namespace notrealengine
 
 	Texture::~Texture()
 	{
-		glDeleteBuffers(1, &glId);
+		GLCallThrow(glDeleteBuffers, 1, &glId);
 	}
 
 	//	Accessors
