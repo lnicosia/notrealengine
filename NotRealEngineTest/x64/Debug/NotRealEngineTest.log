@@ -1,0 +1,4 @@
+﻿  main.cpp
+main.obj : error LNK2019: unresolved external symbol "public: static void __cdecl notrealengine::GLContext::registerShader(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::filesystem::path,class std::filesystem::path)" (?registerShader@GLContext@notrealengine@@SAXV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Vpath@filesystem@4@1@Z) referenced in function SDL_main
+main.obj : error LNK2019: unresolved external symbol "public: static class notrealengine::GLShaderProgram * __cdecl notrealengine::GLContext::getShader(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >)" (?getShader@GLContext@notrealengine@@SAPEAVGLShaderProgram@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) referenced in function SDL_main
+E:\Projects\Not-Real-Engine\windows\x64\Debug\NotRealEngineTest.exe : fatal error LNK1120: 2 unresolved externals

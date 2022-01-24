@@ -96,18 +96,18 @@ namespace	mft
 		// No need to define vec/scalar operations as scalars can
 		// implicitly be converted to vectors through the constructor
 		constexpr vec<T1,Tn...>			operator+( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator+ <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr vec<T1,Tn...>	operator+( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator-( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator- <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr vec<T1,Tn...>	operator-( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator*( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator* <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr vec<T1,Tn...>	operator*( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator/( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator/ <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr vec<T1,Tn...>	operator/( T1, const vec<T1,Tn...> & v2 );
 
 		constexpr bool					operator==( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator== <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr bool			operator==( T1, const vec<T1,Tn...> & v2 );
 		constexpr bool					operator!=( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator!= <>( T1, const vec<T1,Tn...> & v2 );
+		friend constexpr bool			operator!=( T1, const vec<T1,Tn...> & v2 );
 
 		// Other operators
 		friend std::ostream & operator<< <>( std::ostream & o, const vec<T1,Tn...> & v );

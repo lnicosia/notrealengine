@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Object\GLMesh.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -75,13 +72,7 @@
     <ClCompile Include="..\src\Inputs\Binding.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mft\matrix_project.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mft\matrix_transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mft\vertex_utils.cpp">
+    <ClCompile Include="..\src\Camera.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Camera.class.cpp">
