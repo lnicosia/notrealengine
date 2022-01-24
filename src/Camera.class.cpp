@@ -18,7 +18,7 @@ namespace notrealengine
 
 	mft::mat4 const	Camera::getViewMatrix() const
 	{
-		return mft::mat4::look_at(mft::vec3::normalized(pos),
+		return mft::mat4::lookAt(mft::vec3::normalized(pos),
 			mft::vec3::normalized(pos + front),
 			mft::vec3::normalized(up));
 	}

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Object\GLMesh.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,13 +75,7 @@
     <ClCompile Include="..\src\Inputs\Binding.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mft\matrix_project.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mft\matrix_transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mft\vertex_utils.cpp">
+    <ClCompile Include="..\src\Camera.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -165,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\notrealengine\Camera.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

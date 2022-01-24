@@ -5,6 +5,7 @@
 #include <utility>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 namespace notrealengine
 {
@@ -26,6 +27,9 @@ namespace notrealengine
 			vert_code, frag_code;
 		std::ifstream
 			vert_file, frag_file;
+
+		vertex.make_preferred();
+		fragment.make_preferred();
 
 		vert_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {

@@ -36,7 +36,7 @@
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -71,7 +71,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
-    <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
     <LibraryPath>..\lib\freetype\build-windows\Debug;..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -113,13 +112,13 @@
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.class.cpp" />
     <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
-    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\GLContext.class.cpp" />
     <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
@@ -127,9 +126,6 @@
     <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
-    <ClCompile Include="..\src\mft\matrix_project.cpp" />
-    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
-    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
