@@ -91,7 +91,7 @@ namespace mft
 				a * q2.a - b * q2.b - c * q2.c - d * q2.d,
 				a * q2.b + b * q2.a + c * q2.d - d * q2.c,
 				a * q2.c - b * q2.d + c * q2.a + d * q2.b,
-				a * q2.d + b * q2.c - c * q2.b - d * q2.a
+				a * q2.d + b * q2.c - c * q2.b + d * q2.a
 				);
 	}
 
@@ -139,7 +139,7 @@ namespace mft
 		requires std::is_floating_point_v<T>
 	quaternion<T> & quaternion<T>::operator*=( const quaternion<T> & q2 )
 	{
-		(*this) = (*this) + q2;
+		(*this) = (*this) * q2;
 		return *this;
 	}
 

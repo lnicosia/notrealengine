@@ -184,9 +184,9 @@ namespace mft
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const quaternion<T1> r )
 	{ 
 		return mat<T1,T1,T1,T1>(
-				{ 1 - 2 * r.c * r.c - 2 * r.d * r.d, 2 * r.a * r.d + 2 * r.b * r.c	  , 2 * r.a * r.c + 2 * r.b * r.d	 , 0 },
-				{ 2 * r.a * r.d + 2 * r.b * r.c	   , 1 - 2 * r.b * r.b - 2 * r.d * r.d, 2 * r.a * r.b + 2 * r.c * r.d	 , 0 },
-				{ 2 * r.a * r.c + 2 * r.b * r.d	   , 2 * r.a * r.b + 2 * r.c * r.d	  , 1 - 2 * r.b * r.b - 2 * r.c * r.c, 0 },
+				{ 1 - 2 * r.j * r.j - 2 * r.k * r.k, -2 * r.r * r.k + 2 * r.i * r.j	  , 2 * r.r * r.j + 2 * r.i * r.k	 , 0 },
+				{ 2 * r.r * r.k + 2 * r.i * r.j	   , 1 - 2 * r.i * r.i - 2 * r.k * r.k, -2 * r.r * r.i + 2 * r.j * r.k	 , 0 },
+				{ -2 * r.r * r.j + 2 * r.i * r.k   , 2 * r.r * r.i + 2 * r.j * r.k	  , 1 - 2 * r.i * r.i - 2 * r.j * r.j, 0 },
 				{ 0								   , 0								  , 0								 , 1 }
 				);
 	 }
