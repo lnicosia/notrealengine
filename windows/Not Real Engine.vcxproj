@@ -134,6 +134,7 @@
     <ClCompile Include="..\src\Object\Asset.class.cpp" />
     <ClCompile Include="..\src\Object\AssetManager.class.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
+    <ClCompile Include="..\src\Object\InitBobby.cpp" />
     <ClCompile Include="..\src\Object\Light.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
