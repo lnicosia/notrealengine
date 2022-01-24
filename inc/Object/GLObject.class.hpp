@@ -8,8 +8,8 @@
 #undef max
 #undef min
 #include "assimp/Importer.hpp"
-#include "assimp/scene.h"
 #include "assimp/postprocess.h"
+#include "assimp/scene.h"
 
 #include <memory>
 
@@ -22,7 +22,7 @@ namespace notrealengine
 
 			GLObject() = delete;
 			GLObject(GLObject const & GLObject);
-			GLObject(std::string path);
+			explicit GLObject(std::string path);
 			~GLObject();
 			GLObject& operator=(GLObject const& GLObject);
 
@@ -30,13 +30,13 @@ namespace notrealengine
 
 			//	Accessors
 
-			std::vector<std::shared_ptr<Mesh>> const&
+			[[nodiscard]] std::vector<std::shared_ptr<Mesh>> const&
 				getMeshes() const;
-			mft::mat4 const&
+			[[nodiscard]] mft::mat4 const&
 				getMatrix() const;
-			Transform const&
+			[[nodiscard]] Transform const&
 				getTransform() const;
-			std::string const&
+			[[nodiscard]] std::string const&
 				getName() const;
 
 			//	Setters
@@ -45,7 +45,7 @@ namespace notrealengine
 
 			//	Transforms
 
-			void	update(void);
+			void	update();
 			void	move(mft::vec3 move);
 			void	rotate(mft::vec3 rotation);
 			void	scale(mft::vec3 scale);
@@ -68,16 +68,16 @@ namespace notrealengine
 
 			//	Object loading
 			void
-				loadObject(std::string path);
+				loadObject(const std::string& path);
 			void
 				processNode(aiNode* node, const aiScene* scene);
 			std::shared_ptr<Mesh>
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>
-				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+				loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);
-}
+} // namespace notrealengine
 
 #endif

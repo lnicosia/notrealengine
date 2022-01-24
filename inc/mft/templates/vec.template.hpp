@@ -9,7 +9,7 @@
 namespace	mft
 {
 	template<typename T1, typename ... Tn>
-	constexpr vec<T1,Tn...>::vec( void ): vec_union<T1,Tn...>{T1(), Tn()...}
+	constexpr vec<T1,Tn...>::vec( ): vec_union<T1,Tn...>{T1(), Tn()...}
 	{
 	}
 
@@ -39,27 +39,26 @@ namespace	mft
 	template<typename T1, typename ... Tn>
 	constexpr T1 & vec<T1,Tn...>::operator[]( size_t index )
 	{
-		if (index >= 0 && index < 1 + sizeof...(Tn))
+		if (index >= 0 && index < 1 + sizeof...(Tn)) {
 			return (vec_union<T1,Tn...>::data[index]);
-		else
-			throw std::runtime_error("Vector index out of bounds");
+		} 			throw std::runtime_error("Vector index out of bounds");
 	}
 
 	template<typename T1, typename ... Tn>
 	constexpr const T1 & vec<T1,Tn...>::operator[]( size_t index ) const
 	{
-		if (index >= 0 && index < 1 + sizeof...(Tn))
+		if (index >= 0 && index < 1 + sizeof...(Tn)) {
 			return (vec_union<T1,Tn...>::data[index]);
-		else
-			throw std::runtime_error("Vector index out of bounds");
+		} 			throw std::runtime_error("Vector index out of bounds");
 	}
 
 	template<typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> vec<T1,Tn...>::operator+( const vec<T1,Tn...> & v2 ) const
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = (*this)[i] + v2[i];
+}
 		return ret;
 	}
 
@@ -67,8 +66,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> operator+( T1 scalar, const vec<T1,Tn...> & v2 )
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = scalar + v2[i];
+}
 		return ret;
 	}
 
@@ -76,8 +76,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> vec<T1,Tn...>::operator-( const vec<T1,Tn...> & v2 ) const
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = (*this)[i] - v2[i];
+}
 		return ret;
 	}
 
@@ -85,8 +86,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> operator-( T1 scalar, const vec<T1,Tn...> & v2 )
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = scalar - v2[i];
+}
 		return ret;
 	}
 
@@ -94,8 +96,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> vec<T1,Tn...>::operator*( const vec<T1,Tn...> & v2 ) const
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = (*this)[i] * v2[i];
+}
 		return ret;
 	}
 
@@ -103,8 +106,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> operator*( T1 scalar, const vec<T1,Tn...> & v2 )
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = scalar * v2[i];
+}
 		return ret;
 	}
 
@@ -112,8 +116,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> vec<T1,Tn...>::operator/( const vec<T1,Tn...> & v2 ) const
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = (*this)[i] / v2[i];
+}
 		return ret;
 	}
 
@@ -121,8 +126,9 @@ namespace	mft
 	constexpr vec<T1,Tn...> operator/( T1 scalar, const vec<T1,Tn...> & v2 )
 	{
 		vec<T1,Tn...> ret;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret[i] = scalar / v2[i];
+}
 		return ret;
 	}
 
@@ -130,8 +136,9 @@ namespace	mft
 	constexpr bool vec<T1,Tn...>::operator==( const vec<T1,Tn...> & v2 ) const
 	{
 		bool ret = true;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret &= (*this)[i] == v2[i];
+}
 		return ret;
 	}
 
@@ -139,8 +146,9 @@ namespace	mft
 	constexpr bool operator==( T1 scalar, const vec<T1,Tn...> & v2 )
 	{
 		bool ret = true;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret &= scalar == v2[i];
+}
 		return ret;
 	}
 
@@ -166,8 +174,9 @@ namespace	mft
 	std::ostream & operator<<( std::ostream & o, const vec<T1,Tn...> & v )
 	{
 		o << "{";
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			o << (i > 0 ? ", " : "") << v[i];
+}
 		o << " }";
 		return o;
 	}
@@ -181,32 +190,36 @@ namespace	mft
 	template<typename T1, typename ... Tn>
 	vec<T1,Tn...> & vec<T1,Tn...>::operator+=( const vec<T1,Tn...> & v2 )
 	{
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			vec_union<T1,Tn...>::data[i] += v2[i];
+}
 		return *this;
 	}
 
 	template<typename T1, typename ... Tn>
 	vec<T1,Tn...> & vec<T1,Tn...>::operator-=( const vec<T1,Tn...> & v2 )
 	{
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			vec_union<T1,Tn...>::data[i] -= v2[i];
+}
 		return *this;
 	}
 
 	template<typename T1, typename ... Tn>
 	vec<T1,Tn...> & vec<T1,Tn...>::operator*=( const vec<T1,Tn...> & v2 )
 	{
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			vec_union<T1,Tn...>::data[i] *= v2[i];
+}
 		return *this;
 	}
 
 	template<typename T1, typename ... Tn>
 	vec<T1,Tn...> & vec<T1,Tn...>::operator/=( const vec<T1,Tn...> & v2 )
 	{
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			vec_union<T1,Tn...>::data[i] /= v2[i];
+}
 		return *this;
 	}
 
@@ -232,8 +245,9 @@ namespace	mft
 	constexpr T1 vec<T1,Tn...>::dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 )
 	{
 		T1 ret = 0;
-		for (int i = 0; i < 1 + sizeof...(Tn); i++)
+		for (int i = 0; i < 1 + sizeof...(Tn); i++) {
 			ret += v1[i] * v2[i];
+}
 		return ret;
 	}
 
@@ -245,6 +259,6 @@ namespace	mft
 			(v1.z * v2.x) - (v1.x * v2.z),
 			(v1.x * v2.y) - (v1.y * v2.x));
 	}
-}
+} // namespace mft
 
 #endif

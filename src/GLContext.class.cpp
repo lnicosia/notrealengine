@@ -1,31 +1,32 @@
 
 #include "GLContext.class.hpp"
 
-#include <stdexcept>
-#include <utility>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
+#include <utility>
 
 namespace notrealengine
 {
 	GLContext::GLContext()
-	{
-
-	}
+	= default;
 
 	GLContext::~GLContext()
-	{
+	= default;
 
-	}
-
-	void GLContext::registerShader( std::string name, std::filesystem::path vertex, std::filesystem::path fragment )
+	void GLContext::registerShader( std::string name, const std::filesystem::path& vertex, const std::filesystem::path& fragment )
 	{
-		if (shaders.contains(name))
+		if (shaders.contains(name)) {
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
+}
 		std::string
-			vert_code, frag_code;
+			 vert_code;
+		std::string
+			 frag_code;
 		std::ifstream
-			vert_file, frag_file;
+			 vert_file;
+		std::ifstream
+			 frag_file;
 
 		vert_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {
@@ -51,8 +52,9 @@ namespace notrealengine
 			throw std::runtime_error( "Could not read shader files '" + fragment.string() + "'" );
 		}
 
-		if (!isCurrent())
+		if (!isCurrent()) {
 			makeCurrent();
+}
 		shaders.emplace(std::piecewise_construct,
 				std::forward_as_tuple(name),
 				std::forward_as_tuple(
@@ -62,7 +64,7 @@ namespace notrealengine
 				);
 	}
 
-	GLShaderProgram * GLContext::getShader( std::string name )
+	GLShaderProgram * GLContext::getShader( const std::string& name )
 	{
 		if (!shaders.contains(name)) {
 			try {
@@ -76,4 +78,4 @@ namespace notrealengine
 
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
 	long GLContext::CurrentContext = 0;
-}
+} // namespace notrealengine

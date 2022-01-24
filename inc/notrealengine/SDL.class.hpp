@@ -12,16 +12,16 @@ namespace notrealengine
 	class SDL {
 
 	public:
-		static void Init( void );
-		static void Quit( void );
+		static void Init( );
+		static void Quit( );
 
 	private:
-		SDL( void ) {};
-		static void SetupGLOptions( void );
+		SDL( ) = default;;
+		static void SetupGLOptions( );
 
 		static bool initialized;
 	};
-}
+} // namespace notrealengine
 
 #endif
 

@@ -9,9 +9,7 @@ namespace notrealengine
 	}
 
 	SDLEvents::~SDLEvents()
-	{
-
-	}
+	= default;
 
 	//	Init all bindings here
 	std::vector<Binding>	SDLEvents::initBindings()
@@ -33,8 +31,8 @@ namespace notrealengine
 
 	void	SDLEvents::processInputs()
 	{
-		std::vector<Binding>::iterator	it = bindings.begin();
-		std::vector<Binding>::iterator	ite = bindings.end();
+		auto	it = bindings.begin();
+		auto	ite = bindings.end();
 		while (it != ite)
 		{
 			Binding	binding = *it;
@@ -74,7 +72,7 @@ namespace notrealengine
 	{
 		std::vector<Binding>::iterator	it;
 		std::vector<Binding>::iterator	ite;
-		while (SDL_PollEvent(&e))
+		while (SDL_PollEvent(&e) != 0)
 		{
 			it = bindings.begin();
 			ite = bindings.end();
@@ -89,8 +87,9 @@ namespace notrealengine
 					if (e.key.keysym.sym == (*it).getKey1()
 						|| e.key.keysym.sym == (*it).getKey2())
 					{
-						if ((*it).getState() == InputState::NRE_RELEASED)
+						if ((*it).getState() == InputState::NRE_RELEASED) {
 							(*it).setState(InputState::NRE_PRESS);
+}
 					}
 					it++;
 				}
@@ -113,9 +112,10 @@ namespace notrealengine
 
 	int	SDLEvents::handle()
 	{
-		if (updateInputsState() == NRE_QUIT)
+		if (updateInputsState() == NRE_QUIT) {
 			return (NRE_QUIT);
+}
 		processInputs();
 		return (0);
 	}
-}
+} // namespace notrealengine

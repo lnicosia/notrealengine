@@ -1,19 +1,20 @@
 #ifndef _MAT_TEMPLATE_H_
 # define _MAT_TEMPLATE_H_
 
-#include <iostream>
-#include <iomanip>
-#include <cmath>
 #include "mft/mat.hpp"
+#include <cmath>
+#include <iomanip>
+#include <iostream>
 
 namespace mft
 {
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,Tn...>::mat( void ):
+	constexpr mat<T1,Tn...>::mat( ):
 		Rows()
 	{
-		for (int i = 0; i <= sizeof...(Tn); i++)
+		for (int i = 0; i <= sizeof...(Tn); i++) {
 			Rows::data[i][i] = T1(1);
+}
 	}
 
 	template<typename T1, typename ... Tn>
@@ -42,18 +43,18 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index )
 	{
-		if (index >= 0 && index <= sizeof...(Tn))
+		if (index >= 0 && index <= sizeof...(Tn)) {
 			return (Rows::data[index]);
-		else
+		} 
 			throw std::runtime_error("Matrix index out of bounds");
 	}
 
 	template<typename T1, typename ... Tn>
 	constexpr const vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index ) const
 	{
-		if (index >= 0 && index <= sizeof...(Tn))
+		if (index >= 0 && index <= sizeof...(Tn)) {
 			return (Rows::data[index]);
-		else
+		} 
 			throw std::runtime_error("Matrix index out of bounds");
 	}
 
@@ -71,11 +72,12 @@ namespace mft
 							vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0));
 
-		for (int i = 0; i <= sizeof...(Tn); i++)
+		for (int i = 0; i <= sizeof...(Tn); i++) {
 			for (int j = 0; j <= sizeof...(Tn); j++)
 			{
 				ret[i] += this[i][j] * v[i];
 			}
+}
 		return ret;
 	}
 
@@ -87,12 +89,14 @@ namespace mft
 							vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0));
 
-		for (int i = 0; i <= sizeof...(Tn); i++)
-			for (int j = 0; j <= sizeof...(Tn); j++)
+		for (int i = 0; i <= sizeof...(Tn); i++) {
+			for (int j = 0; j <= sizeof...(Tn); j++) {
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
 					ret[i][j] += (*this)[k][j] * m2[i][k];
 				}
+}
+}
 		return ret;
 	}
 
@@ -116,8 +120,9 @@ namespace mft
 		for (int i = 0; i <= sizeof...(Tn); i++)
 		{
 			o << "{";
-			for (int j = 0; j <= sizeof...(Tn); j++)
+			for (int j = 0; j <= sizeof...(Tn); j++) {
 				o << " " << std::setw(8) << m[i][j];
+}
 			o << " }" << std::endl;
 		}
 		o << "}" << std::endl;
@@ -132,12 +137,14 @@ namespace mft
 							vec<T1, Tn...>(0),
 							vec<T1, Tn...>(0));
 
-		for (int i = 0; i <= sizeof...(Tn); i++)
-			for (int j = 0; j <= sizeof...(Tn); j++)
+		for (int i = 0; i <= sizeof...(Tn); i++) {
+			for (int j = 0; j <= sizeof...(Tn); j++) {
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
 					ret[i][j] += (*this)[k][j] * m2[i][k];
 				}
+}
+}
 		*this = ret;
 		return *this;
 	}
@@ -215,7 +222,7 @@ namespace mft
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0					  , -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0					  , -(top + bottom) / (top - bottom) },
-				{ 0					, 0					, -2.0f / (far - near), -(far + near) / (far - near)	 },
+				{ 0					, 0					, -2.0F / (far - near), -(far + near) / (far - near)	 },
 				{ 0					, 0					, 0					  , 1								 }
 				);
 	 }
@@ -223,7 +230,7 @@ namespace mft
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far)
 	{ 
-		const T1 tang = std::tan(fovy * 0.5f);
+		const T1 tang = std::tan(fovy * 0.5F);
 
 		return mat<T1,T1,T1,T1>(
 				{ 1 / (aspect * tang), 0	   , 0	  , 0  },
@@ -234,7 +241,7 @@ namespace mft
 	}
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far)
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1  /*left*/, const T1 right, const T1  /*bottom*/, const T1 top, const T1 near, const T1 far)
 	{
 		return mat<T1, T1, T1, T1>(
 			{ near / right, 0	   , 0	  , 0 },
@@ -243,6 +250,6 @@ namespace mft
 			{ 0					 , 0	   , -(far * near) / (far - near), 0 }
 		);
 	}
-}
+} // namespace mft
 
 # endif

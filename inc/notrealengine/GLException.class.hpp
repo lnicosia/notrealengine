@@ -17,13 +17,13 @@ namespace notrealengine
 {
 	class GLException : public std::runtime_error {
 	public:
-		GLException( std::string what_arg, GLenum gl_error );
-		~GLException( void );
+		GLException( const std::string& what_arg, GLenum gl_error );
+		~GLException( ) override;
 
 		const GLenum glError;
 		static std::string ErrorString( GLenum error );
 	};
-}
+} // namespace notrealengine
 
 #endif
 

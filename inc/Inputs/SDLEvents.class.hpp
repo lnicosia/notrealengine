@@ -26,9 +26,9 @@ namespace notrealengine
 
 		SDL_Event	e;
 
-		std::vector<Binding>
+		static std::vector<Binding>
 			initBindings();
 	};
-}
+} // namespace notrealengine
 
 #endif

@@ -27,16 +27,18 @@ namespace notrealengine
 	template<typename R, typename ... Args>
 	struct GLCallTemplate<R (*)(Args...)>
 	{
-		static R Call(std::string func_name, R (* GLFunction)(Args ...), Args ... args)
+		static R Call(const std::string& func_name, R (* GLFunction)(Args ...), Args ... args)
 		{
-			GLenum error;
+			GLenum error = 0;
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+}
 			R ret = GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
+}
 			return ret;
 		};
 	};
@@ -44,32 +46,36 @@ namespace notrealengine
 	template<typename ... Args>
 	struct GLCallTemplate<void (*)(Args...)>
 	{
-		static void Call(std::string func_name, void (* GLFunction)(Args ...), Args ... args)
+		static void Call(const std::string& func_name, void (* GLFunction)(Args ...), Args ... args)
 		{
-			GLenum error;
+			GLenum error = 0;
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+}
 			GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
+}
 		};
 	};
 
 	template<typename R, typename ... Args>
 	struct GLCallTemplate<R(Args...)>
 	{
-		static R Call(std::string func_name, R GLFunction(Args ...), Args ... args)
+		static R Call(const std::string& func_name, R GLFunction(Args ...), Args ... args)
 		{
-			GLenum error;
+			GLenum error = 0;
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+}
 			R ret = GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
+}
 			return ret;
 		};
 	};
@@ -77,19 +83,21 @@ namespace notrealengine
 	template<typename ... Args>
 	struct GLCallTemplate<void (Args...)>
 	{
-		static void Call(std::string func_name, void GLFunction(Args ...), Args ... args)
+		static void Call(const std::string& func_name, void GLFunction(Args ...), Args ... args)
 		{
-			GLenum error;
+			GLenum error = 0;
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "Previous OpenGL function failed and error wasn't checked", error );
+}
 			GLFunction(std::forward<Args>(args)...);
 			error = glGetError();
-			if (error != GL_NO_ERROR)
+			if (error != GL_NO_ERROR) {
 				throw GLException( "OpenGL function '" + func_name + "' failed.", error );
+}
 		};
 	};
-}
+} // namespace notrealengine
 
 #endif
 

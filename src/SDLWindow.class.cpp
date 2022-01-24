@@ -5,16 +5,17 @@
 
 namespace notrealengine
 {
-	SDLWindow::SDLWindow( std::string name, std::pair<int, int> winsize )
+	SDLWindow::SDLWindow( const std::string& name, std::pair<int, int> winsize ) : windowHandle(SDL_CreateWindow(
+				name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+				winsize.first, winsize.second,
+				SDL_WINDOW_OPENGL))
 	{
 		SDL::Init();
 
-		windowHandle = SDL_CreateWindow(
-				name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-				winsize.first, winsize.second,
-				SDL_WINDOW_OPENGL);
-		if (windowHandle == nullptr)
+		
+		if (windowHandle == nullptr) {
 			throw std::runtime_error( "Failed to create SDL Window : " + std::string(SDL_GetError()) );
+}
 
 		glHandle = SDL_GL_CreateContext(windowHandle);
 		if (glHandle == nullptr)
@@ -24,7 +25,7 @@ namespace notrealengine
 		}
 	}
 
-	SDLWindow::~SDLWindow( void )
+	SDLWindow::~SDLWindow( )
 	{
 		SDL_GL_DeleteContext(glHandle);
 		SDL_DestroyWindow(windowHandle);
@@ -39,4 +40,4 @@ namespace notrealengine
 	{
 		return glHandle;
 	}
-}
+} // namespace notrealengine

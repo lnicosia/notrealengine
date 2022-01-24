@@ -17,30 +17,30 @@ namespace notrealengine
 
 		GLMesh() = delete;
 		GLMesh(GLMesh const & mesh) = delete;
-		GLMesh(GLMesh && mesh);
+		GLMesh(GLMesh && mesh) noexcept ;
 		GLMesh(MeshData const& data, std::vector<std::shared_ptr<Texture>> textures);
 		~GLMesh();
 		GLMesh& operator=(GLMesh const& mesh) = delete;
-		GLMesh& operator=(GLMesh && mesh);
+		GLMesh& operator=(GLMesh && mesh) noexcept ;
 
 		void	draw(GLShaderProgram *shader, mft::mat4 transform) const;
 
 		//	Accessors
 
-		std::vector<std::shared_ptr<Texture>> const&
+		[[nodiscard]] std::vector<std::shared_ptr<Texture>> const&
 			getTextures() const;
-		std::string const&
+		[[nodiscard]] std::string const&
 			getName() const;
 
 		//	Setters
 
 		void	setName(std::string name);
 
-		unsigned int const&	getVAO() const;
-		unsigned int const&	getVBO() const;
-		unsigned int const&	getEBO() const;
+		[[nodiscard]] unsigned int const&	getVAO() const;
+		[[nodiscard]] unsigned int const&	getVBO() const;
+		[[nodiscard]] unsigned int const&	getEBO() const;
 
-		unsigned int const&	getPolygonMode() const;
+		[[nodiscard]] unsigned int const&	getPolygonMode() const;
 
 		//	Texture utility
 
@@ -63,7 +63,7 @@ namespace notrealengine
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLMesh const& mesh);
-}
+} // namespace notrealengine
 
 	
 

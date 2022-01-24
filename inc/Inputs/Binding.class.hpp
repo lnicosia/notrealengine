@@ -23,10 +23,10 @@ namespace notrealengine
 
 		//	Accessors
 
-		std::string const	getName() const;
-		uint8_t const	getKey1() const;
-		uint8_t const	getKey2() const;
-		InputState const	getState() const;
+		[[nodiscard]] std::string 	getName() const;
+		[[nodiscard]] uint8_t 	getKey1() const;
+		[[nodiscard]] uint8_t 	getKey2() const;
+		[[nodiscard]] InputState 	getState() const;
 
 		void	setKey1(uint8_t key);
 		void	setKey2(uint8_t key);
@@ -52,6 +52,6 @@ namespace notrealengine
 		bool const	editable = true;
 
 	};
-}
+} // namespace notrealengine
 
 #endif

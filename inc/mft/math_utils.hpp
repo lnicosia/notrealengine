@@ -8,7 +8,7 @@ namespace mft
 
 	float		radians(float degrees);
 	float		degrees(float radians);
-}
+} // namespace mft
 
 #endif
 

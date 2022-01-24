@@ -9,14 +9,17 @@
 #else
 # define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
+
+#include <utility>
+
+#include <memory>
 #endif
 
 namespace notrealengine
 {
 
 	GLObject::~GLObject()
-	{
-	}
+	= default;
 
 	GLObject::GLObject(GLObject const& GLObject)
 	{
@@ -24,9 +27,9 @@ namespace notrealengine
 	}
 
 	GLObject::GLObject(std::string path) : transform{ mft::vec3(0, 0, 0),
-		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) }, matrix()
+		mft::vec3(0, 0, 0), mft::vec3(1, 1, 1) } 
 	{
-		loadObject(path);
+		loadObject(std::move(path));
 	}
 
 	GLObject& GLObject::operator=(GLObject const& GLObject)
@@ -39,21 +42,22 @@ namespace notrealengine
 
 	void	GLObject::addTexture(unsigned int mesh, std::shared_ptr < Texture >& text)
 	{
-		if (mesh >= 0 && mesh < meshes.size())
+		if (mesh >= 0 && mesh < meshes.size()) {
 			(*meshes[mesh]).addTexture(text);
-		else
+		} else {
 			throw std::runtime_error("Mesh index out of bounds");
+}
 	}
 
 	// Transforms
 
-	void	GLObject::update(void)
+	void	GLObject::update()
 	{
 		matrix = mft::mat4();
 		matrix *= mft::mat4::scale(transform.scale);
-		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0F, 0.0F, 0.0F));
+		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0F, 1.0F, 0.0F));
+		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0F, 0.0F, 1.0F));
 		matrix *= mft::mat4::translate(transform.pos);
 		//std::cout << "Object matrix = " << std::endl << matrix << std::endl;
 	}
@@ -78,7 +82,7 @@ namespace notrealengine
 	}
 
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
-		aiTextureType type, std::string typeName)
+		aiTextureType type, const std::string& typeName)
 	{
 		std::vector<std::shared_ptr<Texture>>	textures;
 
@@ -111,7 +115,7 @@ namespace notrealengine
 			vector.z = mesh->mVertices[i].z;
 			vertex.pos = vector;
 
-			if (mesh->mNormals)
+			if (mesh->mNormals != nullptr)
 			{
 				vector.x = mesh->mNormals[i].x;
 				vector.y = mesh->mNormals[i].y;
@@ -122,7 +126,7 @@ namespace notrealengine
 			{
 				vertex.norm = mft::vec3();
 			}
-			if (mesh->mTextureCoords[0] != NULL)
+			if (mesh->mTextureCoords[0] != nullptr)
 			{
 				vertex.uv.x = mesh->mTextureCoords[0][i].x;
 				vertex.uv.y = mesh->mTextureCoords[0][i].y;
@@ -164,7 +168,7 @@ namespace notrealengine
 
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		return std::shared_ptr<Mesh>(new Mesh(glMesh));
+		return std::make_shared<Mesh>(glMesh);
 	}
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
@@ -180,17 +184,17 @@ namespace notrealengine
 		}
 	}
 
-	void	GLObject::loadObject(std::string path)
+	void	GLObject::loadObject(const std::string& path)
 	{
 		std::cout << "Loading object '" << path << "'..." << std::endl;
 		name = path.substr(path.find_last_of('/'), name.size());
 
 		Assimp::Importer	importer;
-		const aiScene* scene;
+		const aiScene* scene = nullptr;
 		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
 			| aiProcess_GenUVCoords);
 
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		if ((scene == nullptr) || ((scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) != 0u) || (scene->mRootNode == nullptr))
 		{
 			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
 			return;
@@ -203,9 +207,9 @@ namespace notrealengine
 	{
 		GLCallThrow(glUseProgram, shader->programID);
 		//GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, &matrix[0][0]);
-		for (size_t i = 0; i < meshes.size(); i++)
+		for (const auto & meshe : meshes)
 		{
-			(*meshes[i]).draw(shader, matrix);
+			(*meshe).draw(shader, matrix);
 		}
 	}
 
@@ -235,7 +239,7 @@ namespace notrealengine
 
 	void	GLObject::setName(std::string name)
 	{
-		this->name = name;
+		this->name = std::move(name);
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)
@@ -248,4 +252,4 @@ namespace notrealengine
 		}
 		return o;
 	}
-}
+} // namespace notrealengine

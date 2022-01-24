@@ -7,15 +7,15 @@
 
 namespace	mft
 {
-	typedef mat<float,float>				mat2;
-	typedef mat<float,float,float>			mat3;
-	typedef mat<float,float,float,float>	mat4;
+	using mat2 = mat<float, float>;
+	using mat3 = mat<float, float, float>;
+	using mat4 = mat<float, float, float, float>;
 
-	typedef vec<float,float>				vec2;
-	typedef vec<float,float,float>			vec3;
-	typedef vec<float,float,float,float>	vec4;
+	using vec2 = vec<float, float>;
+	using vec3 = vec<float, float, float>;
+	using vec4 = vec<float, float, float, float>;
 
-	typedef vec<int,int>					vec2i;
-}
+	using vec2i = vec<int, int>;
+} // namespace mft
 
 #endif

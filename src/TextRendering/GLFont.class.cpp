@@ -1,24 +1,24 @@
 #include "TextRendering/GLFont.class.hpp"
-#include "TextRendering/Freetype.class.hpp"
 #include "GL.hpp"
+#include "TextRendering/Freetype.class.hpp"
 
 namespace notrealengine
 {
-	GLFont::GLFont(std::string path)
+	GLFont::GLFont(const std::string& path)
 	{
 		std::cout << "Loading font '" << path << "'..." << std::endl;
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();
-		FT_Face	face;
-		if (FT_New_Face(ft, path.c_str(), 0, &face))
+		FT_Face	face = nullptr;
+		if (FT_New_Face(ft, path.c_str(), 0, &face) != 0)
 		{
 			std::cerr << "Could not init font " << path << std::endl;
 		}
 
 		FT_Set_Pixel_Sizes(face, 0, 48);
 
-		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
+		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER) != 0)
 		{
 			std::cerr << "Could not load Glyph" << std::endl;
 			return;
@@ -70,7 +70,7 @@ namespace notrealengine
 		return *this;
 	}
 
-	void	GLFont::RenderText(GLShaderProgram* shader, std::string text,
+	void	GLFont::RenderText(GLShaderProgram* shader, const std::string& text,
 		mft::vec2 pos, float scale, mft::vec3 color)
 	{
 		GLCallThrow(glUseProgram, shader->programID);
@@ -91,13 +91,13 @@ namespace notrealengine
 
 			float	vertices[6][4] =
 			{
-				{xpos,		ypos + h,	0.0f, 0.0f},
-				{xpos,		ypos,		0.0f, 1.0f},
-				{xpos + w,	ypos,		1.0f, 1.0f},
+				{xpos,		ypos + h,	0.0F, 0.0F},
+				{xpos,		ypos,		0.0F, 1.0F},
+				{xpos + w,	ypos,		1.0F, 1.0F},
 
-				{xpos,		ypos + h,	0.0f, 0.0f},
-				{xpos + w,	ypos,		1.0f, 1.0f},
-				{xpos + w,	ypos + h,	1.0f, 0.0f}
+				{xpos,		ypos + h,	0.0F, 0.0F},
+				{xpos + w,	ypos,		1.0F, 1.0F},
+				{xpos + w,	ypos + h,	1.0F, 0.0F}
 			};
 
 			GLCallThrow(glBindTexture, GL_TEXTURE_2D, ch->getId());
@@ -114,4 +114,4 @@ namespace notrealengine
 		GLCallThrow(glBindVertexArray, 0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, 0);
 	}
-}
+} // namespace notrealengine

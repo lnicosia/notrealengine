@@ -15,14 +15,14 @@ namespace	mft
 
 	template<typename T1,typename ... Tn>
 	struct mat : private vec<vec<T1,Tn...>,std::conditional_t<true,vec<T1,Tn...>,Tn>...> {
-		typedef vec<T1,Tn...> Row;
-		typedef vec<Row,std::conditional_t<true,Row,Tn>...> Rows;
+		using Row = vec<T1, Tn...>;
+		using Rows = vec<Row, std::conditional_t<true, Row, Tn>...>;
 
 		// Default and copy constructors and assignement operator
-		constexpr mat<T1,Tn...>( void );
+		constexpr mat<T1,Tn...>( );
 		// This templated constructor adds implicit conversion from any other compatible type
 		template<typename U1,typename ... Un>
-		constexpr mat<T1,Tn...>( const mat<U1,Un...> & from );
+		constexpr mat<T1,Tn...>( const mat<U1,Un...> & from ); // NOLINT *-explicit-*
 		mat<T1,Tn...> & operator=( const mat<T1,Tn...> & from );
 
 		// List initializer
@@ -52,14 +52,14 @@ namespace	mft
 		// 3D operations on mat4
 		static constexpr mat<T1,T1,T1,T1> translate( const vec<T1,T1,T1> & v );
 		static constexpr mat<T1,T1,T1,T1> scale( const vec<T1,T1,T1> & v );
-		static constexpr mat<T1,T1,T1,T1> rotate( const T1 angle, const vec<T1,T1,T1> & axis );
+		static constexpr mat<T1,T1,T1,T1> rotate( T1 angle, const vec<T1,T1,T1> & axis );
 		static constexpr mat<T1,T1,T1,T1> look_at( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up);
 
-		static constexpr mat<T1,T1,T1,T1> ortho( const T1 left, const T1 right, const T1 bottom, const T1 top );
-		static constexpr mat<T1,T1,T1,T1> ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far );
-		static constexpr mat<T1,T1,T1,T1> perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far);
-		static constexpr mat<T1, T1, T1, T1> perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far);
+		static constexpr mat<T1,T1,T1,T1> ortho( T1 left, T1 right, T1 bottom, T1 top );
+		static constexpr mat<T1,T1,T1,T1> ortho( T1 left, T1 right, T1 bottom, T1 top, T1 near, T1 far );
+		static constexpr mat<T1,T1,T1,T1> perspective( T1 fovy, T1 aspect, T1 near, T1 far);
+		static constexpr mat<T1, T1, T1, T1> perspective(T1 left, T1 right, T1 bottom, T1 top, T1 near, T1 far);
 	};
-}
+} // namespace mft
 
 #endif

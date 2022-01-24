@@ -7,7 +7,7 @@ namespace notrealengine
 	void	Freetype::Init()
 	{
 		if (!initialized) {
-			if (FT_Init_FreeType(&ft))
+			if (FT_Init_FreeType(&ft) != 0)
 			{
 				throw std::runtime_error("Couldn't initialize Freetype\n");
 			}
@@ -39,4 +39,4 @@ namespace notrealengine
 	FT_Library	Freetype::ft = nullptr;
 
 	bool Freetype::initialized = false;
-}
+} // namespace notrealengine

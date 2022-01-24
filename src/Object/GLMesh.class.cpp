@@ -9,12 +9,14 @@
 	#include <GL/gl.h>
 #endif
 #include <string>
+#include <utility>
+#include <utility>
 
 namespace notrealengine
 {
 	//	Constructors
 
-	GLMesh::GLMesh(GLMesh && GLMesh) :
+	GLMesh::GLMesh(GLMesh && GLMesh)  noexcept :
 		name(std::move(GLMesh.name)),
 		textures(std::move(GLMesh.textures)),
 		VAO(std::exchange(GLMesh.VAO, 0)),
@@ -34,8 +36,8 @@ namespace notrealengine
 	}
 
 	GLMesh::GLMesh(MeshData const & data, std::vector<std::shared_ptr<Texture>> textures)
-		: name(""),
-		textures(textures),
+		: 
+		textures(std::move(std::move(textures))),
 		VAO(0), VBO(0), EBO(0),
 		polygonMode(GL_FILL),
 		nbIndices(0)
@@ -44,7 +46,7 @@ namespace notrealengine
 	}
 
 	GLMesh& GLMesh::operator=(GLMesh && GLMesh)
-	{
+ noexcept 	{
 		this->name = std::move(GLMesh.name);
 
 		this->textures = std::move(GLMesh.textures);
@@ -95,7 +97,7 @@ namespace notrealengine
 
 	void	GLMesh::setName(std::string name)
 	{
-		this->name = name;
+		this->name = std::move(name);
 	}
 
 	//	Texture utility
@@ -118,10 +120,11 @@ namespace notrealengine
 
 			std::string	nb;
 			std::string	name = (*textures[i]).getType();
-			if (name == "texture_diffuse")
+			if (name == "texture_diffuse") {
 				nb = std::to_string(diffuse);
-			else if (name == "texture_specular")
+			} else if (name == "texture_specular") {
 				nb = std::to_string(specular);
+}
 			GLCallThrow(glBindTexture, GL_TEXTURE_2D, (*textures[i]).getId());
 			GLCallThrow(glUniform1f, GLCallThrow(glGetUniformLocation, shader->programID, ("material." + name + nb).c_str()), i);
 		}
@@ -154,7 +157,7 @@ namespace notrealengine
 		nbIndices = data.getIndices().size();
 
 		GLCallThrow(glVertexAttribPointer,
-			0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+			0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)nullptr);
 		GLCallThrow(glEnableVertexAttribArray, 0);
 		GLCallThrow(glVertexAttribPointer,
 			1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -166,7 +169,7 @@ namespace notrealengine
 		GLCallThrow(glBindVertexArray, 0);
 	}
 
-	std::ostream& operator<<(std::ostream& o, GLMesh const& GLMesh)
+	std::ostream& operator<<(std::ostream& o, GLMesh const&  /*GLMesh*/)
 	{
 		/*std::vector<Vertex>			vertices = GLMesh.getData().getVertices();
 		std::vector<unsigned int>	indices = GLMesh.getData().getIndices();
@@ -191,4 +194,4 @@ namespace notrealengine
 		std::cout << "\tEBO = " << GLMesh.getEBO() << std::endl;*/
 		return o;
 	}
-}
+} // namespace notrealengine

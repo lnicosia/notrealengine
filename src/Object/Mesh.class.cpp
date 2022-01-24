@@ -1,18 +1,20 @@
 #include "Object/Mesh.class.hpp"
 
+#include <utility>
+
+#include <utility>
+
 namespace notrealengine
 {
-	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
+	Mesh::Mesh(std::shared_ptr<GLMesh>  glMesh)
 		: transform{ mft::vec3(0, 0, 0), mft::vec3(0, 0, 0), mft::vec3(1, 1, 1)},
-		matrix(), glMesh(glMesh)
+		 glMesh(std::move(glMesh))
 	{
 
 	}
 
 	Mesh::~Mesh()
-	{
-
-	}
+	= default;
 
 	void	Mesh::addTexture(std::shared_ptr < Texture >& text)
 	{
@@ -50,18 +52,18 @@ namespace notrealengine
 
 	void	Mesh::setName(std::string name)
 	{
-		this->name = name;
+		this->name = std::move(name);
 	}
 
 	// Transforms
 
-	void	Mesh::update(void)
+	void	Mesh::update()
 	{
 		matrix = mft::mat4();
 		matrix *= mft::mat4::scale(transform.scale);
-		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0f, 0.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0f, 1.0f, 0.0f));
-		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0f, 0.0f, 1.0f));
+		matrix *= mft::mat4::rotate(transform.rotation.x, mft::vec3(1.0F, 0.0F, 0.0F));
+		matrix *= mft::mat4::rotate(transform.rotation.y, mft::vec3(0.0F, 1.0F, 0.0F));
+		matrix *= mft::mat4::rotate(transform.rotation.z, mft::vec3(0.0F, 0.0F, 1.0F));
 		matrix *= mft::mat4::translate(transform.pos);
 		//std::cout << "Mesh matrix = " << std::endl << matrix << std::endl;
 	}
@@ -96,8 +98,8 @@ namespace notrealengine
 		}
 	}
 
-	std::ostream& operator<<(std::ostream& o, Mesh const& mesh)
+	std::ostream& operator<<(std::ostream& o, Mesh const&  /*mesh*/)
 	{
 		return o;
 	}
-}
+} // namespace notrealengine

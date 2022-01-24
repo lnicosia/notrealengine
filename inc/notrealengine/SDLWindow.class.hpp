@@ -14,8 +14,8 @@ namespace notrealengine
 {
 	class SDLWindow {
 		public:
-			SDLWindow( std::string, std::pair<int, int> = {600, 800} );
-			~SDLWindow( void );
+			explicit SDLWindow( const std::string&, std::pair<int, int> = {600, 800} );
+			~SDLWindow( );
 
 			SDL_Window* getWindow();
 			SDL_GLContext getContext();
@@ -24,7 +24,7 @@ namespace notrealengine
 			SDL_Window * windowHandle;
 			SDL_GLContext glHandle;
 	};
-}
+} // namespace notrealengine
 
 #endif
 

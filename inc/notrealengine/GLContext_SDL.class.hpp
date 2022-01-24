@@ -13,14 +13,14 @@ namespace notrealengine
 
 	public:
 		GLContext_SDL( SDL_GLContext, SDL_Window * );
-		~GLContext_SDL( void );
+		~GLContext_SDL( );
 
 		void
-			swapWindow(void);
+			swapWindow();
 		void
-			makeCurrent( void ) override;
+			makeCurrent( ) override;
 		bool
-			isCurrent( void ) override;
+			isCurrent( ) override;
 
 	private:
 		SDL_Window *
@@ -28,6 +28,6 @@ namespace notrealengine
 		SDL_GLContext
 			glHandle;
 	};
-}
+} // namespace notrealengine
 
 #endif

@@ -16,8 +16,8 @@ namespace notrealengine
 
 	GLCharacter::GLCharacter(GLCharacter&& ref) noexcept
 		: glId(std::exchange(ref.glId, 0)),
-		size(std::move(ref.size)),
-		bearing(std::move(ref.bearing)),
+		size(ref.size),
+		bearing(ref.bearing),
 		next(std::exchange(ref.next, 0))
 	{
 
@@ -26,15 +26,15 @@ namespace notrealengine
 	GLCharacter& GLCharacter::operator=(GLCharacter&& c) noexcept
 	{
 		this->glId = std::exchange(c.glId, 0);
-		this->size = std::move(c.size);
-		this->bearing = std::move(c.bearing);
+		this->size = c.size;
+		this->bearing = c.bearing;
 		this->next = std::exchange(c.next, 0);
 		return *this;
 	}
 
     void	GLCharacter::setup(FT_Face face, char c)
     {
-		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER) != 0)
 		{
 			std::cerr << "Freetype error: failed to load glyph " << c << std::endl;
 			return;
@@ -76,4 +76,4 @@ namespace notrealengine
 	{
 		return next;
 	}
-}
+} // namespace notrealengine

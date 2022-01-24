@@ -1,38 +1,39 @@
 #include "Inputs/Binding.class.hpp"
 
+#include <utility>
+
+#include <utility>
+
 namespace notrealengine
 {
 	Binding::Binding(std::string name, uint8_t key1, uint8_t key2, bool editable)
-		: name(name),
-		key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED),
-		onRelease(), onPress(), whenPressed(), whenReleased()
+		: name(std::move(std::move(name))),
+		key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED) 
 	{
 
 	}
 
 	Binding::~Binding()
-	{
-
-	}
+	= default;
 
 	//	Accessors
 
-	std::string const	Binding::getName() const
+	std::string 	Binding::getName() const
 	{
 		return name;
 	}
 
-	uint8_t const	Binding::getKey1() const
+	uint8_t 	Binding::getKey1() const
 	{
 		return key1;
 	}
 
-	uint8_t const	Binding::getKey2() const
+	uint8_t 	Binding::getKey2() const
 	{
 		return key2;
 	}
 
-	InputState const	Binding::getState() const
+	InputState 	Binding::getState() const
 	{
 		return state;
 	}
@@ -54,8 +55,8 @@ namespace notrealengine
 		this->state = state;
 	}
 
-	Binding& Binding::operator=(Binding const& ref)
+	Binding& Binding::operator=(Binding const&  /*ref*/)
 	{
 		return *this;
 	}
-}
+} // namespace notrealengine

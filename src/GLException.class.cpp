@@ -3,19 +3,17 @@
 
 namespace notrealengine
 {
-	GLException::GLException( std::string what_arg, GLenum gl_error ):
+	GLException::GLException( const std::string& what_arg, GLenum gl_error ):
 		std::runtime_error( ErrorString(gl_error) + " : " + what_arg ),
 		glError(gl_error)
 	{
 
-		return ;
-	}
+			}
 
-	GLException::~GLException( void )
+	GLException::~GLException( )
 	{
 
-		return ;
-	}
+			}
 
 	std::string GLException::ErrorString( GLenum error )
 	{
@@ -35,4 +33,4 @@ namespace notrealengine
 				return std::string("GL_UNKOWN_ERROR");
 		}
 	}
-}
+} // namespace notrealengine

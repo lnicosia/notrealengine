@@ -1,12 +1,12 @@
 
 #include "SDL.class.hpp"
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 namespace notrealengine
 {
-	void SDL::Init( void )
+	void SDL::Init( )
 	{
 		if (!initialized) {
 			if (SDL_InitSubSystem(SDL_INIT_EVERYTHING) != 0) {
@@ -36,7 +36,7 @@ namespace notrealengine
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	}
 
-	void SDL::Quit( void )
+	void SDL::Quit( )
 	{
 		if (initialized) {
 			SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
@@ -45,4 +45,4 @@ namespace notrealengine
 	}
 
 	bool SDL::initialized = false;
-}
+} // namespace notrealengine

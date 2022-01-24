@@ -11,19 +11,19 @@ namespace notrealengine
 	class Freetype {
 
 	public:
-		static void Init(void);
-		static void Quit(void);
+		static void Init();
+		static void Quit();
 
 		static FT_Library	getFT();
 
 	private:
-		Freetype(void) {};
+		Freetype() = default;;
 
 		static bool initialized;
 
 		static FT_Library	ft;
 	};
-}
+} // namespace notrealengine
 
 #endif
 

@@ -22,15 +22,18 @@
 #endif
 
 #include <iostream>
+#include <utility>
 
 namespace notrealengine
 {
-	Texture::Texture(std::string const& path, std::string const& type): type(type), glId(0)
+	Texture::Texture(std::string const& path, std::string  type): type(std::move(type)), glId(0)
 	{
-		int	w, h, nChannels;
+		int	 w;
+		int	 h;
+		int	 nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
-		if (!img)
+		if (img == nullptr)
 		{
 			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
 			std::cerr << stbi_failure_reason() << std::endl;
@@ -38,12 +41,13 @@ namespace notrealengine
 			return;
 		}
 		GLenum	format = 0;
-		if (nChannels == 1)
+		if (nChannels == 1) {
 			format = GL_RED;
-		else if (nChannels == 3)
+		} else if (nChannels == 3) {
 			format = GL_RGB;
-		else if (nChannels == 4)
+		} else if (nChannels == 4) {
 			format = GL_RGBA;
+}
 
 		GLCallThrow(glGenTextures, 1, &glId);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
@@ -93,4 +97,4 @@ namespace notrealengine
 	{
 		this->type = type;
 	}
-}
+} // namespace notrealengine

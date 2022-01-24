@@ -4,9 +4,9 @@
 
 # include "GLShaderProgram.class.hpp"
 
-# include <string>
 # include <filesystem>
 # include <map>
+# include <string>
 
 # include "GL.hpp"
 
@@ -21,14 +21,14 @@ namespace notrealengine
 
 	public:
 		virtual void
-			makeCurrent( void ) = 0;
+			makeCurrent( ) = 0;
 		virtual bool
-			isCurrent( void ) = 0;
+			isCurrent( ) = 0;
 
 		void
-			registerShader( std::string name, std::filesystem::path, std::filesystem::path );
+			registerShader( std::string name, const std::filesystem::path&, const std::filesystem::path& );
 		GLShaderProgram *
-			getShader( std::string );
+			getShader( const std::string& );
 
 		static std::filesystem::path
 			DefaultShaderPath;
@@ -36,15 +36,15 @@ namespace notrealengine
 	protected:
 		static long
 			CurrentContext;
-		GLContext( void ); // Abstract class, constructor disaled
-		~GLContext( void );
+		GLContext( ); // Abstract class, constructor disaled
+		~GLContext( );
 
 	private:
 		std::map<std::string,GLShaderProgram>
 			shaders;
 
 	};
-}
+} // namespace notrealengine
 
 #endif
 

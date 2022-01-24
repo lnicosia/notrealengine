@@ -19,10 +19,10 @@ namespace notrealengine
 		GLCharacter& operator=(GLCharacter && c) noexcept;
 		~GLCharacter();
 
-		unsigned int const& getId() const;
-		mft::vec2 const& getSize() const;
-		mft::vec2 const& getBearing() const;
-		unsigned int const& getNext() const;
+		[[nodiscard]] unsigned int const& getId() const;
+		[[nodiscard]] mft::vec2 const& getSize() const;
+		[[nodiscard]] mft::vec2 const& getBearing() const;
+		[[nodiscard]] unsigned int const& getNext() const;
 
 	private:
 		unsigned int	glId;
@@ -32,6 +32,6 @@ namespace notrealengine
 
 		void	setup(FT_Face face, char c);
 	};
-}
+} // namespace notrealengine
 
 #endif

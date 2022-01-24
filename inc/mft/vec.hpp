@@ -1,11 +1,11 @@
 #ifndef _VEC_H_
 # define _VEC_H_
 
+# include <array>
 # include <cstddef>
-# include <type_traits>
 # include <initializer_list>
 # include <ostream>
-# include <array>
+# include <type_traits>
 
 namespace	mft
 {
@@ -14,8 +14,8 @@ namespace	mft
 	struct vec_union {
 		std::array<T1,1 + sizeof...(Tn)> data;
 
-		constexpr vec_union<T1,Tn...>( T1 e1, Tn ... en ): data{e1, en...} {};
-		constexpr vec_union<T1,Tn...>( std::array<T1,1 + sizeof...(Tn)> from ): data(from) {};
+		constexpr explicit vec_union<T1,Tn...>( T1 e1, Tn ... en ): data{e1, en...} {};
+		constexpr explicit vec_union<T1,Tn...>( std::array<T1,1 + sizeof...(Tn)> from ): data(from) {};
 	};
 
 	template<typename T>
@@ -25,7 +25,7 @@ namespace	mft
 			struct { T x, y; };
 		};
 		constexpr vec_union<T,T>( T e1, T e2 ): data{e1, e2} {};
-		constexpr vec_union<T,T>( std::array<T,2> from ): data(from) {};
+		constexpr explicit vec_union<T,T>( std::array<T,2> from ): data(from) {};
 	};
 
 	template<typename T>
@@ -35,7 +35,7 @@ namespace	mft
 			struct { T x, y, z; };
 		};
 		constexpr vec_union<T,T,T>( T e1, T e2, T e3 ): data{e1, e2, e3} {};
-		constexpr vec_union<T,T,T>( std::array<T,3> from ): data(from) {};
+		constexpr explicit vec_union<T,T,T>( std::array<T,3> from ): data(from) {};
 	};
 
 	template<typename T>
@@ -45,7 +45,7 @@ namespace	mft
 			struct { T x, y, z, w; };
 		};
 		constexpr vec_union<T,T,T,T>( T e1, T e2, T e3, T e4 ): data{e1, e2, e3, e4} {};
-		constexpr vec_union<T,T,T,T>( std::array<T,4> from ): data(from) {};
+		constexpr explicit vec_union<T,T,T,T>( std::array<T,4> from ): data(from) {};
 	};
 
 
@@ -75,15 +75,15 @@ namespace	mft
 	struct vec : public vec_union<T1,Tn...> {
 
 		// Default and copy constructors and assignement operator
-		constexpr vec<T1,Tn...>( void );
+		constexpr vec<T1,Tn...>( );
 		// This templated constructor adds implicit conversion from any other compatible type
 		template<typename U1, typename ... Un>
-		constexpr vec<T1,Tn...>( const vec<U1,Un...> & from );
+		constexpr vec<T1,Tn...>( const vec<U1,Un...> & from ); // NOLINT *-explicit-*
 		vec<T1,Tn...> & operator=( const vec<T1,Tn...> & from );
 
 		// Scalar and list initializers
-		constexpr vec<T1,Tn...>( const T1 scalar );
-		constexpr vec<T1,Tn...>( T1 e1, Tn ... en );
+		constexpr vec<T1,Tn...>( T1 scalar ); // NOLINT *-explicit-*
+		constexpr vec<T1,Tn...>( T1 e1, Tn ... en ); // NOLINT *-explicit-*
 
 		// Accessor
 		constexpr T1 & operator[]( size_t index );
@@ -124,6 +124,6 @@ namespace	mft
 		static constexpr T1 dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 );
 		static constexpr vec<T1,T1,T1> cross( const vec<T1,T1,T1> & v1, const vec<T1,T1,T1> & v2 );
 	};
-}
+} // namespace mft
 
 #endif

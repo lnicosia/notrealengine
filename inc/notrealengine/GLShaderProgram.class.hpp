@@ -11,20 +11,20 @@ namespace notrealengine
 		template <GLenum Type>
 		class ShaderPart {
 		public:
-			ShaderPart( std::string code );
-			~ShaderPart( void );
+			explicit ShaderPart( const std::string& code );
+			~ShaderPart( );
 
 			const GLuint shaderID;
 		};
 
 
-		GLShaderProgram( ShaderPart<GL_VERTEX_SHADER> vertex,
-						 ShaderPart<GL_FRAGMENT_SHADER> fragment );
-		~GLShaderProgram( void );
+		GLShaderProgram( const ShaderPart<GL_VERTEX_SHADER>& vertex,
+						 const ShaderPart<GL_FRAGMENT_SHADER>& fragment );
+		~GLShaderProgram( );
 
 		const GLuint programID;
 	};
-}
+} // namespace notrealengine
 
 #endif
 

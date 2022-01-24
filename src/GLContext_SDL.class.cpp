@@ -7,28 +7,26 @@ namespace notrealengine
 		glHandle(glHandle), windowHandle(windowHandle)
 	{
 
-		return ;
-	}
+			}
 
-	GLContext_SDL::~GLContext_SDL( void )
+	GLContext_SDL::~GLContext_SDL( )
 	{
 
-		return ;
-	}
+			}
 
-	void GLContext_SDL::makeCurrent( void )
+	void GLContext_SDL::makeCurrent( )
 	{
 		SDL_GL_MakeCurrent(windowHandle, glHandle);
 		CurrentContext = (long)glHandle;
 	}
 
-	void GLContext_SDL::swapWindow(void)
+	void GLContext_SDL::swapWindow()
 	{
 		SDL_GL_SwapWindow(windowHandle);
 	}
 
-	bool GLContext_SDL::isCurrent( void )
+	bool GLContext_SDL::isCurrent( )
 	{
 		return (CurrentContext == (long)glHandle);
 	}
-}
+} // namespace notrealengine

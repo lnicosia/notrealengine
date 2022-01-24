@@ -36,16 +36,16 @@ namespace notrealengine
 
 		// Accessors
 
-		std::vector<Vertex> const&
+		[[nodiscard]] std::vector<Vertex> const&
 			getVertices() const;
-		std::vector<unsigned int> const&
+		[[nodiscard]] std::vector<unsigned int> const&
 			getIndices() const;
-		mft::mat4 const&
+		[[nodiscard]] mft::mat4 const&
 			getMatrix() const;
 
 		//	Transforms
 
-		void	update(void);
+		void	update();
 		void	move(mft::vec3 move);
 		void	rotate(mft::vec3 rotation);
 		void	scale(mft::vec3 scale);
@@ -63,7 +63,7 @@ namespace notrealengine
 	};
 
 	std::ostream& operator<<(std::ostream& o, MeshData const& meshData);
-}
+} // namespace notrealengine
 
 
 

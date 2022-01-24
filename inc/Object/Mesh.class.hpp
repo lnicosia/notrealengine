@@ -10,20 +10,20 @@ namespace notrealengine
 	{
 	public:
 		Mesh() = delete;
-		Mesh(std::shared_ptr<GLMesh> const& glMesh);
+		explicit Mesh(std::shared_ptr<GLMesh>  glMesh);
 		~Mesh();
 
 		//	Accessors
 
-		std::shared_ptr<GLMesh> const&
+		[[nodiscard]] std::shared_ptr<GLMesh> const&
 			getGLMesh() const;
-		std::vector<Mesh> const&
+		[[nodiscard]] std::vector<Mesh> const&
 			getChildren() const;
-		mft::mat4 const&
+		[[nodiscard]] mft::mat4 const&
 			getMatrix() const;
-		Transform const&
+		[[nodiscard]] Transform const&
 			getTransform() const;
-		std::string const&
+		[[nodiscard]] std::string const&
 			getName() const;
 
 		//	Setters
@@ -45,7 +45,7 @@ namespace notrealengine
 
 		std::shared_ptr<GLMesh>	glMesh;
 		std::vector<Mesh>		children;
-		Mesh					*parent;
+		Mesh					*parent{};
 
 		Transform	transform;
 		mft::mat4	matrix;
@@ -53,6 +53,6 @@ namespace notrealengine
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);
 
-}
+} // namespace notrealengine
 
 #endif
