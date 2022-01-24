@@ -43,9 +43,9 @@ namespace notrealengine
 
 	}
 
-	GLObject& GLObject::operator=(GLObject const& GLObject)
+	GLObject& GLObject::operator=(GLObject const& ref)
 	{
-		*this = GLObject;
+		// TODO
 		return *this;
 	}
 

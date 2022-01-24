@@ -96,18 +96,12 @@ namespace	mft
 		// No need to define vec/scalar operations as scalars can
 		// implicitly be converted to vectors through the constructor
 		constexpr vec<T1,Tn...>			operator+( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator+( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator-( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator-( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator*( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator*( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator/( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator/( T1, const vec<T1,Tn...> & v2 );
 
 		constexpr bool					operator==( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator==( T1, const vec<T1,Tn...> & v2 );
 		constexpr bool					operator!=( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator!=( T1, const vec<T1,Tn...> & v2 );
 
 		// Other operators
 		friend std::ostream & operator<< <>( std::ostream & o, const vec<T1,Tn...> & v );
@@ -124,6 +118,19 @@ namespace	mft
 		static constexpr T1 dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 );
 		static constexpr vec<T1,T1,T1> cross( const vec<T1,T1,T1> & v1, const vec<T1,T1,T1> & v2 );
 	};
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator+(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator-(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator*(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator/(T1, const vec<T1, Tn...>& v2);
+
+	template<typename T1, typename ... Tn>
+	constexpr bool			operator==(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr bool			operator!=(T1, const vec<T1, Tn...>& v2);
 }
 
 #endif
