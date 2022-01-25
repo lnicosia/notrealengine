@@ -38,9 +38,9 @@ std::shared_ptr<GLObject> InitBobby(void)
   Mesh& upperLeftArm = (*torso.getChildren()[1]);
   upperLeftArm.setName("Upper left arm");
   upperLeftArm.setColor(mft::vec3(0.6f, 0.6f, 0.0f));
-  upperLeftArm.transform.move(mft::vec3(1.0f, 0.5f, 0.0f));
+  upperLeftArm.transform.move(mft::vec3(1.1f, 0.45f, 0.0f));
   upperLeftArm.transform.scale(mft::vec3(0.35f, 0.475f, 1.0f));
-  //upperLeftArm.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.2f), mft::radians(90.0f)));
+  upperLeftArm.transform.rotate(mft::quat(0.996196f, 0.0f, 0.0f, 0.0871558f));
 
   upperLeftArm.addMesh(std::shared_ptr<Mesh>(new Mesh(GLContext::cube)));
   Mesh& lowerLeftArm = (*upperLeftArm.getChildren()[0]);
@@ -52,9 +52,9 @@ std::shared_ptr<GLObject> InitBobby(void)
   Mesh&	upperRightArm = (*torso.getChildren()[2]);
   upperRightArm.setName("Upper right arm");
   upperRightArm.setColor(mft::vec3(0.6f, 0.6f, 0.0f));
-  upperRightArm.transform.move(mft::vec3(-0.35f, 0.5f, 0.0f));
+  upperRightArm.transform.move(mft::vec3(-0.425f, 0.5f, 0.0f));
   upperRightArm.transform.scale(mft::vec3(0.35f, 0.475f, 1.0f));
-  //upperRightArm.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, -0.2f), mft::radians(90.0f)));
+  upperRightArm.transform.rotate(mft::quat(0.996195f, 0.0f, 0.0f, -0.0871557f));
 
   upperRightArm.addMesh(std::shared_ptr<Mesh>(new Mesh(GLContext::cube)));
   Mesh& lowerRightArm = (*upperRightArm.getChildren()[0]);
