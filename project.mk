@@ -19,6 +19,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Light.class.cpp \
 		$S/Object/Scene.class.cpp \
 		$S/Object/InitBobby.cpp \
+		$S/Object/AssimpHelpers.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \

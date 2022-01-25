@@ -21,7 +21,9 @@ namespace notrealengine
 	struct BoneInfo
 	{
 		int	id;
-		mft::mat4	offset;
+		std::string	name;
+		mft::mat4	globalMatrix;
+		mft::mat4	localMatrix;
 	};
 
 	class GLObject: public Asset
@@ -47,9 +49,11 @@ namespace notrealengine
 
 			//	Accessors
 
-			std::vector<std::shared_ptr<Mesh>> const&
+			const std::vector<std::shared_ptr<Mesh>>&
 				getMeshes() const;
-			int const&
+			std::map<std::string, BoneInfo>&
+				getBones();
+			const int
 				getNbBones() const;
 			const unsigned int
 				getShader() const;
@@ -65,6 +69,10 @@ namespace notrealengine
 				setShader(unsigned int shader);
 			void
 				setShader(GLShaderProgram* shader);
+			void
+				setBoneGlobalMatrix(const mft::mat4& ref);
+			void
+				setBoneLocalMatrix(const mft::mat4& ref);
 
 			//	Texture utility
 
@@ -87,8 +95,6 @@ namespace notrealengine
 			//	Object loading
 			void
 				SetVertexBoneData(Vertex& vertex, int id, float weight);
-			mft::mat4
-				AssimpToMftMatrix(aiMatrix4x4 mat) const;
 			void
 				ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 			void

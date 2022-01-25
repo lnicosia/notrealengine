@@ -4,6 +4,7 @@
 #include "mft/mft.hpp"
 #include "Object/GLObject.class.hpp"
 #include "Object/Asset.class.hpp"
+#include "Object/Bone.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -17,6 +18,7 @@
 
 namespace notrealengine
 {
+
 	class Animation: public Asset
 	{
 		enum Type
@@ -33,9 +35,9 @@ namespace notrealengine
 			getMatrices() const;
 
 		void
+			processNode(aiNode* node);
+		void
 			playAnimation(GLObject& object);
-		mft::vec3
-			AssimpToMftVec3(aiVector3D& vec) const;
 
 		virtual const std::string
 			getAssetType() const;
@@ -43,9 +45,9 @@ namespace notrealengine
 	private:
 		double		duration;
 		double		ticksPerSecond;
-		int			type;
+		int				type;
 		mft::mat4	mat[MAX_BONES];
-		//std::vector<KeyFrame>	keyFrames;
+		std::map<std::string, Bone>	bones;
 	};
 }
 #endif

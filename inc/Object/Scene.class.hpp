@@ -50,6 +50,11 @@ namespace notrealengine
 		void
 			setProjectionMatrix(const mft::mat4& projection);
 
+		/**	Camera functions
+		*/
+
+		//	Movement functions
+
 		/**	Move the main camera forward into the scene
 		*/
 		void
@@ -66,6 +71,18 @@ namespace notrealengine
 		*/
 		void
 			right(uint32_t time);
+
+		//	View functions
+
+		const float
+			getYaw( void ) const;
+		const float
+			getPitch( void ) const;
+
+		void
+			setYaw(float yaw);
+		void
+			setPitch(float pitch);
 		void
 			lookDown(uint32_t time);
 		void
@@ -79,7 +96,7 @@ namespace notrealengine
 
 	private:
 		std::string	name;
-		
+
 		std::vector<std::shared_ptr<GLObject>>	objects;
 		std::vector<std::shared_ptr<Light>>		lights;
 		/**	Keep track of all the shaders used in the scene
@@ -89,6 +106,8 @@ namespace notrealengine
 		mft::mat4	projection;
 		mft::mat4	view;
 
+		/**	Scene's camera. Private so we can update shaders when changing the camera
+		*/
 		Camera		camera;
 		uint32_t	currentTime;
 		uint32_t	deltaTime;

@@ -22,6 +22,7 @@ namespace notrealengine
 		//	We don't need roll for a first person camera
 
 		float	speed;
+		float	sensitivity;
 
 		void	update();
 

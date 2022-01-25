@@ -29,6 +29,14 @@ namespace notrealengine
 		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "view");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
 		bindLights(GLContext::getShader("color")->programID);
+
+		//	Binding color (no lighting) shader manually
+		GLCallThrow(glUseProgram, GLContext::getShader("colorNoLight")->programID);
+		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("colorNoLight")->programID, "projection");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("colorNoLight")->programID, "view");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		bindLights(GLContext::getShader("colorNoLight")->programID);
 	}
 
 	Scene::~Scene()
@@ -65,7 +73,15 @@ namespace notrealengine
 		GLint location;
 		location = GLCallThrow(glGetUniformLocation, shader, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+		//	Bind color (no lighting) shader manually
+		shader = GLContext::getShader("colorNoLight")->programID;
+		GLCallThrow(glUseProgram, shader);
+		location = GLCallThrow(glGetUniformLocation, shader, "projection");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 	}
+
+	/**	Camera functions
+	*/
 
 	void	Scene::forward(uint32_t time)
 	{
@@ -88,6 +104,30 @@ namespace notrealengine
 	void	Scene::right(uint32_t time)
 	{
 		this->camera.right(time);
+		bindCamera();
+	}
+
+	const	float	Scene::getYaw( void ) const
+	{
+		return this->camera.yaw;
+	}
+
+	const	float	Scene::getPitch( void ) const
+	{
+		return this->camera.pitch;
+	}
+
+	void	Scene::setYaw(float yaw)
+	{
+		this->camera.yaw = yaw;
+		this->camera.update();
+		bindCamera();
+	}
+
+	void	Scene::setPitch(float pitch)
+	{
+		this->camera.pitch = pitch;
+		this->camera.update();
 		bindCamera();
 	}
 
@@ -137,6 +177,11 @@ namespace notrealengine
 		unsigned int shader = GLContext::getShader("color")->programID;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
+		location = GLCallThrow(glGetUniformLocation, shader, "view");
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		//	Bind color (no lightint) shader manually
+		shader = GLContext::getShader("colorNoLight")->programID;
+		GLCallThrow(glUseProgram, shader);
 		location = GLCallThrow(glGetUniformLocation, shader, "view");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
 	}

@@ -13,7 +13,8 @@ namespace notrealengine
 {
 	GLContext::GLContext()
 	{
-		registerShader("color", "shaders/test.vs", "shaders/colorShader.fs");
+		registerShader("color", "shaders/test.vs", "shaders/color.fs");
+		registerShader("colorNoLight", "shaders/test.vs", "shaders/colorNoLight.fs");
 		registerShader("bones", "shaders/anim.vs", "shaders/bones.fs");
 		registerShader("anim", "shaders/anim.vs", "shaders/test.fs");
 		registerShader("default", "shaders/anim.vs", "shaders/test.fs");

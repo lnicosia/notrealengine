@@ -4,7 +4,7 @@ namespace notrealengine
 {
 	Camera::Camera(mft::vec3 pos)
 		: pos(pos), up(mft::vec3(0.0f, 1.0f, 0.0f)), front(mft::vec3(0.0f, 0.0f, -1.0f)),
-		yaw(-90.0f), pitch(0.0f), speed(0.005f)
+		yaw(-90.0f), pitch(0.0f), speed(0.005f), sensitivity(0.25f)
 	{
 		update();
 	}

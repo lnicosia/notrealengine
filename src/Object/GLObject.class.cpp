@@ -1,6 +1,7 @@
 #include "Object/GLObject.class.hpp"
 #include "Object/TextureLoader.class.hpp"
 #include "Object/AssetManager.class.hpp"
+#include "Object/AssimpHelpers.hpp"
 #include "GLContext.class.hpp"
 #include "mft/mft.hpp"
 
@@ -57,16 +58,6 @@ namespace notrealengine
 			(*meshes[mesh]).addTexture(text);
 		else
 			throw std::runtime_error("Mesh index out of bounds");
-	}
-
-	mft::mat4	GLObject::AssimpToMftMatrix(aiMatrix4x4 mat) const
-	{
-		mft::mat4	res(
-			{ mat.a1, mat.a2, mat.a3, mat.a4 },
-			{ mat.b1, mat.b2, mat.b3, mat.b4 },
-			{ mat.c1, mat.c2, mat.c3, mat.c4 },
-			{ mat.d1, mat.d2, mat.d3, mat.d4 });
-		return res;
 	}
 
 	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
@@ -127,11 +118,13 @@ namespace notrealengine
 			BoneInfo	bone;
 			bone.id = -1;
 			std::string	boneName = mesh->mBones[i]->mName.C_Str();
-			//std::cout << "Bone " << boneName << std::endl;
+			bone.name = boneName;
+			std::cout << "Bone " << boneName << std::endl;
 			if (bones.find(boneName) == bones.end())
 			{
 				bone.id = i;
-				bone.offset = mft::mat4::inverse(AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix));
+				bone.localMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
+				bone.globalMatrix = mft::mat4::inverse(bone.localMatrix);
 				bones[boneName] = bone;
 				nbBones++;
 			}
@@ -291,7 +284,7 @@ namespace notrealengine
 
 	void	GLObject::drawBones() const
 	{
-		unsigned int shader = GLContext::getShader("color")->programID;
+		unsigned int shader = GLContext::getShader("colorNoLight")->programID;
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		std::map<std::string, BoneInfo>::const_iterator it;
@@ -300,19 +293,24 @@ namespace notrealengine
 		cube.setShader(shader);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw((*it).second.offset * transform.getMatrix());
+			cube.draw((*it).second.globalMatrix * transform.getMatrix());
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
 	//	Accessors
 
-	std::vector<std::shared_ptr<Mesh>> const&	GLObject::getMeshes() const
+	const std::vector<std::shared_ptr<Mesh>>&	GLObject::getMeshes() const
 	{
 		return meshes;
 	}
 
-	int const& GLObject::getNbBones() const
+	std::map<std::string, BoneInfo>&	GLObject::getBones()
+	{
+		return bones;
+	}
+
+	const int GLObject::getNbBones() const
 	{
 		return nbBones;
 	}
