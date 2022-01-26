@@ -15,7 +15,7 @@ const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 bonesMatrices[MAX_BONES];
 	
-out vec2 TextCoord;
+out vec2 TextCoord;      
 out vec3 Normal;
 out vec3 FragPos;
 flat out ivec4 boneIDs;

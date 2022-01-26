@@ -31,15 +31,16 @@ namespace notrealengine
 	GLObject::GLObject(const std::string& path)
 		: Asset({path}),
 		transform(),
-		directory(""), bones(), nbBones(0), shader(0)
+		directory(""), meshes(), bones(), nbBones(0), shader(0), visible(true)
 	{
 		loadObject(path);
+		bindBones();
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset({std::filesystem::path()}),
 		transform(),
-		directory(""), meshes(meshes), bones(), nbBones(0), shader(0)
+		directory(""), meshes(meshes), bones(), nbBones(0), shader(0), visible(true)
 	{
 
 	}
@@ -119,12 +120,13 @@ namespace notrealengine
 			bone.id = -1;
 			std::string	boneName = mesh->mBones[i]->mName.C_Str();
 			bone.name = boneName;
-			std::cout << "Bone " << boneName << std::endl;
 			if (bones.find(boneName) == bones.end())
 			{
-				bone.id = i;
-				bone.localMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
-				bone.globalMatrix = mft::mat4::inverse(bone.localMatrix);
+				bone.id = nbBones;
+				bone.offsetMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
+				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
+				bone.localMatrix = mft::mat4();
+				bone.fromParentMatrix = mft::mat4();
 				bones[boneName] = bone;
 				nbBones++;
 			}
@@ -132,7 +134,7 @@ namespace notrealengine
 			{
 				bone.id = bones[boneName].id;
 			}
-			//std::cout << "Id = " << bone.id << std::endl;
+			//std::cout << "Bone " << boneName <<  " id = " << bone.id << std::endl;
 			aiVertexWeight *weights = mesh->mBones[i]->mWeights;
 			int	nbWeights = mesh->mBones[i]->mNumWeights;
 			for (int j = 0; j < nbWeights; j++)
@@ -186,6 +188,7 @@ namespace notrealengine
 			}
 			vertices.push_back(vertex);
 		}
+		//std::cout << "Extracting bones of " << mesh->mName.C_Str() << std::endl;
 		ExtractBoneInfo(vertices, mesh, scene);
 
 		//	Indices
@@ -235,6 +238,23 @@ namespace notrealengine
 		return res;
 	}
 
+	void	GLObject::processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat)
+	{
+		mft::mat4	transform = AssimpToMftMatrix(node->mTransformation) * parentMat;
+		std::string name(node->mName.data);
+		if (bones.contains(name))
+		{
+			bones[name].fromParentMatrix = transform;
+			std::cout << "Node " << node->mName.C_Str() << " has an associated bone" << std::endl;
+			std::cout << "Computed matrix = " << transform << std::endl;
+			std::cout << "Model matrix = " << bones[name].modelMatrix << std::endl;
+		}
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			processNodeBones(node->mChildren[i], scene, transform);
+		}
+	}
+
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
 	{
 		//std::cout << "Node " << node->mName.C_Str() << std::endl;
@@ -266,15 +286,17 @@ namespace notrealengine
 		}
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
-
+		processNodeBones(scene->mRootNode, scene, mft::mat4());
 	}
 
 	//	Drawing functions
 
 	void	GLObject::draw() const
 	{
-
-		//GLCallThrow(glUseProgram, shader->programID);
+		if (bones.size() != 0)
+		{
+			bindBones(this->shader);
+		}
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
 			//std::cout << "Drawing object " << name << " with matrix " << transform.getMatrix() << std::endl;
@@ -293,9 +315,25 @@ namespace notrealengine
 		cube.setShader(shader);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw((*it).second.globalMatrix * transform.getMatrix());
+			cube.draw((*it).second.fromParentMatrix * transform.getMatrix());
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
+	}
+
+	void	GLObject::bindBones(unsigned int shader) const
+	{
+		shader = shader == 0 ? GLContext::getShader("default")->programID : this->shader;
+		GLCallThrow(glUseProgram, shader);
+		GLint location;
+		std::string str;
+		std::map<std::string, BoneInfo>::const_iterator it;
+		for (it = bones.begin(); it != bones.end(); it++)
+		{
+			str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
+			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
+			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
+				static_cast<const float*>(it->second.localMatrix));
+		}
 	}
 
 	//	Accessors

@@ -93,7 +93,7 @@ void main()
 
 	//No directional light for now
 	//vec3 res = computeDirLight(dirLight, norm, cameraDir);
-	vec3 res;
+	vec3 res = vec3(0);
 	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
 		res += computePointLight(pointLights[i], norm, FragPos, cameraDir);
 

@@ -16,27 +16,18 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, GLContext::getShader("text")->programID);
 		GLint location = GLCallThrow(glGetUniformLocation, GLContext::getShader("text")->programID, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(ortho));
-		//	Binding 2d shader manually
-		GLCallThrow(glUseProgram, GLContext::getShader("2dProjected")->programID);
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("2dProjected")->programID, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("2dProjected")->programID, "view");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
-		//	Binding color shader manually (default shader)
-		GLCallThrow(glUseProgram, GLContext::getShader("color")->programID);
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("color")->programID, "view");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		bindMatrix(GLContext::getShader("text")->programID, "projection", ortho);
+		//	Binding matrices and light manually for global shaders
+		bindMatrices(GLContext::getShader("2dProjected")->programID);
+
+		bindMatrices(GLContext::getShader("color")->programID);
 		bindLights(GLContext::getShader("color")->programID);
 
-		//	Binding color (no lighting) shader manually
-		GLCallThrow(glUseProgram, GLContext::getShader("colorNoLight")->programID);
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("colorNoLight")->programID, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
-		location = GLCallThrow(glGetUniformLocation, GLContext::getShader("colorNoLight")->programID, "view");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		bindMatrices(GLContext::getShader("colorNoLight")->programID);
 		bindLights(GLContext::getShader("colorNoLight")->programID);
+
+		bindMatrices(GLContext::getShader("bonesInfluence")->programID);
+		bindLights(GLContext::getShader("bonesInfluence")->programID);
 	}
 
 	Scene::~Scene()
@@ -164,29 +155,26 @@ namespace notrealengine
 		this->camera.speed = speed;
 	}
 
-	void	Scene::bindCamera()
+	void	Scene::bindMatrices(unsigned int shader) const
+	{
+		bindMatrix(shader, "projection", this->projection);
+		bindMatrix(shader, "view", this->camera.getViewMatrix());
+		bindLights(shader);
+	}
+
+	void	Scene::bindCamera() const
 	{
 		for (const auto& shader: shaders)
 		{
-			GLCallThrow(glUseProgram, shader);
-			GLint location;
-			location = GLCallThrow(glGetUniformLocation, shader, "view");
-			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+			bindMatrix(shader, "view", this->camera.getViewMatrix());
 		}
-		//	Bind color shader manually (default shader)
-		unsigned int shader = GLContext::getShader("color")->programID;
-		GLCallThrow(glUseProgram, shader);
-		GLint location;
-		location = GLCallThrow(glGetUniformLocation, shader, "view");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
-		//	Bind color (no lightint) shader manually
-		shader = GLContext::getShader("colorNoLight")->programID;
-		GLCallThrow(glUseProgram, shader);
-		location = GLCallThrow(glGetUniformLocation, shader, "view");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(this->camera.getViewMatrix()));
+		//	Manually bind global shaders
+		bindMatrix(GLContext::getShader("color")->programID, "view", this->camera.getViewMatrix());
+		bindMatrix(GLContext::getShader("colorNoLight")->programID, "view", this->camera.getViewMatrix());
+		bindMatrix(GLContext::getShader("bonesInfluence")->programID, "view", this->camera.getViewMatrix());
 	}
 
-	void	Scene::bindLights(unsigned int shader)
+	void	Scene::bindLights(unsigned int shader) const
 	{
 		GLCallThrow(glUseProgram, shader);
 		GLint	location;
@@ -278,7 +266,8 @@ namespace notrealengine
 		}*/
 		for (const auto& object: objects)
 		{
-			object->draw();
+			if (object->visible == true)
+				object->draw();
 		}
 		for (const auto& light: lights)
 		{
@@ -295,7 +284,8 @@ namespace notrealengine
 	{
 		for (const auto& object : objects)
 		{
-			object->drawBones();
+			if (object->visible == true)
+				object->drawBones();
 		}
 	}
 }

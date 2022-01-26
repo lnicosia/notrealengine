@@ -130,6 +130,8 @@
     <ClCompile Include="..\src\Object\Animation.class.cpp" />
     <ClCompile Include="..\src\Object\Asset.class.cpp" />
     <ClCompile Include="..\src\Object\AssetManager.class.cpp" />
+    <ClCompile Include="..\src\Object\AssimpHelpers.cpp" />
+    <ClCompile Include="..\src\Object\Bone.class.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\InitBobby.cpp" />
     <ClCompile Include="..\src\Object\Light.class.cpp" />
@@ -168,6 +170,8 @@
     <ClInclude Include="..\inc\Object\Animation.class.hpp" />
     <ClInclude Include="..\inc\Object\Asset.class.hpp" />
     <ClInclude Include="..\inc\Object\AssetManager.class.hpp" />
+    <ClInclude Include="..\inc\Object\AssimpHelpers.hpp" />
+    <ClInclude Include="..\inc\Object\Bone.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
     <ClInclude Include="..\inc\Object\Light.class.hpp" />
     <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
@@ -185,13 +189,17 @@
     <None Include="..\shaders\2dProjected.fs" />
     <None Include="..\shaders\2dProjected.vs" />
     <None Include="..\shaders\anim.vs" />
-    <None Include="..\shaders\bones.fs" />
-    <None Include="..\shaders\colorShader.fs" />
+    <None Include="..\shaders\bonesInfluence.fs" />
+    <None Include="..\shaders\color.fs" />
+    <None Include="..\shaders\colorNoLight.fs" />
+    <None Include="..\shaders\default.fs" />
+    <None Include="..\shaders\default.vs" />
     <None Include="..\shaders\test.fs" />
     <None Include="..\shaders\test.glsl" />
     <None Include="..\shaders\test.vs" />
     <None Include="..\shaders\text.fs" />
     <None Include="..\shaders\text.vs" />
+    <None Include="..\shaders\unlit.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

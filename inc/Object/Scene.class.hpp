@@ -30,10 +30,13 @@ namespace notrealengine
 			addLight(std::shared_ptr<Light>& light);
 
 		void
-			bindLights(unsigned int shader);
+			bindMatrices(unsigned int shader) const;
 
 		void
-			bindCamera();
+			bindLights(unsigned int shader) const;
+
+		void
+			bindCamera() const;
 
 		//	Accessors
 

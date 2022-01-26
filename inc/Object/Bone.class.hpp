@@ -65,6 +65,7 @@ namespace notrealengine
 		std::string name;
 		mft::mat4	globalMatrix;
 		mft::mat4	localMatrix;
+		mft::mat4	modelMatrix;
 
 		std::vector<VecKeyFrame>	positions;
 		std::vector<QuatKeyFrame>	rotations;

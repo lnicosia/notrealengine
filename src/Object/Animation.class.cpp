@@ -56,8 +56,8 @@ namespace notrealengine
 
 	void Animation::processNode(aiNode* node)
 	{
-		std::cout << "Node '" << node->mName.C_Str() << "' has " << node->mNumChildren << " children" << std::endl;
-		std::cout << "Transform matrix = " << AssimpToMftMatrix(node->mTransformation) << std::endl;
+		//std::cout << "Node '" << node->mName.C_Str() << "' has " << node->mNumChildren << " children" << std::endl;
+		//std::cout << "Transform matrix = " << AssimpToMftMatrix(node->mTransformation) << std::endl;
 		for (int i = 0; i < node->mNumChildren; i++)
 		{
 			processNode(node->mChildren[i]);

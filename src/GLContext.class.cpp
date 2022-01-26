@@ -15,9 +15,9 @@ namespace notrealengine
 	{
 		registerShader("color", "shaders/test.vs", "shaders/color.fs");
 		registerShader("colorNoLight", "shaders/test.vs", "shaders/colorNoLight.fs");
-		registerShader("bones", "shaders/anim.vs", "shaders/bones.fs");
-		registerShader("anim", "shaders/anim.vs", "shaders/test.fs");
+		registerShader("bonesInfluence", "shaders/anim.vs", "shaders/bonesInfluence.fs");
 		registerShader("default", "shaders/anim.vs", "shaders/test.fs");
+		registerShader("unlit", "shaders/anim.vs", "shaders/unlit.fs");
 		registerShader("2dProjected", "shaders/2dProjected.vs", "shaders/2dProjected.fs");
 
 		registerShader("text", "shaders/text.vs", "shaders/text.fs");

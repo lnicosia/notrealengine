@@ -36,7 +36,6 @@ int		main(int ac, char** av)
 	int	running = 1;
 	int	mode = Object;
 	int selectedBone = 0;
-	GLShaderProgram* currentShader = context.getShader("default");
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
@@ -83,7 +82,8 @@ int		main(int ac, char** av)
 	scene.setCameraSpeed(0.05f);
 
 	scene.addObject(obj);
-	//scene.addObject(bobby);
+	scene.addObject(bobby);
+	bobby->visible = false;
 	scene.addLight(light1);
 
 	InputState	mouseState = InputState::NRE_RELEASED;
@@ -165,7 +165,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime);
 				}
@@ -173,7 +173,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime);
 				}
@@ -252,35 +252,33 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_o)
 				{
 					mode = Object;
-					currentShader = context.getShader("default");
+					obj->setShader(context.getShader("default"));
+					obj->bindBones();
 				}
 				if (e.key.keysym.sym == SDLK_v)
 				{
 					mode = Bones;
-					currentShader = context.getShader("bones");
+					obj->setShader(context.getShader("bonesInfluence"));
 				}
 				if (e.key.keysym.sym == SDLK_b)
 				{
 					mode = Bob;
-					currentShader = context.getShader("color");
+					obj->visible = obj->visible == true ? false : true;
+					bobby->visible = obj->visible == true ? false : true;
 				}
 				if (e.key.keysym.sym == SDLK_KP_PLUS)
 				{
 					selectedBone++;
 					if (selectedBone > obj->getNbBones())
 						selectedBone = 0;
-					//GLCallThrow(glUseProgram, context.getShader("bones")->programID);
-					//GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, context.getShader("bones")->programID, "selectedBone"), selectedBone);
-
+					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{
 					selectedBone--;
 					if (selectedBone < 0)
 						selectedBone = obj->getNbBones() - 1;
-					//GLCallThrow(glUseProgram, context.getShader("bones")->programID);
-					//GLCallThrow(glUniform1i, GLCallThrow(glGetUniformLocation, context.getShader("bones")->programID, "selectedBone"), selectedBone);
-
+					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
 				}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
@@ -325,12 +323,8 @@ int		main(int ac, char** av)
 		GLCallThrow(glClearColor, 0.2f, 0.2f, 0.2f, 1.0f);
 		GLCallThrow(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		const mft::mat4* mat = anim->getMatrices();
-		GLCallThrow(glUseProgram, currentShader->programID);
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, currentShader->programID, "bonesMatrices"), MAX_BONES, GL_TRUE, static_cast<const float*>(mat[0]));
-
 		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(0, 0), 1, mft::vec3(1.0, 1.0, 1.0));
-		//font->RenderText(context.getShader("text"), std::string("Selected bone = " + std::to_string(selectedBone)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::string("Selected bone = " + std::to_string(selectedBone)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
 		scene.renderBones();

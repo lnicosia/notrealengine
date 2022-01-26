@@ -5,6 +5,7 @@
 #include "Object/Texture.class.hpp"
 #include "Object/Transform.class.hpp"
 #include "Object/Asset.class.hpp"
+#include "Object/Bone.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -22,8 +23,10 @@ namespace notrealengine
 	{
 		int	id;
 		std::string	name;
-		mft::mat4	globalMatrix;
+		mft::mat4	offsetMatrix;
 		mft::mat4	localMatrix;
+		mft::mat4	modelMatrix;
+		mft::mat4	fromParentMatrix;
 	};
 
 	class GLObject: public Asset
@@ -43,9 +46,15 @@ namespace notrealengine
 			void
 				draw() const;
 
-			//	Render all the object's bones
+			/**	Render all the object's bones
+			*/
 			void
 				drawBones() const;
+
+			/**
+			*/
+			void
+				bindBones(unsigned int shader = 0) const;
 
 			//	Accessors
 
@@ -81,6 +90,8 @@ namespace notrealengine
 			// Transform is public so its non-const operations can be called efficiently
 			Transform	transform;
 
+			bool	visible;
+
 		private:
 
 			std::vector<std::shared_ptr<Mesh>>	meshes;
@@ -101,6 +112,8 @@ namespace notrealengine
 				loadObject(std::string path);
 			void
 				processNode(aiNode* node, const aiScene* scene);
+			void
+				processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat);
 			std::shared_ptr<Mesh>
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>

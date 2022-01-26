@@ -82,6 +82,49 @@ namespace notrealengine
 		}
 	}
 
+	void	GLShaderProgram::bindMatrix(std::string name, const mft::mat4& mat) const
+	{
+		GLCallThrow(glUseProgram, this->programID);
+		GLint location = GLCallThrow(glGetUniformLocation, this->programID, name.c_str());
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(mat));
+	}
+
+	void	GLShaderProgram::bindFloat(std::string name, const float nb) const
+	{
+		GLCallThrow(glUseProgram, this->programID);
+		GLint location = GLCallThrow(glGetUniformLocation, this->programID, name.c_str());
+		GLCallThrow(glUniform1f, location, nb);
+	}
+
+	void	GLShaderProgram::bindInt(std::string name, const int nb) const
+	{
+		GLCallThrow(glUseProgram, this->programID);
+		GLint location = GLCallThrow(glGetUniformLocation, this->programID, name.c_str());
+		GLCallThrow(glUniform1i, location, nb);
+	}
+
 	template class GLShaderProgram::ShaderPart<GL_VERTEX_SHADER>;
 	template class GLShaderProgram::ShaderPart<GL_FRAGMENT_SHADER>;
+
+	void	bindMatrix(unsigned int shader, std::string name, const mft::mat4& mat)
+	{
+		GLCallThrow(glUseProgram, shader);
+		GLint location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
+		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(mat));
+	}
+
+	void	bindFloat(unsigned int shader, std::string name, const float nb)
+	{
+		GLCallThrow(glUseProgram, shader);
+		GLint location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
+		GLCallThrow(glUniform1f, location, nb);
+	}
+
+	void	bindInt(unsigned int shader, std::string name, const int nb)
+	{
+		GLCallThrow(glUseProgram, shader);
+		GLint location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
+		GLCallThrow(glUniform1i, location, nb);
+	}
 }
+
