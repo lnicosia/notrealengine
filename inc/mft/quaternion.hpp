@@ -53,6 +53,9 @@ namespace mft
 		quaternion<T> & operator*=( const quaternion<T> & v2 );
 
 		static constexpr quaternion<T> rotation( const vec<T,T,T> axis, T radians );
+		static constexpr T dot( const quaternion<T>& x, const quaternion<T>& y );
+		static constexpr T length( const quaternion<T>& quat );
+		static constexpr quaternion<T> normalized( const quaternion<T>& quat );
 	};
 }
 

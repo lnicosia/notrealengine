@@ -18,6 +18,12 @@
 
 namespace notrealengine
 {
+	struct	MatrixNode
+	{
+		std::string							name;
+		mft::mat4								transform;
+		std::vector<MatrixNode>	children;
+	};
 
 	class Animation: public Asset
 	{
@@ -32,12 +38,16 @@ namespace notrealengine
 		~Animation();
 
 		const mft::mat4*
-			getMatrices() const;
+			getMatrices( void ) const;
+		const std::map<std::string, Bone>&
+			getBones( void ) const;
 
 		void
-			processNode(aiNode* node);
+			processNode(aiNode* node, aiAnimation* animation, MatrixNode& matrixNode);
 		void
-			playAnimation(GLObject& object);
+			playAnimation(GLObject& object, int frame);
+		void
+			computeBoneTransform(MatrixNode &node, const mft::mat4& parentMat);
 
 		virtual const std::string
 			getAssetType() const;
@@ -48,6 +58,10 @@ namespace notrealengine
 		int				type;
 		mft::mat4	mat[MAX_BONES];
 		std::map<std::string, Bone>	bones;
+
+		int	currentFrame;
+
+		MatrixNode	matrixStack;
 	};
 }
 #endif

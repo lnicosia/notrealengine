@@ -90,7 +90,7 @@ int		main(int ac, char** av)
 
 	vec2i	mousePos, mouseStart;
 
-	//anim->playAnimation(*obj);
+	int frame = 0;
 
 	while (running)
 	{
@@ -165,7 +165,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
 					scene.left(deltaTime);
 				}
@@ -173,7 +173,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					scene.forward(deltaTime);
 				}
@@ -266,12 +266,19 @@ int		main(int ac, char** av)
 					obj->visible = obj->visible == true ? false : true;
 					bobby->visible = obj->visible == true ? false : true;
 				}
+				if (e.key.keysym.sym == SDLK_r)
+				{
+					obj->resetPose();
+					std::cout << "Pose reset " << std::endl;
+				}
 				if (e.key.keysym.sym == SDLK_KP_PLUS)
 				{
 					selectedBone++;
 					if (selectedBone > obj->getNbBones())
 						selectedBone = 0;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
+					frame++;
+					anim->playAnimation(*obj, frame);
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{
@@ -279,6 +286,8 @@ int		main(int ac, char** av)
 					if (selectedBone < 0)
 						selectedBone = obj->getNbBones() - 1;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
+					frame--;
+					anim->playAnimation(*obj, frame);
 				}
 				break;
 				case SDL_MOUSEBUTTONDOWN:

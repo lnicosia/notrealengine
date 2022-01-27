@@ -10,8 +10,8 @@ namespace notrealengine
 	}
 
 	Bone::Bone(const std::string& name, const int id, const aiNodeAnim* node)
-	: id(0), name(), globalMatrix(), localMatrix(),
-	positions(), rotations(), scales()
+	: id(0), name(name), globalMatrix(), localMatrix(),
+	positions(), rotations(), scales(), transforms(), modelMatrices()
 	{
 		for (unsigned int j = 0; j < node->mNumPositionKeys; j++)
 		{
@@ -22,7 +22,7 @@ namespace notrealengine
 			positions.push_back(keyFrame);
 		}
 		//std::cout << std::endl;
-		for (unsigned int j = 0; j < node->mNumPositionKeys; j++)
+		for (unsigned int j = 0; j < node->mNumRotationKeys; j++)
 		{
 			QuatKeyFrame	keyFrame;
 			keyFrame.quat = AssimpToMftQuat(node->mRotationKeys[j].mValue);
@@ -39,12 +39,23 @@ namespace notrealengine
 			//std::cout << "Time = " << keyFrame.time << std::endl;
 			scales.push_back(keyFrame);
 		}
+
+		int min = std::min(std::min(positions.size(), rotations.size()), scales.size());
+		for (unsigned int j = 0; j < min; j++)
+		{
+			mft::mat4 transform =
+			mft::mat4::translate(positions[j].vec)
+			* mft::mat4::rotate(mft::quat::normalized(rotations[j].quat))
+			* mft::mat4::scale(scales[j].vec);
+			transforms.push_back(transform);
+		}
 	}
 
 	Bone::Bone(const Bone& ref):
 		id(ref.id), name(ref.name),
 		globalMatrix(ref.globalMatrix), localMatrix(ref.localMatrix),
-		positions(ref.positions), rotations(ref.rotations), scales(ref.scales)
+		positions(ref.positions), rotations(ref.rotations), scales(ref.scales),
+		transforms(ref.transforms), modelMatrices(ref.modelMatrices)
 	{
 
 	}
@@ -58,6 +69,8 @@ namespace notrealengine
 		this->positions = ref.positions;
 		this->rotations = ref.rotations;
 		this->scales = ref.scales;
+		this->transforms = ref.transforms;
+		this->modelMatrices = ref.modelMatrices;
 		return *this;
 	}
 
@@ -67,25 +80,37 @@ namespace notrealengine
 
 	//	Accessors
 
-	const mft::vec3&	Bone::getPosition(const int index) const
+
+	const mft::mat4&	Bone::getTransform(const int index) const
+	{
+		if (index >= transforms.size())
+			throw std::out_of_range ("Index " + std::to_string(index) + " is out of bone '"
+			+ name + "' transforms range");
+		return transforms[index];
+	}
+
+	const VecKeyFrame&	Bone::getPosition(const int index) const
 	{
 		if (index >= positions.size())
-			throw std::out_of_range ("Index" + std::to_string(index) + " is out of the bone's range");
-		return positions[index].vec;
+			throw std::out_of_range ("Index " + std::to_string(index) + " is out of bone '"
+			+ name + "' positions range");
+		return positions[index];
 	}
 
-	const mft::quat&	Bone::getRotation(const int index) const
+	const QuatKeyFrame&	Bone::getRotation(const int index) const
 	{
 		if (index >= rotations.size())
-			throw std::out_of_range ("Index" + std::to_string(index) + " is out of the bone's range");
-		return rotations[index].quat;
+			throw std::out_of_range ("Index " + std::to_string(index) + " is out of bone '"
+			+ name + "' rotations range");
+		return rotations[index];
 	}
 
-	const mft::vec3&	Bone::getScale(const int index) const
+	const VecKeyFrame&	Bone::getScale(const int index) const
 	{
 		if (index >= scales.size())
-			throw std::out_of_range ("Index" + std::to_string(index) + " is out of the bone's range");
-		return scales[index].vec;
+			throw std::out_of_range ("Index " + std::to_string(index) + " is out of bone '"
+			+ name + "' scales range");
+		return scales[index];
 	}
 
 	const std::string&	Bone::getName( void ) const
@@ -103,6 +128,14 @@ namespace notrealengine
 	void Bone::setLocalMatrix(const mft::mat4& ref)
 	{
 		this->localMatrix = ref;
+	}
+
+	void Bone::updateTransforms(const mft::mat4& mat)
+	{
+		for (unsigned int j = 0; j < transforms.size(); j++)
+		{
+			transforms[j] *= mat;
+		}
 	}
 
 }

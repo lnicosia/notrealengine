@@ -56,6 +56,11 @@ namespace notrealengine
 			void
 				bindBones(unsigned int shader = 0) const;
 
+			/**
+			*/
+			void
+				resetPose(unsigned int shader = 0) const;
+
 			//	Accessors
 
 			const std::vector<std::shared_ptr<Mesh>>&

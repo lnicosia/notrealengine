@@ -154,6 +154,32 @@ namespace mft
 				axis.z * sin(angle / 2)
 				);
 	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr T quaternion<T>::dot(const quaternion<T>& x, const quaternion<T>& y)
+	{
+		return (x.a * y.a + x.b * y.b + x.c * y.c + x.d * y.d);
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr T quaternion<T>::length(const quaternion<T>& quat)
+	{
+		return (sqrt(	quat.a * quat.a + quat.b * quat.b
+								+ quat.c * quat.c + quat.d * quat.d));
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr quaternion<T> quaternion<T>::normalized(const quaternion<T>& quat)
+	{
+		T	len = length(quat);
+		if (len <= 0)
+			return quaternion<T>();
+		T inv = 1 / len;
+		return quaternion<T>(inv * quat.a, inv * quat.b, inv * quat.c, inv * quat.d);
+	}
 }
 
 #endif

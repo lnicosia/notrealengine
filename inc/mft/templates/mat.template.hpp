@@ -95,6 +95,29 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
+	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator+( const mat<T1,Tn...> & m2 ) const
+	{
+		mat<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = (*this)[i][j] + m2[i][j];
+			return ret;
+	}
+
+
+		template <typename T1, typename ... Tn>
+		constexpr mat<T1,Tn...> mat<T1,Tn...>::operator-( const mat<T1,Tn...> & m2 ) const
+		{
+			mat<T1,Tn...> ret;
+
+			for (int i = 0; i <= sizeof...(Tn); i++)
+				for (int j = 0; j <= sizeof...(Tn); j++)
+					ret[i][j] = (*this)[i][j] - m2[i][j];
+			return ret;
+		}
+
+	template <typename T1, typename ... Tn>
 	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 ) const
 	{
 		mat<T1,Tn...> ret;

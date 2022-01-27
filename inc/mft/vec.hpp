@@ -118,6 +118,7 @@ namespace	mft
 		static constexpr T1 dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 );
 		static constexpr vec<T1,T1,T1> cross( const vec<T1,T1,T1> & v1, const vec<T1,T1,T1> & v2 );
 	};
+	
 	template<typename T1, typename ... Tn>
 	constexpr vec<T1, Tn...>	operator+(T1, const vec<T1, Tn...>& v2);
 	template<typename T1, typename ... Tn>

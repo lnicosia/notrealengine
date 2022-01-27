@@ -44,6 +44,8 @@ namespace	mft
 		explicit operator T1*();
 		explicit operator const T1*() const;
 
+		constexpr mat<T1,Tn...> operator+( const mat<T1,Tn...> & m2 ) const;
+		constexpr mat<T1,Tn...> operator-( const mat<T1,Tn...> & m2 ) const;
 		constexpr vec<T1,Tn...> operator*( const vec<T1,Tn...> & v ) const;
 		constexpr mat<T1,Tn...> operator*( const mat<T1,Tn...> & m2 ) const;
 		constexpr mat<T1, Tn...> operator*(const T1 & scalar) const;

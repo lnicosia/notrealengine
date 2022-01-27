@@ -241,16 +241,23 @@ namespace notrealengine
 	void	GLObject::processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat)
 	{
 		mft::mat4	transform = AssimpToMftMatrix(node->mTransformation) * parentMat;
+		//std::cout << "Node '" << node->mName.C_Str() << "':" << std::endl;
 		std::string name(node->mName.data);
 		if (bones.contains(name))
 		{
 			bones[name].fromParentMatrix = transform;
-			std::cout << "Node " << node->mName.C_Str() << " has an associated bone" << std::endl;
-			std::cout << "Computed matrix = " << transform << std::endl;
-			std::cout << "Model matrix = " << bones[name].modelMatrix << std::endl;
+
+			//std::cout << "Node " << node->mName.C_Str() << " has an associated bone" << std::endl;
+			//std::cout << "Model matrix = " << bones[name].modelMatrix << std::endl;
+			//std::cout << "Computed matrix = " << transform << std::endl;
+			//std::cout << "Local matrix = " << bones[name].localMatrix << std::endl;
+			//std::cout << "Transform - model = " << transform - bones[name].modelMatrix << std::endl;
+			//std::cout << "Model - transform = " << bones[name].modelMatrix - transform << std::endl;
+			bones[name].localMatrix = bones[name].offsetMatrix * transform;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
+			//std::cout << "Matrix sent to next node = " << transform << std::endl;
 			processNodeBones(node->mChildren[i], scene, transform);
 		}
 	}
@@ -295,7 +302,7 @@ namespace notrealengine
 	{
 		if (bones.size() != 0)
 		{
-			bindBones(this->shader);
+			//bindBones(this->shader);
 		}
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
@@ -317,6 +324,11 @@ namespace notrealengine
 		{
 			cube.draw((*it).second.fromParentMatrix * transform.getMatrix());
 		}
+		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
+		for (it = bones.begin(); it != bones.end(); it++)
+		{
+			cube.draw((*it).second.modelMatrix * transform.getMatrix());
+		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
@@ -333,6 +345,22 @@ namespace notrealengine
 			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
 				static_cast<const float*>(it->second.localMatrix));
+		}
+	}
+
+	void	GLObject::resetPose(unsigned int shader) const
+	{
+		shader = shader == 0 ? GLContext::getShader("default")->programID : this->shader;
+		GLCallThrow(glUseProgram, shader);
+		GLint location;
+		mft::mat4	mat = mft::mat4();
+		std::string str;
+		for (int i = 0; i < MAX_BONES; i++)
+		{
+			str = "bonesMatrices[" + std::to_string(i) + "]";
+			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
+			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
+				static_cast<const float*>(mat));
 		}
 	}
 

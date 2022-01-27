@@ -38,11 +38,13 @@ namespace notrealengine
 
 		//	Accessors
 
-		const mft::vec3&
+		const mft::mat4&
+			getTransform(const int index) const;
+		const VecKeyFrame&
 			getPosition(const int index) const;
-		const mft::quat&
+		const QuatKeyFrame&
 			getRotation(const int index) const;
-		const mft::vec3&
+		const VecKeyFrame&
 			getScale(const int index) const;
 		const std::string&
 			getName( void ) const;
@@ -60,16 +62,24 @@ namespace notrealengine
 		void
 			setScale(const int index, const mft::mat4& scale);
 
+		void
+			updateTransforms(const mft::mat4& mat);
+
+			mft::mat4	modelMatrix;
+			
 	private:
 		int			id;
 		std::string name;
 		mft::mat4	globalMatrix;
 		mft::mat4	localMatrix;
-		mft::mat4	modelMatrix;
+
 
 		std::vector<VecKeyFrame>	positions;
 		std::vector<QuatKeyFrame>	rotations;
 		std::vector<VecKeyFrame>	scales;
+
+		std::vector<mft::mat4>		transforms;
+		std::vector<mft::mat4>		modelMatrices;
 	};
 
 }
