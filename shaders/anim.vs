@@ -23,7 +23,7 @@ out vec4    Weights;
 	
 void main()
 {
-    vec4 totalPosition = vec4(0.0f);
+    vec4 totalPosition = vec4(pos, 1.0f);
     for (int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
     {
         if (boneIds[i] == -1) 
@@ -40,7 +40,6 @@ void main()
 		
     gl_Position =  projection * view * model * totalPosition;
     FragPos = vec3(model * totalPosition);
-    //Normal = mat3(transpose(inverse(model))) * norm;
     Normal = normalMatrix * norm;
     TextCoord = tex;
     boneIDs = boneIds;

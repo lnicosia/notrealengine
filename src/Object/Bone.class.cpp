@@ -44,9 +44,9 @@ namespace notrealengine
 		for (unsigned int j = 0; j < min; j++)
 		{
 			mft::mat4 transform =
-			mft::mat4::translate(positions[j].vec)
+				mft::mat4::scale(scales[j].vec)
 			* mft::mat4::rotate(mft::quat::normalized(rotations[j].quat))
-			* mft::mat4::scale(scales[j].vec);
+			* mft::mat4::translate(positions[j].vec);
 			transforms.push_back(transform);
 		}
 	}

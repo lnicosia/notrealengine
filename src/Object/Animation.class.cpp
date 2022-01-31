@@ -34,6 +34,8 @@ namespace notrealengine
 			return;
 		}
 		aiAnimation* animation = scene->mAnimations[index];
+		this->duration = animation->mDuration;
+		this->ticksPerSecond = animation->mTicksPerSecond;
 		//std::cout << "Animation " << name << " uses ";
 		//std::cout << animation->mNumChannels << " bones" << std::endl;
 		std::vector<std::string> bonesName;
@@ -129,10 +131,10 @@ namespace notrealengine
 		//	at the current frame
 		if (bones.contains(node.name))
 		{
-			//transform = this->bones[node.name].getTransform(this->currentFrame) * parentMat;
-			transform = node.transform * parentMat;
+			transform = this->bones[node.name].getTransform(this->currentFrame) * parentMat;
+			//transform = node.transform * parentMat;
 			this->bones[node.name].modelMatrix = transform;
-			std::cout << node.name << "'" << std::endl;
+			//std::cout << node.name << "'" << std::endl;
 		}
 		//	Otherwise, take the current matrix stack node's transform
 		else

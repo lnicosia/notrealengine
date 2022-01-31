@@ -99,6 +99,10 @@ namespace notrealengine
 
 		private:
 
+			mft::vec3	max;
+			mft::vec3	min;
+			bool		isRangeInit;
+
 			std::vector<std::shared_ptr<Mesh>>	meshes;
 
 			std::string	directory;

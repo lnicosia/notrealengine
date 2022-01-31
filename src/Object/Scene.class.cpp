@@ -5,11 +5,14 @@
 
 namespace notrealengine
 {
-	Scene::Scene(): name(), camera(mft::vec3(0.0f, 0.0f, -5.0f)),
+	Scene::Scene(): name(), camera(mft::vec3(0.0f, 3.0f, -5.0f)),
 		objects(), lights(), shaders(),
 		projection(mft::mat4::perspective(mft::radians(45.0f), 16.0f / 9.0f, 0.1f, 10000.0f)),
 		view()
 	{
+		camera.pitch += 15;
+		camera.update();
+
 		shaders.push_back(GLContext::getShader("2dProjected")->programID);
 		mft::mat4	ortho = mft::mat4::ortho(0.0f, 1600.0f, 0.0f, 900.0f);
 

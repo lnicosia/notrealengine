@@ -15,6 +15,7 @@
 #endif
 
 #include <fstream>
+#include <algorithm>
 
 namespace notrealengine
 {
@@ -31,7 +32,8 @@ namespace notrealengine
 	GLObject::GLObject(const std::string& path)
 		: Asset({path}),
 		transform(),
-		directory(""), meshes(), bones(), nbBones(0), shader(0), visible(true)
+		directory(""), meshes(), bones(), nbBones(0), shader(0), visible(true),
+		max(0.0f), min(0.0f), isRangeInit(false)
 	{
 		loadObject(path);
 		bindBones();
@@ -40,7 +42,8 @@ namespace notrealengine
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset({std::filesystem::path()}),
 		transform(),
-		directory(""), meshes(meshes), bones(), nbBones(0), shader(0), visible(true)
+		directory(""), meshes(meshes), bones(), nbBones(0), shader(0), visible(true),
+		max(0.0f), min(0.0f), isRangeInit(false)
 	{
 
 	}
@@ -164,6 +167,31 @@ namespace notrealengine
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
+			
+			//	Get the range of each axis coordinate 
+			//	to scale the object to fit in our engine unit scale
+			//	after parsing
+
+			if (isRangeInit == false)
+			{
+				isRangeInit = true;
+				max = vector;
+				min = vector;
+			}
+
+			if (vector.x > max.x)
+				max.x = vector.x;
+			if (vector.y > max.y)
+				max.y = vector.y;
+			if (vector.z > max.z)
+				max.z = vector.z;
+
+			if (vector.x < min.x)
+				min.x = vector.x;
+			if (vector.y < min.y)
+				min.y = vector.y;
+			if (vector.z < min.z)
+				min.z = vector.z;
 			vertex.pos = vector;
 
 			if (mesh->mNormals)
@@ -188,7 +216,6 @@ namespace notrealengine
 			}
 			vertices.push_back(vertex);
 		}
-		//std::cout << "Extracting bones of " << mesh->mName.C_Str() << std::endl;
 		ExtractBoneInfo(vertices, mesh, scene);
 
 		//	Indices
@@ -219,18 +246,6 @@ namespace notrealengine
 				std::make_move_iterator(specularMaps.end()));
 		}
 
-		/*for (int i = 0; i < vertices.size(); i++)
-		{
-			std::cout << "Vertex " << i << ":" << std::endl;
-			std::cout << "Bone " << 0 << ": id = " << vertices[i].boneIDs[0];
-			std::cout << ", weight = " << vertices[i].weights[0] << std::endl;
-			std::cout << "Bone " << 1 << ": id = " << vertices[i].boneIDs[1];
-			std::cout << ", weight = " << vertices[i].weights[1] << std::endl;
-			std::cout << "Bone " << 2 << ": id = " << vertices[i].boneIDs[2];
-			std::cout << ", weight = " << vertices[i].weights[2] << std::endl;
-			std::cout << "Bone " << 3 << ": id = " << vertices[i].boneIDs[3];
-			std::cout << ", weight = " << vertices[i].weights[3] << std::endl;
-		}*/
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
 		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
@@ -294,6 +309,25 @@ namespace notrealengine
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
+
+		//	Scale the object
+
+		float rangeX = this->max.x - this->min.x;
+		float rangeY = this->max.y - this->min.y;
+		float rangeZ = this->max.z - this->min.z;
+
+		float minRange;
+		if (rangeX == 0)
+			minRange = std::min(rangeY, rangeZ);
+		else if (rangeY == 0)
+			minRange = std::min(rangeZ, rangeX);
+		else if (rangeZ == 0)
+			minRange = std::min(rangeY, rangeX);
+		else
+			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
+
+		float scale = 2.0f / minRange;
+		this->transform.scale(mft::vec3(scale));
 	}
 
 	//	Drawing functions

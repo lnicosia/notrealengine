@@ -39,19 +39,12 @@ int		main(int ac, char** av)
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
-
 	std::shared_ptr<Light>	light1(new Light(LightType::Directional));
+	light1->move(mft::vec3(0.0f, 4.0f, -5.0f));
 
-	//std::cout << obj << std::endl;
-	obj->transform.move(mft::vec3(0.0f, -10.0f, 30.0f));
-	//std::cout << obj << std::endl;
+	//obj->transform.move(mft::vec3(0.0f, -5.0f, 10.0f));
+	//obj->setShader(context.getShader("color"));
 
-	//std::shared_ptr<Texture>	text = TextureLoader::loadTexture(av[2], "texture_diffuse");
-	//obj->addTexture(0, text);
-	obj->transform.scale(mft::vec3(0.1, 0.1, 0.1));
-	obj->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(180.0f)));
-
-	//std::cout << "Obj matrix = " << std::endl << obj->getMatrix() << std::endl;
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	//glEnable(GL_CULL_FACE);
@@ -165,7 +158,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime);
 				}
@@ -173,7 +166,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime);
 				}
@@ -336,7 +329,7 @@ int		main(int ac, char** av)
 		font->RenderText(context.getShader("text"), std::string("Selected bone = " + std::to_string(selectedBone)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
-		scene.renderBones();
+		//scene.renderBones();
 		context.swapWindow();
 	}
 	return 0;
