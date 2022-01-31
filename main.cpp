@@ -329,7 +329,7 @@ int		main(int ac, char** av)
 		font->RenderText(context.getShader("text"), std::string("Selected bone = " + std::to_string(selectedBone)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
-		//scene.renderBones();
+		scene.renderBones();
 		context.swapWindow();
 	}
 	return 0;
