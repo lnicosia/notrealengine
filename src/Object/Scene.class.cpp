@@ -8,7 +8,7 @@ namespace notrealengine
 	Scene::Scene(): name(), camera(mft::vec3(0.0f, 3.0f, -5.0f)),
 		objects(), lights(), shaders(),
 		projection(mft::mat4::perspective(mft::radians(45.0f), 16.0f / 9.0f, 0.1f, 10000.0f)),
-		view()
+		view(), renderingMode(RenderingMode::Lit)
 	{
 		camera.pitch += 15;
 		camera.update();
@@ -111,6 +111,11 @@ namespace notrealengine
 		return this->camera.pitch;
 	}
 
+	const RenderingMode	Scene::getRenderingMode() const
+	{
+		return this->renderingMode;
+	}
+
 	void	Scene::setYaw(float yaw)
 	{
 		this->camera.yaw = yaw;
@@ -158,6 +163,36 @@ namespace notrealengine
 		this->camera.speed = speed;
 	}
 
+	void Scene::setRenderingMode(RenderingMode mode)
+	{
+		this->renderingMode = mode;
+		switch (mode)
+		{
+			case RenderingMode::Lit:
+				for (auto& obj: objects)
+				{
+					obj->setShader(GLContext::getShader("default"));
+					obj->bindBones();
+					this->bindMatrices(GLContext::getShader("default")->programID);
+				}
+				bindLights(GLContext::getShader("default")->programID);
+				break;
+			case RenderingMode::Unlit:
+				for (auto& obj: objects)
+				{
+					obj->setShader(GLContext::getShader("unlit"));
+					obj->bindBones();
+					this->bindMatrices(GLContext::getShader("unlit")->programID);
+				}
+				bindLights(GLContext::getShader("default")->programID);
+				break;
+			case RenderingMode::Wireframe:
+				break;
+			default:
+				break;
+		}
+	}
+
 	void	Scene::bindMatrices(unsigned int shader) const
 	{
 		bindMatrix(shader, "projection", this->projection);
@@ -170,6 +205,10 @@ namespace notrealengine
 		for (const auto& shader: shaders)
 		{
 			bindMatrix(shader, "view", this->camera.getViewMatrix());
+		}
+		for (auto& obj: objects)
+		{
+			bindMatrix(obj->getShader(), "view", this->camera.getViewMatrix());
 		}
 		//	Manually bind global shaders
 		bindMatrix(GLContext::getShader("color")->programID, "view", this->camera.getViewMatrix());
@@ -279,7 +318,8 @@ namespace notrealengine
 				bindLights(GLContext::getShader("default")->programID);
 				bindLights(GLContext::getShader("color")->programID);
 			}
-			light->draw();
+			if (this->renderingMode != RenderingMode::Unlit)
+				light->draw();
 		}
 	}
 

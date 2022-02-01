@@ -7,11 +7,19 @@
 
 #define MAX_LIGHTS 4
 
+enum RenderingMode
+{
+	Lit,
+	Unlit,
+	Wireframe
+};
+
 namespace notrealengine
 {
 	class Scene
 	{
 	public:
+
 		Scene();
 		~Scene();
 
@@ -45,6 +53,9 @@ namespace notrealengine
 
 		const Camera&
 			getCamera() const;
+
+		const RenderingMode
+			getRenderingMode() const;
 
 		//	Setters
 
@@ -96,9 +107,13 @@ namespace notrealengine
 			lookRight(uint32_t time);
 		void
 			setCameraSpeed(float speed);
+		void
+			setRenderingMode(RenderingMode mode);
 
 	private:
 		std::string	name;
+
+		RenderingMode renderingMode;
 
 		std::vector<std::shared_ptr<GLObject>>	objects;
 		std::vector<std::shared_ptr<Light>>		lights;

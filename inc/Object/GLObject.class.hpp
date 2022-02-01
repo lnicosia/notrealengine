@@ -54,12 +54,12 @@ namespace notrealengine
 			/**
 			*/
 			void
-				bindBones(unsigned int shader = 0) const;
+				bindBones() const;
 
 			/**
 			*/
 			void
-				resetPose(unsigned int shader = 0) const;
+				resetPose() const;
 
 			//	Accessors
 

@@ -48,6 +48,14 @@ namespace notrealengine
 			getScale(const int index) const;
 		const std::string&
 			getName( void ) const;
+		const unsigned int
+			nbTransforms() const;
+		const unsigned int
+			nbPositions() const;
+		const unsigned int
+			nbRotations() const;
+		const unsigned int
+			nbScales() const;
 
 		//	Setters
 
@@ -66,7 +74,7 @@ namespace notrealengine
 			updateTransforms(const mft::mat4& mat);
 
 			mft::mat4	modelMatrix;
-			
+
 	private:
 		int			id;
 		std::string name;

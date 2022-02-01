@@ -42,6 +42,7 @@ int		main(int ac, char** av)
 	std::shared_ptr<Light>	light1(new Light(LightType::Directional));
 	light1->move(mft::vec3(0.0f, 4.0f, -5.0f));
 
+	obj->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(180.0f)));
 	//obj->transform.move(mft::vec3(0.0f, -5.0f, 10.0f));
 	//obj->setShader(context.getShader("color"));
 
@@ -84,6 +85,8 @@ int		main(int ac, char** av)
 	vec2i	mousePos, mouseStart;
 
 	int frame = 0;
+
+	scene.setRenderingMode(RenderingMode::Unlit);
 
 	while (running)
 	{
@@ -158,7 +161,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
 					scene.left(deltaTime);
 				}
@@ -166,7 +169,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					scene.forward(deltaTime);
 				}
@@ -234,14 +237,13 @@ int		main(int ac, char** av)
 					std::cout << selectedMesh.getName() << ": rotation = ";
 					std::cout << selectedMesh.transform.getRotation() << std::endl;
 				}
-				/*if (e.key.keysym.sym == SDLK_j)
-					leftThigh.transform.scale(mft::vec3(-0.2f, 0.0f, 0.0f));
 				if (e.key.keysym.sym == SDLK_l)
-					leftThigh.transform.scale(mft::vec3(0.2f, 0.0f, 0.0f));
-				if (e.key.keysym.sym == SDLK_i)
-					leftThigh.transform.scale(mft::vec3(0.0f, 0.2f, 0.0f));
-				if (e.key.keysym.sym == SDLK_k)
-					leftThigh.transform.scale(mft::vec3(0.0f, -0.2f, 0.0f));*/
+				{
+					if (scene.getRenderingMode() == RenderingMode::Lit)
+						scene.setRenderingMode(RenderingMode::Unlit);
+					else if (scene.getRenderingMode() == RenderingMode::Unlit)
+						scene.setRenderingMode(RenderingMode::Lit);
+				}
 				if (e.key.keysym.sym == SDLK_o)
 				{
 					mode = Object;

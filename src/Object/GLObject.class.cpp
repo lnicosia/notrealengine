@@ -32,8 +32,9 @@ namespace notrealengine
 	GLObject::GLObject(const std::string& path)
 		: Asset({path}),
 		transform(),
-		directory(""), meshes(), bones(), nbBones(0), shader(0), visible(true),
-		max(0.0f), min(0.0f), isRangeInit(false)
+		directory(""), meshes(), bones(), nbBones(0),
+		shader(GLContext::getShader("default")->programID),
+		visible(true), max(0.0f), min(0.0f), isRangeInit(false)
 	{
 		loadObject(path);
 		bindBones();
@@ -42,8 +43,9 @@ namespace notrealengine
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset({std::filesystem::path()}),
 		transform(),
-		directory(""), meshes(meshes), bones(), nbBones(0), shader(0), visible(true),
-		max(0.0f), min(0.0f), isRangeInit(false)
+		directory(""), meshes(meshes), bones(), nbBones(0),
+		shader(GLContext::getShader("default")->programID),
+		visible(true), max(0.0f), min(0.0f), isRangeInit(false)
 	{
 
 	}
@@ -167,8 +169,8 @@ namespace notrealengine
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
-			
-			//	Get the range of each axis coordinate 
+
+			//	Get the range of each axis coordinate
 			//	to scale the object to fit in our engine unit scale
 			//	after parsing
 
@@ -366,9 +368,9 @@ namespace notrealengine
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
-	void	GLObject::bindBones(unsigned int shader) const
+	void	GLObject::bindBones() const
 	{
-		shader = shader == 0 ? GLContext::getShader("default")->programID : this->shader;
+		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
 		std::string str;
@@ -382,9 +384,9 @@ namespace notrealengine
 		}
 	}
 
-	void	GLObject::resetPose(unsigned int shader) const
+	void	GLObject::resetPose() const
 	{
-		shader = shader == 0 ? GLContext::getShader("default")->programID : this->shader;
+		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
 		mft::mat4	mat = mft::mat4();

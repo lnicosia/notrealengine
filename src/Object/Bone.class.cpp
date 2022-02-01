@@ -118,6 +118,26 @@ namespace notrealengine
 		return name;
 	}
 
+	const unsigned int	Bone::nbTransforms( void ) const
+	{
+		return this->transforms.size();
+	}
+
+	const unsigned int	Bone::nbPositions( void ) const
+	{
+		return this->positions.size();
+	}
+
+	const unsigned int	Bone::nbRotations( void ) const
+	{
+		return this->rotations.size();
+	}
+
+	const unsigned int	Bone::nbScales( void ) const
+	{
+		return this->scales.size();
+	}
+
 	//	Setters
 
 	void Bone::setGlobalMatrix(const mft::mat4& ref)

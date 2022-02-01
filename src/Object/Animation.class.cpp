@@ -104,7 +104,8 @@ namespace notrealengine
 			//	If a bone of the animation is associated with this node,
 			//	use its animation transform
 
-			if (this->bones.contains(node.name))
+			if (this->bones.contains(node.name)
+				&& this->currentFrame < this->bones[node.name].nbTransforms())
 			{
 				node.transform = this->bones[node.name].getTransform(this->currentFrame)
 					* this->nodes[node.parentId].transform;
