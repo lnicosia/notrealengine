@@ -31,7 +31,7 @@ namespace notrealengine
 
 	GLObject::GLObject(const std::string& path)
 		: Asset({path}),
-		transform(),
+		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false)
@@ -42,7 +42,7 @@ namespace notrealengine
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset({std::filesystem::path()}),
-		transform(),
+		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(meshes), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false)

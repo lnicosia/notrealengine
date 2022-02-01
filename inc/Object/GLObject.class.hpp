@@ -112,6 +112,8 @@ namespace notrealengine
 
 			unsigned int	shader;
 
+			GLenum	polygonMode;
+
 			//	Object loading
 			void
 				SetVertexBoneData(Vertex& vertex, int id, float weight);

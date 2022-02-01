@@ -140,7 +140,6 @@ namespace notrealengine
 		}
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
-		GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, polygonMode);
 		GLCallThrow(glDrawElements, GL_TRIANGLES, nbIndices, GL_UNSIGNED_INT, 0);
 		GLCallThrow(glBindVertexArray, 0);
 	}

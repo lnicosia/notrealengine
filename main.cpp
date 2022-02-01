@@ -13,7 +13,7 @@
 #include "Inputs/SDLEvents.class.hpp"
 #include <vector>
 
-enum DrawMode
+enum RenderingMode
 {
 	Object,
 	Bob,
@@ -86,7 +86,7 @@ int		main(int ac, char** av)
 
 	int frame = 0;
 
-	scene.setRenderingMode(RenderingMode::Unlit);
+	scene.setLightingMode(LightingMode::Unlit);
 
 	while (running)
 	{
@@ -237,12 +237,19 @@ int		main(int ac, char** av)
 					std::cout << selectedMesh.getName() << ": rotation = ";
 					std::cout << selectedMesh.transform.getRotation() << std::endl;
 				}
+				if (e.key.keysym.sym == SDLK_z)
+				{
+					if (scene.getDrawMode() != DrawMode::Wireframe)
+						scene.setDrawMode(DrawMode::Wireframe);
+					else
+						scene.setDrawMode(DrawMode::Fill);
+				}
 				if (e.key.keysym.sym == SDLK_l)
 				{
-					if (scene.getRenderingMode() == RenderingMode::Lit)
-						scene.setRenderingMode(RenderingMode::Unlit);
-					else if (scene.getRenderingMode() == RenderingMode::Unlit)
-						scene.setRenderingMode(RenderingMode::Lit);
+					if (scene.getLightingMode() == LightingMode::Lit)
+						scene.setLightingMode(LightingMode::Unlit);
+					else
+						scene.setLightingMode(LightingMode::Lit);
 				}
 				if (e.key.keysym.sym == SDLK_o)
 				{

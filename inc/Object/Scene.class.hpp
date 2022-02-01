@@ -7,10 +7,14 @@
 
 #define MAX_LIGHTS 4
 
-enum RenderingMode
+enum LightingMode
 {
 	Lit,
 	Unlit,
+};
+enum DrawMode
+{
+	Fill,
 	Wireframe
 };
 
@@ -54,8 +58,11 @@ namespace notrealengine
 		const Camera&
 			getCamera() const;
 
-		const RenderingMode
-			getRenderingMode() const;
+		const LightingMode
+			getLightingMode() const;
+
+		const DrawMode
+			getDrawMode() const;
 
 		//	Setters
 
@@ -108,12 +115,15 @@ namespace notrealengine
 		void
 			setCameraSpeed(float speed);
 		void
-			setRenderingMode(RenderingMode mode);
+			setLightingMode(LightingMode mode);
+		void
+			setDrawMode(DrawMode mode);
 
 	private:
 		std::string	name;
 
-		RenderingMode renderingMode;
+		LightingMode	lightingMode;
+		DrawMode			drawMode;
 
 		std::vector<std::shared_ptr<GLObject>>	objects;
 		std::vector<std::shared_ptr<Light>>		lights;

@@ -8,7 +8,7 @@ namespace notrealengine
 	Scene::Scene(): name(), camera(mft::vec3(0.0f, 3.0f, -5.0f)),
 		objects(), lights(), shaders(),
 		projection(mft::mat4::perspective(mft::radians(45.0f), 16.0f / 9.0f, 0.1f, 10000.0f)),
-		view(), renderingMode(RenderingMode::Lit)
+		view(), lightingMode(LightingMode::Unlit), drawMode(DrawMode::Fill)
 	{
 		camera.pitch += 15;
 		camera.update();
@@ -111,9 +111,14 @@ namespace notrealengine
 		return this->camera.pitch;
 	}
 
-	const RenderingMode	Scene::getRenderingMode() const
+	const LightingMode	Scene::getLightingMode() const
 	{
-		return this->renderingMode;
+		return this->lightingMode;
+	}
+
+	const DrawMode	Scene::getDrawMode() const
+	{
+		return this->drawMode;
 	}
 
 	void	Scene::setYaw(float yaw)
@@ -163,12 +168,11 @@ namespace notrealengine
 		this->camera.speed = speed;
 	}
 
-	void Scene::setRenderingMode(RenderingMode mode)
+	void Scene::setLightingMode(LightingMode mode)
 	{
-		this->renderingMode = mode;
 		switch (mode)
 		{
-			case RenderingMode::Lit:
+			case LightingMode::Lit:
 				for (auto& obj: objects)
 				{
 					obj->setShader(GLContext::getShader("default"));
@@ -177,7 +181,7 @@ namespace notrealengine
 				}
 				bindLights(GLContext::getShader("default")->programID);
 				break;
-			case RenderingMode::Unlit:
+			case LightingMode::Unlit:
 				for (auto& obj: objects)
 				{
 					obj->setShader(GLContext::getShader("unlit"));
@@ -186,11 +190,15 @@ namespace notrealengine
 				}
 				bindLights(GLContext::getShader("default")->programID);
 				break;
-			case RenderingMode::Wireframe:
-				break;
 			default:
 				break;
 		}
+		this->lightingMode = mode;
+	}
+
+	void Scene::setDrawMode(DrawMode mode)
+	{
+		this->drawMode = mode;
 	}
 
 	void	Scene::bindMatrices(unsigned int shader) const
@@ -306,6 +314,8 @@ namespace notrealengine
 				mesh->draw(mft::mat4());
 			}
 		}*/
+		if (this->drawMode == DrawMode::Wireframe)
+			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
 		for (const auto& object: objects)
 		{
 			if (object->visible == true)
@@ -318,9 +328,10 @@ namespace notrealengine
 				bindLights(GLContext::getShader("default")->programID);
 				bindLights(GLContext::getShader("color")->programID);
 			}
-			if (this->renderingMode != RenderingMode::Unlit)
-				light->draw();
+			light->draw();
 		}
+		if (this->drawMode == DrawMode::Wireframe)
+			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	void	Scene::renderBones()
