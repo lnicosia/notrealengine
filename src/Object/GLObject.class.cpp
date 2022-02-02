@@ -4,6 +4,7 @@
 #include "Object/AssimpHelpers.hpp"
 #include "GLContext.class.hpp"
 #include "mft/mft.hpp"
+#include "SDL.h"
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -34,7 +35,10 @@ namespace notrealengine
 		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false)
+		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
+		animationState(AnimationState::Stopped),
+		animationRepeat(AnimationRepeat::Repeat)
 	{
 		loadObject(path);
 		bindBones();
@@ -45,7 +49,10 @@ namespace notrealengine
 		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(meshes), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false)
+		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
+		animationState(AnimationState::Stopped),
+		animationRepeat(AnimationRepeat::Repeat)
 	{
 
 	}
@@ -334,8 +341,10 @@ namespace notrealengine
 
 	//	Drawing functions
 
-	void	GLObject::draw() const
+	void	GLObject::draw( void )
 	{
+		if (this->animationState == AnimationState::Playing)
+			this->updateAnim();
 		if (bones.size() != 0)
 		{
 			//bindBones(this->shader);
@@ -347,7 +356,7 @@ namespace notrealengine
 		}
 	}
 
-	void	GLObject::drawBones() const
+	void	GLObject::drawBones( void ) const
 	{
 		unsigned int shader = GLContext::getShader("colorNoLight")->programID;
 		GLCallThrow(glUseProgram, shader);
@@ -368,7 +377,7 @@ namespace notrealengine
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
-	void	GLObject::bindBones() const
+	void	GLObject::bindBones( void ) const
 	{
 		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
@@ -400,6 +409,82 @@ namespace notrealengine
 		}
 	}
 
+	void	GLObject::pauseAnimation( void )
+	{
+		if (this->animationState != AnimationState::Playing)
+			return;
+		this->pauseTime = static_cast<float>(SDL_GetTicks());
+		this->animationState = AnimationState::Paused;
+	}
+
+	void	GLObject::resumeAnimation( void )
+	{
+		if (this->animationState != AnimationState::Paused)
+			return;
+		this->startTime += static_cast<float>(SDL_GetTicks()) - this->pauseTime;
+		this->animationState = AnimationState::Playing;
+	}
+
+	void	GLObject::updateAnim( void )
+	{
+		if (this->anim == nullptr)
+		{
+			this->resetPose();
+			return;
+		}
+		float currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
+		if (currentTime >= anim->getDuration())
+		{
+			this->animationState = AnimationState::Stopped;
+			if (this->animationRepeat == AnimationRepeat::Repeat)
+				playAnimation(anim);
+			else if (this->animationRepeat == AnimationRepeat::ResetPose)
+				resetPose();
+			return;
+		}
+		std::map<std::string, Bone> animBones = anim->getBones();
+		std::vector<AnimNode>& animNodes = anim->getNodes();
+		for (unsigned int i = 0; i < animNodes.size(); i++)
+		{
+			AnimNode& node = animNodes[i];
+
+			//	If a bone of the animation is associated with this node,
+			//	use its animation transform
+
+			if (animBones.contains(node.name))
+			{
+				node.transform = animBones[node.name].getTransform(currentTime)
+					* animNodes[node.parentId].transform;
+			}
+			//	Otherwise, use the original node's transform
+			else
+			{
+				node.transform = node.transform
+					* animNodes[node.parentId].transform;
+			}
+			//	If a bone of the object is associated with this node,
+			//	update its transform with what we just computed
+			if (this->bones.contains(node.name))
+			{
+				BoneInfo& bone = this->bones[node.name];
+
+				bone.modelMatrix = node.transform;
+				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
+			}
+		}
+		this->bindBones();
+	}
+
+	void	GLObject::playAnimation(Animation* anim, AnimationRepeat animationRepeat)
+	{
+		if (anim == nullptr)
+			return;
+		this->anim = anim;
+		this->animationState = AnimationState::Playing;
+		this->animationRepeat = animationRepeat;
+		this->startTime = static_cast<float>(SDL_GetTicks());
+	}
+
 	//	Accessors
 
 	const std::vector<std::shared_ptr<Mesh>>&	GLObject::getMeshes() const
@@ -422,9 +507,14 @@ namespace notrealengine
 		return std::string("GLObject");
 	}
 
-	const	unsigned int GLObject::getShader() const
+	const unsigned int GLObject::getShader() const
 	{
 		return shader;
+	}
+
+	const AnimationState& GLObject::getAnimationState() const
+	{
+		return animationState;
 	}
 
 	//	Setters

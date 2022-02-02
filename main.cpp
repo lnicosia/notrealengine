@@ -161,7 +161,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime);
 				}
@@ -169,7 +169,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime);
 				}
@@ -237,7 +237,17 @@ int		main(int ac, char** av)
 					std::cout << selectedMesh.getName() << ": rotation = ";
 					std::cout << selectedMesh.transform.getRotation() << std::endl;
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_p)
+				{
+					AnimationState animState = obj->getAnimationState();
+					if (animState == AnimationState::Stopped)
+						obj->playAnimation(anim.get(), AnimationRepeat::Stop);
+					else if (animState == AnimationState::Playing)
+						obj->pauseAnimation();
+					else if (animState == AnimationState::Paused)
+						obj->resumeAnimation();
+				}
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);
@@ -271,7 +281,6 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_r)
 				{
 					obj->resetPose();
-					std::cout << "Pose reset " << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_PLUS)
 				{
@@ -279,8 +288,6 @@ int		main(int ac, char** av)
 					if (selectedBone > obj->getNbBones())
 						selectedBone = 0;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
-					frame++;
-					anim->playAnimation(*obj, frame);
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{
@@ -288,8 +295,6 @@ int		main(int ac, char** av)
 					if (selectedBone < 0)
 						selectedBone = obj->getNbBones() - 1;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
-					frame--;
-					anim->playAnimation(*obj, frame);
 				}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
@@ -335,7 +340,7 @@ int		main(int ac, char** av)
 		GLCallThrow(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(0, 0), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::string("Selected bone = " + std::to_string(selectedBone)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::string("Frame time = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
 		scene.renderBones();

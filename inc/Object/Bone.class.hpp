@@ -38,24 +38,24 @@ namespace notrealengine
 
 		//	Accessors
 
-		const mft::mat4&
-			getTransform(const int index) const;
-		const VecKeyFrame&
-			getPosition(const int index) const;
-		const QuatKeyFrame&
-			getRotation(const int index) const;
-		const VecKeyFrame&
-			getScale(const int index) const;
+		const mft::mat4
+			getTransform(const unsigned int frameTime) const;
+		const mft::vec3
+			getPosition(const unsigned int frameTime) const;
+		const mft::quat
+			getRotation(const unsigned int frameTime) const;
+		const mft::vec3
+			getScale(const unsigned int frameTime) const;
 		const std::string&
 			getName( void ) const;
 		const unsigned int
-			nbTransforms() const;
+			getNbTransforms() const;
 		const unsigned int
-			nbPositions() const;
+			getNbPositions() const;
 		const unsigned int
-			nbRotations() const;
+			getNbRotations() const;
 		const unsigned int
-			nbScales() const;
+			getNbScales() const;
 
 		//	Setters
 
@@ -85,6 +85,10 @@ namespace notrealengine
 		std::vector<VecKeyFrame>	positions;
 		std::vector<QuatKeyFrame>	rotations;
 		std::vector<VecKeyFrame>	scales;
+
+		unsigned int				nbPositions;
+		unsigned int				nbRotations;
+		unsigned int				nbScales;
 
 		std::vector<mft::mat4>		transforms;
 		std::vector<mft::mat4>		modelMatrices;

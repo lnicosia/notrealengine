@@ -6,6 +6,7 @@
 #include "Object/Transform.class.hpp"
 #include "Object/Asset.class.hpp"
 #include "Object/Bone.class.hpp"
+#include "Object/Animation.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -16,6 +17,20 @@
 
 #include <memory>
 #include <map>
+
+enum AnimationState
+{
+	Playing,
+	Paused,
+	Stopped
+};
+
+enum AnimationRepeat
+{
+	Repeat,
+	Stop,
+	ResetPose
+};
 
 namespace notrealengine
 {
@@ -44,22 +59,36 @@ namespace notrealengine
 			//	Draw functions
 
 			void
-				draw() const;
+				draw( void );
 
 			/**	Render all the object's bones
 			*/
 			void
-				drawBones() const;
+				drawBones( void ) const;
 
 			/**
 			*/
 			void
-				bindBones() const;
+				bindBones( void ) const;
 
 			/**
 			*/
 			void
-				resetPose() const;
+				resetPose( void ) const;
+
+			/**
+			*/
+			void
+				playAnimation(Animation* anim,
+					AnimationRepeat	animationRepeat = AnimationRepeat::Repeat);
+			/**
+			*/
+			void
+				pauseAnimation( void );
+			/**
+			*/
+			void
+				resumeAnimation( void );
 
 			//	Accessors
 
@@ -71,6 +100,8 @@ namespace notrealengine
 				getNbBones() const;
 			const unsigned int
 				getShader() const;
+			const AnimationState&
+				getAnimationState() const;
 
 			virtual const std::string
 				getAssetType() const;
@@ -96,6 +127,8 @@ namespace notrealengine
 			Transform	transform;
 
 			bool	visible;
+
+			AnimationRepeat	animationRepeat;
 
 		private:
 
@@ -129,6 +162,18 @@ namespace notrealengine
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene *scene);
+	
+			//	Animations
+
+			Animation*		anim;
+			float			startTime;
+			float			pauseTime;
+			AnimationState	animationState;
+
+			/**
+			*/
+			void
+				updateAnim();
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);

@@ -96,6 +96,37 @@ namespace mft
 	}
 
 	template<typename T>
+	requires std::is_floating_point_v<T>
+		constexpr quaternion<T> quaternion<T>::operator*(const T& scalar) const
+	{
+		return quaternion<T>(
+			a * scalar,
+			b * scalar,
+			c * scalar,
+			d * scalar
+			);
+	}
+
+	template<typename T>
+	requires std::is_floating_point_v<T>
+		constexpr quaternion<T> quaternion<T>::operator/(const T& scalar) const
+	{
+		return quaternion<T>(
+			a / scalar,
+			b / scalar,
+			c / scalar,
+			d / scalar
+			);
+	}
+
+	template<typename T>
+	requires std::is_floating_point_v<T>
+		constexpr quaternion<T> quaternion<T>::operator-( void ) const
+	{
+		return quaternion<T>(-a, -b, -c, -d);
+	}
+
+	template<typename T>
 		requires std::is_floating_point_v<T>
 	constexpr bool quaternion<T>::operator==( const quaternion<T> & q2 ) const
 	{

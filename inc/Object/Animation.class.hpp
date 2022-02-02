@@ -2,7 +2,6 @@
 # define _ANIMATION_CLASS_H_
 
 #include "mft/mft.hpp"
-#include "Object/GLObject.class.hpp"
 #include "Object/Asset.class.hpp"
 #include "Object/Bone.class.hpp"
 
@@ -13,12 +12,13 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+#include <map>
 
 #define MAX_BONES 100
 
 namespace notrealengine
 {
-	struct	MatrixNode
+	struct	AnimNode
 	{
 		std::string				name;
 		mft::mat4				transform;
@@ -37,15 +37,15 @@ namespace notrealengine
 		Animation(const std::string& path, int index);
 		~Animation();
 
-		const mft::mat4*
-			getMatrices( void ) const;
 		const std::map<std::string, Bone>&
 			getBones( void ) const;
+		std::vector<AnimNode>&
+			getNodes( void );
+		const double
+			getDuration( void ) const;
 
 		void
 			processNode(aiNode* node, aiAnimation* animation, int parentId);
-		void
-			playAnimation(GLObject& object, int frame);
 
 		virtual const std::string
 			getAssetType() const;
@@ -54,12 +54,13 @@ namespace notrealengine
 		double		duration;
 		double		ticksPerSecond;
 		int				type;
-		mft::mat4	mat[MAX_BONES];
 		std::map<std::string, Bone>	bones;
 
 		int	currentFrame;
 
-		std::vector<MatrixNode>	nodes;
+		bool	ended;
+
+		std::vector<AnimNode>	nodes;
 	};
 }
 #endif

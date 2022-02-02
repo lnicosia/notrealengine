@@ -41,6 +41,11 @@ namespace mft
 		constexpr quaternion<T>		operator-( const quaternion<T> & v2 ) const;
 		constexpr quaternion<T>		operator*( const quaternion<T> & v2 ) const;
 
+		constexpr quaternion<T>		operator*(const T& scalar) const;
+		constexpr quaternion<T>		operator/(const T& scalar) const;
+
+		constexpr quaternion<T>		operator-( void ) const;
+
 		constexpr bool				operator==( const quaternion<T> & v2 ) const;
 		constexpr bool				operator!=( const quaternion<T> & v2 ) const;
 
