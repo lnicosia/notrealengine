@@ -88,5 +88,7 @@ std::shared_ptr<GLObject> InitBobby(void)
   rightCalf.setColor(mft::vec3(0.0f, 0.0f, 0.2f));
   rightCalf.transform.move(mft::vec3(0.0f, -1.0f, 0.0f));
 
+  character->transform.move(mft::vec3(0.0f, 1.5f, 0.0f));
+
   return character;
 }
