@@ -119,6 +119,8 @@ namespace notrealengine
 		void
 			setDrawMode(DrawMode mode);
 
+		bool	drawGrid;
+
 	private:
 		std::string	name;
 

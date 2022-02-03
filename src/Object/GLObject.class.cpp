@@ -358,7 +358,7 @@ namespace notrealengine
 
 	void	GLObject::drawBones( void ) const
 	{
-		unsigned int shader = GLContext::getShader("colorNoLight")->programID;
+		unsigned int shader = GLContext::getShader("colorUnlit")->programID;
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		std::map<std::string, BoneInfo>::const_iterator it;

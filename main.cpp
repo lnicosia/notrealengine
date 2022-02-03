@@ -60,6 +60,7 @@ int		main(int ac, char** av)
 	//head.transform.rotate(mft::quat::rotation(mft::vec3(mft::radians(90.0f), 0.0f, 0.0f));
 
 	Scene	scene;
+	scene.drawGrid = true;
 
 	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf");
 
@@ -241,7 +242,7 @@ int		main(int ac, char** av)
 				{
 					AnimationState animState = obj->getAnimationState();
 					if (animState == AnimationState::Stopped)
-						obj->playAnimation(anim.get(), AnimationRepeat::Stop);
+						obj->playAnimation(anim.get());
 					else if (animState == AnimationState::Playing)
 						obj->pauseAnimation();
 					else if (animState == AnimationState::Paused)
@@ -340,10 +341,10 @@ int		main(int ac, char** av)
 		GLCallThrow(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(0, 0), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::string("Frame time = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		//font->RenderText(context.getShader("text"), std::string("Frame time = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
-		scene.renderBones();
+		//scene.renderBones();
 		context.swapWindow();
 	}
 	return 0;

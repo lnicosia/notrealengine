@@ -9,7 +9,7 @@
 # include <map>
 
 # include "GL.hpp"
-# include "Object/GLMesh.class.hpp"
+# include "Object/GLObject.class.hpp"
 
 namespace notrealengine
 {
@@ -36,6 +36,8 @@ namespace notrealengine
 
 		static std::shared_ptr<GLMesh>
 			cube;
+		static std::shared_ptr<GLObject>
+			grid;
 
 	protected:
 		static long

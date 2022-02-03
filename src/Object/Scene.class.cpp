@@ -8,7 +8,8 @@ namespace notrealengine
 	Scene::Scene(): name(), camera(mft::vec3(0.0f, 3.0f, -5.0f)),
 		objects(), lights(), shaders(),
 		projection(mft::mat4::perspective(mft::radians(45.0f), 16.0f / 9.0f, 0.1f, 10000.0f)),
-		view(), lightingMode(LightingMode::Unlit), drawMode(DrawMode::Fill)
+		view(), lightingMode(LightingMode::Unlit), drawMode(DrawMode::Fill),
+		drawGrid(false)
 	{
 		camera.pitch += 15;
 		camera.update();
@@ -26,8 +27,8 @@ namespace notrealengine
 		bindMatrices(GLContext::getShader("color")->programID);
 		bindLights(GLContext::getShader("color")->programID);
 
-		bindMatrices(GLContext::getShader("colorNoLight")->programID);
-		bindLights(GLContext::getShader("colorNoLight")->programID);
+		bindMatrices(GLContext::getShader("colorUnlit")->programID);
+		bindLights(GLContext::getShader("colorUnlit")->programID);
 
 		bindMatrices(GLContext::getShader("bonesInfluence")->programID);
 		bindLights(GLContext::getShader("bonesInfluence")->programID);
@@ -68,7 +69,7 @@ namespace notrealengine
 		location = GLCallThrow(glGetUniformLocation, shader, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
 		//	Bind color (no lighting) shader manually
-		shader = GLContext::getShader("colorNoLight")->programID;
+		shader = GLContext::getShader("colorUnlit")->programID;
 		GLCallThrow(glUseProgram, shader);
 		location = GLCallThrow(glGetUniformLocation, shader, "projection");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
@@ -220,7 +221,7 @@ namespace notrealengine
 		}
 		//	Manually bind global shaders
 		bindMatrix(GLContext::getShader("color")->programID, "view", this->camera.getViewMatrix());
-		bindMatrix(GLContext::getShader("colorNoLight")->programID, "view", this->camera.getViewMatrix());
+		bindMatrix(GLContext::getShader("colorUnlit")->programID, "view", this->camera.getViewMatrix());
 		bindMatrix(GLContext::getShader("bonesInfluence")->programID, "view", this->camera.getViewMatrix());
 	}
 
@@ -314,8 +315,12 @@ namespace notrealengine
 				mesh->draw(mft::mat4());
 			}
 		}*/
-		if (this->drawMode == DrawMode::Wireframe)
+		if (this->drawMode == DrawMode::Wireframe || this->drawGrid == true)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
+		if (this->drawGrid == true)
+			GLContext::grid->draw();
+		if (this->drawMode != DrawMode::Wireframe)
+			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
 		for (const auto& object: objects)
 		{
 			if (object->visible == true)
