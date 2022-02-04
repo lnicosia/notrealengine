@@ -17,9 +17,6 @@ namespace notrealengine
 		shaders.push_back(GLContext::getShader("2dProjected")->programID);
 		mft::mat4	ortho = mft::mat4::ortho(0.0f, 1600.0f, 0.0f, 900.0f);
 
-		GLCallThrow(glUseProgram, GLContext::getShader("text")->programID);
-		GLint location = GLCallThrow(glGetUniformLocation, GLContext::getShader("text")->programID, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(ortho));
 		bindMatrix(GLContext::getShader("text")->programID, "projection", ortho);
 		//	Binding matrices and light manually for global shaders
 		bindMatrices(GLContext::getShader("2dProjected")->programID);
@@ -57,22 +54,12 @@ namespace notrealengine
 		this->projection = projection;
 		for (const auto& shader : shaders)
 		{
-			GLCallThrow(glUseProgram, shader);
-			GLint location;
-			location = GLCallThrow(glGetUniformLocation, shader, "projection");
-			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+			bindMatrix(shader, "projection", this->projection);
 		}
 		//	Bind color shader manually (default shader)
-		unsigned int shader = GLContext::getShader("color")->programID;
-		GLCallThrow(glUseProgram, shader);
-		GLint location;
-		location = GLCallThrow(glGetUniformLocation, shader, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+		bindMatrix(GLContext::getShader("color")->programID, "projection", this->projection);
 		//	Bind color (no lighting) shader manually
-		shader = GLContext::getShader("colorUnlit")->programID;
-		GLCallThrow(glUseProgram, shader);
-		location = GLCallThrow(glGetUniformLocation, shader, "projection");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<float*>(this->projection));
+		bindMatrix(GLContext::getShader("colorUnlit")->programID, "projection", this->projection);
 	}
 
 	/**	Camera functions
@@ -176,18 +163,26 @@ namespace notrealengine
 			case LightingMode::Lit:
 				for (auto& obj: objects)
 				{
-					obj->setShader(GLContext::getShader("default"));
+					if (obj->getShader() == GLContext::getShader("unlit")->programID)
+						obj->setShader(GLContext::getShader("default"));
+					else if (obj->getShader() == GLContext::getShader("colorUnlit")->programID)
+						obj->setShader(GLContext::getShader("color"));
 					obj->bindBones();
 					this->bindMatrices(GLContext::getShader("default")->programID);
+					this->bindMatrices(GLContext::getShader("color")->programID);
 				}
 				bindLights(GLContext::getShader("default")->programID);
 				break;
 			case LightingMode::Unlit:
 				for (auto& obj: objects)
 				{
-					obj->setShader(GLContext::getShader("unlit"));
+					if (obj->getShader() == GLContext::getShader("default")->programID)
+						obj->setShader(GLContext::getShader("unlit"));
+					else if (obj->getShader() == GLContext::getShader("color")->programID)
+						obj->setShader(GLContext::getShader("colorUnlit"));
 					obj->bindBones();
 					this->bindMatrices(GLContext::getShader("unlit")->programID);
+					this->bindMatrices(GLContext::getShader("colorUnlit")->programID);
 				}
 				bindLights(GLContext::getShader("default")->programID);
 				break;

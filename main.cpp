@@ -53,7 +53,7 @@ int		main(int ac, char** av)
 
 	std::shared_ptr<GLObject>	bobby = InitBobby();
 
-	Mesh& selectedMesh = (*(*bobby->getMeshes()[0]).getChildren()[2]);
+	Mesh& selectedMesh = (*bobby->getMeshes()[0]);
 
 
 	//upperLeftArm.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.2f));
@@ -79,6 +79,7 @@ int		main(int ac, char** av)
 	scene.addObject(obj);
 	scene.addObject(bobby);
 	bobby->visible = false;
+	//obj->visible = false;
 	scene.addLight(light1);
 
 	InputState	mouseState = InputState::NRE_RELEASED;
@@ -162,7 +163,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
 					scene.left(deltaTime);
 				}
@@ -170,7 +171,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					scene.forward(deltaTime);
 				}
@@ -248,7 +249,7 @@ int		main(int ac, char** av)
 					else if (animState == AnimationState::Paused)
 						obj->resumeAnimation();
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);

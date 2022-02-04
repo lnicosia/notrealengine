@@ -83,7 +83,7 @@ vec3	computePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 cameraD
 	float	attenuation = 1.0 /
 		(light.constant + light.linear * dist + light.quadratic * dist * dist);
 
-	return (diffuse * attenuation);
+	return (diffuse);
 }
 
 void main()

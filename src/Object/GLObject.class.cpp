@@ -345,13 +345,8 @@ namespace notrealengine
 	{
 		if (this->animationState == AnimationState::Playing)
 			this->updateAnim();
-		if (bones.size() != 0)
-		{
-			//bindBones(this->shader);
-		}
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			//std::cout << "Drawing object " << name << " with matrix " << transform.getMatrix() << std::endl;
 			meshes[i]->draw(transform.getMatrix(), this->shader);
 		}
 	}
@@ -393,20 +388,25 @@ namespace notrealengine
 		}
 	}
 
-	void	GLObject::resetPose() const
+	void	GLObject::resetPose()
 	{
 		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
 		mft::mat4	mat = mft::mat4();
 		std::string str;
-		for (int i = 0; i < MAX_BONES; i++)
+		int i = 0;
+		std::map<std::string, BoneInfo>::iterator it;
+		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			str = "bonesMatrices[" + std::to_string(i) + "]";
 			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
 				static_cast<const float*>(mat));
+			it->second.localMatrix = mat;
+			i++;
 		}
+		this->animationState = AnimationState::Stopped;
 	}
 
 	void	GLObject::pauseAnimation( void )

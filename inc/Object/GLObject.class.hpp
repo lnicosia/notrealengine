@@ -74,7 +74,7 @@ namespace notrealengine
 			/**
 			*/
 			void
-				resetPose( void ) const;
+				resetPose( void );
 
 			/**
 			*/
@@ -162,7 +162,7 @@ namespace notrealengine
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene *scene);
-	
+
 			//	Animations
 
 			Animation*		anim;

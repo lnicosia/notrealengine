@@ -114,6 +114,7 @@ namespace notrealengine
 		}
 
 		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
+		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);
 	}
 
