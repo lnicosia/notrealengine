@@ -38,7 +38,11 @@ int		main(int ac, char** av)
 	int selectedBone = 0;
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
-	std::shared_ptr<Animation>	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
+	std::shared_ptr<Animation>	anim;
+	if (ac == 3)
+		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
+	else if (ac == 2)
+	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
 	std::shared_ptr<Light>	light1(new Light(LightType::Directional));
 	light1->move(mft::vec3(0.0f, 4.0f, -5.0f));
 
@@ -352,7 +356,7 @@ int		main(int ac, char** av)
 		font->RenderText(context.getShader("text"), std::string("Frame = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
-		//scene.renderBones();
+		scene.renderBones();
 		context.swapWindow();
 	}
 	return 0;

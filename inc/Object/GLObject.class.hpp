@@ -169,6 +169,11 @@ namespace notrealengine
 				processMesh(aiMesh* mesh, const aiScene* scene);
 			std::vector<std::shared_ptr<Texture>>
 				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene *scene);
+			/**	Sometimes bones are missing from the original skeleton but can be
+			**	found in the object's animations
+			*/
+			void
+				readMissingBones(const aiScene* scene);
 
 			//	Animations
 

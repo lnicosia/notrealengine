@@ -42,6 +42,10 @@ namespace notrealengine
 			}
 		}
 		processNode(scene->mRootNode, animation, 0);
+		for (auto& node: this->nodes)
+		{
+			//std::cout << "Node " << node.name << " transform = " << node.transform << std::endl;
+		}
 	}
 
 	Animation::~Animation()
@@ -50,16 +54,32 @@ namespace notrealengine
 
 	void Animation::processNode(aiNode* node, aiAnimation* animation, int parentId)
 	{
+		static int count = 0;
+		count++;
 		AnimNode newNode;
 		unsigned int	currentId = this->nodes.size();
 		newNode.name = node->mName.data;
 		newNode.parentId = parentId;
 		newNode.transform = AssimpToMftMatrix(node->mTransformation);
 		this->nodes.push_back(newNode);
+		std::cout << "Reading node ";
+		for (int i = 0; i < count; i++)
+			std::cout << "  ";
+		std::cout << newNode.name;
+		if (this->bones.contains(newNode.name))
+		{
+			std::cout << " (used, has ";
+			std::cout << this->bones[newNode.name].getNbPositions() << " position frames, ";
+			std::cout << this->bones[newNode.name].getNbRotations() << " rotation frames and ";
+			std::cout << this->bones[newNode.name].getNbScales() << " scale frames)";
+		// << " ( " << animation->mNumChannels << " frames" << std::endl;
+		}
+		std::cout << std::endl;
 		for (int i = 0; i < node->mNumChildren; i++)
 		{
 			processNode(node->mChildren[i], animation, currentId);
 		}
+		count--;
 	}
 
 	const std::map<std::string, Bone>& Animation::getBones( void ) const

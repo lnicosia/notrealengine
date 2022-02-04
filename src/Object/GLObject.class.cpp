@@ -301,6 +301,28 @@ namespace notrealengine
 		}
 	}
 
+	void GLObject::readMissingBones(const aiScene* scene)
+	{
+		for (unsigned int i = 0; i < scene->mNumAnimations; i++)
+		{
+			aiAnimation* anim = scene->mAnimations[i];
+			if (anim == nullptr)
+				continue;
+			for (unsigned int j = 0; j < anim->mNumChannels; j++)
+			{
+				aiNodeAnim* bone = anim->mChannels[i];
+				std::string name = bone->mNodeName.data;
+				if (this->bones.find(name) == this->bones.end())
+				{
+					std::cout << "Found missing bone '" << name << "'" << std::endl;
+					this->bones[name].id = nbBones;
+					//this->bones[name].fromParentMatrix = AssimpToMftMatrix(bone->mTransformation)
+					nbBones++;
+				}
+			}
+		}
+	}
+
 	void	GLObject::loadObject(std::string path)
 	{
 		std::cout << "Loading object '" << path << "'..." << std::endl;
@@ -322,6 +344,7 @@ namespace notrealengine
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
+		readMissingBones(scene);
 
 		//	Scale the object
 
@@ -403,11 +426,12 @@ namespace notrealengine
 		std::map<std::string, BoneInfo>::iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			str = "bonesMatrices[" + std::to_string(i) + "]";
+			it->second.localMatrix = it->second.offsetMatrix * it->second.fromParentMatrix;
+			it->second.modelMatrix = it->second.fromParentMatrix;
+			str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
 			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
-				static_cast<const float*>(mat));
-			it->second.localMatrix = mat;
+				static_cast<const float*>(it->second.localMatrix));
 			i++;
 		}
 		this->animationState = AnimationState::Stopped;
@@ -489,14 +513,12 @@ namespace notrealengine
 		{
 			AnimNode& node = animNodes[i];
 
-			//if (keyFrame >= animBones[node.name].getNbTransforms())
-			//	continue ;
 			//	If a bone of the animation is associated with this node,
 			//	use its animation transform
 
 			if (animBones.contains(node.name))
 			{
-				node.transform = animBones[node.name].getTransform(keyFrame)
+				node.transform = animBones[node.name].getKeyFrameTransform(keyFrame)
 					* animNodes[node.parentId].transform;
 			}
 			//	Otherwise, use the original node's transform
@@ -511,6 +533,8 @@ namespace notrealengine
 			{
 				BoneInfo& bone = this->bones[node.name];
 
+				//if (keyFrame >= animBones[node.name].getNbTransforms())
+				//	node.transform = bone.offsetMatrix * node.transform;
 				bone.modelMatrix = node.transform;
 				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
 			}

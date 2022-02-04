@@ -237,6 +237,9 @@ namespace mft
 		else
 		{
 			float theta = std::acos(cosTheta);
+			if (std::sin(theta) > 0.0 - std::numeric_limits<float>::epsilon()
+				&& std::sin(theta) < 0.0 + std::numeric_limits<float>::epsilon())
+				std::cout << "DIVISION BY 0" << std::endl;
 			return quaternion<T>(
 				normalized((q1 * std::sin((1.0 - percentage) * theta)
 				+ q3 * std::sin(percentage * theta) / std::sin(theta)))
