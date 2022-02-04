@@ -176,7 +176,7 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
-	constexpr quaternion<T> quaternion<T>::rotation(const vec<T,T,T> axis, T angle)
+	constexpr quaternion<T> quaternion<T>::rotation( const vec<T,T,T> axis, T angle )
 	{
 		return quaternion<T>(
 				cos(angle / 2),
@@ -188,14 +188,14 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
-	constexpr T quaternion<T>::dot(const quaternion<T>& x, const quaternion<T>& y)
+	constexpr T quaternion<T>::dot( const quaternion<T>& x, const quaternion<T>& y )
 	{
 		return (x.a * y.a + x.b * y.b + x.c * y.c + x.d * y.d);
 	}
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
-	constexpr T quaternion<T>::length(const quaternion<T>& quat)
+	constexpr T quaternion<T>::length( const quaternion<T>& quat)
 	{
 		return (sqrt(	quat.a * quat.a + quat.b * quat.b
 								+ quat.c * quat.c + quat.d * quat.d));
@@ -203,13 +203,45 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
-	constexpr quaternion<T> quaternion<T>::normalized(const quaternion<T>& quat)
+	constexpr quaternion<T> quaternion<T>::normalized( const quaternion<T>& quat )
 	{
 		T	len = length(quat);
 		if (len <= 0)
 			return quaternion<T>();
 		T inv = 1 / len;
 		return quaternion<T>(inv * quat.a, inv * quat.b, inv * quat.c, inv * quat.d);
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr quaternion<T> quaternion<T>::slerp( const quaternion<T>& q1,
+		const quaternion<T>& q2, T percentage )
+	{
+		T cosTheta = dot(q1, q2);
+		quaternion<T> q3 = q2;
+
+		if (cosTheta < 0.0)
+		{
+			q3 = -q2;
+			cosTheta = -cosTheta;
+		}
+		if (cosTheta > 1.0 - std::numeric_limits<float>::epsilon())
+		{
+			return quaternion<T>(
+				q1.a + (q3.a - q1.a) * percentage,
+				q1.b + (q3.b - q1.b) * percentage,
+				q1.c + (q3.c - q1.c) * percentage,
+				q1.d + (q3.d - q1.d) * percentage
+			);
+		}
+		else
+		{
+			float theta = std::acos(cosTheta);
+			return quaternion<T>(
+				normalized((q1 * std::sin((1.0 - percentage) * theta)
+				+ q3 * std::sin(percentage * theta) / std::sin(theta)))
+			);
+		}
 	}
 }
 

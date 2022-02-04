@@ -307,8 +307,12 @@ namespace notrealengine
 
 		Assimp::Importer	importer;
 		const aiScene* scene;
-		scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
-			| aiProcess_GenUVCoords);
+		if (path.substr(path.find_last_of('.')) == ".dae")
+			scene = importer.ReadFile(path, aiProcess_Triangulate
+				| aiProcess_GenUVCoords);
+		else
+			scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
+				| aiProcess_GenUVCoords);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -475,6 +479,45 @@ namespace notrealengine
 		this->bindBones();
 	}
 
+	void	GLObject::setToKeyFrame(unsigned int keyFrame)
+	{
+		if (this->anim == nullptr)
+			return ;
+		std::map<std::string, Bone> animBones = anim->getBones();
+		std::vector<AnimNode>& animNodes = anim->getNodes();
+		for (unsigned int i = 0; i < animNodes.size(); i++)
+		{
+			AnimNode& node = animNodes[i];
+
+			//if (keyFrame >= animBones[node.name].getNbTransforms())
+			//	continue ;
+			//	If a bone of the animation is associated with this node,
+			//	use its animation transform
+
+			if (animBones.contains(node.name))
+			{
+				node.transform = animBones[node.name].getTransform(keyFrame)
+					* animNodes[node.parentId].transform;
+			}
+			//	Otherwise, use the original node's transform
+			else
+			{
+				node.transform = node.transform
+					* animNodes[node.parentId].transform;
+			}
+			//	If a bone of the object is associated with this node,
+			//	update its transform with what we just computed
+			if (this->bones.contains(node.name))
+			{
+				BoneInfo& bone = this->bones[node.name];
+
+				bone.modelMatrix = node.transform;
+				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
+			}
+		}
+		this->bindBones();
+	}
+
 	void	GLObject::playAnimation(Animation* anim, AnimationRepeat animationRepeat)
 	{
 		if (anim == nullptr)
@@ -532,6 +575,12 @@ namespace notrealengine
 	void GLObject::setShader(GLShaderProgram *shader)
 	{
 		this->shader = shader->programID;
+	}
+
+	void GLObject::setAnimation(Animation* anim)
+	{
+		this->anim = anim;
+		this->resetPose();
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)

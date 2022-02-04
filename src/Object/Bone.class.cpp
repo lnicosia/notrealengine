@@ -52,6 +52,14 @@ namespace notrealengine
 				mft::mat4::scale(scales[j].vec)
 			* mft::mat4::rotate(mft::quat::normalized(rotations[j].quat))
 			* mft::mat4::translate(positions[j].vec);
+			/*if (j == 70)
+			{
+				std::cout << "Bone " << this->name << " transform " << j << ":" << std::endl;
+				std::cout << "Scale = " << scales[j].vec << std::endl;
+				std::cout << "Rotation = " << rotations[j].quat << std::endl;
+				std::cout << "Position = " << positions[j].vec << std::endl;
+				std::cout << "Matrix = " << transform << std::endl;
+			}*/
 			transforms.push_back(transform);
 		}
 	}
@@ -89,13 +97,16 @@ namespace notrealengine
 
 	//	Accessors
 
+	const mft::mat4	Bone::getKeyFrameTransform(const unsigned int keyFrame) const
+	{
+		if (keyFrame >= transforms.size())
+			throw std::out_of_range ("Index " + std::to_string(keyFrame) + " is out of bone '"
+			+ name + "' transforms range");
+		return transforms[keyFrame];
+	}
 
 	const mft::mat4	Bone::getTransform(const unsigned int frameTime) const
 	{
-		/*if (frameTime >= transforms.size())
-			throw std::out_of_range ("Index " + std::to_string(frameTime) + " is out of bone '"
-			+ name + "' transforms range");
-		return transforms[frameTime];*/
 		return (
 			mft::mat4::scale(getScale(frameTime))
 			* mft::mat4::rotate(getRotation(frameTime))
@@ -105,10 +116,6 @@ namespace notrealengine
 
 	const  mft::vec3	Bone::getPosition(const unsigned int frameTime) const
 	{
-		/*if (frameTime >= positions.size())
-			throw std::out_of_range ("Index " + std::to_string(frameTime) + " is out of bone '"
-			+ name + "' positions range");
-		return positions[frameTime].vec;*/
 		for (unsigned int i = 0; i < this->nbPositions - 1; i++)
 		{
 			const VecKeyFrame& nextKeyFrame = this->positions[i + 1];
@@ -128,10 +135,6 @@ namespace notrealengine
 
 	const mft::quat	Bone::getRotation(const unsigned int frameTime) const
 	{
-		/*if (frameTime >= rotations.size())
-			throw std::out_of_range ("Index " + std::to_string(frameTime) + " is out of bone '"
-			+ name + "' rotations range");
-		return rotations[frameTime].quat;*/
 		for (unsigned int i = 0; i < this->nbRotations - 1; i++)
 		{
 			const QuatKeyFrame& nextKeyFrame = this->rotations[i + 1];
@@ -139,28 +142,7 @@ namespace notrealengine
 			{
 				const QuatKeyFrame& keyFrame = this->rotations[i];
 				float percentage = (frameTime - keyFrame.time) / (nextKeyFrame.time - keyFrame.time);
-				float cosTheta = mft::quat::dot(keyFrame.quat, nextKeyFrame.quat);
-				mft::quat tmp = nextKeyFrame.quat;
-				if (cosTheta < 0)
-				{
-					tmp = -nextKeyFrame.quat;
-					cosTheta = -cosTheta;
-				}
-				if (cosTheta > 1 - std::numeric_limits<float>::epsilon())
-				{
-					return (mft::quat(
-						keyFrame.quat.a + (tmp.a - keyFrame.quat.a) * percentage,
-						keyFrame.quat.b + (tmp.b - keyFrame.quat.b) * percentage,
-						keyFrame.quat.c + (tmp.c - keyFrame.quat.c) * percentage,
-						keyFrame.quat.d + (tmp.d - keyFrame.quat.d) * percentage
-						));
-				}
-				else
-				{
-					float theta = std::acos(cosTheta);
-					return (mft::quat::normalized((keyFrame.quat * std::sin((1 - percentage) * theta)
-						+ nextKeyFrame.quat * std::sin(percentage * theta)) / std::sin(theta)));
-				}
+				return (mft::quat::slerp(keyFrame.quat, nextKeyFrame.quat, percentage));
 			}
 		}
 		return mft::quat();
@@ -168,10 +150,6 @@ namespace notrealengine
 
 	const  mft::vec3	Bone::getScale(const int unsigned frameTime) const
 	{
-		/*if (frameTime >= scales.size())
-			throw std::out_of_range ("Index " + std::to_string(frameTime) + " is out of bone '"
-			+ name + "' scales range");
-		return scales[frameTime].vec;*/
 		for (unsigned int i = 0; i < this->nbScales - 1; i++)
 		{
 			const VecKeyFrame& nextKeyFrame = this->scales[i + 1];

@@ -39,6 +39,8 @@ namespace notrealengine
 		//	Accessors
 
 		const mft::mat4
+			getKeyFrameTransform(const unsigned int keyFrame) const;
+		const mft::mat4
 			getTransform(const unsigned int frameTime) const;
 		const mft::vec3
 			getPosition(const unsigned int frameTime) const;

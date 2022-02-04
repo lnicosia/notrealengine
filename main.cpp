@@ -80,6 +80,7 @@ int		main(int ac, char** av)
 	scene.addObject(bobby);
 	bobby->visible = false;
 	//obj->visible = false;
+	obj->setAnimation(anim.get());
 	scene.addLight(light1);
 
 	InputState	mouseState = InputState::NRE_RELEASED;
@@ -290,6 +291,8 @@ int		main(int ac, char** av)
 					if (selectedBone > obj->getNbBones())
 						selectedBone = 0;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
+					frame += 1;
+					obj->setToKeyFrame(frame);
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{
@@ -297,6 +300,10 @@ int		main(int ac, char** av)
 					if (selectedBone < 0)
 						selectedBone = obj->getNbBones() - 1;
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
+					frame -= 1;
+					if (frame < 0)
+						frame = 0;
+					obj->setToKeyFrame(frame);
 				}
 				break;
 				case SDL_MOUSEBUTTONDOWN:
@@ -342,7 +349,7 @@ int		main(int ac, char** av)
 		GLCallThrow(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(0, 0), 1, mft::vec3(1.0, 1.0, 1.0));
-		//font->RenderText(context.getShader("text"), std::string("Frame time = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::string("Frame = " + std::to_string(frame)), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
 		//scene.renderBones();

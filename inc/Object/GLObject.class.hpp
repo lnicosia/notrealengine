@@ -79,6 +79,11 @@ namespace notrealengine
 			/**
 			*/
 			void
+				setToKeyFrame(unsigned int keyFrame);
+
+			/**
+			*/
+			void
 				playAnimation(Animation* anim,
 					AnimationRepeat	animationRepeat = AnimationRepeat::Repeat);
 			/**
@@ -118,6 +123,8 @@ namespace notrealengine
 				setBoneGlobalMatrix(const mft::mat4& ref);
 			void
 				setBoneLocalMatrix(const mft::mat4& ref);
+			void
+				setAnimation(Animation* anim);
 
 			//	Texture utility
 

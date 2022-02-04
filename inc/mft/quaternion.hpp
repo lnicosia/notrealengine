@@ -61,6 +61,8 @@ namespace mft
 		static constexpr T dot( const quaternion<T>& x, const quaternion<T>& y );
 		static constexpr T length( const quaternion<T>& quat );
 		static constexpr quaternion<T> normalized( const quaternion<T>& quat );
+		static constexpr quaternion<T> slerp( const quaternion<T>& q1,
+			const quaternion<T>& q2, T percentage );
 	};
 }
 
