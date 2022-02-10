@@ -7,6 +7,8 @@
 #include "Object/AssetManager.class.hpp"
 #include "Object/Light.class.hpp"
 #include "Object/Scene.class.hpp"
+#include "ColladaParser/ColladaParser.class.hpp"
+#include "LXML/LXML.class.hpp"
 #include "GLShaderProgram.class.hpp"
 #include "TextRendering/GLFont.class.hpp"
 #include "Camera.class.hpp"
@@ -37,6 +39,10 @@ int		main(int ac, char** av)
 	int	mode = Object;
 	int selectedBone = 0;
 
+	std::cout << "Importing xml '" << av[1] << "'..." << std::endl;
+	LXML::Importer importer;
+	importer.ReadFile(av[1]);
+	std::cout << "Import done." << std::endl;
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim;
 	if (ac == 3)
@@ -168,7 +174,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime);
 				}
@@ -176,7 +182,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime);
 				}
@@ -254,7 +260,7 @@ int		main(int ac, char** av)
 					else if (animState == AnimationState::Paused)
 						obj->resumeAnimation();
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);

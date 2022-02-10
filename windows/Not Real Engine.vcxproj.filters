@@ -105,6 +105,12 @@
     <ClCompile Include="..\src\Object\Bone.class.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ColladaParser\ColladaParser.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\LXML\LXML.class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\mft\mat.hpp">
@@ -215,6 +221,12 @@
     <ClInclude Include="..\inc\Object\Bone.class.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaParser.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\LXML\LXML.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\test.fs">
@@ -229,13 +241,7 @@
     <None Include="..\shaders\text.vs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\shaders\colorShader.fs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="..\shaders\anim.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\shaders\bones.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\test.glsl">
@@ -247,5 +253,11 @@
     <None Include="..\shaders\2dProjected.fs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\shaders\bonesInfluence.fs" />
+    <None Include="..\shaders\color.fs" />
+    <None Include="..\shaders\colorUnlit.fs" />
+    <None Include="..\shaders\default.fs" />
+    <None Include="..\shaders\default.vs" />
+    <None Include="..\shaders\unlit.fs" />
   </ItemGroup>
 </Project>

@@ -62,7 +62,7 @@ namespace notrealengine
 		newNode.parentId = parentId;
 		newNode.transform = AssimpToMftMatrix(node->mTransformation);
 		this->nodes.push_back(newNode);
-		std::cout << "Reading node ";
+		/*std::cout << "Reading node ";
 		for (int i = 0; i < count; i++)
 			std::cout << "  ";
 		std::cout << newNode.name;
@@ -72,9 +72,8 @@ namespace notrealengine
 			std::cout << this->bones[newNode.name].getNbPositions() << " position frames, ";
 			std::cout << this->bones[newNode.name].getNbRotations() << " rotation frames and ";
 			std::cout << this->bones[newNode.name].getNbScales() << " scale frames)";
-		// << " ( " << animation->mNumChannels << " frames" << std::endl;
 		}
-		std::cout << std::endl;
+		std::cout << std::endl;*/
 		for (int i = 0; i < node->mNumChildren; i++)
 		{
 			processNode(node->mChildren[i], animation, currentId);

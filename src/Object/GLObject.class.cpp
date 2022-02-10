@@ -41,7 +41,7 @@ namespace notrealengine
 		animationRepeat(AnimationRepeat::Repeat)
 	{
 		loadObject(path);
-		bindBones();
+		//bindBones();
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
@@ -265,30 +265,20 @@ namespace notrealengine
 	void	GLObject::processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat)
 	{
 		mft::mat4	transform = AssimpToMftMatrix(node->mTransformation) * parentMat;
-		//std::cout << "Node '" << node->mName.C_Str() << "':" << std::endl;
 		std::string name(node->mName.data);
 		if (bones.contains(name))
 		{
 			bones[name].fromParentMatrix = transform;
-
-			//std::cout << "Node " << node->mName.C_Str() << " has an associated bone" << std::endl;
-			//std::cout << "Model matrix = " << bones[name].modelMatrix << std::endl;
-			//std::cout << "Computed matrix = " << transform << std::endl;
-			//std::cout << "Local matrix = " << bones[name].localMatrix << std::endl;
-			//std::cout << "Transform - model = " << transform - bones[name].modelMatrix << std::endl;
-			//std::cout << "Model - transform = " << bones[name].modelMatrix - transform << std::endl;
 			bones[name].localMatrix = bones[name].offsetMatrix * transform;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
-			//std::cout << "Matrix sent to next node = " << transform << std::endl;
 			processNodeBones(node->mChildren[i], scene, transform);
 		}
 	}
 
 	void	GLObject::processNode(aiNode* node, const aiScene* scene)
 	{
-		//std::cout << "Node " << node->mName.C_Str() << std::endl;
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -344,7 +334,7 @@ namespace notrealengine
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
-		readMissingBones(scene);
+		//readMissingBones(scene);
 
 		//	Scale the object
 
@@ -387,14 +377,17 @@ namespace notrealengine
 		Mesh	cube(GLContext::cube);
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
+		const mft::vec3& objTransform = this->transform.getScale();
+		mft::vec3 cubeScale = 0.05f / objTransform;
+		mft::mat4 scaleMatrix = mft::mat4::scale(cubeScale);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw((*it).second.fromParentMatrix * transform.getMatrix());
+			cube.draw(scaleMatrix * (*it).second.fromParentMatrix * transform.getMatrix());
 		}
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw((*it).second.modelMatrix * transform.getMatrix());
+			//cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}

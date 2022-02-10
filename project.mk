@@ -32,6 +32,9 @@ SRC =	$S/mft/math_utils.cpp \
     $S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp \
+		$S/ColladaParser/ColladaParser.class.cpp \
+		$S/LXML/LXML.class.cpp \
+
 
 CC = clang++ --std=c++20 -O3
 CPPFLAGS =

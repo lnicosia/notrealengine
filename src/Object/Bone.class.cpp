@@ -15,6 +15,7 @@ namespace notrealengine
 	positions(), rotations(), scales(), transforms(), modelMatrices(),
 	nbPositions(0), nbRotations(0), nbScales(0)
 	{
+		//std::cout << "Bone " << name << std::endl;
 		for (unsigned int j = 0; j < node->mNumPositionKeys; j++)
 		{
 			VecKeyFrame	keyFrame;
@@ -32,6 +33,7 @@ namespace notrealengine
 			keyFrame.time = node->mRotationKeys[j].mTime;
 			//std::cout << "Time = " << keyFrame.time << std::endl;
 			rotations.push_back(keyFrame);
+			//std::cout << "Rotation " << j << " = " << keyFrame.quat << std::endl;
 			nbRotations++;
 		}
 		//std::cout << std::endl;
