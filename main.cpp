@@ -40,8 +40,8 @@ int		main(int ac, char** av)
 	int selectedBone = 0;
 
 	std::cout << "Importing xml '" << av[1] << "'..." << std::endl;
-	LXML::Importer importer;
-	importer.ReadFile(av[1]);
+	ColladaParser	parser;
+	parser.ReadFile(av[1], 0);
 	std::cout << "Import done." << std::endl;
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim;

@@ -4,8 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
+#include <string.h>
 
-namespace LXML
+namespace lxml
 {
 	Importer::Importer()
 	{
@@ -40,10 +41,11 @@ namespace LXML
 			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
-		std::string tag;
+		const char* str = content.c_str();
+		const char* tag;
 		try
 		{
-			tag = GetTag(content);
+			tag = GetNextTag(str);
 		}
 		catch (std::exception& e)
 		{
@@ -53,113 +55,115 @@ namespace LXML
 			return;
 		try
 		{
-			this->tag = ReadTag(content);
+			str = ReadTag(str, this->RootTag);
 		}
 		catch (std::exception e)
 		{
 			std::cerr << "lxml: Invalid xml" << std::endl;
 			return;
 		}
-		//std::cout << *(this->tag);
+		//std::cout << this->RootTag;
 	}
 
-	std::string	Importer::GetTag(std::string& content)
+	const char* Importer::GetNextTag(const char* str)
 	{
-		SkipWhitespaces(content);
-		if (content.size() < 2 || content[0] != '<')
-		{
-			std::cerr << "Invalid tag" << std::endl;
-			throw std::exception();
-		}
-		std::string ret;
-		size_t end = content.find_first_of('>');
-		if (end == std::string::npos)
-		{
-			std::cerr << "No end of tag " << std::endl;
-			throw std::exception();
-			return ret;
-		}
-		end++;
-		if (end >= content.size())
-			ret = content;
-		else
-			ret = (content.substr(0, end));
-		//end++;
-		if (end >= content.size())
-			content.clear();
-		else	
-			content = content.substr(end);
-		return ret;
+		const char* skipped = SkipWhitespaces(str);
+		size_t pos = 0;
+		while (str[pos] && str[pos] != '<')
+			pos++;
+		return skipped + pos;
 	}
 
-	std::string	Importer::GetNextString(std::string& line)
+	const char* Importer::GetNextString(const char* str, std::string& word)
 	{
-		SkipWhitespaces(line);
-		if (line.size() < 2 || line[0] != '"')
+		str = SkipWhitespaces(str);
+		if (TagLen(str) < 2 || str[0] != '"')
 		{
 			std::cerr << "Invalid string" << std::endl;
 			throw std::exception();
 		}
 		size_t end = 1;
-		while (line[end] && line[end] != '"' && isascii(line[end]))
+		while (str[end] && str[end] != '"' && isascii(str[end]))
 			end++;
-		if (line[end] != '"')
+		if (str[end] != '"')
 			throw std::exception();
-		std::string word = line.substr(1, end - 1);
+		word = std::string(str + 1, end - 1);
 		word.erase(std::remove_if(word.begin(), word.end(), ::isspace), word.end());
-		line = line.substr(end);
-		return word;
+		return str + end;
 	}
 
-	std::string	Importer::GetNextWord(std::string& line)
+	const char* Importer::GetNextWord(const char* str, std::string& word)
 	{
-		SkipWhitespaces(line);
+		str = SkipWhitespaces(str);
 		size_t end = 0;
-		while (line[end] && line[end] != '=' && (isalpha(line[end])
-			|| line[end] == '_' || line[end] == ':'))
+		while (str[end] && str[end] != '=' && (isalpha(str[end])
+			|| str[end] == '_' || str[end] == ':'))
 			end++;
-		std::string word = line.substr(0, end);
+		word = std::string(str, end);
 		word.erase(std::remove_if(word.begin(), word.end(), ::isspace), word.end());
-		line = line.substr(end);
-		return word;
+		return str + end;
 	}
 
-	int	Importer::GetNextAttribute(std::string& line, Attribute& attribute)
+	const char*	Importer::GetNextAttribute(const char* str, int& success, Attribute& attribute)
 	{
-		attribute.name = GetNextWord(line);
+		str = GetNextWord(str, attribute.name);
 		if (attribute.name == "" || attribute.name == ">")
-			return AttributeState::Empty;
-		SkipWhitespaces(line);
-		if (line.empty() || line[0] != '=')
-			return AttributeState::Invalid;
-		line = line.substr(1);
-		SkipWhitespaces(line);
-		if (line.empty())
-			return AttributeState::Invalid;
-		attribute.value = GetNextString(line);
-		if (line.empty() || line[0] != '"')
-			return AttributeState::Invalid;
-		line = line.substr(1);
-		return AttributeState::Valid;
+		{
+			success = AttributeState::Empty;
+			return str;
+		}
+		str = SkipWhitespaces(str);
+		if (!*str || str[0] != '=')
+		{
+			success = AttributeState::Invalid;
+		}
+		str++;
+		str = SkipWhitespaces(str);
+		if (!*str)
+		{
+			success = AttributeState::Invalid;
+			return str;
+		}
+		str = GetNextString(str, attribute.value);
+		if (!*str || str[0] != '"')
+		{
+			success = AttributeState::Invalid;
+			return str;
+		}
+		success = AttributeState::Valid;
+		str++;
+		return str;
 	}
 
-	int	Importer::GetNextFirstLineAttribute(std::string& line, Attribute& attribute)
+	const char*	Importer::GetNextFirstLineAttribute(const char* str, int& success, Attribute& attribute)
 	{
-		attribute.name = GetNextWord(line);
+		str = GetNextWord(str, attribute.name);
 		if (attribute.name == "" || attribute.name == "?>" || attribute.name == ">")
-			return AttributeState::Empty;
-		SkipWhitespaces(line);
-		if (line.empty() || line[0] != '=')
-			return AttributeState::Invalid;
-		line = line.substr(1);
-		SkipWhitespaces(line);
-		if (line.empty())
-			return AttributeState::Invalid;
-		attribute.value = GetNextString(line);
-		if (line.empty() || line[0] != '"')
-			return AttributeState::Invalid;
-		line = line.substr(1);
-		return AttributeState::Valid;
+		{
+			success = AttributeState::Empty;
+			return str;
+		}
+		str = SkipWhitespaces(str);
+		if (!*str || str[0] != '=')
+		{
+			success = AttributeState::Invalid;
+			return str;
+		}
+		str++;
+		str = SkipWhitespaces(str);
+		if (!*str)
+		{
+			success = AttributeState::Invalid;
+			return str;
+		}
+		str = GetNextString(str, attribute.value);
+		if (!*str || str[0] != '"')
+		{
+			success = AttributeState::Invalid;
+		}
+		success = AttributeState::Valid;
+		str++;
+		return str;
 	}
 
 	bool	Importer::IsValidWhitespace(char c)
@@ -169,22 +173,21 @@ namespace LXML
 		return false;
 	}
 
-	void	Importer::SkipWhitespaces(std::string& str)
+	const char*	Importer::SkipWhitespaces(const char* str)
 	{
 		size_t pos = 0;
 		while (str[pos] && IsValidWhitespace(str[pos]))
 			pos++;
-		str = str.substr(pos);
+		return str + pos;
 	}
 
-	std::vector<Attribute> Importer::ReadAttributes(const std::string& line)
+	const char* Importer::ReadAttributes(const char* str, std::vector<Attribute>& attributes)
 	{
-		std::vector<Attribute>	attributes;
-		std::string str = line;
-		while (str.empty() == false)
+		while (*str)
 		{
 			Attribute newAttr;
-			int attrState = GetNextAttribute(str, newAttr);
+			int attrState;
+			str = GetNextAttribute(str, attrState, newAttr);
 			if (attrState == AttributeState::Valid)
 				attributes.push_back(newAttr);
 			else if (attrState == AttributeState::Empty)
@@ -192,24 +195,22 @@ namespace LXML
 			else if (attrState == AttributeState::Invalid)
 			{
 				std::cerr << "lxml: Invalid xml attribute" << std::endl;
-				std::cerr << "Line = " << std::endl << line << std::endl;
+				std::cerr << "Line = " << std::endl << str << std::endl;
 				std::cerr << "Attribute name = " << newAttr.name << std::endl;
 				std::cerr << "Attribute value = " << newAttr.value << std::endl;
 				throw std::exception();
-				return attributes;
 			}
 		}
-		return attributes;
+		return str;
 	}
 
-	std::vector<Attribute> Importer::ReadFirstLineAttributes(const std::string& line)
+	const char* Importer::ReadFirstLineAttributes(const char* str, std::vector<Attribute>& attributes)
 	{
-		std::vector<Attribute>	attributes;
-		std::string str = line;
-		while (str.empty() == false)
+		while (*str)
 		{
 			Attribute newAttr;
-			int attrState = GetNextFirstLineAttribute(str, newAttr);
+			int attrState;
+			str = GetNextAttribute(str, attrState, newAttr);
 			if (attrState == AttributeState::Valid)
 				attributes.push_back(newAttr);
 			else if (attrState == AttributeState::Empty)
@@ -217,38 +218,43 @@ namespace LXML
 			else if (attrState == AttributeState::Invalid)
 			{
 				std::cerr << "lxml: Invalid xml first line attribute" << std::endl;
-				std::cerr << "Line = " << std::endl << line << std::endl;
+				std::cerr << "Line = " << std::endl << str << std::endl;
 				std::cerr << "Attribute name = " << newAttr.name << std::endl;
 				std::cerr << "Attribute value = " << newAttr.value << std::endl;
 				throw std::exception();
-				return attributes;
 			}
 		}
-		return attributes;
+		return str;
 	}
 	
-	int	Importer::ReadTagName(std::string& line, std::string& name)
+	const char*	Importer::ReadTagName(const char* str, std::string& name)
 	{
-		if (line.size() < 3 || line[0] != '<' || line[1] == '<'
-			|| line[line.size() - 1] != '>' || line[line.size() - 2] == '>')
+		size_t len = TagLen(str);
+		if (len < 3 || str[0] != '<' || str[1] == '<'
+			|| str[len - 1] != '>' || str[len - 2] == '>')
 		{
 			std::cerr << "Name error" << std::endl;
+			std::cerr << "Len = " << len << std::endl;
+			std::cerr << "str[0] = " << str[0] << std::endl;
+			std::cerr << "str[1] = " << str[1] << std::endl;
+			std::cerr << "str[len] = " << str[len] << std::endl;
+			std::cerr << "str[len - 1] = " << str[len - 1] << std::endl;
 			throw std::exception();
 		}
 		size_t pos = 1;
-		while (line[pos] && !IsValidWhitespace(line[pos]) && line[pos] != '>')
+		while (str[pos] && !IsValidWhitespace(str[pos]) && str[pos] != '>')
 			pos++;
-		name = line.substr(1, pos - 1);
-		line = line.substr(pos);
-		return 0;
+		//std::string name = str.substr(1, pos - 1);
+		name = std::string(str + 1, pos - 1);
+		return str + pos;
 	}
 
-	bool	Importer::CheckXml(std::string& line)
+	bool	Importer::CheckXml(const char* str)
 	{
 		std::string name;
 		try
 		{
-			ReadTagName(line, name);
+			str = ReadTagName(str, name);
 		}
 		catch (std::exception e)
 		{
@@ -263,7 +269,7 @@ namespace LXML
 		std::vector<Attribute>	attributes;
 		try
 		{
-			attributes = ReadFirstLineAttributes(line);
+			str = ReadFirstLineAttributes(str, attributes);
 		}
 		catch (std::exception e)
 		{
@@ -278,7 +284,8 @@ namespace LXML
 			std::cerr << "lxml: Invalid xml" << std::endl;
 			return true;
 		}
-		if (line[line.size() - 1] != '>' || line[line.size() - 2] != '?')
+		size_t len = TagLen(str);
+		if (str[len - 1] != '>' || str[len - 2] != '?')
 		{
 			std::cerr << "lxml: Invalid xml first line format" << std::endl;
 			std::cerr << "lxml: Invalid xml" << std::endl;
@@ -287,34 +294,31 @@ namespace LXML
 		return false;
 	}
 
-	Tag* Importer::ReadTag(std::string& content)
+	const char* Importer::ReadTag(const char* str, Tag& tag)
 	{
-		if (content.empty())
-			return nullptr;
 		static int count = 0;
-		Tag* newTag = nullptr;
+		tag.valid = false;
+		if (TagLen(str) == 0)
+			return str;
 		std::string line;
 		try
 		{
-			line = GetTag(content);
+			str = GetNextTag(str);
 		}
 		catch (std::exception& e)
 		{
 			std::cerr << "Get tag failure" << std::endl;
 			throw e;
-			return nullptr;
 		}
-		size_t spaces = 0;
-		while (line[spaces] == ' ' || line[spaces] == '\t')
-			spaces++;
-		line = line.substr(spaces);
+		str = SkipWhitespaces(str);
+		size_t len = TagLen(str);
 		bool opening;
-		if (line[1] != '/' && line[line.size() - 2] != '/')
+		if (str[1] != '/' && str[len - 2] != '/')
 			opening = true;
 		else
 			opening = false;
-		//std::cerr << "Current line = " << line << std::endl;
-		if (line.size() < 2 || line[0] != '<' || line[line.size() -1] != '>')
+		//std::cerr << "Current line = " << std::string(str, len + 1) << std::endl;
+		if (len < 2 || str[0] != '<' || str[len - 1] != '>')
 		{
 			std::cerr << "lxml: Invalid tag line" << std::endl;
 			throw std::exception();
@@ -322,7 +326,7 @@ namespace LXML
 		std::string name;
 		try
 		{
-			ReadTagName(line, name);
+			str = ReadTagName(str, name);
 		}
 		catch (std::exception e)
 		{
@@ -333,35 +337,42 @@ namespace LXML
 		std::vector<Attribute>	attributes;
 		try
 		{
-			attributes = ReadAttributes(line);
+			str = ReadAttributes(str, attributes);
 		}
 		catch (std::exception e)
 		{
 			std::cerr << "lxml: Invalid attributes" << std::endl;
 			throw e;
 		}
-		newTag = new Tag;
-		newTag->name = name;
-		newTag->attributes = attributes;
-		SkipWhitespaces(content);
-		if (!content.empty() && content[0] != '<')
+		tag.name = name;
+		tag.attributes = attributes;
+		str++;
+		str = SkipWhitespaces(str);
+		if (strlen(str) != 0 && str[0] != '<')
 		{
-			size_t pos = content.find_first_of('<');
-			if (pos == std::string::npos)
+			size_t pos = 0;
+			while (str[pos] && str[pos] != '<')
+				pos++;
+			if (pos == strlen(str))
+			{
+				std::cerr << "Invalid content" << std::endl;
+				std::cerr << "Content = " << str << std::endl;
 				throw std::exception();
-			newTag->content = content.substr(0, pos);
-			content = content.substr(pos);
+			}
+			tag.content = std::string(str, pos);
+			str += pos;
 		}
+		tag.valid = true;
 		//std::cerr << *newTag << std::endl;
 		if (opening == true)
 		{
 			bool isClosed = false;
 			while (isClosed == false)
 			{
-				Tag* childTag;
+				Tag childTag;
 				try
 				{
-					childTag = ReadTag(content);
+					str = ReadTag(str, childTag);
 
 				}
 				catch (std::exception e)
@@ -369,34 +380,59 @@ namespace LXML
 					std::cerr << "lxml: Invalid child" << std::endl;
 					throw e;
 				}
-				if (childTag == nullptr)
+				if (childTag.valid == false)
 				{
 					isClosed = true;
 				}
 				else
 				{
 					
-					if (childTag->name.size() >= 1
-						&& childTag->name[0] == '/')
+					if (childTag.name.size() >= 1
+						&& childTag.name[0] == '/')
 					{
-						if (childTag->name.substr(1) != newTag->name)
+						if (childTag.name.substr(1) != tag.name)
 						{
-							std::cerr << "Invalid closing tag: " << childTag->name;
-							std::cerr << ". Expected: " << newTag->name << std::endl;
+							std::cerr << "Invalid closing tag: " << childTag.name;
+							std::cerr << ". Expected: " << tag.name << std::endl;
 							throw std::exception();
 						}
 						else
 						{
 							isClosed = true;
-
 						}
 					}
 					else
-						newTag->children.push_back(childTag);
+						tag.children.push_back(childTag);
 				}
 			}
 		}
-		return newTag;
+		return str;
+	}
+
+	const Tag*	Importer::FindTag(const Tag& tag, const std::string& name) const
+	{
+		if (tag.valid == false)
+			return nullptr;
+		if (tag.name == name)
+			return &tag;
+		for (const auto& child : tag.children)
+		{
+			const Tag* res;
+			res = FindTag(child, name);
+			if (res != nullptr)
+				return res;
+		}
+		return nullptr;
+	}
+
+	size_t	Importer::TagLen(const char* str)
+	{
+		size_t len = 0;
+		while (str[len] && str[len] != '>')
+			len++;
+		if (str[len] == '>')
+			len++;
+		return len;
 	}
 
 	std::ostream& operator<<(std::ostream& o, const Tag& tag)
@@ -422,7 +458,7 @@ namespace LXML
 				std::cout << std::endl;
 				first = false;
 			}
-			std::cout << *child;
+			std::cout << child;
 		}
 		count--;
 		if (tag.children.size() == 0 && tag.content == "")

@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-namespace LXML
+namespace lxml
 {
 	enum AttributeState
 	{
@@ -24,7 +24,9 @@ namespace LXML
 		std::string name;
 		std::vector<Attribute> attributes;
 		std::string	content;
-		std::vector<Tag*>	children;
+		std::vector<Tag>	children;
+
+		bool valid;
 
 	};
 
@@ -36,6 +38,21 @@ namespace LXML
 
 		void
 			ReadFile(const std::string& path, unsigned int flags = 0);
+
+		/**	Search for a tag in the hierarchy and returns it
+		*	@return The expected Tag or null if not found
+		*/
+		const Tag*
+			FindTag(const Tag& tag, const std::string& name) const;
+
+		/**	Tags stored as a vector for reading utilies and optimization
+		*/
+		std::vector<Tag>	tags;
+
+		/**	Tags stored as the original recursive hierarchy
+		*/
+		Tag RootTag;
+
 	private:
 		/**	Returns if c is a tolerated whitespace in our current version
 		*/
@@ -44,34 +61,34 @@ namespace LXML
 
 		/**	Skip all the tolerated whitespaces at the beginning of the string
 		*/
-		void
-			SkipWhitespaces(std::string& str);
+		const char*
+			SkipWhitespaces(const char* str);
 
 		/**	Get the next word, i.e. string composed of alpha characters only
 		**	and advance in the string just after it
 		*/
-		std::string
-			GetNextWord(std::string& line);
+		const char*
+			GetNextWord(const char* str, std::string& word);
 
 		/**	Get the next word, i.e. string composed of ascii characters
 		**	surrounded by quotes
 		**	and advance in the string just after it
 		*/
-		std::string
-			GetNextString(std::string& line);
+		const char*
+			GetNextString(const char* str, std::string& word);
 
 		/*	Retrieve the first tag (between '<' and '>') found in the given string
 		*/
-		std::string
-			GetTag(std::string& content);
+		const char*
+			GetNextTag(const char* str);
 
 		/**	Retrieve the next attribute of a tag
 		**	Return one of the possible attribute states:
 		**	Valid, Invalid, Empty
 		**	Set the attribute ptr given in args
 		*/
-		int
-			GetNextAttribute(std::string& line, Attribute& attribute);
+		const char*
+			GetNextAttribute(const char* str, int& success, Attribute& attribute);
 
 		/**	Retrieve the next attribute of a tag
 		**	Return one of the possible attribute states:
@@ -79,41 +96,41 @@ namespace LXML
 		**	Set the attribute ptr given in args
 		**	Accepts ? at the end for the first line of an xml file
 		*/
-		int
-			GetNextFirstLineAttribute(std::string& line, Attribute& attribute);
+		const char*
+			GetNextFirstLineAttribute(const char* str, int& success, Attribute& attribute);
 
-		/**
+		/** Read the name of a tag. Return the string after the name
 		*/
-		int
-			ReadTagName(std::string& line, std::string& name);
+		const char*
+			ReadTagName(const char* str, std::string& name);
 
 		/**
 		*/
 		bool
-			CheckXml(std::string& content);
+			CheckXml(const char* str);
 
 		/**
 		*/
-		std::vector<Attribute>
-			ReadAttributes(const std::string& line);
+		const char*
+			ReadAttributes(const char* str, std::vector<Attribute>& attributes);
 
 		/**
 		*/
-		std::vector<Attribute>
-			ReadFirstLineAttributes(const std::string& line);
+		const char*
+			ReadFirstLineAttributes(const char* str, std::vector<Attribute>& attributes);
 
-		/**
+		/** Read a tag from content and create a Tag struct with
+		*	its data
 		*/
-		Tag*
-			ReadTag(std::string& content);
+		const char*
+			ReadTag(const char* str, Tag& tag);
 
-		/**	Tags stored as a vector for reading utilies and optimization
+		/**	Return the length of a tag, ie the number of characters
+		**	until the first '>' or the end of the string
 		*/
-		std::vector<Tag*>	tags;
+		size_t
+			TagLen(const char* str);
 
-		/**	Tags stored as the original recursive hierarchy 
-		*/
-		Tag* tag;
 	};
 
 	std::ostream& operator<<(std::ostream& o, const Tag& tag);

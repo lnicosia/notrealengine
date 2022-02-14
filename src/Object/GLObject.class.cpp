@@ -85,6 +85,7 @@ namespace notrealengine
 			std::filesystem::path textPath(str.C_Str());
 			textPath.make_preferred();
 			std::string	path = directory + '/' + textPath.string();
+			/** Disable parsing of embedded textures in fbx
 			const aiTexture* texture;
 			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
 			{
@@ -98,10 +99,10 @@ namespace notrealengine
 						texture->mWidth * texture->mHeight, typeName));
 			}
 			else
-			{
+			{*/
 				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
 				textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
-			}
+			//}
 		}
 		return textures;
 	}
@@ -334,6 +335,12 @@ namespace notrealengine
 		directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
+
+		std::cout << "Assimp reads " << scene->mNumMeshes << " meshes " << std::endl;
+		for (int i = 0; i < scene->mNumMeshes; i++)
+		{
+			std::cout << "Mesh " << i << " name is " << scene->mMeshes[i]->mName.C_Str() << std::endl;
+		}
 		//readMissingBones(scene);
 
 		//	Scale the object
