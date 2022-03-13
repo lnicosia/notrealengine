@@ -166,21 +166,6 @@ namespace lxml
 		return str;
 	}
 
-	bool	Importer::IsValidWhitespace(char c)
-	{
-		if (c == ' ' || c == '\n' || c == '\t' || c == '\r' || c == '\f' || c == '\v')
-			return true;
-		return false;
-	}
-
-	const char*	Importer::SkipWhitespaces(const char* str)
-	{
-		size_t pos = 0;
-		while (str[pos] && IsValidWhitespace(str[pos]))
-			pos++;
-		return str + pos;
-	}
-
 	const char* Importer::ReadAttributes(const char* str, std::vector<Attribute>& attributes)
 	{
 		while (*str)
@@ -433,6 +418,68 @@ namespace lxml
 		if (str[len] == '>')
 			len++;
 		return len;
+	}
+
+	void	GetIntAttribute(const Tag& tag, const std::string& name, int& nb)
+	{
+		for (const auto& attr : tag.attributes)
+		{
+			if (attr.name == name)
+			{
+				try
+				{
+					nb = std::stoi(attr.value);
+				}
+				catch (std::out_of_range& e)
+				{
+					throw e;
+				}
+			}
+		}
+	}
+
+	void	GetUIntAttribute(const Tag& tag, const std::string& name, unsigned int& nb)
+	{
+		for (const auto& attr : tag.attributes)
+		{
+			if (attr.name == name)
+			{
+				try
+				{
+					nb = static_cast<unsigned int>(std::stoul(attr.value));
+				}
+				catch (std::out_of_range& e)
+				{
+					throw e;
+				}
+			}
+		}
+	}
+
+	void	GetStrAttribute(const Tag& tag, const std::string& name, std::string& str)
+	{
+		for (const auto& attr : tag.attributes)
+		{
+			if (attr.name == name)
+			{
+				str = attr.value;
+			}
+		}
+	}
+
+	bool	IsValidWhitespace(char c)
+	{
+		if (c == ' ' || c == '\n' || c == '\t' || c == '\r' || c == '\f' || c == '\v')
+			return true;
+		return false;
+	}
+
+	const char* SkipWhitespaces(const char* str)
+	{
+		size_t pos = 0;
+		while (str[pos] && IsValidWhitespace(str[pos]))
+			pos++;
+		return str + pos;
 	}
 
 	std::ostream& operator<<(std::ostream& o, const Tag& tag)

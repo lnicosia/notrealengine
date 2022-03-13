@@ -20,6 +20,9 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Scene.class.cpp \
 		$S/Object/InitBobby.cpp \
 		$S/Object/AssimpHelpers.cpp \
+		$S/Object/ObjectImporter.class.cpp \
+		$S/Object/AssimpObjectImporter.class.cpp \
+		$S/Object/CustomObjectImporter.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -33,6 +36,8 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp \
 		$S/ColladaParser/ColladaParser.class.cpp \
+		$S/ColladaParser/ColladaException.class.cpp \
+		$S/ColladaParser/ColladaSceneBuilder.class.cpp \
 		$S/LXML/LXML.class.cpp \
 
 

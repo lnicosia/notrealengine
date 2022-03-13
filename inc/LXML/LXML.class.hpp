@@ -54,15 +54,6 @@ namespace lxml
 		Tag RootTag;
 
 	private:
-		/**	Returns if c is a tolerated whitespace in our current version
-		*/
-		bool
-			IsValidWhitespace(char c);
-
-		/**	Skip all the tolerated whitespaces at the beginning of the string
-		*/
-		const char*
-			SkipWhitespaces(const char* str);
 
 		/**	Get the next word, i.e. string composed of alpha characters only
 		**	and advance in the string just after it
@@ -132,6 +123,33 @@ namespace lxml
 			TagLen(const char* str);
 
 	};
+
+	/**	Retrieve an int from an Attribute vector
+	**	Throws if overflow
+	*/
+	void
+		GetIntAttribute(const Tag& tag, const std::string& name, int& nb);
+
+	/**	Retrieve an unsigned int from an Attribute vector
+	**	Throws if overflow
+	*/
+	void
+		GetUIntAttribute(const Tag& tag, const std::string& name, unsigned int& nb);
+
+	/**	Retrieve an str from an Attribute vector
+	*/
+	void
+		GetStrAttribute(const Tag& tag, const std::string& name, std::string& str);
+
+	/**	Returns if c is a tolerated whitespace in our current version
+		*/
+	bool
+		IsValidWhitespace(char c);
+
+	/**	Skip all the tolerated whitespaces at the beginning of the string
+	*/
+	const char*
+		SkipWhitespaces(const char* str);
 
 	std::ostream& operator<<(std::ostream& o, const Tag& tag);
 	

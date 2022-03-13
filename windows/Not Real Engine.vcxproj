@@ -118,14 +118,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.class.cpp" />
+    <ClCompile Include="..\src\ColladaParser\ColladaException.class.cpp" />
     <ClCompile Include="..\src\ColladaParser\ColladaParser.class.cpp" />
+    <ClCompile Include="..\src\ColladaParser\ColladaSceneBuilder.class.cpp" />
     <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\GLContext.class.cpp" />
     <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
     <ClCompile Include="..\src\GLException.class.cpp" />
-    <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
     <ClCompile Include="..\src\LXML\LXML.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
@@ -133,13 +134,16 @@
     <ClCompile Include="..\src\Object\Asset.class.cpp" />
     <ClCompile Include="..\src\Object\AssetManager.class.cpp" />
     <ClCompile Include="..\src\Object\AssimpHelpers.cpp" />
+    <ClCompile Include="..\src\Object\AssimpObjectImporter.class.cpp" />
     <ClCompile Include="..\src\Object\Bone.class.cpp" />
+    <ClCompile Include="..\src\Object\CustomObjectImporter.class.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
     <ClCompile Include="..\src\Object\InitBobby.cpp" />
     <ClCompile Include="..\src\Object\Light.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
+    <ClCompile Include="..\src\Object\ObjectImporter.class.cpp" />
     <ClCompile Include="..\src\Object\Scene.class.cpp" />
     <ClCompile Include="..\src\Object\Texture.class.cpp" />
     <ClCompile Include="..\src\Object\Transform.class.cpp" />
@@ -162,7 +166,9 @@
     <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
     <ClInclude Include="..\inc\notrealengine\Camera.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaException.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaParser.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaSceneBuilder.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GL.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
@@ -175,12 +181,15 @@
     <ClInclude Include="..\inc\Object\Asset.class.hpp" />
     <ClInclude Include="..\inc\Object\AssetManager.class.hpp" />
     <ClInclude Include="..\inc\Object\AssimpHelpers.hpp" />
+    <ClInclude Include="..\inc\Object\AssimpObjectImporter.class.hpp" />
     <ClInclude Include="..\inc\Object\Bone.class.hpp" />
+    <ClInclude Include="..\inc\Object\CustomObjectImporter.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
     <ClInclude Include="..\inc\Object\Light.class.hpp" />
     <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
+    <ClInclude Include="..\inc\Object\ObjectImporter.class.hpp" />
     <ClInclude Include="..\inc\Object\Scene.class.hpp" />
     <ClInclude Include="..\inc\Object\Texture.class.hpp" />
     <ClInclude Include="..\inc\Object\Transform.class.hpp" />

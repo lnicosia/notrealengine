@@ -2,6 +2,8 @@
 #include "Object/TextureLoader.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "Object/AssimpHelpers.hpp"
+#include "Object/AssimpObjectImporter.class.hpp"
+#include "Object/CustomObjectImporter.class.hpp"
 #include "GLContext.class.hpp"
 #include "mft/mft.hpp"
 #include "SDL.h"
@@ -73,275 +75,27 @@ namespace notrealengine
 			throw std::runtime_error("Mesh index out of bounds");
 	}
 
-	std::vector<std::shared_ptr<Texture>>	GLObject::loadMaterialTextures(aiMaterial* mat,
-		aiTextureType type, std::string typeName, const aiScene *scene)
-	{
-		std::vector<std::shared_ptr<Texture>>	textures;
-
-		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-		{
-			aiString	str;
-			mat->GetTexture(type, i, &str);
-			std::filesystem::path textPath(str.C_Str());
-			textPath.make_preferred();
-			std::string	path = directory + '/' + textPath.string();
-			/** Disable parsing of embedded textures in fbx
-			const aiTexture* texture;
-			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
-			{
-				if (texture->mHeight == 0)
-					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->paths[0].string(),
-						reinterpret_cast<unsigned char*>(texture->pcData),
-						texture->mWidth, typeName));
-				else
-						textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->paths[0].string(),
-						reinterpret_cast<unsigned char *>(texture->pcData),
-						texture->mWidth * texture->mHeight, typeName));
-			}
-			else
-			{*/
-				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
-				textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
-			//}
-		}
-		return textures;
-	}
-
-	void	GLObject::SetVertexBoneData(Vertex& vertex, int id, float weight)
-	{
-		for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
-		{
-			if (vertex.boneIDs[i] == -1)
-			{
-				vertex.boneIDs[i] = id;
-				vertex.weights[i] = weight;
-				//std::cout << "COUCOU" << std::endl;
-				break;
-			}
-			//std::cout << "\tid = " << vertex.boneIDs[i] << ", weight = ";
-			//std::cout << vertex.weights[i] << std::endl;
-		}
-	}
-
-	void	GLObject::ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh,
-		const aiScene* scene)
-	{
-		//std::cout << "Mesh " << mesh->mName.C_Str() << " has " << mesh->mNumBones << " bones" << std::endl;
-		for (int i = 0; i < mesh->mNumBones; i++)
-		{
-			BoneInfo	bone;
-			bone.id = -1;
-			std::string	boneName = mesh->mBones[i]->mName.C_Str();
-			bone.name = boneName;
-			if (bones.find(boneName) == bones.end())
-			{
-				bone.id = nbBones;
-				bone.offsetMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
-				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
-				bone.localMatrix = mft::mat4();
-				bone.fromParentMatrix = mft::mat4();
-				bones[boneName] = bone;
-				nbBones++;
-			}
-			else
-			{
-				bone.id = bones[boneName].id;
-			}
-			//std::cout << "Bone " << boneName <<  " id = " << bone.id << std::endl;
-			aiVertexWeight *weights = mesh->mBones[i]->mWeights;
-			int	nbWeights = mesh->mBones[i]->mNumWeights;
-			for (int j = 0; j < nbWeights; j++)
-			{
-				if (weights[j].mVertexId >= vertices.size()
-					|| weights[j].mWeight == 0)
-					continue;
-				//std::cout << "Vertex { " << weights[j].mVertexId << " } has the following bones:" << std::endl;
-				SetVertexBoneData(vertices[weights[j].mVertexId], bone.id, weights[j].mWeight);
-			}
-		}
-	}
-
-	std::shared_ptr<Mesh>	GLObject::processMesh(aiMesh* mesh, const aiScene* scene)
-	{
-		std::vector<Vertex>						vertices;
-		std::vector<unsigned int>				indices;
-		std::vector<std::shared_ptr<Texture>>	textures;
-
-		//	Vertices
-
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-		{
-			Vertex	vertex;
-
-			mft::vec3	vector;
-			vector.x = mesh->mVertices[i].x;
-			vector.y = mesh->mVertices[i].y;
-			vector.z = mesh->mVertices[i].z;
-
-			//	Get the range of each axis coordinate
-			//	to scale the object to fit in our engine unit scale
-			//	after parsing
-
-			if (isRangeInit == false)
-			{
-				isRangeInit = true;
-				max = vector;
-				min = vector;
-			}
-
-			if (vector.x > max.x)
-				max.x = vector.x;
-			if (vector.y > max.y)
-				max.y = vector.y;
-			if (vector.z > max.z)
-				max.z = vector.z;
-
-			if (vector.x < min.x)
-				min.x = vector.x;
-			if (vector.y < min.y)
-				min.y = vector.y;
-			if (vector.z < min.z)
-				min.z = vector.z;
-			vertex.pos = vector;
-
-			if (mesh->mNormals)
-			{
-				vector.x = mesh->mNormals[i].x;
-				vector.y = mesh->mNormals[i].y;
-				vector.z = mesh->mNormals[i].z;
-				vertex.norm = vector;
-			}
-			else
-			{
-				vertex.norm = mft::vec3();
-			}
-			if (mesh->mTextureCoords[0] != NULL)
-			{
-				vertex.uv.x = mesh->mTextureCoords[0][i].x;
-				vertex.uv.y = mesh->mTextureCoords[0][i].y;
-			}
-			else
-			{
-				vertex.uv = mft::vec2();
-			}
-			vertices.push_back(vertex);
-		}
-		ExtractBoneInfo(vertices, mesh, scene);
-
-		//	Indices
-
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-		{
-			aiFace	face = mesh->mFaces[i];
-			for (unsigned int j = 0; j < face.mNumIndices; j++)
-			{
-				indices.push_back(face.mIndices[j]);
-			}
-		}
-
-		if (mesh->mMaterialIndex >= 0)
-		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
-				aiTextureType_DIFFUSE, "texture_diffuse", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(diffuseMaps.begin()),
-				std::make_move_iterator(diffuseMaps.end()));
-			std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
-				aiTextureType_SPECULAR, "texture_specular", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(specularMaps.begin()),
-				std::make_move_iterator(specularMaps.end()));
-		}
-
-		MeshData	data = MeshData(vertices, indices);
-		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
-		res->setName(mesh->mName.C_Str());
-		return res;
-	}
-
-	void	GLObject::processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat)
-	{
-		mft::mat4	transform = AssimpToMftMatrix(node->mTransformation) * parentMat;
-		std::string name(node->mName.data);
-		if (bones.contains(name))
-		{
-			bones[name].fromParentMatrix = transform;
-			bones[name].localMatrix = bones[name].offsetMatrix * transform;
-		}
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
-			processNodeBones(node->mChildren[i], scene, transform);
-		}
-	}
-
-	void	GLObject::processNode(aiNode* node, const aiScene* scene)
-	{
-		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			// OPTI !! Multiple nodes can refer to the same mesh
-			meshes.push_back(processMesh(mesh, scene));
-		}
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
-			processNode(node->mChildren[i], scene);
-		}
-	}
-
-	void GLObject::readMissingBones(const aiScene* scene)
-	{
-		for (unsigned int i = 0; i < scene->mNumAnimations; i++)
-		{
-			aiAnimation* anim = scene->mAnimations[i];
-			if (anim == nullptr)
-				continue;
-			for (unsigned int j = 0; j < anim->mNumChannels; j++)
-			{
-				aiNodeAnim* bone = anim->mChannels[i];
-				std::string name = bone->mNodeName.data;
-				if (this->bones.find(name) == this->bones.end())
-				{
-					std::cout << "Found missing bone '" << name << "'" << std::endl;
-					this->bones[name].id = nbBones;
-					//this->bones[name].fromParentMatrix = AssimpToMftMatrix(bone->mTransformation)
-					nbBones++;
-				}
-			}
-		}
-	}
-
-	void	GLObject::loadObject(std::string path)
+	void	GLObject::loadObject(const std::string& path, unsigned int flags)
 	{
 		std::cout << "Loading object '" << path << "'..." << std::endl;
 
-		Assimp::Importer	importer;
-		const aiScene* scene;
-		if (path.substr(path.find_last_of('.')) == ".dae")
-			scene = importer.ReadFile(path, aiProcess_Triangulate
-				| aiProcess_GenUVCoords);
-		else
-			scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs
-				| aiProcess_GenUVCoords);
+		std::unique_ptr<ObjectImporter>	importer;
+//#define USING_EXTERNAL_LIBS
+#ifdef USING_EXTERNAL_LIBS
+		importer = std::make_unique<AssimpObjectImporter>();
+#else
+		importer = std::make_unique<CustomObjectImporter>();
+#endif // USING_EXTERNAL_LIBS
 
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
-			return;
-		}
-		directory = path.substr(0, path.find_last_of('/'));
-		processNode(scene->mRootNode, scene);
-		processNodeBones(scene->mRootNode, scene, mft::mat4());
+		importer->ReadFile(path, flags);
 
-		std::cout << "Assimp reads " << scene->mNumMeshes << " meshes " << std::endl;
-		for (int i = 0; i < scene->mNumMeshes; i++)
-		{
-			std::cout << "Mesh " << i << " name is " << scene->mMeshes[i]->mName.C_Str() << std::endl;
-		}
-		//readMissingBones(scene);
+		this->max = importer->max;
+		this->min = importer->min;
+		this->isRangeInit = importer->isRangeInit;
+
+		this->meshes = importer->meshes;
+		this->bones = importer->bones;
+		this->nbBones = importer->nbBones;
 
 		//	Scale the object
 

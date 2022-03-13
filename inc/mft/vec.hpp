@@ -23,6 +23,7 @@ namespace	mft
 		union {
 			std::array<T,2> data;
 			struct { T x, y; };
+			struct { T u, v; };
 		};
 		constexpr vec_union<T,T>( T e1, T e2 ): data{e1, e2} {};
 		constexpr vec_union<T,T>( std::array<T,2> from ): data(from) {};
@@ -33,6 +34,8 @@ namespace	mft
 		union {
 			std::array<T,3> data;
 			struct { T x, y, z; };
+			struct { T s, t, p; };
+			struct { T r, g, b; };
 		};
 		constexpr vec_union<T,T,T>( T e1, T e2, T e3 ): data{e1, e2, e3} {};
 		constexpr vec_union<T,T,T>( std::array<T,3> from ): data(from) {};
@@ -43,6 +46,7 @@ namespace	mft
 		union {
 			std::array<T,4> data;
 			struct { T x, y, z, w; };
+			struct { T r, g, b, a; };
 		};
 		constexpr vec_union<T,T,T,T>( T e1, T e2, T e3, T e4 ): data{e1, e2, e3, e4} {};
 		constexpr vec_union<T,T,T,T>( std::array<T,4> from ): data(from) {};

@@ -7,7 +7,7 @@
 #include "Object/AssetManager.class.hpp"
 #include "Object/Light.class.hpp"
 #include "Object/Scene.class.hpp"
-#include "ColladaParser/ColladaParser.class.hpp"
+#include "ColladaParser/ColladaSceneBuilder.class.hpp"
 #include "LXML/LXML.class.hpp"
 #include "GLShaderProgram.class.hpp"
 #include "TextRendering/GLFont.class.hpp"
@@ -39,10 +39,6 @@ int		main(int ac, char** av)
 	int	mode = Object;
 	int selectedBone = 0;
 
-	std::cout << "Importing xml '" << av[1] << "'..." << std::endl;
-	ColladaParser	parser;
-	parser.ReadFile(av[1], 0);
-	std::cout << "Import done." << std::endl;
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim;
 	if (ac == 3)

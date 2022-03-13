@@ -7,16 +7,7 @@
 #include "Object/Asset.class.hpp"
 #include "Object/Bone.class.hpp"
 #include "Object/Animation.class.hpp"
-
-//	Fix for assimp
-#undef max
-#undef min
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-
-#include <memory>
-#include <map>
+#include "Object/ObjectImporter.class.hpp"
 
 enum AnimationState
 {
@@ -34,15 +25,6 @@ enum AnimationRepeat
 
 namespace notrealengine
 {
-	struct BoneInfo
-	{
-		int	id;
-		std::string	name;
-		mft::mat4	offsetMatrix;
-		mft::mat4	localMatrix;
-		mft::mat4	modelMatrix;
-		mft::mat4	fromParentMatrix;
-	};
 
 	class GLObject: public Asset
 	{
@@ -154,26 +136,8 @@ namespace notrealengine
 
 			GLenum	polygonMode;
 
-			//	Object loading
 			void
-				SetVertexBoneData(Vertex& vertex, int id, float weight);
-			void
-				ExtractBoneInfo(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
-			void
-				loadObject(std::string path);
-			void
-				processNode(aiNode* node, const aiScene* scene);
-			void
-				processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat);
-			std::shared_ptr<Mesh>
-				processMesh(aiMesh* mesh, const aiScene* scene);
-			std::vector<std::shared_ptr<Texture>>
-				loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene *scene);
-			/**	Sometimes bones are missing from the original skeleton but can be
-			**	found in the object's animations
-			*/
-			void
-				readMissingBones(const aiScene* scene);
+				loadObject(const std::string& path, unsigned int flags = 0);
 
 			//	Animations
 
