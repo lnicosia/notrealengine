@@ -248,13 +248,23 @@ int		main(int ac, char** av)
 				}
 				if (e.key.keysym.sym == SDLK_p)
 				{
+					std::cout << "Animation status = ";
 					AnimationState animState = obj->getAnimationState();
 					if (animState == AnimationState::Stopped)
+					{
 						obj->playAnimation(anim.get());
+						std::cout << " started " << std::endl;
+					}
 					else if (animState == AnimationState::Playing)
+					{
 						obj->pauseAnimation();
+						std::cout << " pause " << std::endl;
+					}
 					else if (animState == AnimationState::Paused)
+					{
 						obj->resumeAnimation();
+						std::cout << " resumed " << std::endl;
+					}
 				}
 				if (e.key.keysym.sym == SDLK_w)
 				{

@@ -561,7 +561,7 @@ namespace notrealengine
 					lxml::GetStrAttribute(child, "name", mesh->name);
 
 					ReadGeometry(child, *mesh);
-
+					std::cout << "Inserting mesh " << mesh->name << " at id " << id << std::endl;
 					this->meshes.insert({ id, mesh });
 				}
 			}
@@ -835,6 +835,8 @@ namespace notrealengine
 		ColladaInstance	instance;
 		instance.id = url.c_str() + 1;
 
+		std::cout << "Instance id = " << instance.id << std::endl;
+
 		for (const auto& child : geometryTag.children)
 		{
 			if (child.name != "bind_material")
@@ -963,9 +965,28 @@ namespace notrealengine
 
 	}
 
-	void		ColladaParser::ReadSkeletons(const lxml::Tag& skeletonsTag)
+	void		ColladaParser::ReadController(const lxml::Tag& controllerTag,
+		ColladaController& controller)
 	{
+		for (const auto& child: controllerTag.children)
+		{
+			if (child.name == "skin")
+			{
+				controller.type = ControllerType::Skin;
+			}
+		}
+	}
 
+	void		ColladaParser::ReadControllers(const lxml::Tag& controllersTag)
+	{
+		for (const auto& controller : controllersTag.children)
+		{
+			if (controller.name != "controller")
+				continue;
+				std::string id;
+				lxml::GetStrAttribute(controller, "id", id);
+				ReadController(controller, this->controllers[id]);
+		}
 	}
 
 	void		ColladaParser::ReadAsset(const lxml::Tag& assetTag)
@@ -1001,7 +1022,7 @@ namespace notrealengine
 				if (child.name == "library_effects")
 					ReadEffects(child);
 				if (child.name == "library_controllers")
-					ReadSkeletons(child);
+					ReadControllers(child);
 				if (child.name == "library_animations")
 					ReadAnimations(child);
 				if (child.name == "library_visual_scenes")

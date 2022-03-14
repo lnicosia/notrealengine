@@ -4,7 +4,7 @@
 
 namespace notrealengine
 {
-	AssimpObjectImporter::AssimpObjectImporter()
+	AssimpObjectImporter::AssimpObjectImporter(): ObjectImporter()
 	{
 	}
 
@@ -31,7 +31,7 @@ namespace notrealengine
 			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
 			return;
 		}
-		directory = path.substr(0, path.find_last_of('/'));
+		this->directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
@@ -70,19 +70,19 @@ namespace notrealengine
 			bone.id = -1;
 			std::string	boneName = mesh->mBones[i]->mName.C_Str();
 			bone.name = boneName;
-			if (bones.find(boneName) == bones.end())
+			if (this->bones.find(boneName) == bones.end())
 			{
 				bone.id = nbBones;
 				bone.offsetMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
 				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
 				bone.localMatrix = mft::mat4();
 				bone.fromParentMatrix = mft::mat4();
-				bones[boneName] = bone;
-				nbBones++;
+				this->bones[boneName] = bone;
+				this->nbBones++;
 			}
 			else
 			{
-				bone.id = bones[boneName].id;
+				bone.id = this->bones[boneName].id;
 			}
 			//std::cout << "Bone " << boneName <<  " id = " << bone.id << std::endl;
 			aiVertexWeight* weights = mesh->mBones[i]->mWeights;
@@ -245,7 +245,7 @@ namespace notrealengine
 					std::cout << "Found missing bone '" << name << "'" << std::endl;
 					this->bones[name].id = nbBones;
 					//this->bones[name].fromParentMatrix = AssimpToMftMatrix(bone->mTransformation)
-					nbBones++;
+					this->nbBones++;
 				}
 			}
 		}

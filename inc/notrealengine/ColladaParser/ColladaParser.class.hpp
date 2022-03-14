@@ -50,6 +50,11 @@ namespace notrealengine
 			SkewTransform,
 			MatrixTransform
 		};
+		enum ControllerType
+		{
+	    Skin,
+	    Morph
+		};
 
 		/**	Types of effects
 		**	At the moment only surface (i.e. texture)
@@ -157,6 +162,18 @@ namespace notrealengine
 			std::string	material;
 			unsigned int nbFaces;
 		};
+		struct	ColladaController
+		{
+			ControllerType	type;
+
+			std::string	meshId;
+			std::string boneSource;
+			std::string boneMatrixSource;
+			Input				boneInput;
+			Input				weightInput;
+			std::vector<size_t>	weightCounts;
+			std::vector<std::pair<size_t, size_t>>	weights;
+		};
 		/**	All the data we can find about a <mesh> in the file
 		*/
 		struct ColladaMesh
@@ -246,6 +263,7 @@ namespace notrealengine
 		ColladaNode* rootNode;
 
 		std::map<std::string, ColladaMesh*>	meshes;
+		std::map<std::string, ColladaController> controllers;
 		std::map<std::string, ColladaAccessor>		accessors;
 		std::map<std::string, std::vector<float>> floats;
 		std::map<std::string, std::vector<std::string>> strings;
@@ -263,10 +281,15 @@ namespace notrealengine
 		void
 			ReadStructure(const lxml::Importer& parser);
 
-		/**	Retrieve scenes from the file
+		/**	Retrieve controllers, i.e. skeletons/bones from the file
 		*/
 		void
-			ReadSkeletons(const lxml::Tag& controllersTag);
+			ReadControllers(const lxml::Tag& controllersTag);
+
+		/**	Retrieve one controller
+		*/
+		void
+			ReadController(const lxml::Tag& controllerTag, ColladaController& controller);
 
 		/**	Retrieve animations from the file
 		*/

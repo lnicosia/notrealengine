@@ -50,6 +50,8 @@ namespace notrealengine
 		scene->mMeshes = new cpMesh * [this->meshes.size()];
 		std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
 
+		std::cout << "Created scene with " << scene->mNumMeshes << " meshes" << std::endl;
+
 		scene->mNumTextures = this->textures.size();
 		scene->mTextures = new cpTexture * [this->textures.size()];
 		std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
@@ -109,7 +111,7 @@ namespace notrealengine
 		//	The index of each mesh combination (mesh id, subMesh number, material)
 		//	this node will have
 		std::vector<size_t>	meshIndices;
-		
+
 		std::cout << "Building meshes.." << std::endl;
 
 		for (const ColladaParser::ColladaInstance& mesh : node->meshes)
@@ -121,7 +123,7 @@ namespace notrealengine
 				meshIt = parser.meshes.find(mesh.id);
 			if (meshIt == parser.meshes.end())
 			{
-				std::cerr << "Unknown node " << node->name << "mesh reference : ";
+				std::cerr << "Unknown node " << node->name << " mesh reference : ";
 				std::cerr << mesh.id << std::endl;
 				continue;
 			}
@@ -229,7 +231,7 @@ namespace notrealengine
 			if (vertexStart + i < src->norm.size())
 				res->mNormals[i] = src->norm[vertexStart + i];
 		}
-		
+
 		//	Texture channels
 		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_COORDINATES; i++)
 		{

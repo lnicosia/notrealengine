@@ -12,6 +12,7 @@ out vec4 FragColor;
 
 void main()
 {
+	FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);
 	for (int i = 0; i < 4; i++)
 	{
 		if (boneIDs[i] == selectedBone)
@@ -26,5 +27,4 @@ void main()
 			return ;
 		}
 	}
-	FragColor = vec4(0.0f, 0.0f, 1.0f, 1.0f);
 }

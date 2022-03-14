@@ -2,7 +2,8 @@
 
 namespace notrealengine
 {
-	ObjectImporter::ObjectImporter()
+	ObjectImporter::ObjectImporter(): max(), min(), isRangeInit(false),
+		meshes(), directory(""), path(""), bones(), nbBones(0)
 	{
 	}
 
