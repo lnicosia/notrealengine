@@ -25,7 +25,7 @@ namespace notrealengine
 			std::cerr << "Collada parser failed to import object" << std::endl;
 			return;
 		}
-		directory = path.substr(0, path.find_last_of('/'));
+		this->directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
@@ -33,6 +33,8 @@ namespace notrealengine
 		for (int i = 0; i < scene->mNumMeshes; i++)
 		{
 			std::cout << "Mesh " << i << " name is " << scene->mMeshes[i]->mName << std::endl;
+			std::cout << scene->mMeshes[i]->mNumVertices << " vertices, ";
+			std::cout << scene->mMeshes[i]->mNumFaces << " faces" << std::endl;
 		}
 		//readMissingBones(scene);
 
@@ -108,6 +110,8 @@ namespace notrealengine
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
+
+			std::cout << "Vertex: " << vector << std::endl;
 
 			//	Get the range of each axis coordinate
 			//	to scale the object to fit in our engine unit scale
@@ -211,9 +215,11 @@ namespace notrealengine
 
 	void	CustomObjectImporter::processNode(cpNode* node, const cpScene* scene)
 	{
+		std::cout << "Reading node " << node->mName << std::endl;
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			cpMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			std::cout << "Reading mesh " << mesh->mName << std::endl;
 			// OPTI !! Multiple nodes can refer to the same mesh
 			meshes.push_back(processMesh(mesh, scene));
 		}

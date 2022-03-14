@@ -62,7 +62,7 @@ namespace notrealengine
 	cpNode* ColladaSceneBuilder::BuildNode(ColladaParser& parser,
 		ColladaParser::ColladaNode* node)
 	{
-		std::cout << "Building node " << node->name << std::endl;
+		//std::cout << "Building node " << node->name << std::endl;
 		cpNode* newNode = new cpNode();
 
 		newNode->mName = node->name;
@@ -112,25 +112,37 @@ namespace notrealengine
 		//	this node will have
 		std::vector<size_t>	meshIndices;
 
-		std::cout << "Building meshes.." << std::endl;
+		//std::cout << "Building meshes.." << std::endl;
 
 		for (const ColladaParser::ColladaInstance& mesh : node->meshes)
 		{
 			//	Resolve mesh reference
 			const ColladaParser::ColladaMesh* srcMesh = nullptr;
 
-			const std::map<std::string, ColladaParser::ColladaMesh*>::const_iterator
+			std::map<std::string, ColladaParser::ColladaMesh*>::const_iterator
 				meshIt = parser.meshes.find(mesh.id);
 			if (meshIt == parser.meshes.end())
 			{
-				std::cerr << "Unknown node " << node->name << " mesh reference : ";
-				std::cerr << mesh.id << std::endl;
-				continue;
+				std::map<std::string, ColladaParser::ColladaController>::const_iterator
+					controllerIt = parser.controllers.find(mesh.id);
+				if (controllerIt == parser.controllers.end())
+				{
+					std::cerr << "Unknown node " << node->name << " controller reference : ";
+					std::cerr << mesh.id << std::endl;
+					continue;
+				}
+				const ColladaParser::ColladaController* srcController = &controllerIt->second;
+				meshIt = parser.meshes.find(srcController->meshId);
+				if (meshIt == parser.meshes.end())
+				{
+					std::cerr << "Unknown controller " << srcController->name << " mesh reference : ";
+					std::cerr << srcController->meshId << std::endl;
+					continue;
+				}
+				srcMesh = meshIt->second;
 			}
 			else
 				srcMesh = meshIt->second;
-
-			std::cout << "Found reference for " << srcMesh->name << std::endl;
 
 			size_t vertexStart = 0;
 			size_t faceStart = 0;
@@ -187,6 +199,15 @@ namespace notrealengine
 				}
 			}
 		}
+		newNode->mNumMeshes = meshIndices.size();
+		if (newNode->mNumMeshes > 0)
+		{
+			newNode->mMeshes = new unsigned int [newNode->mNumMeshes];
+			for (size_t i = 0; i < newNode->mNumMeshes; i++)
+			{
+				newNode->mMeshes[i] = meshIndices[i];
+			}
+		}
 	}
 
 	void	ColladaSceneBuilder::BuildMaterials(ColladaParser& parser, cpScene* scene)
@@ -219,6 +240,7 @@ namespace notrealengine
 		{
 			res->mNumVertices += src->faceSizes[i];
 		}
+		//std::cout << "Mesh has " << res->mNumVertices << " vertices" << std::endl;
 
 		//	Positions and normals
 		res->mVertices = new mft::vec3[res->mNumVertices];
@@ -266,6 +288,8 @@ namespace notrealengine
 		//	Faces
 		res->mNumFaces = subMesh.nbFaces;
 		res->mFaces = new cpFace[res->mNumFaces];
+
+		//std::cout << "Mesh has " << res->mNumFaces << " faces" << std::endl;
 
 		size_t	vertex = 0;
 		for (size_t i = 0; i < res->mNumFaces; i++)

@@ -80,7 +80,7 @@ namespace notrealengine
 		std::cout << "Loading object '" << path << "'..." << std::endl;
 
 		std::unique_ptr<ObjectImporter>	importer;
-#define USING_EXTERNAL_LIBS
+//#define USING_EXTERNAL_LIBS
 #ifdef USING_EXTERNAL_LIBS
 		importer = std::make_unique<AssimpObjectImporter>();
 #else

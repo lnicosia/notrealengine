@@ -561,7 +561,6 @@ namespace notrealengine
 					lxml::GetStrAttribute(child, "name", mesh->name);
 
 					ReadGeometry(child, *mesh);
-					std::cout << "Inserting mesh " << mesh->name << " at id " << id << std::endl;
 					this->meshes.insert({ id, mesh });
 				}
 			}
@@ -830,8 +829,6 @@ namespace notrealengine
 			throw ColladaException("Invalid geometry instance url, missing '#'");
 		//	Don't resolve here on the fly, wait until we've read all the data
 
-		std::cout << "New node geometry for " << node.name << std::endl;
-
 		ColladaInstance	instance;
 		instance.id = url.c_str() + 1;
 
@@ -865,7 +862,6 @@ namespace notrealengine
 				}
 			}
 		}
-		std::cout << "New mesh in " << node.name << std::endl;
 		node.meshes.push_back(instance);
 	}
 
@@ -965,6 +961,140 @@ namespace notrealengine
 
 	}
 
+	void		ColladaParser::ReadJoint(const lxml::Tag& jointTag,
+		ColladaController& controller)
+	{
+		for (const auto& child: jointTag.children)
+		{
+			if (child.name != "input")
+				continue;
+
+			std::string semantic;
+			lxml::GetStrAttribute(child, "semantic", semantic);
+
+			std::string source;
+			lxml::GetStrAttribute(child, "source", source);
+			if (source[0] != '#')
+			{
+				throw ColladaException("Invalid joint format: missing '#'");
+			}
+
+			if (semantic == "JOINT")
+			{
+				controller.boneSource = source.c_str() + 1;
+			}
+			else if (semantic == "INV_BIND_MATRIX")
+			{
+				controller.boneOffsetMatrixSource = source.c_str() + 1;
+			}
+		}
+	}
+
+	void		ColladaParser::ReadVertexWeight(const lxml::Tag& vertexWeightTag,
+		ColladaController& controller)
+	{
+		unsigned int vertexCount;
+		lxml::GetUIntAttribute(vertexWeightTag, "count", vertexCount);
+		for (const auto& child: vertexWeightTag.children)
+		{
+			if (child.name == "input")
+			{
+				std::string semantic;
+				lxml::GetStrAttribute(child, "semantic", semantic);
+
+				std::string source;
+				lxml::GetStrAttribute(child, "source", source);
+				if (source[0] != '#')
+				{
+					throw ColladaException("Invalid vertex weight format: missing '#'");
+				}
+
+				Input input;
+				unsigned int offset;
+				lxml::GetUIntAttribute(child, "offset", offset);
+				input.offset = static_cast<size_t>(offset);
+				input.id = source.c_str() + 1;
+				if (semantic == "JOINT")
+					controller.boneInput = input;
+				else if (semantic == "WEIGHT")
+					controller.weightInput = input;
+
+			}
+			else if (child.name == "vcount")
+			{
+				controller.weightCounts.resize(vertexCount);
+				const char* content = child.content.c_str();
+				char *next = nullptr;
+				size_t index = 0;
+				size_t totalWeights = 0;
+				while (*content)
+				{
+					if (index >= vertexCount)
+						throw ColladaException("Too much values in ertex weight vcount ("
+						+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
+					unsigned long value = strtoul(content, &next, 10);
+					controller.weightCounts[index++] = static_cast<size_t>(value);
+					totalWeights += value;
+					content = next;
+					content = lxml::SkipWhitespaces(content);
+				}
+				if (index != vertexCount)
+					throw ColladaException("Not enough values in ertex weight vcount ("
+					+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
+				controller.weights.resize(totalWeights);
+			}
+			else if (child.name == "v")
+			{
+				const char* content = child.content.c_str();
+				char* next = nullptr;
+				size_t index = 0;
+				while (*content)
+				{
+					if (index >= controller.weights.size())
+						throw ColladaException("Too much values in vertex weight v's ("
+						+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
+					std::pair<size_t, size_t> pair;
+					unsigned long value = strtoul(content, &next, 10);
+					content = next;
+					content = lxml::SkipWhitespaces(content);
+					pair.first = static_cast<size_t>(value);
+					if (!*content)
+						throw ColladaException("Not enough values in vertex weight v's ("
+						+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
+					value = strtoul(content, &next, 10);
+					content = next;
+					content = lxml::SkipWhitespaces(content);
+					pair.first = static_cast<size_t>(value);
+					controller.weights[index++] = pair;
+				}
+			}
+		}
+	}
+
+	void		ColladaParser::ReadSkin(const lxml::Tag& skinTag,
+		ColladaController& controller)
+	{
+		for (const auto& child: skinTag.children)
+		{
+			if (child.name == "joints")
+			{
+				ReadJoint(child, controller);
+			}
+			else if (child.name == "vertex_weights")
+			{
+				ReadVertexWeight(child, controller);
+			}
+			else if (child.name == "source")
+			{
+				ReadSource(child);
+			}
+			else if (child.name == "bind_shape_matrix")
+			{
+
+			}
+		}
+	}
+
 	void		ColladaParser::ReadController(const lxml::Tag& controllerTag,
 		ColladaController& controller)
 	{
@@ -973,6 +1103,10 @@ namespace notrealengine
 			if (child.name == "skin")
 			{
 				controller.type = ControllerType::Skin;
+				lxml::GetStrAttribute(child, "source", controller.meshId);
+				controller.meshId = controller.meshId.c_str() + 1;
+
+				ReadSkin(child, controller);
 			}
 		}
 	}
@@ -985,6 +1119,7 @@ namespace notrealengine
 				continue;
 				std::string id;
 				lxml::GetStrAttribute(controller, "id", id);
+				lxml::GetStrAttribute(controller, "name", this->controllers[id].name);
 				ReadController(controller, this->controllers[id]);
 		}
 	}

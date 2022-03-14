@@ -217,9 +217,11 @@ namespace notrealengine
 
 	void	AssimpObjectImporter::processNode(aiNode* node, const aiScene* scene)
 	{
+		std::cout << "Reading node " << node->mName.C_Str() << std::endl;
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+			std::cout << "Reading mesh " << mesh->mName.C_Str() << std::endl;
 			// OPTI !! Multiple nodes can refer to the same mesh
 			meshes.push_back(processMesh(mesh, scene));
 		}

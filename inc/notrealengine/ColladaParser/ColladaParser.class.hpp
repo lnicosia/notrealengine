@@ -167,10 +167,12 @@ namespace notrealengine
 			ControllerType	type;
 
 			std::string	meshId;
+			std::string	name;
 			std::string boneSource;
-			std::string boneMatrixSource;
+			std::string boneOffsetMatrixSource;
 			Input				boneInput;
 			Input				weightInput;
+			mft::mat4		bindShapeMatrix;
 			std::vector<size_t>	weightCounts;
 			std::vector<std::pair<size_t, size_t>>	weights;
 		};
@@ -290,6 +292,21 @@ namespace notrealengine
 		*/
 		void
 			ReadController(const lxml::Tag& controllerTag, ColladaController& controller);
+
+		/**	Retrieve a skin in a controller
+		*/
+		void
+			ReadSkin(const lxml::Tag& skinTag, ColladaController& controller);
+
+		/**	Retrieve a <joint> (we will call it "bone") in a skin
+		*/
+		void
+			ReadJoint(const lxml::Tag& jointTag, ColladaController& controller);
+
+		/**	Retrieve a vertex weight in a skin
+		*/
+		void
+			ReadVertexWeight(const lxml::Tag& vertexWeightTag, ColladaController& controller);
 
 		/**	Retrieve animations from the file
 		*/
