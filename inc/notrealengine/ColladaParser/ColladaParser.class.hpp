@@ -9,7 +9,7 @@ namespace notrealengine
 {
 
 	class ColladaParser
-	{		
+	{
 
 	public:
 
@@ -147,7 +147,7 @@ namespace notrealengine
 			{
 			}
 		};
-		/**	Sometimes more than one <triangles>/<polyist>/etc 
+		/**	Sometimes more than one <triangles>/<polyist>/etc
 		**	tags may be found for one mesh
 		**	This means that this mesh is divided in multiple submeshes
 		**	The struct keeps tracks of the size and materials of each
@@ -164,7 +164,7 @@ namespace notrealengine
 			std::string	id;
 			std::string	name;
 
-			//	Save the <vertex> tag id to 
+			//	Save the <vertex> tag id to
 			//	make sure every "VERTEX" <input> correctly refers to it
 			//	before reading vertex data
 			std::string	vertexId;

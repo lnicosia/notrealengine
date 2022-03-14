@@ -211,7 +211,7 @@ namespace lxml
 		}
 		return str;
 	}
-	
+
 	const char*	Importer::ReadTagName(const char* str, std::string& name)
 	{
 		size_t len = TagLen(str);
@@ -224,6 +224,7 @@ namespace lxml
 			std::cerr << "str[1] = " << str[1] << std::endl;
 			std::cerr << "str[len] = " << str[len] << std::endl;
 			std::cerr << "str[len - 1] = " << str[len - 1] << std::endl;
+			std::cerr << "str = " << str << std::endl;
 			throw std::exception();
 		}
 		size_t pos = 1;
@@ -371,7 +372,7 @@ namespace lxml
 				}
 				else
 				{
-					
+
 					if (childTag.name.size() >= 1
 						&& childTag.name[0] == '/')
 					{

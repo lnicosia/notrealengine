@@ -107,7 +107,6 @@ namespace notrealengine
 			{
 				std::string name;
 				lxml::GetStrAttribute(child, "name", name);
-				
 				if (name.empty())
 					continue;
 				// Vertices pos
@@ -244,12 +243,20 @@ namespace notrealengine
 		PrimitiveType type)
 	{
 		//	The number of attributes each vertex has
-		size_t	nbAttributes = 0;
+		size_t	nbAttributes = 1;
+		size_t	positionOffset = 0; // The actual POSITION offset is given in the VERTEX input..
 		for (const auto& input : inputs)
 		{
 			nbAttributes = std::max(nbAttributes, input.offset);
+			if (input.type == InputType::VertexInput)
+				positionOffset = input.offset;
 		}
 		nbAttributes++; // If max offset is 3, there are 4 attributes
+		for (auto& input : inputs)
+		{
+			if (input.type == InputType::PositionInput)
+				input.offset = positionOffset;
+		}
 
 		size_t	expectedCount = 0;
 		switch (type)
@@ -287,11 +294,11 @@ namespace notrealengine
 				content = lxml::SkipWhitespaces(content);
 			}
 		}
-		
+
 		//	Some checks to ensure the number of read indices is valid
 		if (expectedCount > 0 && indices.size() != expectedCount * nbAttributes)
 			throw ColladaException("Invalid number of primitives: expected "
-			+ std::to_string(expectedCount * nbAttributes) + ", got" 
+			+ std::to_string(expectedCount * nbAttributes) + ", got "
 			+ std::to_string(indices.size()));
 		if (expectedCount == 0 && (indices.size() % nbAttributes) != 0)
 			throw ColladaException("Invalid number of primitives: "
@@ -304,7 +311,7 @@ namespace notrealengine
 
 		mesh.faceSizes.reserve(count);
 		mesh.indices.reserve(indices.size() / nbAttributes);
-		
+
 		//	Actual data retrieving
 
 		//	The number of vertices composing a primitive/face
@@ -346,7 +353,7 @@ namespace notrealengine
 					//	size since it can change for each primitive.
 					//	Instead we keep track of the index by
 					//	incrementing its value
-					ReadVertex(polylistVertexIndex + vertexIndex * nbAttributes,
+					ReadVertex((polylistVertexIndex + vertexIndex) * nbAttributes,
 						mesh, indices, inputs);
 				}
 				//	Keep track of the vertex index
@@ -362,12 +369,13 @@ namespace notrealengine
 
 	void	ColladaParser::ReadVertex(size_t index, ColladaMesh& mesh,
 		std::vector<unsigned int>& indices, std::vector<Input>& inputs)
-	{	
+	{
 		//	For each vertex we get every input one by one
+
 		for (const auto& input : inputs)
 		{
 			//	Ignore Vertex input because it is a specific input
-			//	that references the position input and does nothing else.. 
+			//	that references the position input and does nothing else..
 			if (input.type == VertexInput)
 				continue;
 			//	No risk here, if the accessor could not be resolved
@@ -375,12 +383,14 @@ namespace notrealengine
 			ColladaAccessor& acc = *input.accessor;
 			//	Make sure we don't read out of range indices
 			unsigned int readIndex = indices[index + input.offset];
-			if (readIndex > acc.count)
+			if (readIndex > acc.count + 1)
 			{
-				throw ColladaException("Invalid " + std::to_string(input.type)
-					+ " index: " + std::to_string(index)
-					+ std::to_string(input.offset) + "/"
-					+ std::to_string(acc.count));
+				//InputType type = input.type;
+				throw ColladaException("Invalid type " + std::to_string(input.type)
+					+ " input: index: " + std::to_string(readIndex) + " / "
+					+ std::to_string(acc.count) + " (index = " + std::to_string(index)
+					+ ", offset " + std::to_string(input.offset) + ")");
+
 			}
 			//	No risk here, if the float array could not be resolved
 			//	an expection was thrown
@@ -398,7 +408,6 @@ namespace notrealengine
 			}
 			case TexCoordInput:
 			{
-				//	Ignore more than MAX_TEXTURE_COORDINATES textures
 				if (input.set < MAX_TEXTURE_COORDINATES)
 				{
 					mft::vec3	tex;
@@ -406,11 +415,11 @@ namespace notrealengine
 					tex.t = values[readIndex] + acc.subOffset[1];
 					tex.p = values[readIndex] + acc.subOffset[2];
 					mesh.tex[input.set].push_back(tex);
+					//	If component 3 or 4 exist, there are more than
+					//	U and V tex coord but no more than 3
+					if (acc.subOffset[2] != 0 || acc.subOffset[3] != 0)
+						mesh.nbUVComponents[input.set] = 3;
 				}
-				//	If component 3 or 4 exist, there are more than
-				//	U and V tex coord but no more than 3
-				if (acc.subOffset[2] != 0 || acc.subOffset[3] != 0)
-					mesh.nbUVComponents[readIndex] = 3;
 				break;
 			}
 			case ColorInput:
@@ -485,7 +494,7 @@ namespace notrealengine
 					vcount.push_back(strtoul(content, &next, 10));
 					content = next;
 					content = lxml::SkipWhitespaces(content);
-					
+
 				}
 			}
 			else if (child.name == "p")
@@ -500,7 +509,7 @@ namespace notrealengine
 	void	ColladaParser::ReadVertices(const lxml::Tag& verticesTag,
 		std::vector<Input>& inputs, ColladaMesh& mesh)
 	{
-		//	Save the id of this <vertices> tag 
+		//	Save the id of this <vertices> tag
 		//	to later make sure every "VERTEX" <input>
 		//	correctly refers to it
 		lxml::GetStrAttribute(verticesTag, "id", mesh.vertexId);
