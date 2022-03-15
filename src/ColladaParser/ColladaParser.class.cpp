@@ -12,6 +12,10 @@ namespace notrealengine
 
 	ColladaParser::~ColladaParser()
 	{
+		for (auto& pair : this->meshes)
+		{
+			delete pair.second;
+		}
 	}
 
 	void	ColladaParser::ReadArray(const lxml::Tag& arrayTag)
@@ -43,11 +47,12 @@ namespace notrealengine
 					throw ColladaException("Not enough values in string array");
 
 				str.clear();
-				while (!lxml::IsValidWhitespace(*content))
+				while (*content && !lxml::IsValidWhitespace(*content))
 				{
 					str += *content;
 					content++;
 				}
+				strings.push_back(str);
 
 				content = lxml::SkipWhitespaces(content);
 			}
@@ -602,6 +607,7 @@ namespace notrealengine
 			lxml::GetStrAttribute(child, "url", mat.effectId);
 			if (mat.effectId[0] != '#')
 				throw ColladaException("Invalid instance effect url format: missing '#'");
+			mat.effectId = mat.effectId.c_str() + 1;
 			//	Don't resolve here on the fly but when binding materials
 		}
 	}

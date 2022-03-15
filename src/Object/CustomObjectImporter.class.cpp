@@ -36,6 +36,7 @@ namespace notrealengine
 			std::cout << scene->mMeshes[i]->mNumVertices << " vertices, ";
 			std::cout << scene->mMeshes[i]->mNumFaces << " faces" << std::endl;
 		}
+		delete scene;
 		//readMissingBones(scene);
 
 	}
@@ -59,7 +60,7 @@ namespace notrealengine
 	void	CustomObjectImporter::ExtractBoneInfo(std::vector<Vertex>& vertices, cpMesh* mesh,
 		const cpScene* scene)
 	{
-		//std::cout << "Mesh " << mesh->mName.C_Str() << " has " << mesh->mNumBones << " bones" << std::endl;
+		std::cout << "Mesh " << mesh->mName << " has " << mesh->mNumBones << " bones" << std::endl;
 		for (int i = 0; i < mesh->mNumBones; i++)
 		{
 			BoneInfo	bone;
@@ -111,7 +112,7 @@ namespace notrealengine
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
 
-			std::cout << "Vertex: " << vector << std::endl;
+			//std::cout << "Vertex: " << vector << std::endl;
 
 			//	Get the range of each axis coordinate
 			//	to scale the object to fit in our engine unit scale
@@ -160,6 +161,8 @@ namespace notrealengine
 				vertex.uv = mft::vec2();
 			}
 			vertices.push_back(vertex);
+			//std::cout << "Vertex: pos = " << vertex.pos << ", norm = " << vertex.norm;
+			//std::cout << ", uv = " << vertex.uv << std::endl;
 		}
 		ExtractBoneInfo(vertices, mesh, scene);
 
@@ -176,6 +179,7 @@ namespace notrealengine
 
 		if (mesh->mMaterialIndex >= 0)
 		{
+			std::cout << "Retrieving material " << mesh->mMaterialIndex << " for mesh " << mesh->mName << std::endl;
 			cpMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
 				diffuse, "texture_diffuse", scene);
@@ -264,6 +268,7 @@ namespace notrealengine
 			std::filesystem::path textPath(str);
 			textPath.make_preferred();
 			std::string	path = directory + '/' + textPath.string();
+			std::cout << "Path = " << path << std::endl;
 			/*const cpTexture* texture;
 			if ((texture = scene->GetEmbeddedTexture(str)))
 			{

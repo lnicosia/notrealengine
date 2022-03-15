@@ -470,6 +470,8 @@ namespace lxml
 
 	bool	IsValidWhitespace(char c)
 	{
+		if (c == 0)
+			return 0;
 		if (c == ' ' || c == '\n' || c == '\t' || c == '\r' || c == '\f' || c == '\v')
 			return true;
 		return false;

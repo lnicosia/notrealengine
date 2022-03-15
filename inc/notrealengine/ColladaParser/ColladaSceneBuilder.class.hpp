@@ -17,10 +17,19 @@ namespace notrealengine
 	};
 	struct cpMaterial
 	{
+		std::string mName;
+		unsigned int mNumTextures;
+
 		unsigned int
-			GetTextureCount(cpTextureType type);
+			GetTextureCount(cpTextureType type)
+		{
+			return 0;
+		}
 		void
-			GetTexture(cpTextureType type, unsigned int index, std::string& str);
+			GetTexture(cpTextureType type, unsigned int index, std::string& str)
+		{
+
+		}
 	};
 	struct cpNodeAnim
 	{
@@ -30,6 +39,10 @@ namespace notrealengine
 	{
 		cpNodeAnim**	mChannels;
 		unsigned int	mNumChannels;
+
+		cpAnimation(): mChannels(nullptr), mNumChannels(0)
+		{}
+
 	};
 	struct cpVertexWeight
 	{
@@ -45,11 +58,18 @@ namespace notrealengine
 		unsigned int	mNumWeights;
 
 		mft::mat4 mOffsetMatrix;
+
+		cpBone(): mName(""), mWeights(nullptr), mNodeName(""), mNumWeights(0)
+		{}
 	};
 	struct cpFace
 	{
 		unsigned int* mIndices;
 		unsigned int  mNumIndices;
+
+		cpFace(): mIndices(nullptr), mNumIndices(0)
+		{}
+
 	};
 	struct cpMesh
 	{
@@ -68,6 +88,18 @@ namespace notrealengine
 		unsigned int	mNumFaces;
 		unsigned int	mMaterialIndex;
 		unsigned int	mNumBones;
+
+		cpMesh(): mVertices(nullptr), mNormals(nullptr), mBones(nullptr), mFaces(nullptr),
+			mNumBones(0), mNumFaces(0), mMaterialIndex(0), mNumVertices(0)
+		{
+			for (size_t i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+			{
+				this->mTextureCoords[i] = nullptr;
+				this->mNumUVComponents[i] = 0;
+				this->mColors[i] = nullptr;
+			}
+		}
+
 	};
 	struct cpNode
 	{
@@ -83,6 +115,10 @@ namespace notrealengine
 		unsigned int	mNumMeshes;
 
 		mft::mat4		mTranformation;
+
+		cpNode(): mChildren(nullptr), mParent(nullptr), mMeshes(nullptr),
+			mTranformation(), mName(""), mNumChildren(0), mNumMeshes()
+		{}
 	};
 	struct cpScene
 	{
@@ -97,6 +133,119 @@ namespace notrealengine
 		unsigned int	mNumMeshes;
 		unsigned int	mNumMaterials;
 		unsigned int	mNumTextures;
+
+		cpScene(): mAnimations(nullptr), mMeshes(nullptr), mMaterials(nullptr),
+			mTextures(nullptr), mRootNode(nullptr),
+			mNumAnimations(0), mNumMeshes(0), mNumMaterials(0), mNumTextures(0)
+		{}
+
+		~cpScene()
+		{
+			for (unsigned int i = 0; i < mNumAnimations; i++)
+			{
+				if (this->mAnimations[i] != nullptr)
+					deleteAnim(this->mAnimations[i]);
+			}
+			if (this->mAnimations != nullptr)
+				delete [] this->mAnimations;
+
+			for (unsigned int i = 0; i < mNumMeshes; i++)
+			{
+				if (this->mMeshes[i] != nullptr)
+					deleteMesh(this->mMeshes[i]);
+			}
+			if (this->mMeshes != nullptr)
+				delete [] this->mMeshes;
+
+			for (unsigned int i = 0; i < mNumMaterials; i++)
+			{
+				if (this->mMaterials[i] != nullptr)
+					delete this->mMaterials[i];
+			}
+			if (this->mMaterials != nullptr)
+				delete [] this->mMaterials;
+
+			for (unsigned int i = 0; i < mNumTextures; i++)
+			{
+				if (this->mTextures[i] != nullptr)
+					delete this->mTextures[i];
+			}
+			if (this->mTextures != nullptr)
+				delete [] this->mTextures;
+			if (this->mRootNode != nullptr)
+				deleteNode(this->mRootNode);
+		}
+
+	private:
+		void deleteBone(cpBone* bone)
+		{
+			if (bone->mWeights != nullptr)
+				delete[] bone->mWeights;
+			delete bone;
+		}
+
+		void deleteMesh(cpMesh* mesh)
+		{
+			if (mesh->mVertices != nullptr)
+				delete[] mesh->mVertices;
+			if (mesh->mNormals != nullptr)
+				delete[] mesh->mNormals;
+			for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+			{
+				if (mesh->mTextureCoords[i] != nullptr)
+					delete[] mesh->mTextureCoords[i];
+				if (mesh->mColors[i] != nullptr)
+					delete[] mesh->mColors[i];
+			}
+			if (mesh->mFaces != nullptr)
+			{
+				for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+				{
+					if (mesh->mFaces[i].mIndices != nullptr)
+						delete[] mesh->mFaces[i].mIndices;
+				}
+				delete[] mesh->mFaces;
+			}
+			if (mesh->mBones != nullptr)
+			{
+				for (unsigned int i = 0; i < mesh->mNumBones; i++)
+				{
+					if (mesh->mBones[i] != nullptr)
+						deleteBone(mesh->mBones[i]);
+				}
+				delete[] mesh->mBones;
+			}
+			delete mesh;
+		}
+
+		void deleteAnim(cpAnimation* anim)
+		{
+			if (anim->mChannels == nullptr)
+				return;
+			for (unsigned int i = 0; i < anim->mNumChannels; i++)
+			{
+				if (anim->mChannels[i] != nullptr)
+					delete anim->mChannels[i];
+			}
+			delete[] anim->mChannels;
+			delete anim;
+		}
+
+		void deleteNode(cpNode* node)
+		{
+			if (node->mChildren != nullptr)
+			{
+				for (unsigned int i = 0; i < node->mNumChildren; i++)
+				{
+					if (node->mChildren[i] != nullptr)
+						deleteNode(node->mChildren[i]);
+				}
+				delete[] node->mChildren;
+			}
+			if (node->mMeshes != nullptr)
+				delete[] node->mMeshes;
+			delete node;
+		}
 	};
 	/**	Build the scene hierarchy with the data
 	**	extracted from the collada file
@@ -143,6 +292,8 @@ namespace notrealengine
 		std::vector<cpAnimation*> anims;
 		std::vector<cpTexture*> textures;
 		std::vector<MeshID>	meshIDs;
+		std::map<std::string, size_t> matIndices;
+		std::vector<std::pair<ColladaParser::ColladaEffect*, cpMaterial*>> materials;
 
 		/**	Build a cpNode recursively
 		*/
