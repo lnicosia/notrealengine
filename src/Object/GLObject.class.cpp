@@ -90,10 +90,13 @@ namespace notrealengine
 		importer->ReadFile(path, flags);
 
 		this->max = importer->max;
+		std::cout << "Max is " << this->max << std::endl;
 		this->min = importer->min;
+		std::cout << "Min is " << this->min << std::endl;
 		this->isRangeInit = importer->isRangeInit;
 
 		this->meshes = importer->meshes;
+		std::cout << "Mesh has " << this->max << std::endl;
 		this->bones = importer->bones;
 		this->nbBones = importer->nbBones;
 

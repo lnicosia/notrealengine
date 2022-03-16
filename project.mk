@@ -39,6 +39,8 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/ColladaParser/ColladaException.class.cpp \
 		$S/ColladaParser/ColladaSceneBuilder.class.cpp \
 		$S/LXML/LXML.class.cpp \
+		$S/Tests/ColladaParserTests.cpp \
+		$S/Tests/RunTests.cpp \
 
 
 CC = clang++ --std=c++20 -g3 -fsanitize=address

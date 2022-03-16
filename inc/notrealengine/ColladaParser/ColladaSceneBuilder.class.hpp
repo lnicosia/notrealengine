@@ -21,15 +21,9 @@ namespace notrealengine
 		unsigned int mNumTextures;
 
 		unsigned int
-			GetTextureCount(cpTextureType type)
-		{
-			return 0;
-		}
+			GetTextureCount(cpTextureType type);
 		void
-			GetTexture(cpTextureType type, unsigned int index, std::string& str)
-		{
-
-		}
+			GetTexture(cpTextureType type, unsigned int index, std::string& str);
 	};
 	struct cpNodeAnim
 	{

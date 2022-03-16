@@ -6,3 +6,4 @@ lib/**/build
 **/.DS_STORE
 windows/*
 .vs/
+test/logs/*

@@ -13,6 +13,7 @@
 #include "TextRendering/GLFont.class.hpp"
 #include "Camera.class.hpp"
 #include "Inputs/SDLEvents.class.hpp"
+#include "Tests/RunTests.hpp"
 #include <vector>
 
 enum RenderingMode
@@ -31,6 +32,14 @@ int		main(int ac, char** av)
 	if (ac < 2)
 		return 1;
 
+	bool shouldRunTests = true;
+	for (int i = 1; i < ac; i++)
+	{
+		if (strcmp(av[i], "-noTests") == 0)
+			shouldRunTests = false;
+	}
+	if (shouldRunTests == true)
+		runTests("test/testList.txt");
 	SDLWindow window("Not real engine", std::pair<int, int>(1600, 900));
 	GLContext_SDL	context(window.getContext(), window.getWindow());
 	context.makeCurrent();

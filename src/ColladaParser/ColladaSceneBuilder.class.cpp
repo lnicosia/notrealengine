@@ -208,7 +208,7 @@ namespace notrealengine
 				//	and in the node
 				if (found == false)
 				{
-					std::cout << "Creating mesh for node " << node->name << std::endl;
+					//std::cout << "Creating mesh for node " << node->name << std::endl;
 					cpMesh* newMesh = CreateMesh(parser, srcMesh, subMesh,
 						vertexStart, faceStart);
 
@@ -277,16 +277,16 @@ namespace notrealengine
 				res->mNormals[i] = src->norm[vertexStart + i];
 		}
 
-		std::cout << "Vertex start = " << vertexStart << std::endl;
+		//std::cout << "Vertex start = " << vertexStart << std::endl;
 		//	Texture channels
 		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_COORDINATES; i++)
 		{
-			std::cout << "Channel " << i << " has " << src->tex[i].size() << " textures" << std::endl;
-			std::cout << "Submesh has " << res->mNumVertices << " vertices" << std::endl;
+			//std::cout << "Channel " << i << " has " << src->tex[i].size() << " textures" << std::endl;
+			//std::cout << "Submesh has " << res->mNumVertices << " vertices" << std::endl;
 			if (vertexStart + res->mNumVertices <= src->tex[i].size())
 			{
-				std::cout << "Channel " << currentChannel << " will have ";
-				std::cout << res->mNumVertices << " textures coord" << std::endl;
+				//std::cout << "Channel " << currentChannel << " will have ";
+				//std::cout << res->mNumVertices << " textures coord" << std::endl;
 				res->mTextureCoords[currentChannel] = new mft::vec3[res->mNumVertices];
 				for (size_t j = 0; j < res->mNumVertices; j++)
 				{
@@ -317,7 +317,9 @@ namespace notrealengine
 		res->mNumFaces = subMesh.nbFaces;
 		res->mFaces = new cpFace[res->mNumFaces];
 
-		//std::cout << "Mesh has " << res->mNumFaces << " faces" << std::endl;
+		std::cout << "SubMesh has " << res->mNumFaces << " faces" << std::endl;
+		std::cout << "Vertex start = " << vertexStart << std::endl;
+		std::cout << "Mesh has " << src->faceSizes.size() << " faces" << std::endl;
 
 		size_t	vertex = 0;
 		for (size_t i = 0; i < res->mNumFaces; i++)

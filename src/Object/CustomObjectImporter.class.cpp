@@ -60,7 +60,7 @@ namespace notrealengine
 	void	CustomObjectImporter::ExtractBoneInfo(std::vector<Vertex>& vertices, cpMesh* mesh,
 		const cpScene* scene)
 	{
-		std::cout << "Mesh " << mesh->mName << " has " << mesh->mNumBones << " bones" << std::endl;
+		//std::cout << "Mesh " << mesh->mName << " has " << mesh->mNumBones << " bones" << std::endl;
 		for (int i = 0; i < mesh->mNumBones; i++)
 		{
 			BoneInfo	bone;
@@ -179,7 +179,7 @@ namespace notrealengine
 
 		if (mesh->mMaterialIndex >= 0)
 		{
-			std::cout << "Retrieving material " << mesh->mMaterialIndex << " for mesh " << mesh->mName << std::endl;
+			//std::cout << "Retrieving material " << mesh->mMaterialIndex << " for mesh " << mesh->mName << std::endl;
 			cpMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
 				diffuse, "texture_diffuse", scene);
@@ -219,11 +219,11 @@ namespace notrealengine
 
 	void	CustomObjectImporter::processNode(cpNode* node, const cpScene* scene)
 	{
-		std::cout << "Reading node " << node->mName << std::endl;
+		//std::cout << "Reading node " << node->mName << std::endl;
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			cpMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-			std::cout << "Reading mesh " << mesh->mName << std::endl;
+			//std::cout << "Reading mesh " << mesh->mName << std::endl;
 			// OPTI !! Multiple nodes can refer to the same mesh
 			meshes.push_back(processMesh(mesh, scene));
 		}
