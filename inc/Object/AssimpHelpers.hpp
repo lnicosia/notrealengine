@@ -16,6 +16,8 @@ namespace notrealengine
     AssimpToMftQuat(aiQuaternion& quat);
   mft::vec3
     AssimpToMftVec3(aiVector3D& vec);
+  mft::vec4
+    AssimpToMftVec4(aiColor4D& vec);
   mft::mat4
     AssimpToMftMatrix(aiMatrix4x4 mat);
 }

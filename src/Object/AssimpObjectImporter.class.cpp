@@ -35,11 +35,6 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
-		std::cout << "Assimp reads " << scene->mNumMeshes << " meshes " << std::endl;
-		for (int i = 0; i < scene->mNumMeshes; i++)
-		{
-			std::cout << "Mesh " << i << " name is " << scene->mMeshes[i]->mName.C_Str() << std::endl;
-		}
 		//readMissingBones(scene);
 
 	}

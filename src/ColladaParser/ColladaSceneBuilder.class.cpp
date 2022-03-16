@@ -30,7 +30,7 @@ namespace notrealengine
 
 		if (parser.axis == ColladaParser::X_UP)
 		{
-			scene->mRootNode->mTranformation *=
+			scene->mRootNode->mTransformation *=
 				mft::mat4(
 					{ 0, -1, 0, 0 },
 					{ 1, 0, 0, 0 },
@@ -39,7 +39,7 @@ namespace notrealengine
 		}
 		else if (parser.axis == ColladaParser::Z_UP)
 		{
-			scene->mRootNode->mTranformation *=
+			scene->mRootNode->mTransformation *=
 				mft::mat4(
 					{ 1, 0, 0, 0 },
 					{ 0, 0, 1, 0 },
@@ -51,8 +51,6 @@ namespace notrealengine
 		scene->mMeshes = new cpMesh * [scene->mNumMeshes];
 		std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
 
-		std::cout << "Created scene with " << scene->mNumMeshes << " meshes, ";
-
 		scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
 		scene->mMaterials = new cpMaterial * [scene->mNumMaterials];
 		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
@@ -60,13 +58,9 @@ namespace notrealengine
 			scene->mMaterials[i] = this->materials[i].second;
 		}
 
-		std::cout << scene->mNumMaterials << " materials and ";
-
 		scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
 		scene->mTextures = new cpTexture * [scene->mNumTextures];
 		std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
-
-		std::cout << scene->mNumTextures << " textures " << std::endl;
 
 		return scene;
 	}
@@ -78,10 +72,10 @@ namespace notrealengine
 
 		newNode->mName = node->name;
 
-		newNode->mTranformation = mft::mat4();
+		newNode->mTransformation = mft::mat4();
 		for (const auto& transform : node->transforms)
 		{
-			newNode->mTranformation *= transform;
+			newNode->mTransformation *= transform;
 		}
 
 		std::vector<ColladaParser::ColladaNode*> instances;
@@ -317,14 +311,10 @@ namespace notrealengine
 		res->mNumFaces = subMesh.nbFaces;
 		res->mFaces = new cpFace[res->mNumFaces];
 
-		std::cout << "SubMesh has " << res->mNumFaces << " faces" << std::endl;
-		std::cout << "Vertex start = " << vertexStart << std::endl;
-		std::cout << "Mesh has " << src->faceSizes.size() << " faces" << std::endl;
-
 		size_t	vertex = 0;
 		for (size_t i = 0; i < res->mNumFaces; i++)
 		{
-			size_t faceSize = src->faceSizes[vertexStart + i];
+			size_t faceSize = src->faceSizes[faceStart + i];
 			res->mFaces[i].mNumIndices = faceSize;
 			res->mFaces[i].mIndices = new unsigned int[faceSize];
 			for (size_t j = 0; j < faceSize; j++)

@@ -838,8 +838,6 @@ namespace notrealengine
 		ColladaInstance	instance;
 		instance.id = url.c_str() + 1;
 
-		std::cout << "Instance id = " << instance.id << std::endl;
-
 		for (const auto& child : geometryTag.children)
 		{
 			if (child.name != "bind_material")

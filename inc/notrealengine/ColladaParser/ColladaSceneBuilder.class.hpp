@@ -108,10 +108,8 @@ namespace notrealengine
 		unsigned int	mNumChildren;
 		unsigned int	mNumMeshes;
 
-		mft::mat4		mTranformation;
-
 		cpNode(): mChildren(nullptr), mParent(nullptr), mMeshes(nullptr),
-			mTranformation(), mName(""), mNumChildren(0), mNumMeshes()
+			mTransformation(), mName(""), mNumChildren(0), mNumMeshes()
 		{}
 	};
 	struct cpScene

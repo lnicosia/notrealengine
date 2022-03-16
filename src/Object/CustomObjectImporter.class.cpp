@@ -29,13 +29,6 @@ namespace notrealengine
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
-		std::cout << "Custom parser reads " << scene->mNumMeshes << " meshes " << std::endl;
-		for (int i = 0; i < scene->mNumMeshes; i++)
-		{
-			std::cout << "Mesh " << i << " name is " << scene->mMeshes[i]->mName << std::endl;
-			std::cout << scene->mMeshes[i]->mNumVertices << " vertices, ";
-			std::cout << scene->mMeshes[i]->mNumFaces << " faces" << std::endl;
-		}
 		delete scene;
 		//readMissingBones(scene);
 
