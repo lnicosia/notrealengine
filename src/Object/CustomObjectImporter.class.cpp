@@ -170,23 +170,20 @@ namespace notrealengine
 			}
 		}
 
-		if (mesh->mMaterialIndex >= 0)
-		{
-			//std::cout << "Retrieving material " << mesh->mMaterialIndex << " for mesh " << mesh->mName << std::endl;
-			cpMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
-				diffuse, "texture_diffuse", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(diffuseMaps.begin()),
-				std::make_move_iterator(diffuseMaps.end()));
-			std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
-				specular, "texture_specular", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(specularMaps.begin()),
-				std::make_move_iterator(specularMaps.end()));
-		}
+		//std::cout << "Retrieving material " << mesh->mMaterialIndex << " for mesh " << mesh->mName << std::endl;
+		cpMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
+			diffuse, "texture_diffuse", scene);
+		textures.insert(
+			textures.end(),
+			std::make_move_iterator(diffuseMaps.begin()),
+			std::make_move_iterator(diffuseMaps.end()));
+		std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
+			specular, "texture_specular", scene);
+		textures.insert(
+			textures.end(),
+			std::make_move_iterator(specularMaps.begin()),
+			std::make_move_iterator(specularMaps.end()));
 
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
@@ -261,7 +258,6 @@ namespace notrealengine
 			std::filesystem::path textPath(str);
 			textPath.make_preferred();
 			std::string	path = directory + '/' + textPath.string();
-			std::cout << "Path = " << path << std::endl;
 			/*const cpTexture* texture;
 			if ((texture = scene->GetEmbeddedTexture(str)))
 			{
@@ -281,16 +277,5 @@ namespace notrealengine
 			//}
 		}
 		return textures;
-	}
-
-	unsigned int	cpMaterial::GetTextureCount(cpTextureType type)
-	{
-		return 0;
-	}
-
-	void	cpMaterial::GetTexture(cpTextureType type, unsigned int index,
-		std::string& str)
-	{
-
 	}
 }

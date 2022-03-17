@@ -34,6 +34,7 @@ int runTest(int (*func)(Args ...), Args ... args)
 #define RUNTEST(func_name, ...) \
   runTest(func_name __VA_OPT__(,) __VA_ARGS__);
 
-void runTests(const std::string& testFile);
+void
+    runTests(const std::string& testFile);
 
 #endif

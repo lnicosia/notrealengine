@@ -56,7 +56,7 @@ namespace notrealengine
 		scene->mMaterials = new cpMaterial * [scene->mNumMaterials];
 		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 		{
-			scene->mMaterials[i] = this->materials[i].second;
+			scene->mMaterials[i] = this->materials[i];
 		}
 
 		scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
@@ -125,21 +125,21 @@ namespace notrealengine
 
 		//std::cout << "Building meshes.." << std::endl;
 
-		for (const ColladaParser::ColladaInstance& mesh : node->meshes)
+		for (const ColladaParser::ColladaInstance& meshInstance : node->meshes)
 		{
 			//	Resolve mesh reference
 			const ColladaParser::ColladaMesh* srcMesh = nullptr;
 
 			std::map<std::string, ColladaParser::ColladaMesh*>::const_iterator
-				meshIt = parser.meshes.find(mesh.id);
+				meshIt = parser.meshes.find(meshInstance.id);
 			if (meshIt == parser.meshes.end())
 			{
 				std::map<std::string, ColladaParser::ColladaController>::const_iterator
-					controllerIt = parser.controllers.find(mesh.id);
+					controllerIt = parser.controllers.find(meshInstance.id);
 				if (controllerIt == parser.controllers.end())
 				{
 					std::cerr << "Unknown node " << node->name << " controller reference : ";
-					std::cerr << mesh.id << std::endl;
+					std::cerr << meshInstance.id << std::endl;
 					continue;
 				}
 				const ColladaParser::ColladaController* srcController = &controllerIt->second;
@@ -166,10 +166,14 @@ namespace notrealengine
 				if (subMesh.nbFaces == 0)
 					continue;
 
+				/*
 				//	Resolve material reference
-				const std::map<std::string, ColladaParser::MaterialBinding>::const_iterator
+				//	Nodes in <library_visual_scenes> give material instances
+				//	but also the <triangles>/<vertices>/etc submeshes in 
+				//	<library_geometry>
+				const std::map<std::string, ColladaParser::MaterialInstance>::const_iterator
 					mat = mesh.materials.find(subMesh.material);
-				const ColladaParser::MaterialBinding* binding = nullptr;
+				const ColladaParser::MaterialInstance* matInstance = nullptr;
 				std::string meshMat = "";
 				if (mat == mesh.materials.end())
 				{
@@ -179,19 +183,20 @@ namespace notrealengine
 				}
 				else
 				{
-					binding = &mat->second;
-					meshMat = binding->name;
+					matInstance = &mat->second;
+					meshMat = matInstance->name;
 				}
+				std::cout << "Mesh " << mesh.id << " has material " << meshMat << std::endl;
 				//	Then search for it in our materials map
 				std::map<std::string, size_t>::const_iterator matIt =
 					this->matIndices.find(meshMat);
 				size_t matIndex = 0;
 				if (matIt != this->matIndices.end())
-					matIndex = matIt->second;
+					matIndex = matIt->second;*/
 
 				//	Check if we already created a mesh combination
 				//	with this mesh id, subMesh number and material id
-				MeshID id(mesh.id, subMeshIndex, meshMat);
+				MeshID id(meshInstance.id, subMeshIndex, subMesh.material);
 				bool found = false;
 				for (size_t meshId = 0; meshId < this->meshIDs.size(); meshId++)
 				{
@@ -224,13 +229,11 @@ namespace notrealengine
 
 					std::map<std::string, size_t>::const_iterator matIt =
 						this->matIndices.find(subMesh.material);
+					//	If we can find the material given in <triangles>/<polylist>/etc
+					//	bind it.
 					if (matIt != this->matIndices.end())
 					{
-						newMesh->mMaterialIndex = matIt->second;
-					}
-					else
-					{
-						newMesh->mMaterialIndex = matIndex;
+						newMesh->mMaterialIndex = static_cast<unsigned int>(matIt->second);
 					}
 				}
 			}
@@ -279,7 +282,7 @@ namespace notrealengine
 
 		//std::cout << "Vertex start = " << vertexStart << std::endl;
 		//	Texture channels
-		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_COORDINATES; i++)
+		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_CHANNELS; i++)
 		{
 			//std::cout << "Channel " << i << " has " << src->tex[i].size() << " textures" << std::endl;
 			//std::cout << "Submesh has " << res->mNumVertices << " vertices" << std::endl;
@@ -299,7 +302,7 @@ namespace notrealengine
 		}
 
 		//	Color channels
-		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_COORDINATES; i++)
+		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_CHANNELS; i++)
 		{
 			if (vertexStart + res->mNumVertices < src->colors[i].size())
 			{
@@ -331,6 +334,41 @@ namespace notrealengine
 		return res;
 	}
 
+	cpMaterial* ColladaSceneBuilder::CreateMaterial(ColladaParser& parser, ColladaParser::ColladaEffect& effect)
+	{
+		cpMaterial* newMat = new cpMaterial();
+		for (const auto& pair : effect.params)
+		{
+			const ColladaParser::EffectParam& param = pair.second;
+			if (param.type == ColladaParser::ParamType::SamplerParam)
+			{
+				std::map<std::string, ColladaParser::EffectParam>::const_iterator it =
+					effect.params.find(param.ref);
+				if (it == effect.params.end())
+				{
+					std::cerr << "Unknow sampler 2D reference: " << param.ref << std::endl;
+					continue;
+				}
+				const ColladaParser::EffectParam& surface = it->second;
+				std::map<std::string, ColladaParser::ColladaImage>::const_iterator imageIt =
+					parser.images.find(surface.ref);
+				if (imageIt == parser.images.end())
+				{
+					std::cerr << "Unknow surface reference: " << surface.ref << std::endl;
+					continue;
+				}
+				const ColladaParser::ColladaImage& img = imageIt->second;
+				cpTexture text;
+				text.mName = img.id;
+				text.path = img.path;
+				text.type = cpTextureType::diffuse;
+				newMat->mDiffuse.push_back(text);
+				newMat->mNumDiffuses++;
+			}
+		}
+		return newMat;
+	}
+
 	void	ColladaSceneBuilder::BuildMaterials(ColladaParser& parser, cpScene* scene)
 	{
 		for (const auto& pair : parser.materials)
@@ -341,10 +379,10 @@ namespace notrealengine
 			if (effectIt == parser.effects.end())
 				continue;
 			ColladaParser::ColladaEffect& effect = effectIt->second;
-			cpMaterial* newMat = new cpMaterial;
+			cpMaterial* newMat = CreateMaterial(parser, effect);
 			newMat->mName = mat.name.empty() ? pair.first : mat.name;
-			this->matIndices[pair.first] = this->materials.size();
-			this->materials.emplace_back(&effectIt->second, newMat);
+			this->matIndices[mat.id] = this->materials.size();
+			this->materials.push_back(newMat);
 		}
 	}
 }

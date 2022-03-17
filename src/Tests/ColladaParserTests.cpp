@@ -211,10 +211,10 @@ std::ofstream& out)
   if (res == -1)
     finalRes = -1;
   res = compareValues(customMesh->mNumBones, assimpMesh->mNumBones,
-    out, " texture(s) for mesh " + customMesh->mName);
+    out, " bone(s) for mesh " + customMesh->mName);
   if (res == -1)
     finalRes = -1;
-  for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+  for (unsigned int i = 0; i < MAX_TEXTURE_CHANNELS; i++)
   {
     res = compareValues(customMesh->mNumUVComponents[i], assimpMesh->mNumUVComponents[i],
       out, " for mesh " + customMesh->mName

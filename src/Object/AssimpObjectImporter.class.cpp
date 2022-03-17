@@ -171,22 +171,19 @@ namespace notrealengine
 			}
 		}
 
-		if (mesh->mMaterialIndex >= 0)
-		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-			std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
-				aiTextureType_DIFFUSE, "texture_diffuse", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(diffuseMaps.begin()),
-				std::make_move_iterator(diffuseMaps.end()));
-			std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
-				aiTextureType_SPECULAR, "texture_specular", scene);
-			textures.insert(
-				textures.end(),
-				std::make_move_iterator(specularMaps.begin()),
-				std::make_move_iterator(specularMaps.end()));
-		}
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<std::shared_ptr<Texture>> diffuseMaps = loadMaterialTextures(material,
+			aiTextureType_DIFFUSE, "texture_diffuse", scene);
+		textures.insert(
+			textures.end(),
+			std::make_move_iterator(diffuseMaps.begin()),
+			std::make_move_iterator(diffuseMaps.end()));
+		std::vector< std::shared_ptr<Texture>> specularMaps = loadMaterialTextures(material,
+			aiTextureType_SPECULAR, "texture_specular", scene);
+		textures.insert(
+			textures.end(),
+			std::make_move_iterator(specularMaps.begin()),
+			std::make_move_iterator(specularMaps.end()));
 
 		MeshData	data = MeshData(vertices, indices);
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));

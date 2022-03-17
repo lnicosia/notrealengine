@@ -5,6 +5,7 @@
 
 #include <string>
 
-int testParser(TestType type, std::string path = "");
+int
+	testParser(TestType type, std::string path = "");
 
 #endif

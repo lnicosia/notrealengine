@@ -9,21 +9,53 @@ namespace notrealengine
 	{
 		diffuse,
 		specular,
-		normal
+		ambient
 	};
 	struct cpTexture
 	{
-		unsigned int	mHeight;
+		std::string		mName;
+		cpTextureType	type;
+		std::string		path;
 	};
 	struct cpMaterial
 	{
 		std::string mName;
-		unsigned int mNumTextures;
+		unsigned int mNumDiffuses;
+		unsigned int mNumSpeculars;
+		unsigned int mNumAmbients;
+		std::vector<cpTexture> mDiffuse;
+		std::vector<cpTexture> mSpecular;
+		std::vector<cpTexture> mAmbient;
 
 		unsigned int
-			GetTextureCount(cpTextureType type);
+			GetTextureCount(cpTextureType type)
+		{
+			switch (type)
+			{
+			case cpTextureType::diffuse:
+				return this->mNumDiffuses;
+				break;
+			case cpTextureType::specular:
+				return this->mNumSpeculars;
+				break;
+			case cpTextureType::ambient:
+				return this->mNumAmbients;
+				break;
+			}
+		}
+
 		void
-			GetTexture(cpTextureType type, unsigned int index, std::string& str);
+			GetTexture(cpTextureType type, unsigned int index, std::string& str)
+		{
+			std::vector<cpTexture>* textures = nullptr;
+			if (type == cpTextureType::diffuse)
+				textures = &this->mDiffuse;
+			else if (type == cpTextureType::specular)
+				textures = &this->mSpecular;
+			else if (type == cpTextureType::ambient)
+				textures = &this->mAmbient;
+			str = (*textures)[index].path;
+		}
 	};
 	struct cpNodeAnim
 	{
@@ -69,9 +101,9 @@ namespace notrealengine
 	{
 		mft::vec3* mVertices;
 		mft::vec3* mNormals;
-		mft::vec3* mTextureCoords[MAX_TEXTURE_COORDINATES];
-		unsigned int mNumUVComponents[MAX_TEXTURE_COORDINATES];
-		mft::vec4* mColors[MAX_TEXTURE_COORDINATES];
+		mft::vec3* mTextureCoords[MAX_TEXTURE_CHANNELS];
+		unsigned int mNumUVComponents[MAX_TEXTURE_CHANNELS];
+		mft::vec4* mColors[MAX_TEXTURE_CHANNELS];
 
 		cpBone** mBones;
 		cpFace*	mFaces;
@@ -86,7 +118,7 @@ namespace notrealengine
 		cpMesh(): mVertices(nullptr), mNormals(nullptr), mBones(nullptr), mFaces(nullptr),
 			mNumBones(0), mNumFaces(0), mMaterialIndex(0), mNumVertices(0)
 		{
-			for (size_t i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+			for (size_t i = 0; i < MAX_TEXTURE_CHANNELS; i++)
 			{
 				this->mTextureCoords[i] = nullptr;
 				this->mNumUVComponents[i] = 0;
@@ -182,7 +214,7 @@ namespace notrealengine
 				delete[] mesh->mVertices;
 			if (mesh->mNormals != nullptr)
 				delete[] mesh->mNormals;
-			for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+			for (unsigned int i = 0; i < MAX_TEXTURE_CHANNELS; i++)
 			{
 				if (mesh->mTextureCoords[i] != nullptr)
 					delete[] mesh->mTextureCoords[i];
@@ -285,7 +317,7 @@ namespace notrealengine
 		std::vector<cpTexture*> textures;
 		std::vector<MeshID>	meshIDs;
 		std::map<std::string, size_t> matIndices;
-		std::vector<std::pair<ColladaParser::ColladaEffect*, cpMaterial*>> materials;
+		std::vector<cpMaterial*> materials;
 
 		//	We may fight nodes with no name, use this to assign auto names to them
 		unsigned int unamedNodes;
@@ -314,6 +346,12 @@ namespace notrealengine
 				const ColladaParser::ColladaMesh* src,
 				const ColladaParser::SubMesh& subMesh,
 				const size_t vertexStart, const size_t faceStart);
+
+		/**	Create a final cpMaterial from a Collada effect
+		*/
+		cpMaterial*
+			CreateMaterial(ColladaParser& parser, ColladaParser::ColladaEffect& effect);
+
 	};
 
 }

@@ -98,6 +98,7 @@ namespace notrealengine
 		struct ColladaMaterial
 		{
 			std::string name;
+			std::string id;
 			std::string effectId;
 		};
 
@@ -190,11 +191,11 @@ namespace notrealengine
 
 			std::vector<mft::vec3>	pos;
 			std::vector<mft::vec3>	norm;
-#define	MAX_TEXTURE_COORDINATES 4
-			std::vector<mft::vec3>	tex[MAX_TEXTURE_COORDINATES];
-			std::vector<mft::vec4>	colors[MAX_TEXTURE_COORDINATES];
+#define	MAX_TEXTURE_CHANNELS 4
+			std::vector<mft::vec3>	tex[MAX_TEXTURE_CHANNELS];
+			std::vector<mft::vec4>	colors[MAX_TEXTURE_CHANNELS];
 
-			unsigned int nbUVComponents[MAX_TEXTURE_COORDINATES];
+			unsigned int nbUVComponents[MAX_TEXTURE_CHANNELS];
 			//	Save the size of each primitive/face to build the mesh later
 			std::vector<size_t> faceSizes;
 			std::vector<unsigned int> indices;
@@ -204,7 +205,7 @@ namespace notrealengine
 			std::vector<SubMesh>	subMeshes;
 			ColladaMesh()
 			{
-				for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATES; i++)
+				for (unsigned int i = 0; i < MAX_TEXTURE_CHANNELS; i++)
 				{
 					// Only U and V by default
 					nbUVComponents[i] = 2;
@@ -212,22 +213,24 @@ namespace notrealengine
 			}
 		};
 
-		//	One texture binding channel
-		struct TextureBinding
+		//	Material instances given in <node>s from <library_visual_scenes>
+		//	have an associated semantic giving their type (texture, color, etc)
+		//	and the associated channel (from 0 to MAX_TEXTURE_CHANNELS)
+		struct MaterialInstanceSemantic
 		{
 			unsigned int	set;
 			InputType		type;
-			TextureBinding() : set(0), type(InvalidInput)
+			MaterialInstanceSemantic() : set(0), type(InvalidInput)
 			{
 			}
 		};
 
 		//	Data used to bind materials to geometry
-		struct MaterialBinding
+		//	in nodes from <library_visual_scenes>
+		struct MaterialInstance
 		{
-			InputType		type;
 			std::string		name;
-			std::map<std::string, TextureBinding> bindings;
+			std::map<std::string, MaterialInstanceSemantic> bindings;
 		};
 
 		//	A mesh or a skeleton/controller refered to by a node in the scene hierarchy
@@ -235,7 +238,7 @@ namespace notrealengine
 		struct ColladaInstance
 		{
 			std::string id;
-			std::map<std::string, MaterialBinding> materials;
+			std::map<std::string, MaterialInstance> materials;
 		};
 
 		//	A node of the scene hierarchy
@@ -377,7 +380,7 @@ namespace notrealengine
 		/**	Retrieve an <instance_material> from the file
 		*/
 		void
-			ReadInstanceMaterial(const lxml::Tag& instanceTag, MaterialBinding& binding);
+			ReadMaterialInstance(const lxml::Tag& instanceTag, MaterialInstance& matInstance);
 
 		/**	Retrieve scene geometry from the file
 		*/
@@ -445,6 +448,13 @@ namespace notrealengine
 		void
 			ResolveInputsReferences(std::vector<Input>& inputs,
 				ColladaMesh& mesh);
+
+		/**	Read a path from the file and convert it to an
+		**	actual usable path (convert %x characters, etc)
+		**	TODO: handle weird path beginnings: file:///, etc
+		*/
+		void
+			ConvertColladaPath(std::string& path);
 	};
 
 	std::ostream& operator<<(std::ostream& o, ColladaParser::InputType& type);

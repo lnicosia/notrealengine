@@ -413,7 +413,7 @@ namespace notrealengine
 			}
 			case TexCoordInput:
 			{
-				if (input.set < MAX_TEXTURE_COORDINATES)
+				if (input.set < MAX_TEXTURE_CHANNELS)
 				{
 					mft::vec3	tex;
 					tex.s = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
@@ -432,8 +432,8 @@ namespace notrealengine
 			}
 			case ColorInput:
 			{
-				//	Ignore more than MAX_TEXTURE_COORDINATES textures
-				if (input.set < MAX_TEXTURE_COORDINATES)
+				//	Ignore more than MAX_TEXTURE_CHANNELS textures
+				if (input.set < MAX_TEXTURE_CHANNELS)
 				{
 					mft::vec4	color;
 					color.r = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
@@ -589,11 +589,13 @@ namespace notrealengine
 				if (imageChild.name == "init_from")
 				{
 					image.path = imageChild.content;
+					ConvertColladaPath(image.path);
 				}
 				else
 				{
-					throw ColladaException("Unsupported image format:"
-						+ imageChild.name);
+					// Just ignore the rest
+					//throw ColladaException("Unsupported image format:"
+					//	+ imageChild.name);
 				}
 			}
 			this->images[image.id] = image;
@@ -621,12 +623,11 @@ namespace notrealengine
 		{
 			if (child.name != "material")
 				continue;
-			std::string id;
-			lxml::GetStrAttribute(child, "id", id);
 			ColladaMaterial mat;
+			lxml::GetStrAttribute(child, "id", mat.id);
 			lxml::GetStrAttribute(child, "name", mat.name);
 			ReadMaterial(child, mat);
-			this->materials[id] = mat;
+			this->materials[mat.id] = mat;
 		}
 	}
 
@@ -642,8 +643,8 @@ namespace notrealengine
 					if (surfaceChild.name != "init_from")
 						continue;
 					param.ref = surfaceChild.content;
-					param.type = SurfaceParam;
 				}
+				param.type = SurfaceParam;
 			}
 			else if (child.name == "sampler2D")
 			{
@@ -652,8 +653,8 @@ namespace notrealengine
 					if (samplerChild.name != "source")
 						continue;
 					param.ref = samplerChild.content;
-					param.type = SamplerParam;
 				}
+				param.type = SamplerParam;
 			}
 		}
 	}
@@ -785,8 +786,8 @@ namespace notrealengine
 		node.transforms.push_back(transform);
 	}
 
-	void		ColladaParser::ReadInstanceMaterial(const lxml::Tag& instanceTag,
-		MaterialBinding& binding)
+	void		ColladaParser::ReadMaterialInstance(const lxml::Tag& instanceTag,
+		MaterialInstance& instance)
 	{
 		for (const auto& child : instanceTag.children)
 		{
@@ -799,14 +800,8 @@ namespace notrealengine
 			lxml::GetStrAttribute(child, "input_semantic", input_semantic);
 
 			InputType type = InvalidInput;
-			if (input_semantic == "VERTEX")
-				type = VertexInput;
-			else if (input_semantic == "NORMAL")
-				type = NormalInput;
-			else if (input_semantic == "TEXCOORD")
+			if (input_semantic == "TEXCOORD")
 				type = TexCoordInput;
-			else if (input_semantic == "POSITION")
-				type = PositionInput;
 			else if (input_semantic == "COLOR")
 				type = ColorInput;
 			else if (input_semantic == "BINORMAL" || input_semantic == "TEXBINORMAL")
@@ -815,17 +810,17 @@ namespace notrealengine
 				type = TangentInput;
 			if (type == InvalidInput)
 			{
-				std::cerr << "Invalid instance material semantic" << std::endl;
+				std::cerr << "Invalid instance material semantic: " << input_semantic << std::endl;
 				//Can ignore instead of exiting
 				//throw std::exception();
 			}
 			unsigned int input_set = 0;
 			lxml::GetUIntAttribute(child, "input_set", input_set);
-			TextureBinding tex = TextureBinding();
+			MaterialInstanceSemantic tex = MaterialInstanceSemantic();
 			tex.set = input_set;
 			tex.type = type;
 
-			binding.bindings[semantic] = tex;
+			instance.bindings[semantic] = tex;
 		}
 	}
 
@@ -861,10 +856,10 @@ namespace notrealengine
 					{
 						throw ColladaException("Invalid material target, missing '#'");
 					}
-					MaterialBinding	binding;
+					MaterialInstance	binding;
 					binding.name = target.c_str() + 1;
 					//	Don't resolve here on the fly, wait until we've read all the data
-					ReadInstanceMaterial(techChild, binding);
+					ReadMaterialInstance(techChild, binding);
 					instance.materials[symbol] = binding;
 				}
 			}
@@ -1226,5 +1221,31 @@ namespace notrealengine
 			break;
 		}
 		return o;
+	}
+
+	void	ColladaParser::ConvertColladaPath(std::string& path)
+	{
+		char* out = path.data();
+		size_t fromIndex = 0, outIndex = 0, size = path.size();
+		while (fromIndex < size)
+		{
+			if (path[fromIndex] == '%' && fromIndex + 3 < size)
+			{
+				char nbStr[3] = { path[fromIndex + 1], path[fromIndex + 2], '\0' };
+				unsigned long nb = strtoul(nbStr, 0, 16);
+				if (nb >= 128)
+					throw ColladaException("Invalid special % char value in path: "
+						+ std::to_string(nb));
+				out[outIndex] = static_cast<char>(nb);
+				fromIndex += 3;
+			}
+			else
+			{
+				out[outIndex] = path[fromIndex];
+				fromIndex++;
+			}
+			outIndex++;
+		}
+		out[outIndex] = '\0';
 	}
 }
