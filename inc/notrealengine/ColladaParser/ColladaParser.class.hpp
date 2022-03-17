@@ -206,7 +206,7 @@ namespace notrealengine
 			{
 				for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATES; i++)
 				{
-					// Only cdU and V by default
+					// Only U and V by default
 					nbUVComponents[i] = 2;
 				}
 			}

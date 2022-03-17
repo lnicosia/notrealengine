@@ -405,9 +405,9 @@ namespace notrealengine
 			case PositionInput:
 			{
 				mft::vec3	pos;
-				pos.x = values[readIndex] + acc.subOffset[0];
-				pos.y = values[readIndex] + acc.subOffset[1];
-				pos.z = values[readIndex] + acc.subOffset[2];
+				pos.x = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
+				pos.y = values[readIndex * acc.stride + acc.offset + acc.subOffset[1]];
+				pos.z = values[readIndex * acc.stride + acc.offset + acc.subOffset[2]];
 				mesh.pos.push_back(pos);
 				break;
 			}
@@ -416,9 +416,12 @@ namespace notrealengine
 				if (input.set < MAX_TEXTURE_COORDINATES)
 				{
 					mft::vec3	tex;
-					tex.s = values[readIndex] + acc.subOffset[0];
-					tex.t = values[readIndex] + acc.subOffset[1];
-					tex.p = values[readIndex] + acc.subOffset[2];
+					tex.s = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
+					tex.t = values[readIndex * acc.stride + acc.offset + acc.subOffset[1]];
+					if (acc.subOffset[2] != 0)
+						tex.p = values[readIndex * acc.stride + acc.offset + acc.subOffset[2]];
+					if (acc.subOffset[3] != 0)
+						tex.p = values[readIndex * acc.stride + acc.offset + acc.subOffset[3]];
 					mesh.tex[input.set].push_back(tex);
 					//	If component 3 or 4 exist, there are more than
 					//	U and V tex coord but no more than 3
@@ -433,10 +436,10 @@ namespace notrealengine
 				if (input.set < MAX_TEXTURE_COORDINATES)
 				{
 					mft::vec4	color;
-					color.r = values[readIndex] + acc.subOffset[0];
-					color.g = values[readIndex] + acc.subOffset[1];
-					color.b = values[readIndex] + acc.subOffset[2];
-					color.a = values[readIndex] + acc.subOffset[3];
+					color.r = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
+					color.g = values[readIndex * acc.stride + acc.offset + acc.subOffset[1]];
+					color.b = values[readIndex * acc.stride + acc.offset + acc.subOffset[2]];
+					color.a = values[readIndex * acc.stride + acc.offset + acc.subOffset[3]];
 					mesh.colors[input.set].push_back(color);
 				}
 				break;
@@ -444,10 +447,10 @@ namespace notrealengine
 			case NormalInput:
 			{
 				mft::vec3	norm;
-				norm.x = values[readIndex] + acc.subOffset[0];
-				norm.y = values[readIndex] + acc.subOffset[1];
-				norm.z = values[readIndex] + acc.subOffset[2];
-				mesh.pos.push_back(norm);
+				norm.x = values[readIndex * acc.stride + acc.offset + acc.subOffset[0]];
+				norm.y = values[readIndex * acc.stride + acc.offset + acc.subOffset[1]];
+				norm.z = values[readIndex * acc.stride + acc.offset + acc.subOffset[2]];
+				mesh.norm.push_back(norm);
 				break;
 			}
 			default:

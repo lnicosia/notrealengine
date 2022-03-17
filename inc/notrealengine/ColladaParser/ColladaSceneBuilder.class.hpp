@@ -287,6 +287,9 @@ namespace notrealengine
 		std::map<std::string, size_t> matIndices;
 		std::vector<std::pair<ColladaParser::ColladaEffect*, cpMaterial*>> materials;
 
+		//	We may fight nodes with no name, use this to assign auto names to them
+		unsigned int unamedNodes;
+
 		/**	Build a cpNode recursively
 		*/
 		cpNode*

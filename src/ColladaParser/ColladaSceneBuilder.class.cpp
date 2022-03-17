@@ -4,7 +4,8 @@
 namespace notrealengine
 {
 	ColladaSceneBuilder::ColladaSceneBuilder():
-		meshes(), anims(), textures(), meshIDs(), matIndices(), materials()
+		meshes(), anims(), textures(), meshIDs(), matIndices(), materials(),
+		unamedNodes(0)
 	{
 	}
 
@@ -70,7 +71,12 @@ namespace notrealengine
 	{
 		cpNode* newNode = new cpNode();
 
-		newNode->mName = node->name;
+		if (!node->id.empty())
+			newNode->mName = node->id;
+		else if (!node->sid.empty())
+			newNode->mName = node->sid;
+		else
+			newNode->mName = "Node_" + std::to_string(this->unamedNodes++);
 
 		newNode->mTransformation = mft::mat4();
 		for (const auto& transform : node->transforms)
@@ -247,7 +253,7 @@ namespace notrealengine
 	{
 		cpMesh* res = new cpMesh();
 
-		res->mName = src->name;
+		res->mName = src->id;
 
 		if (src->pos.empty())
 			return res;
@@ -316,11 +322,10 @@ namespace notrealengine
 		{
 			size_t faceSize = src->faceSizes[faceStart + i];
 			res->mFaces[i].mNumIndices = faceSize;
-			res->mFaces[i].mIndices = new unsigned int[faceSize];
+			res->mFaces[i].mIndices = new unsigned int[faceSize]();
 			for (size_t j = 0; j < faceSize; j++)
 			{
-				res->mFaces[i].mIndices[j] = src->indices[vertex];
-				vertex++;
+				res->mFaces[i].mIndices[j] = static_cast<unsigned int>(vertex++);
 			}
 		}
 		return res;
