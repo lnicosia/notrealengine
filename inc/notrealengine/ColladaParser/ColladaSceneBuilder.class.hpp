@@ -345,6 +345,7 @@ namespace notrealengine
 			CreateMesh(ColladaParser& parser,
 				const ColladaParser::ColladaMesh* src,
 				const ColladaParser::SubMesh& subMesh,
+				const ColladaParser::ColladaController* controller,
 				const size_t vertexStart, const size_t faceStart);
 
 		/**	Create a final cpMaterial from a Collada effect

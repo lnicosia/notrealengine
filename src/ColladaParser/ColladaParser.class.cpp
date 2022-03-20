@@ -233,13 +233,10 @@ namespace notrealengine
 					throw ColladaException("Reference to non existing <vertices> input");
 				continue;
 			}
-			if (this->accessors.find(input.id) == accessors.end())
-				throw ColladaException("Invalid input source reference: " + input.id);
-			input.accessor = &this->accessors[input.id];
-			if (this->floats.find(input.accessor->sourceId) == this->floats.end())
-				throw ColladaException("Invalid accessors data reference: "
-						+ input.accessor->sourceId);
-			input.accessor->data = &this->floats[input.accessor->sourceId];
+			input.accessor = &ResolveReference(this->accessors, input.id,
+				"geometry input accessor");
+			input.accessor->floatData = &ResolveReference(this->floats,
+				input.accessor->sourceId, "geometry input float array");
 		}
 	}
 
@@ -385,7 +382,7 @@ namespace notrealengine
 				continue;
 			//	No risk here, if the accessor could not be resolved
 			//	an expection was thrown
-			ColladaAccessor& acc = *input.accessor;
+			const ColladaAccessor& acc = *input.accessor;
 			//	Make sure we don't read out of range indices
 			unsigned int readIndex = indices[index + input.offset];
 			if (readIndex > acc.count + 1)
@@ -399,7 +396,7 @@ namespace notrealengine
 			}
 			//	No risk here, if the float array could not be resolved
 			//	an expection was thrown
-			std::vector<float>& values = *input.accessor->data;
+			const std::vector<float>& values = *input.accessor->floatData;
 			switch (input.type)
 			{
 			case PositionInput:
@@ -958,9 +955,87 @@ namespace notrealengine
 		}
 	}
 
+	void		ColladaParser::ReadAnimSampler(const lxml::Tag& samplerTag,
+		AnimationChannel& channel)
+	{
+		for (const auto& child : samplerTag.children)
+		{
+			if (child.name != "input")
+				continue;
+			std::string semantic;
+			std::string source;
+			lxml::GetStrAttribute(child, "semantic", semantic);
+			lxml::GetStrAttribute(child, "source", source);
+			if (source[0] != '#')
+				throw ColladaException("Invalid animation sampler source format: missing '#'");
+			source = source.c_str() + 1;
+			if (semantic == "INPUT")
+				channel.timesSource = source;
+			else if (semantic == "OUTPUT")
+				channel.valuesSource = source;
+			else if (semantic == "INTERPOLATION")
+				channel.interpolationSource = source;
+			else
+			{
+				std::cerr << "Animation sampler type not handled for ";
+				std::cerr << channel.id << " sampler: " << source << std::endl;
+			}
+		}
+	}
+
+	void		ColladaParser::ReadAnimation(const lxml::Tag& animTag,
+		ColladaAnimation& anim)
+	{
+		lxml::GetStrAttribute(animTag, "id", anim.id);
+		lxml::GetStrAttribute(animTag, "name", anim.name);
+		if (anim.name.empty())
+			anim.name == anim.id;
+		for (const auto& child : animTag.children)
+		{
+			if (child.name == "source")
+				ReadSource(child);
+			else if (child.name == "sampler")
+			{
+				AnimationChannel channel;
+				lxml::GetStrAttribute(animTag, "id", channel.id);
+				ReadAnimSampler(child, channel);
+				anim.channels.push_back(channel);
+			}
+			else if (child.name == "channel")
+			{
+				std::string source;
+				std::string	target;
+				lxml::GetStrAttribute(child, "source", source);
+				if (source[0] != '#')
+					throw ColladaException("Invalid animation channel source format: missing '#'");
+				source = source.c_str() + 1;
+				for (auto& channel: anim.channels)
+				{
+					if (channel.id == source)
+					{
+						lxml::GetStrAttribute(child, "target", channel.target);
+					}
+				}
+			}
+			else if (child.name == "animation")
+			{
+				ColladaAnimation newAnim;
+				ReadAnimation(child, newAnim);
+				anim.children.push_back(newAnim);
+			}
+		}
+	}
+
 	void		ColladaParser::ReadAnimations(const lxml::Tag& animationsTag)
 	{
-
+		for (const auto& animTag : animationsTag.children)
+		{
+			if (animTag.name != "animation")
+				continue;
+			ColladaAnimation newAnim;
+			ReadAnimation(animTag, newAnim);
+			this->animations[newAnim.id] = newAnim;
+		}
 	}
 
 	void		ColladaParser::ReadJoint(const lxml::Tag& jointTag,
@@ -1032,7 +1107,7 @@ namespace notrealengine
 				while (*content)
 				{
 					if (index >= vertexCount)
-						throw ColladaException("Too much values in ertex weight vcount ("
+						throw ColladaException("Too much values in vertex weight vcount ("
 						+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
 					unsigned long value = strtoul(content, &next, 10);
 					controller.weightCounts[index++] = static_cast<size_t>(value);
@@ -1066,7 +1141,7 @@ namespace notrealengine
 					value = strtoul(content, &next, 10);
 					content = next;
 					content = lxml::SkipWhitespaces(content);
-					pair.first = static_cast<size_t>(value);
+					pair.second = static_cast<size_t>(value);
 					controller.weights[index++] = pair;
 				}
 			}
@@ -1092,7 +1167,20 @@ namespace notrealengine
 			}
 			else if (child.name == "bind_shape_matrix")
 			{
-
+				const char* content = child.content.c_str();
+				char* next = nullptr;
+				for (unsigned int i = 0; i < 4; i++)
+				{
+					for (unsigned int j = 0; j < 4; j++)
+					{
+						if (!*content)
+							throw ColladaException("Not enough values in bind shape matrix");
+						controller.bindShapeMatrix[i][j] = strtof(content, &next);
+						content = next;
+					}
+				}
+				if (*content)
+					throw ColladaException("Too much values in bind shape matrix");
 			}
 		}
 	}

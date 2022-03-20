@@ -149,6 +149,8 @@
     <ClCompile Include="..\src\Object\Transform.class.cpp" />
     <ClCompile Include="..\src\SDL.class.cpp" />
     <ClCompile Include="..\src\SDLWindow.class.cpp" />
+    <ClCompile Include="..\src\Tests\ColladaParserTests.cpp" />
+    <ClCompile Include="..\src\Tests\RunTests.cpp" />
     <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
@@ -193,6 +195,8 @@
     <ClInclude Include="..\inc\Object\Scene.class.hpp" />
     <ClInclude Include="..\inc\Object\Texture.class.hpp" />
     <ClInclude Include="..\inc\Object\Transform.class.hpp" />
+    <ClInclude Include="..\inc\Tests\ColladaParserTests.hpp" />
+    <ClInclude Include="..\inc\Tests\RunTests.hpp" />
     <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />

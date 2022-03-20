@@ -88,12 +88,14 @@ namespace notrealengine
 		size_t nbInstances = 0;
 		for (const auto& child : node->nodeInstances)
 		{
-			if (parser.nodes.find(child) == parser.nodes.end())
+			const std::map<std::string, ColladaParser::ColladaNode>::iterator it =
+				parser.nodes.find(child);
+			if (it == parser.nodes.end())
 			{
 				std::cerr << "Unable to resolve node instance " << child << std::endl;
 				continue;
 			}
-			instances.push_back(&parser.nodes[child]);
+			instances.push_back(&it->second);
 			nbInstances++;
 		}
 
@@ -128,29 +130,19 @@ namespace notrealengine
 		for (const ColladaParser::ColladaInstance& meshInstance : node->meshes)
 		{
 			//	Resolve mesh reference
+			//	It can be a ColladaMesh or a ColladaController
 			const ColladaParser::ColladaMesh* srcMesh = nullptr;
+			const ColladaParser::ColladaController* srcController = nullptr;
 
 			std::map<std::string, ColladaParser::ColladaMesh*>::const_iterator
 				meshIt = parser.meshes.find(meshInstance.id);
 			if (meshIt == parser.meshes.end())
 			{
-				std::map<std::string, ColladaParser::ColladaController>::const_iterator
-					controllerIt = parser.controllers.find(meshInstance.id);
-				if (controllerIt == parser.controllers.end())
-				{
-					std::cerr << "Unknown node " << node->name << " controller reference : ";
-					std::cerr << meshInstance.id << std::endl;
-					continue;
-				}
-				const ColladaParser::ColladaController* srcController = &controllerIt->second;
-				meshIt = parser.meshes.find(srcController->meshId);
-				if (meshIt == parser.meshes.end())
-				{
-					std::cerr << "Unknown controller " << srcController->name << " mesh reference : ";
-					std::cerr << srcController->meshId << std::endl;
-					continue;
-				}
-				srcMesh = meshIt->second;
+				//	If it's not from the mesh map, it's probably a controller
+				srcController = &ResolveReference(parser.controllers, meshInstance.id,
+					"controller instance");
+				srcMesh = ResolveReference(parser.meshes, srcController->meshId,
+					"controller's mesh");;
 			}
 			else
 				srcMesh = meshIt->second;
@@ -215,7 +207,7 @@ namespace notrealengine
 				{
 					//std::cout << "Creating mesh for node " << node->name << std::endl;
 					cpMesh* newMesh = CreateMesh(parser, srcMesh, subMesh,
-						vertexStart, faceStart);
+						srcController, vertexStart, faceStart);
 
 					vertexStart += newMesh->mNumVertices;
 					faceStart += newMesh->mNumFaces;
@@ -252,6 +244,7 @@ namespace notrealengine
 	cpMesh* ColladaSceneBuilder::CreateMesh(ColladaParser& parser,
 		const ColladaParser::ColladaMesh* src,
 		const ColladaParser::SubMesh& subMesh,
+		const ColladaParser::ColladaController* controller,
 		const size_t vertexStart,const size_t faceStart)
 	{
 		cpMesh* res = new cpMesh();
@@ -331,6 +324,53 @@ namespace notrealengine
 				res->mFaces[i].mIndices[j] = static_cast<unsigned int>(vertex++);
 			}
 		}
+
+		if (controller != nullptr
+			&& controller->type == ColladaParser::ControllerType::Skin)
+		{
+			const ColladaParser::ColladaAccessor& boneNamesAcc =
+				ResolveReference(parser.accessors, controller->boneSource,
+					"bone names accessor");
+			const std::vector<std::string> boneNames =
+				ResolveReference(parser.strings, boneNamesAcc.sourceId,
+					"bone names source");
+
+			const ColladaParser::ColladaAccessor& bonesMatrixAcc =
+				ResolveReference(parser.accessors, controller->boneOffsetMatrixSource,
+					"bone offset matrix accessor");
+			const std::vector<float> boneMatrices =
+				ResolveReference(parser.floats, bonesMatrixAcc.sourceId,
+					"bone offset matrix source");
+
+			const ColladaParser::ColladaAccessor& weightBoneNames =
+				ResolveReference(parser.accessors, controller->boneInput.id,
+					"vertex weights bone names accessor");
+
+			if (&weightBoneNames != &boneNamesAcc)
+				throw ColladaException("Bone names source is different in <joints> and <vertex_weights>");
+		
+			const ColladaParser::ColladaAccessor& weightAcc =
+				ResolveReference(parser.accessors, controller->weightInput.id,
+					"vertex weights accessor");
+			const std::vector<float>& weights =
+				ResolveReference(parser.floats, weightAcc.sourceId,
+					"vertex weights");
+
+			if (controller->boneInput.offset != 0 || controller->weightInput.offset != 1)
+				throw ColladaException("Invalid bone format: expected bone id at offset 0 \
+					and weight value at offset 1, got bone id offset = "
+					+ std::to_string(controller->boneInput.offset)
+					+ " weight value offset = "
+					+ std::to_string(controller->weightInput.offset));
+
+			std::vector<std::vector<cpVertexWeight>> dstBones(boneNames.size());
+
+			for (size_t i = vertexStart; i < vertexStart + res->mNumVertices; i++)
+			{
+
+			}
+		}
+
 		return res;
 	}
 
@@ -342,22 +382,10 @@ namespace notrealengine
 			const ColladaParser::EffectParam& param = pair.second;
 			if (param.type == ColladaParser::ParamType::SamplerParam)
 			{
-				std::map<std::string, ColladaParser::EffectParam>::const_iterator it =
-					effect.params.find(param.ref);
-				if (it == effect.params.end())
-				{
-					std::cerr << "Unknow sampler 2D reference: " << param.ref << std::endl;
-					continue;
-				}
-				const ColladaParser::EffectParam& surface = it->second;
-				std::map<std::string, ColladaParser::ColladaImage>::const_iterator imageIt =
-					parser.images.find(surface.ref);
-				if (imageIt == parser.images.end())
-				{
-					std::cerr << "Unknow surface reference: " << surface.ref << std::endl;
-					continue;
-				}
-				const ColladaParser::ColladaImage& img = imageIt->second;
+				const ColladaParser::EffectParam& surface =
+					ResolveReference(effect.params, param.ref, "material effect");
+				const ColladaParser::ColladaImage& img =
+					ResolveReference(parser.images, surface.ref, "effect image");
 				cpTexture text;
 				text.mName = img.id;
 				text.path = img.path;

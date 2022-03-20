@@ -2,6 +2,7 @@
 #define	_COLLADA_PARSER_CLASS_H_
 
 #include "LXML/LXML.class.hpp"
+#include "ColladaParser/ColladaException.class.hpp"
 #include "mft/mft.hpp"
 #include <string>
 
@@ -53,6 +54,7 @@ namespace notrealengine
 		enum ControllerType
 		{
 	    Skin,
+		//	The following is not supported at the moment
 	    Morph
 		};
 
@@ -117,17 +119,18 @@ namespace notrealengine
 			std::string params[4];
 			//	The offset of each param. Maximum 4 params;
 			size_t	subOffset[4];
-			//	The id of the float array it is refering to
+			//	The id of the array it is refering to
 			std::string sourceId;
-			//	A pointer to the actual float array
+			//	A pointer to the actual float/string array
 			//	We resolve it once we read all the data,
 			//	just before reading actual vertex indices
-			std::vector<float>* data;
+			mutable const std::vector<float>* floatData;
+			mutable const std::vector<float>* stringData;
 
 			ColladaAccessor() :
 				count(0), offset(0), stride(0),
 				params(), subOffset{ 0, 0, 0, 0 }, sourceId(),
-				data(nullptr)
+				floatData(nullptr), stringData(nullptr)
 			{
 			}
 		};
@@ -146,7 +149,8 @@ namespace notrealengine
 			//	telling us how to read the data
 			//	We resolve the pointer once we read all the data,
 			//	just before reading actual vertex indices
-			ColladaAccessor* accessor;
+			//	-- Set as mutable to enable writing when resolving references
+			mutable const ColladaAccessor* accessor;
 
 			Input() :
 				type(InvalidInput), id(), offset(0), set(0), accessor(nullptr)
@@ -162,6 +166,22 @@ namespace notrealengine
 		{
 			std::string	material;
 			unsigned int nbFaces;
+		};
+		struct AnimationChannel
+		{
+			std::string id;
+			std::string target;
+
+			std::string	valuesSource;
+			std::string	timesSource;
+			std::string interpolationSource;
+		};
+		struct ColladaAnimation
+		{
+			std::string id;
+			std::string name;
+			std::vector<AnimationChannel>	channels;
+			std::vector<ColladaAnimation>	children;
 		};
 		struct	ColladaController
 		{
@@ -276,6 +296,7 @@ namespace notrealengine
 		std::map<std::string, ColladaImage>		images;
 		std::map<std::string, ColladaMaterial>	materials;
 		std::map<std::string, ColladaEffect>	effects;
+		std::map<std::string, ColladaAnimation> animations;
 
 		Axis	axis;
 
@@ -311,10 +332,20 @@ namespace notrealengine
 		void
 			ReadVertexWeight(const lxml::Tag& vertexWeightTag, ColladaController& controller);
 
-		/**	Retrieve animations from the file
+		/**	Retrieve an animation sampler  from the file
+		*/
+		void
+			ReadAnimSampler(const lxml::Tag& samplerTag, AnimationChannel& channel);
+
+		/**	Retrieve an animation from the file
 		*/
 		void
 			ReadAnimations(const lxml::Tag& animationsTag);
+
+		/**	Retrieve animations from the file
+		*/
+		void
+			ReadAnimation(const lxml::Tag& animationTag, ColladaAnimation& anim);
 
 		/**	Retrieve images from the file
 		*/
@@ -455,7 +486,25 @@ namespace notrealengine
 		*/
 		void
 			ConvertColladaPath(std::string& path);
+
 	};
+
+	/**	Search for an entry in a given map 
+	**	and throw if not found
+	**	Use it when resolving a reference is critical
+	**	and the reference will not be modified
+	*/
+	template < typename T >
+	const T&
+		ResolveReference(const std::map<std::string, T>& srcMap, const std::string& str,
+			const std::string& debugStr)
+	{
+		const typename std::map<std::string, T>::const_iterator it =
+			srcMap.find(str);
+		if (it == srcMap.end())
+			throw ColladaException("Unknown reference for " + debugStr + ": " + str);
+		return it->second;
+	}
 
 	std::ostream& operator<<(std::ostream& o, ColladaParser::InputType& type);
 
