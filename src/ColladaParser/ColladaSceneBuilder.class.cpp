@@ -161,7 +161,7 @@ namespace notrealengine
 				/*
 				//	Resolve material reference
 				//	Nodes in <library_visual_scenes> give material instances
-				//	but also the <triangles>/<vertices>/etc submeshes in 
+				//	but also the <triangles>/<vertices>/etc submeshes in
 				//	<library_geometry>
 				const std::map<std::string, ColladaParser::MaterialInstance>::const_iterator
 					mat = mesh.materials.find(subMesh.material);
@@ -348,7 +348,7 @@ namespace notrealengine
 
 			if (&weightBoneNames != &boneNamesAcc)
 				throw ColladaException("Bone names source is different in <joints> and <vertex_weights>");
-		
+
 			const ColladaParser::ColladaAccessor& weightAcc =
 				ResolveReference(parser.accessors, controller->weightInput.id,
 					"vertex weights accessor");
@@ -363,11 +363,74 @@ namespace notrealengine
 					+ " weight value offset = "
 					+ std::to_string(controller->weightInput.offset));
 
-			std::vector<std::vector<cpVertexWeight>> dstBones(boneNames.size());
+			std::vector<std::vector<cpVertexWeight>> bones(boneNames.size());
+
+			//	Save the start index of each weight by adding the weight count
+			std::vector<size_t> weightIndices(controller->weightCounts.size());
+			size_t totalIndex = 0;
+			for (size_t i = 0; i < controller->weightCounts.size(); i++)
+			{
+				weightIndices[i] = totalIndex;
+				totalIndex += controller->weightCounts[i];
+			}
 
 			for (size_t i = vertexStart; i < vertexStart + res->mNumVertices; i++)
 			{
+				//	Bone weights are given in the same order as the vertex positions array
+				//	i.e. if vertex[i] pos was at index X, its weight is at index X
+				size_t vertexPosIndex = src->posIndices[i];
+				size_t nbWeights = controller->weightCounts[vertexPosIndex];
+				size_t index = weightIndices[vertexPosIndex];
+				for (size_t j = 0; j < nbWeights; j++)
+				{
+					size_t boneIndex = controller->weights[index + j].first;
+					if (boneIndex >= boneNames.size())
+						throw ColladaException("Out of bounds bone name index: "
+						+ std::to_string(boneIndex) + "/" + std::to_string(boneNames.size()));
+					size_t weightIndex = controller->weights[index + j].second;
+					if (weightIndex >= weights.size())
+						throw ColladaException("Out of bounds bone weight index: "
+						+ std::to_string(weightIndex) + "/" + std::to_string(weights.size()));
+					float weight = weights[weightIndex];
+					//	Apparently files can contain weights of 0.. ignore them
+					//if (weight > 0.0f)
+					//{
+						cpVertexWeight newCpWeight;
+						//	Reset index count for each submesh;
+						newCpWeight.mVertexId = static_cast<unsigned int>(i - vertexStart);
+						newCpWeight.mWeight = weight;
+						bones[boneIndex].push_back(newCpWeight);
+					//}
+				}
+			}
+			//	Count bones that are used for this subMesh
+			res->mNumBones = 0;
+			for (const auto& bone: bones)
+			{
+				if (!bone.empty())
+					res->mNumBones++;
+			}
 
+			res->mBones = new cpBone * [res->mNumBones];
+			for (unsigned int i = 0, boneIndex = 0; i < boneNames.size(); i++)
+			{
+				if (bones[i].empty())
+					continue;
+				cpBone* bone = new cpBone;
+				bone->mName = boneNames[i];
+				bone->mNumWeights = bones[i].size();
+				bone->mWeights = new cpVertexWeight [bone->mNumWeights];
+				for (unsigned int j = 0; j < bone->mNumWeights; j++)
+				{
+					bone->mWeights[j] = bones[i][j];
+				}
+				bone->mOffsetMatrix = mft::mat4(
+					{ boneMatrices[i * 16], boneMatrices[i * 16 + 1], boneMatrices[i * 16 + 2], boneMatrices[i * 16 + 3] },
+					{ boneMatrices[i * 16 + 4], boneMatrices[i * 16 + 5], boneMatrices[i * 16 + 6], boneMatrices[i * 16 + 7] },
+					{ boneMatrices[i * 16 + 8], boneMatrices[i * 16 + 9], boneMatrices[i * 16 + 10], boneMatrices[i * 16 + 11] },
+					{ boneMatrices[i * 16 + 12], boneMatrices[i * 16 + 13], boneMatrices[i * 16 + 14], boneMatrices[i * 16 + 15] });
+				bone->mOffsetMatrix *= controller->bindShapeMatrix;
+				res->mBones[boneIndex++] = bone;
 			}
 		}
 

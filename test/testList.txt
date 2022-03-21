@@ -1,1 +1,1 @@
-testParser SingleFile resources/objects/model.dae
+testParser Full resources/objects/model.dae

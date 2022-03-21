@@ -12,12 +12,19 @@
 #include <filesystem>
 #include <fstream>
 #include <csignal>
+#include <unistd.h>
+#include <sys/wait.h>
 
 using namespace notrealengine;
 
+std::ofstream out;
+
 void catchSegfault(int sigNum)
 {
-  std::cout << "Signal " << sigNum << " received" << std::endl;
+  std::cout << "Test segfaulted" << std::endl;
+  out << "--Crash--" << std::endl;
+  out.close();
+  exit(-1);
 }
 
 template < typename T >
@@ -170,7 +177,7 @@ std::ofstream& out)
   if (res == -1)
     finalRes = -1;
   res = compareValues(customBone->mOffsetMatrix, AssimpToMftMatrix(assimpBone->mOffsetMatrix),
-    out, " for bone" + customBone->mName + "'s offset matrix");
+    out, " for bone " + customBone->mName + "'s offset matrix");
   if (res == -1)
     finalRes = -1;
   res = compareValues(customBone->mNumWeights, assimpBone->mNumWeights,
@@ -275,15 +282,15 @@ std::ofstream& out)
         finalRes = -1;
     }
   }
-  if (customMesh->mNumBones == assimpMesh->mNumBones)
-  {
+  //if (customMesh->mNumBones == assimpMesh->mNumBones)
+  //{
     for (unsigned int i = 0; i < customMesh->mNumBones; i++)
     {
       res = compareBones(customMesh->mBones[i], assimpMesh->mBones[i], out);
       if (res == -1)
         finalRes = -1;
     }
-  }
+  //}
   return finalRes;
 }
 
@@ -325,10 +332,24 @@ std::ofstream& out)
 
 static int compareParsers(const std::string& path)
 {
-
   std::string outputPath = LOGS_DIRECTORY;
   outputPath += "/testParser/" + path.substr(path.find_last_of('/') + 1);
-  std::ofstream out;
+  std::cout << "Comparing custom and assimp parser for " << path << std::endl;
+
+  const cpScene* customScene = nullptr;
+  const aiScene* assimpScene = nullptr;
+
+  pid_t id = fork();
+  if (id != 0)
+  {
+    int ret;
+    wait(&ret);
+    if (ret == 0)
+      std::cout << "VALID" << std::endl;
+    else
+      std::cout << "INVALID" << std::endl;
+    return ret;
+  }
   try
   {
     out.open(outputPath);
@@ -337,23 +358,20 @@ static int compareParsers(const std::string& path)
   {
     std::cerr << "Could not open log file '" << outputPath << "': " << e.what();
     std::cerr << std::endl;
-    return -1;
+    exit(-1);
   }
-
-  const cpScene* customScene = nullptr;
-  const aiScene* assimpScene = nullptr;
-
+  ColladaSceneBuilder importer;
   try
   {
     signal(SIGSEGV, catchSegfault);
     signal(SIGABRT, catchSegfault);
-    ColladaSceneBuilder importer;
     customScene = importer.ReadFile(path, aiProcess_Triangulate
       | aiProcess_GenUVCoords);
     if (!customScene || !customScene->mRootNode)
     {
       out << "Collada parser failed to import object" << std::endl;
-      return -1;
+      out.close();
+      exit(-1);
     }
   }
   catch (ColladaException& e)
@@ -361,7 +379,8 @@ static int compareParsers(const std::string& path)
     out << "nre: " << std::endl;
     if (customScene != nullptr)
       delete customScene;
-    return -1;
+    out.close();
+    exit(-1);
   }
 
   Assimp::Importer	aimporter;
@@ -376,14 +395,16 @@ static int compareParsers(const std::string& path)
   {
     out << "assimp: " << aimporter.GetErrorString() << std::endl;
     delete customScene;
-    return -1;
+    out.close();
+    exit(-1);
   }
 
   int res = compareScenes(customScene, assimpScene, out);
 
   delete customScene;
 
-  return res;
+  out.close();
+  exit(res);
 }
 
 int testParser(TestType type, std::string path)

@@ -218,7 +218,9 @@ namespace notrealengine
 			unsigned int nbUVComponents[MAX_TEXTURE_CHANNELS];
 			//	Save the size of each primitive/face to build the mesh later
 			std::vector<size_t> faceSizes;
-			std::vector<unsigned int> indices;
+			std::vector<size_t> posIndices;
+			//	Save each vertex's index in the source array
+			//	to assign bone weights
 
 			//	Meshes are decomposed in submeshes
 			//	one for each <triangle>/<polylist>/<lines> tag
@@ -489,7 +491,7 @@ namespace notrealengine
 
 	};
 
-	/**	Search for an entry in a given map 
+	/**	Search for an entry in a given map
 	**	and throw if not found
 	**	Use it when resolving a reference is critical
 	**	and the reference will not be modified

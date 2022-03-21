@@ -312,7 +312,7 @@ namespace notrealengine
 		ResolveInputsReferences(inputs, mesh);
 
 		mesh.faceSizes.reserve(count);
-		mesh.indices.reserve(indices.size() / nbAttributes);
+		mesh.posIndices.reserve(indices.size() / nbAttributes);
 
 		//	Actual data retrieving
 
@@ -332,8 +332,7 @@ namespace notrealengine
 				primitiveSize = 2;
 				for (size_t vertexIndex = 0; vertexIndex < primitiveSize; vertexIndex++)
 				{
-					ReadVertex(primitiveIndex * primitiveSize * nbAttributes
-						+ vertexIndex * nbAttributes,
+					ReadVertex((primitiveIndex * primitiveSize  + vertexIndex) * nbAttributes,
 						mesh, indices, inputs);
 				}
 				break;
@@ -341,8 +340,7 @@ namespace notrealengine
 				primitiveSize = 3;
 				for (size_t vertexIndex = 0; vertexIndex < primitiveSize; vertexIndex++)
 				{
-					ReadVertex(primitiveIndex * primitiveSize * nbAttributes
-						+ vertexIndex * nbAttributes,
+					ReadVertex((primitiveIndex * primitiveSize + vertexIndex) * nbAttributes,
 						mesh, indices, inputs);
 				}
 				break;
@@ -385,6 +383,8 @@ namespace notrealengine
 			const ColladaAccessor& acc = *input.accessor;
 			//	Make sure we don't read out of range indices
 			unsigned int readIndex = indices[index + input.offset];
+			if (input.type == PositionInput)
+				mesh.posIndices.push_back(readIndex);
 			if (readIndex > acc.count + 1)
 			{
 				//InputType type = input.type;
@@ -989,7 +989,7 @@ namespace notrealengine
 		lxml::GetStrAttribute(animTag, "id", anim.id);
 		lxml::GetStrAttribute(animTag, "name", anim.name);
 		if (anim.name.empty())
-			anim.name == anim.id;
+			anim.name = anim.id;
 		for (const auto& child : animTag.children)
 		{
 			if (child.name == "source")

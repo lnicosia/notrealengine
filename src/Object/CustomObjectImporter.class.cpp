@@ -60,19 +60,19 @@ namespace notrealengine
 			bone.id = -1;
 			std::string	boneName = mesh->mBones[i]->mName;
 			bone.name = boneName;
-			if (bones.find(boneName) == bones.end())
+			if (this->bones.find(boneName) == bones.end())
 			{
 				bone.id = nbBones;
 				bone.offsetMatrix = mesh->mBones[i]->mOffsetMatrix;
 				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
 				bone.localMatrix = mft::mat4();
 				bone.fromParentMatrix = mft::mat4();
-				bones[boneName] = bone;
-				nbBones++;
+				this->bones[boneName] = bone;
+				this->nbBones++;
 			}
 			else
 			{
-				bone.id = bones[boneName].id;
+				bone.id = this-> bones[boneName].id;
 			}
 			//std::cout << "Bone " << boneName <<  " id = " << bone.id << std::endl;
 			cpVertexWeight* weights = mesh->mBones[i]->mWeights;
@@ -111,26 +111,26 @@ namespace notrealengine
 			//	to scale the object to fit in our engine unit scale
 			//	after parsing
 
-			if (isRangeInit == false)
+			if (this->isRangeInit == false)
 			{
-				isRangeInit = true;
-				max = vector;
-				min = vector;
+				this->isRangeInit = true;
+				this->max = vector;
+				this->min = vector;
 			}
 
-			if (vector.x > max.x)
-				max.x = vector.x;
-			if (vector.y > max.y)
-				max.y = vector.y;
-			if (vector.z > max.z)
-				max.z = vector.z;
+			if (vector.x > this->max.x)
+				this->max.x = vector.x;
+			if (vector.y > this->max.y)
+				this->max.y = vector.y;
+			if (vector.z > this->max.z)
+				this->max.z = vector.z;
 
-			if (vector.x < min.x)
-				min.x = vector.x;
-			if (vector.y < min.y)
-				min.y = vector.y;
-			if (vector.z < min.z)
-				min.z = vector.z;
+			if (vector.x < this->min.x)
+				this->min.x = vector.x;
+			if (vector.y < this->min.y)
+				this->min.y = vector.y;
+			if (vector.z < this->min.z)
+				this->min.z = vector.z;
 			vertex.pos = vector;
 
 			if (mesh->mNormals)
