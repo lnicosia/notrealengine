@@ -106,12 +106,14 @@ namespace notrealengine
 		accessor.sourceId = source.c_str() + 1;
 
 		count = 0;
+		std::cout << "Accessor = " << accessor.sourceId << std::endl;
 		for (const auto& child : accessorTag.children)
 		{
 			if (child.name == "param")
 			{
 				std::string name;
 				lxml::GetStrAttribute(child, "name", name);
+				std::cout << "Reading param " << name << std::endl;
 				if (name.empty())
 					continue;
 				// Vertices pos
@@ -144,7 +146,7 @@ namespace notrealengine
 				else if (name == "V")
 					accessor.subOffset[1] = count;
 
-				accessor.params[count] = name;
+				accessor.params.push_back(name);
 				count++;
 			}
 		}
@@ -419,6 +421,7 @@ namespace notrealengine
 						tex.p = values[readIndex * acc.stride + acc.offset + acc.subOffset[2]];
 					if (acc.subOffset[3] != 0)
 						tex.p = values[readIndex * acc.stride + acc.offset + acc.subOffset[3]];
+
 					mesh.tex[input.set].push_back(tex);
 					//	If component 3 or 4 exist, there are more than
 					//	U and V tex coord but no more than 3

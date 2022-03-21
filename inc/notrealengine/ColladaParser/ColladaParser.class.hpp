@@ -116,7 +116,7 @@ namespace notrealengine
 			//	The array of what data we need to read
 			//	For exemple, for a vertex array:
 			//	params[0] = "X", params[1] = "Y", params[2] = "Z"
-			std::string params[4];
+			std::vector<std::string> params;
 			//	The offset of each param. Maximum 4 params;
 			size_t	subOffset[4];
 			//	The id of the array it is refering to

@@ -1,1 +1,1 @@
-testParser Full resources/objects/model.dae
+testParser SingleFile resources/objects/astroBoy_walk_Max.dae
