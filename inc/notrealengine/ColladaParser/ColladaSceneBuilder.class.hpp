@@ -57,14 +57,46 @@ namespace notrealengine
 			str = (*textures)[index].path;
 		}
 	};
+	struct cpQuatKey
+	{
+		double		mTime;
+		mft::quat	mValue;
+	};
+	struct cpVectorKey
+	{
+		double		mTime;
+		mft::vec3 mValue;
+	};
+	//	Channel created from AnimationChannels and Node used to
+	//	create cpAnimations
+	struct Channel
+	{
+		std::string	target;
+		std::string	transformId; // Delete if only index needs to be saved
+		long long int	transformIndex;
+		const ColladaParser::AnimationChannel* srcChannel;
+		const ColladaParser::ColladaAccessor* timesAcc; // Delete if only the array needs to be saved
+		const std::vector<float>*							times;
+		const ColladaParser::ColladaAccessor*	valuesAcc; // Delete if only the array needs to be saved
+		const std::vector<float>*							values;
+	};
 	struct cpNodeAnim
 	{
 		std::string mNodeName;
+		unsigned int mNumPositionKeys;
+		unsigned int mNumRotationKeys;
+		unsigned int mNumScalingKeys;
+		cpVectorKey* mPositionKeys;
+		cpQuatKey*   mRotationKeys;
+		cpVectorKey* mScalingKeys;
 	};
 	struct cpAnimation
 	{
 		cpNodeAnim**	mChannels;
 		unsigned int	mNumChannels;
+		double				mTicksPerSecond;
+		double				mDuration;
+		std::string		mName;
 
 		cpAnimation(): mChannels(nullptr), mNumChannels(0)
 		{}
@@ -318,9 +350,17 @@ namespace notrealengine
 		std::vector<MeshID>	meshIDs;
 		std::map<std::string, size_t> matIndices;
 		std::vector<cpMaterial*> materials;
+		std::vector<cpAnimation> animations;
+		std::vector<cpNode*> nodes;
 
 		//	We may fight nodes with no name, use this to assign auto names to them
 		unsigned int unamedNodes;
+
+		/**	Save all the nodes ptr in a vector
+		**	to run through them easily (without recursion)
+		*/
+		void
+			SaveNodeAsVector(cpNode* node);
 
 		/**	Build a cpNode recursively
 		*/
@@ -331,7 +371,7 @@ namespace notrealengine
 		**	by creating them or using already existing ones
 		*/
 		void
-			BuildMeshes(ColladaParser& parser, ColladaParser::ColladaNode* node,
+			BuildMeshes(const ColladaParser& parser, const ColladaParser::ColladaNode* node,
 				cpNode* newNode);
 
 		/**	Create the array of cpMaterial* from the collada data
@@ -339,10 +379,28 @@ namespace notrealengine
 		void
 			BuildMaterials(ColladaParser& parser, cpScene* scene);
 
+		/**	Create the array of cpAnimation* from the collada data
+		*/
+		void
+			BuildAnimations(const ColladaParser& parser, cpScene* scene);
+
+		/**	Create the array of cpAnimation* from the collada data
+		*/
+		void
+			BuildAnimation(const ColladaParser& parser, cpScene* scene,
+			const ColladaParser::ColladaAnimation& anim, const std::string& prefix);
+
+		/**	Create a cpAnimation
+		*/
+		void
+			CreateAnimation(const ColladaParser& parser, cpScene* scene,
+				const ColladaParser::ColladaAnimation& anim,
+				const std::string& name);
+
 		/**	Create a new cpMesh ptr with all the collada data
 		*/
 		cpMesh*
-			CreateMesh(ColladaParser& parser,
+			CreateMesh(const ColladaParser& parser,
 				const ColladaParser::ColladaMesh* src,
 				const ColladaParser::SubMesh& subMesh,
 				const ColladaParser::ColladaController* controller,
@@ -351,7 +409,19 @@ namespace notrealengine
 		/**	Create a final cpMaterial from a Collada effect
 		*/
 		cpMaterial*
-			CreateMaterial(ColladaParser& parser, ColladaParser::ColladaEffect& effect);
+			CreateMaterial(const ColladaParser& parser, const ColladaParser::ColladaEffect& effect);
+
+		/**	Helper to read a float from a source array with the right accessor
+		*/
+		float
+			ReadFloat(const std::vector<float>& array, const ColladaParser::ColladaAccessor& acc,
+			size_t index, size_t offset);
+
+		/**	Helper to read a string from a source array with the right accessor
+		*/
+		std::string
+			ReadString(const std::vector<std::string>& array, const ColladaParser::ColladaAccessor& acc,
+			size_t index, size_t offset);
 
 	};
 

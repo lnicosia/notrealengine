@@ -263,6 +263,12 @@ namespace notrealengine
 			std::map<std::string, MaterialInstance> materials;
 		};
 
+		struct ColladaTransform
+		{
+			std::string id;
+			mft::mat4		matrix;
+		};
+
 		//	A node of the scene hierarchy
 		//	Can contain transforms, bones, meshes, cameras, lights
 		struct ColladaNode
@@ -271,7 +277,7 @@ namespace notrealengine
 			std::string	sid;
 			std::string	name;
 
-			std::vector<mft::mat4>	transforms;
+			std::vector<ColladaTransform>	transforms;
 
 			std::vector<ColladaInstance>	meshes;
 
@@ -509,6 +515,11 @@ namespace notrealengine
 	}
 
 	std::ostream& operator<<(std::ostream& o, ColladaParser::InputType& type);
+
+	/**	Find a node by name in the tree
+	*/
+	const ColladaParser::ColladaNode*
+		FindNode(const ColladaParser::ColladaNode* node, const std::string& name);
 
 }
 

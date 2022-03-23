@@ -87,6 +87,39 @@ int compareValues(const mft::vec3& value1, const mft::vec3& value2, std::ofstrea
   return 0;
 }
 
+template < >
+int compareValues(const float& value1, const float& value2, std::ofstream& out,
+  const std::string& what)
+{
+  if (fabs(value1 - value2) >= 0.0005f)
+  {
+    out << "-------------------------" << std::endl;
+    out << "value1 = " + std::to_string(value1) << std::endl;
+    out << "value2 = " + std::to_string(value2) << std::endl;
+    out << "Custom importer reads " << value1 << what << std::endl;
+    out << "Assimp importer reads " << value2 << what << std::endl;
+    out << "-------------------------" << std::endl;
+    return -1;
+  }
+  return 0;
+}
+
+template < >
+int compareValues(const double& value1, const double& value2, std::ofstream& out,
+  const std::string& what)
+{
+  if (std::abs(value1 - value2) >= 0.0005)
+  {
+    out << "-------------------------" << std::endl;
+    out << "value1 = " + std::to_string(value1) << std::endl;
+    out << "value2 = " + std::to_string(value2) << std::endl;
+    out << "Custom importer reads " << value1 << what << std::endl;
+    out << "Assimp importer reads " << value2 << what << std::endl;
+    out << "-------------------------" << std::endl;
+    return -1;
+  }
+  return 0;
+}
 
 static int compareNodes(const cpNode* customNode, const aiNode* assimpNode,
 std::ofstream& out)
@@ -163,7 +196,14 @@ std::ofstream& out)
 {
   int res = 0;
   int finalRes = 0;
-
+  res = compareValues(customWeight->mVertexId, assimpWeight->mVertexId,
+    out, " for vertex weight's vertex ID");
+  if (res == -1)
+    finalRes = -1;
+  res = compareValues(customWeight->mWeight, assimpWeight->mWeight,
+    out, " for vertex weight's weight");
+  if (res == -1)
+    finalRes = -1;
   return res;
 }
 
@@ -294,6 +334,46 @@ std::ofstream& out)
   return finalRes;
 }
 
+static int compareChannels(const cpNodeAnim* customChannels,
+  const aiNodeAnim* assimpChannels, std::ofstream& out)
+{
+  int res = 0;
+  int finalRes = 0;
+  return finalRes;
+}
+
+static int compareAnimations(const cpAnimation* customAnim,
+  const aiAnimation* assimpAnim, std::ofstream& out)
+{
+  int res = 0;
+  int finalRes = 0;
+  res = compareValues(customAnim->mName, std::string(assimpAnim->mName.C_Str()),
+    out, " for animation's name");
+  if (res == -1)
+    finalRes = -1;
+  res = compareValues(customAnim->mNumChannels, assimpAnim->mNumChannels,
+    out, " for animation " + customAnim->mName + "'s num channels");
+  if (res == -1)
+    finalRes = -1;
+  res = compareValues(customAnim->mTicksPerSecond, assimpAnim->mTicksPerSecond,
+    out, " for animation " + customAnim->mName + "'s ticks per second");
+  if (res == -1)
+    finalRes = -1;
+  res = compareValues(customAnim->mDuration, assimpAnim->mDuration,
+    out, " for animation " + customAnim->mName + "'s duration");
+  if (res == -1)
+    finalRes = -1;
+  unsigned int numChannels =
+    std::min(customAnim->mNumChannels, assimpAnim->mNumChannels);
+  for (unsigned int i = 0; i < numChannels; i++)
+  {
+    res = compareChannels(customAnim->mChannels[i], assimpAnim->mChannels[i], out);
+    if (res == -1)
+      finalRes = -1;
+  }
+  return finalRes;
+}
+
 static int compareScenes(const cpScene* customScene, const aiScene* assimpScene,
 std::ofstream& out)
 {
@@ -301,6 +381,15 @@ std::ofstream& out)
   int finalRes = 0;
   res = compareValues(customScene->mNumAnimations, assimpScene->mNumAnimations,
     out, " animation(s)");
+  if (res == -1)
+    finalRes = -1;
+  for (unsigned int i = 0; i < customScene->mNumAnimations; i++)
+  {
+    res = compareAnimations(customScene->mAnimations[i],
+      assimpScene->mAnimations[i], out);
+    if (res == -1)
+      finalRes = -1;
+  }
   if (res == -1)
     finalRes = -1;
   res = compareValues(customScene->mNumMeshes, assimpScene->mNumMeshes,

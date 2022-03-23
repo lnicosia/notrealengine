@@ -106,14 +106,12 @@ namespace notrealengine
 		accessor.sourceId = source.c_str() + 1;
 
 		count = 0;
-		std::cout << "Accessor = " << accessor.sourceId << std::endl;
 		for (const auto& child : accessorTag.children)
 		{
 			if (child.name == "param")
 			{
 				std::string name;
 				lxml::GetStrAttribute(child, "name", name);
-				std::cout << "Reading param " << name << std::endl;
 				if (name.empty())
 					continue;
 				// Vertices pos
@@ -726,7 +724,9 @@ namespace notrealengine
 
 	void		ColladaParser::ReadTransform(TransformType type, const lxml::Tag& nodeTag, ColladaNode& node)
 	{
-		mft::mat4	transform;
+		ColladaTransform	transform;
+		transform.id = "";
+		lxml::GetStrAttribute(nodeTag, "sid", transform.id);
 
 		//	Prepare to read up to 16 values
 		float	values[16] = { 0.0f };
@@ -746,26 +746,26 @@ namespace notrealengine
 			mft::vec3	pos(values[0], values[1], values[2]);
 			mft::vec3	target(values[3], values[4], values[5]);
 			mft::vec3	up(values[6], values[7], values[8]);
-			transform = mft::mat4::lookAt(pos, target, up);
+			transform.matrix = mft::mat4::lookAt(pos, target, up);
 			break;
 		}
 		case RotateTransform:
 		{
 			mft::vec3	axis(values[0], values[1], values[2]);
 			float		angle = values[3];
-			transform = mft::mat4::rotate(angle, axis);
+			transform.matrix = mft::mat4::rotate(angle, axis);
 			break;
 		}
 		case TranslateTransform:
 		{
 			mft::vec3	trans(values[0], values[1], values[2]);
-			transform = mft::mat4::translate(trans);
+			transform.matrix = mft::mat4::translate(trans);
 			break;
 		}
 		case ScaleTransform:
 		{
 			mft::vec3	scale(values[0], values[1], values[2]);
-			transform = mft::mat4::scale(scale);
+			transform.matrix = mft::mat4::scale(scale);
 			break;
 		}
 		case SkewTransform:
@@ -774,7 +774,7 @@ namespace notrealengine
 		}
 		case MatrixTransform:
 		{
-			transform = mft::mat4(
+			transform.matrix = mft::mat4(
 				{ values[0], values[1], values[2], values[3] },
 				{ values[4], values[5], values[6], values[7] },
 				{ values[8], values[9], values[10], values[11] },
@@ -980,8 +980,8 @@ namespace notrealengine
 				channel.interpolationSource = source;
 			else
 			{
-				std::cerr << "Animation sampler type not handled for ";
-				std::cerr << channel.id << " sampler: " << source << std::endl;
+				//std::cerr << "Animation sampler type not handled for ";
+				//std::cerr << channel.id << " sampler: " << source << std::endl;
 			}
 		}
 	}
@@ -1000,7 +1000,7 @@ namespace notrealengine
 			else if (child.name == "sampler")
 			{
 				AnimationChannel channel;
-				lxml::GetStrAttribute(animTag, "id", channel.id);
+				lxml::GetStrAttribute(child, "id", channel.id);
 				ReadAnimSampler(child, channel);
 				anim.channels.push_back(channel);
 			}
@@ -1012,6 +1012,7 @@ namespace notrealengine
 				if (source[0] != '#')
 					throw ColladaException("Invalid animation channel source format: missing '#'");
 				source = source.c_str() + 1;
+				//	Set the target of an animation channel read in <sampler> tags
 				for (auto& channel: anim.channels)
 				{
 					if (channel.id == source)
@@ -1338,5 +1339,21 @@ namespace notrealengine
 			outIndex++;
 		}
 		out[outIndex] = '\0';
+	}
+
+	const ColladaParser::ColladaNode* FindNode(const ColladaParser::ColladaNode* node,
+		const std::string& name)
+	{
+		if (node->name == name || node->id == name)
+		{
+			return node;
+		}
+		for (const auto& child: node->children)
+		{
+			const ColladaParser::ColladaNode* node = FindNode(&child, name);
+			if (node != nullptr)
+				return node;
+		}
+		return nullptr;
 	}
 }
