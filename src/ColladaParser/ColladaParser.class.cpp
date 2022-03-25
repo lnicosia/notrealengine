@@ -726,6 +726,7 @@ namespace notrealengine
 	{
 		ColladaTransform	transform;
 		transform.id = "";
+		transform.type = type;
 		lxml::GetStrAttribute(nodeTag, "sid", transform.id);
 
 		//	Prepare to read up to 16 values

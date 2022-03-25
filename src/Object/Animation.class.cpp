@@ -1,5 +1,6 @@
 #include "Object/Animation.class.hpp"
 #include "Object/AssimpHelpers.hpp"
+#include "ColladaParser/ColladaSceneBuilder.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -17,27 +18,28 @@ namespace notrealengine
 		bones(), currentFrame(0), nodes(), ended(false)
 	{
 		std::cout << "Loading animation " << index << " of " << path << std::endl;
-		Assimp::Importer	importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+		//Assimp::Importer	importer;
+		ColladaSceneBuilder importer;
+		const cpScene* scene = importer.ReadFile(path, 0);
 		if (!scene || !scene->mRootNode)
 		{
-			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
+			//std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
 			return;
 		}
-		if (scene->HasAnimations() == false || index >= scene->mNumAnimations)
-		{
-			std::cerr << path << " does not have " << index << " animations" << std::endl;
-			return;
-		}
-		aiAnimation* animation = scene->mAnimations[index];
+		//if (scene->HasAnimations() == false || index >= scene->mNumAnimations)
+		//{
+		//	std::cerr << path << " does not have " << index << " animations" << std::endl;
+		//	return;
+		//}
+		cpAnimation* animation = scene->mAnimations[index];
 		this->duration = animation->mDuration;
 		this->ticksPerSecond = animation->mTicksPerSecond;
 		for (unsigned int i = 0; i < animation->mNumChannels; i++)
 		{
 			if (animation->mChannels[i] != nullptr)
 			{
-				aiNodeAnim*	bone = animation->mChannels[i];
-				std::string name = bone->mNodeName.data;
+				cpNodeAnim*	bone = animation->mChannels[i];
+				std::string name = bone->mNodeName;
 				this->bones.emplace(name, Bone(name, 0, bone));
 			}
 		}
@@ -46,27 +48,28 @@ namespace notrealengine
 		{
 			//std::cout << "Node " << node.name << " transform = " << node.transform << std::endl;
 		}
+		delete scene;
 	}
 
 	Animation::~Animation()
 	{
 	}
 
-	void Animation::processNode(aiNode* node, aiAnimation* animation, int parentId)
+	void Animation::processNode(cpNode* node, cpAnimation* animation, int parentId)
 	{
 		static int count = 0;
 		count++;
 		AnimNode newNode;
 		unsigned int	currentId = this->nodes.size();
-		newNode.name = node->mName.data;
+		newNode.name = node->mName;
 		newNode.parentId = parentId;
-		newNode.transform = AssimpToMftMatrix(node->mTransformation);
+		newNode.transform = node->mTransformation;
 		this->nodes.push_back(newNode);
 		/*std::cout << "Reading node ";
 		for (int i = 0; i < count; i++)
 			std::cout << "  ";
 		std::cout << newNode.name;
-		if (this->bones.contains(newNode.name))
+		if (this->bones.contcpns(newNode.name))
 		{
 			std::cout << " (used, has ";
 			std::cout << this->bones[newNode.name].getNbPositions() << " position frames, ";

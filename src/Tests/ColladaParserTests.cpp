@@ -121,6 +121,28 @@ int compareValues(const double& value1, const double& value2, std::ofstream& out
   return 0;
 }
 
+template < >
+int compareValues(const mft::quat& value1, const mft::quat& value2, std::ofstream& out,
+    const std::string& what)
+{
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        if (fabs(value1[i] - value2[i]) >= 0.0005f)
+        {
+            out << "-------------------------" << std::endl;
+            out << "value1[" + std::to_string(i);
+            out << "] = " + std::to_string(value1[i]) << std::endl;
+            out << "value2[" + std::to_string(i);
+            out << "] = " + std::to_string(value2[i]) << std::endl;
+            out << "Custom importer reads " << value1 << what << std::endl;
+            out << "Assimp importer reads " << value2 << what << std::endl;
+            out << "-------------------------" << std::endl;
+            return -1;
+        }
+    }
+    return 0;
+}
+
 static int compareNodes(const cpNode* customNode, const aiNode* assimpNode,
 std::ofstream& out)
 {
@@ -334,11 +356,86 @@ std::ofstream& out)
   return finalRes;
 }
 
-static int compareChannels(const cpNodeAnim* customChannels,
-  const aiNodeAnim* assimpChannels, std::ofstream& out)
+static int compareVectorKey(const cpVectorKey& customKey,
+    const aiVectorKey& assimpKey, std::ofstream& out)
+{
+    int res = 0;
+    int finalRes = 0;
+    res = compareValues(customKey.mTime, assimpKey.mTime,
+        out, " for vector key times");
+    if (res == -1)
+        finalRes = -1;
+    res = compareValues(customKey.mValue, AssimpToMftVec3(assimpKey.mValue),
+        out, " for vector key times");
+    if (res == -1)
+        finalRes = -1;
+    return finalRes;
+}
+
+static int compareQuatKey(const cpQuatKey& customKey,
+    const aiQuatKey& assimpKey, std::ofstream& out)
+{
+    int res = 0;
+    int finalRes = 0;
+    res = compareValues(customKey.mTime, assimpKey.mTime,
+        out, " for quat key times");
+    if (res == -1)
+        finalRes = -1;
+    res = compareValues(customKey.mValue, AssimpToMftQuat(assimpKey.mValue),
+        out, " for quat key times");
+    if (res == -1)
+        finalRes = -1;
+    return finalRes;
+}
+
+static int compareChannels(const cpNodeAnim* customChannel,
+  const aiNodeAnim* assimpChannel, std::ofstream& out)
 {
   int res = 0;
   int finalRes = 0;
+  res = compareValues(customChannel->mNodeName, std::string(assimpChannel->mNodeName.C_Str()),
+      out, " for animation channel's name");
+  if (res == -1)
+      finalRes = -1;
+  res = compareValues(customChannel->mNumPositionKeys, assimpChannel->mNumPositionKeys,
+      out, " for animation channel's number of position keys");
+  if (res == -1)
+      finalRes = -1;
+  unsigned int numPositionKeys =
+      std::min(customChannel->mNumPositionKeys, assimpChannel->mNumPositionKeys);
+  for (unsigned int i = 0; i < numPositionKeys; i++)
+  {
+      res = compareVectorKey(customChannel->mPositionKeys[i],
+          assimpChannel->mPositionKeys[i], out);
+      if (res == -1)
+          finalRes = -1;
+  }
+  res = compareValues(customChannel->mNumRotationKeys, assimpChannel->mNumRotationKeys,
+      out, " for animation channel's number of rotation keys");
+  if (res == -1)
+      finalRes = -1;
+  unsigned int numRotationKeys =
+      std::min(customChannel->mNumRotationKeys, assimpChannel->mNumRotationKeys);
+  for (unsigned int i = 0; i < numRotationKeys; i++)
+  {
+      res = compareQuatKey(customChannel->mRotationKeys[i],
+          assimpChannel->mRotationKeys[i], out);
+      if (res == -1)
+          finalRes = -1;
+  }
+  res = compareValues(customChannel->mNumScalingKeys, assimpChannel->mNumScalingKeys,
+      out, " for animation channel's number of scaling keys");
+  if (res == -1)
+      finalRes = -1;
+  unsigned int numScalingKeys =
+      std::min(customChannel->mNumScalingKeys, assimpChannel->mNumScalingKeys);
+  for (unsigned int i = 0; i < numScalingKeys; i++)
+  {
+      res = compareVectorKey(customChannel->mScalingKeys[i],
+          assimpChannel->mScalingKeys[i], out);
+      if (res == -1)
+          finalRes = -1;
+  }
   return finalRes;
 }
 
@@ -363,11 +460,18 @@ static int compareAnimations(const cpAnimation* customAnim,
     out, " for animation " + customAnim->mName + "'s duration");
   if (res == -1)
     finalRes = -1;
-  unsigned int numChannels =
-    std::min(customAnim->mNumChannels, assimpAnim->mNumChannels);
-  for (unsigned int i = 0; i < numChannels; i++)
+  for (unsigned int i = 0; i < customAnim->mNumChannels; i++)
   {
-    res = compareChannels(customAnim->mChannels[i], assimpAnim->mChannels[i], out);
+    std::string name = customAnim->mChannels[i]->mNodeName;
+    unsigned int j;
+    for (j = 0; j < assimpAnim->mNumChannels; j++)
+    {
+        if (assimpAnim->mChannels[j]->mNodeName.C_Str() == name)
+            break;
+    }
+    if (j == assimpAnim->mNumChannels)
+        out << "Error, no matching anim channel for " << name << std::endl;
+    res = compareChannels(customAnim->mChannels[i], assimpAnim->mChannels[j], out);
     if (res == -1)
       finalRes = -1;
   }

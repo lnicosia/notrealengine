@@ -98,7 +98,8 @@ namespace notrealengine
 		double				mDuration;
 		std::string		mName;
 
-		cpAnimation(): mChannels(nullptr), mNumChannels(0)
+		cpAnimation(): mChannels(nullptr), mNumChannels(0), mTicksPerSecond(0),
+			mDuration(0), mName("")
 		{}
 
 	};
@@ -281,7 +282,15 @@ namespace notrealengine
 			for (unsigned int i = 0; i < anim->mNumChannels; i++)
 			{
 				if (anim->mChannels[i] != nullptr)
+				{
+					if (anim->mChannels[i]->mPositionKeys != nullptr)
+						delete[] anim->mChannels[i]->mPositionKeys;
+					if (anim->mChannels[i]->mRotationKeys != nullptr)
+						delete[] anim->mChannels[i]->mRotationKeys;
+					if (anim->mChannels[i]->mScalingKeys != nullptr)
+						delete[] anim->mChannels[i]->mScalingKeys;
 					delete anim->mChannels[i];
+				}
 			}
 			delete[] anim->mChannels;
 			delete anim;
@@ -350,7 +359,7 @@ namespace notrealengine
 		std::vector<MeshID>	meshIDs;
 		std::map<std::string, size_t> matIndices;
 		std::vector<cpMaterial*> materials;
-		std::vector<cpAnimation> animations;
+		std::vector<cpAnimation*> animations;
 		std::vector<cpNode*> nodes;
 
 		//	We may fight nodes with no name, use this to assign auto names to them
@@ -422,6 +431,13 @@ namespace notrealengine
 		std::string
 			ReadString(const std::vector<std::string>& array, const ColladaParser::ColladaAccessor& acc,
 			size_t index, size_t offset);
+
+		/**	Decompose a given matrix into the three position,
+		**	rotation and scale components
+		*/
+		void
+			DecomposeMatrix(const mft::mat4& mat,
+				mft::vec3& pos, mft::quat& rot, mft::vec3& scale);
 
 	};
 

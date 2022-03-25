@@ -13,13 +13,13 @@
 namespace notrealengine
 {
   mft::quat
-    AssimpToMftQuat(aiQuaternion& quat);
+    AssimpToMftQuat(const aiQuaternion& quat);
   mft::vec3
-    AssimpToMftVec3(aiVector3D& vec);
+    AssimpToMftVec3(const aiVector3D& vec);
   mft::vec4
-    AssimpToMftVec4(aiColor4D& vec);
+    AssimpToMftVec4(const aiColor4D& vec);
   mft::mat4
-    AssimpToMftMatrix(aiMatrix4x4 mat);
+    AssimpToMftMatrix(const aiMatrix4x4 mat);
 }
 
 #endif

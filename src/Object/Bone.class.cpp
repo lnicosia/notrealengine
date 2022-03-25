@@ -10,7 +10,7 @@ namespace notrealengine
 
 	}
 
-	Bone::Bone(const std::string& name, const int id, const aiNodeAnim* node)
+	Bone::Bone(const std::string& name, const int id, const cpNodeAnim* node)
 	: id(0), name(name), globalMatrix(), localMatrix(),
 	positions(), rotations(), scales(), transforms(), modelMatrices(),
 	nbPositions(0), nbRotations(0), nbScales(0)
@@ -19,7 +19,7 @@ namespace notrealengine
 		for (unsigned int j = 0; j < node->mNumPositionKeys; j++)
 		{
 			VecKeyFrame	keyFrame;
-			keyFrame.vec = AssimpToMftVec3(node->mPositionKeys[j].mValue);
+			keyFrame.vec = node->mPositionKeys[j].mValue;
 			keyFrame.time = node->mPositionKeys[j].mTime;
 			//std::cout << "Time = " << keyFrame.time << std::endl;
 			positions.push_back(keyFrame);
@@ -29,7 +29,7 @@ namespace notrealengine
 		for (unsigned int j = 0; j < node->mNumRotationKeys; j++)
 		{
 			QuatKeyFrame	keyFrame;
-			keyFrame.quat = AssimpToMftQuat(node->mRotationKeys[j].mValue);
+			keyFrame.quat = node->mRotationKeys[j].mValue;
 			keyFrame.time = node->mRotationKeys[j].mTime;
 			//std::cout << "Time = " << keyFrame.time << std::endl;
 			rotations.push_back(keyFrame);
@@ -40,7 +40,7 @@ namespace notrealengine
 		for (unsigned int j = 0; j < node->mNumScalingKeys; j++)
 		{
 			VecKeyFrame	keyFrame;
-			keyFrame.vec = AssimpToMftVec3(node->mScalingKeys[j].mValue);
+			keyFrame.vec = node->mScalingKeys[j].mValue;
 			keyFrame.time = node->mScalingKeys[j].mTime;
 			//std::cout << "Time = " << keyFrame.time << std::endl;
 			scales.push_back(keyFrame);

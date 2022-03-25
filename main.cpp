@@ -50,7 +50,7 @@ int		main(int ac, char** av)
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim;
-	if (ac == 3)
+	if (ac == 3 && av[2][0] != '-')
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
 	else if (ac == 2)
 	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);

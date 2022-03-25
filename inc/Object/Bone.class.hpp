@@ -2,6 +2,7 @@
 # define _BONE_CLASS_H_
 
 #include "mft/mft.hpp"
+#include "ColladaParser/ColladaSceneBuilder.class.hpp"
 
 //	Fix for assimp
 #undef max
@@ -31,7 +32,7 @@ namespace notrealengine
 	{
 	public:
 		Bone();
-		Bone(const std::string& name, const int id, const aiNodeAnim* node);
+		Bone(const std::string& name, const int id, const cpNodeAnim* node);
 		Bone(const Bone& ref);
 		Bone& operator=(const Bone& ref);
 		~Bone();

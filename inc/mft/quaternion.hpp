@@ -4,6 +4,7 @@
 
 # include <type_traits>
 # include "mft/templates/vec.template.hpp"
+# include "mft/mat.hpp"
 
 namespace mft
 {
@@ -28,6 +29,8 @@ namespace mft
 		constexpr quaternion<T>( void );
 		constexpr quaternion<T>( T e1, T e2, T e3, T e4 );
 		constexpr quaternion<T>( std::array<T,4> from );
+		constexpr quaternion<T>( const T m[3][3] );
+		constexpr quaternion<T>( const T m[4][4] );
 		template<typename U>
 		constexpr quaternion<T>( const quaternion<U> from );
 		quaternion<T> & operator=( const quaternion<T> & from );

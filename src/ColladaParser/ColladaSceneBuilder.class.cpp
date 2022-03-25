@@ -2,6 +2,7 @@
 #include "ColladaParser/ColladaException.class.hpp"
 
 #include <limits>
+#include <unordered_set>
 
 namespace notrealengine
 {
@@ -26,7 +27,7 @@ namespace notrealengine
 		{
 			throw ColladaException("Empty collada file");
 		}
-		scene = new cpScene;
+		scene = new cpScene();
 
 		BuildMaterials(parser, scene);
 		scene->mRootNode = BuildNode(parser, parser.rootNode);
@@ -53,18 +54,18 @@ namespace notrealengine
 		}
 
 		scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
-		scene->mMeshes = new cpMesh * [scene->mNumMeshes];
+		scene->mMeshes = new cpMesh * [scene->mNumMeshes]();
 		std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
 
 		scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
-		scene->mMaterials = new cpMaterial * [scene->mNumMaterials];
+		scene->mMaterials = new cpMaterial * [scene->mNumMaterials]();
 		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
 		{
 			scene->mMaterials[i] = this->materials[i];
 		}
 
 		scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
-		scene->mTextures = new cpTexture * [scene->mNumTextures];
+		scene->mTextures = new cpTexture * [scene->mNumTextures]();
 		std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
 
 		BuildAnimations(parser, scene);
@@ -85,10 +86,11 @@ namespace notrealengine
 		cpScene* scene, const ColladaParser::ColladaAnimation& anim,
 		const std::string& name)
 	{
-		std::cout << "Creating animation " << name << std::endl;
+		std::vector<cpNodeAnim*> nodeAnims;
+		//std::cout << "Creating animation " << name << std::endl;
 		for (const auto& node: this->nodes)
 		{
-			std::cout << "cpNode name = " << node->mName << std::endl;
+			//std::cout << "cpNode name = " << node->mName << std::endl;
 			const ColladaParser::ColladaNode *colladaNode = FindNode(parser.rootNode,
 				node->mName);
 			if (colladaNode == nullptr)
@@ -99,7 +101,7 @@ namespace notrealengine
 			//	For each ColladaNode/cpNode duet, check if the channels of anim
 			//	affect them
 
-			std::cout << "ColladaNode name = " << colladaNode->name << std::endl;
+			//std::cout << "ColladaNode name = " << colladaNode->name << std::endl;
 
 
 			std::vector<Channel> channels;
@@ -108,7 +110,7 @@ namespace notrealengine
 			{
 				Channel newChannel;
 
-				std::cout << "Checking channel of target " << channel.target << std::endl;
+				//std::cout << "Checking channel of target " << channel.target << std::endl;
 				newChannel.srcChannel = &channel;
 				std::string target;
 				size_t slashPos = channel.target.find('/');
@@ -137,15 +139,15 @@ namespace notrealengine
 					std::cerr << " but we don't handle it yet :)" << std::endl;
 				}
 
-				std::cout << "Transform id = '" << newChannel.transformId << "'" << std::endl;
+				//std::cout << "Transform id = '" << newChannel.transformId << "'" << std::endl;
 
 				//	Search for a corresponding transform in the current channel
 				//	- skip if not found
 				newChannel.transformIndex = -1;
 				for (size_t i = 0; i < colladaNode->transforms.size(); i++)
 				{
-					std::cout << "Comparing with transform[" << i << "] of id '";
-					std::cout << colladaNode->transforms[i].id << "'" << std::endl;
+					//std::cout << "Comparing with transform[" << i << "] of id '";
+					//std::cout << colladaNode->transforms[i].id << "'" << std::endl;
 					if (colladaNode->transforms[i].id == newChannel.transformId)
 					{
 						newChannel.transformIndex = i;
@@ -154,7 +156,7 @@ namespace notrealengine
 				}
 				if (newChannel.transformIndex == -1)
 					continue ;
-				std::cout << "Channel transform index is " << newChannel.transformIndex << std::endl;
+				//std::cout << "Channel transform index is " << newChannel.transformIndex << std::endl;
 				channels.push_back(newChannel);
 			}
 			if (channels.empty())
@@ -194,10 +196,69 @@ namespace notrealengine
 				endTime = std::max(endTime,
 					ReadFloat(*channel.times, *channel.timesAcc, channel.times->size() - 1, 0));
 			}
-			float	time = startTime;
-			while (time != std::numeric_limits<float>::max())
+			float	currentTime = startTime;
+			std::vector<mft::mat4> transforms;
+			std::vector<float>	times;
+			//	Get a copy of the current node's transforms
+			//	we will apply channel transformations to it
+			//	and save them for the each timestamp
+			std::vector<ColladaParser::ColladaTransform> nodeTransforms =
+				colladaNode->transforms;
+			while (currentTime != std::numeric_limits<float>::max())
 			{
-				std::cout << "Time = " << time << std::endl;
+				//std::cout << "Time = " << time << std::endl;
+				times.push_back(currentTime);
+				
+				for (const auto& channel : channels)
+				{
+					size_t indexInChannel = 0;
+					float channelTime = 0.0f;
+					//	Find currentTime in the current channel
+					//	or the closest time after it
+					for (indexInChannel = 0; indexInChannel < channel.timesAcc->count; indexInChannel++)
+					{
+						channelTime = ReadFloat(*channel.times, *channel.timesAcc,
+							indexInChannel, 0);
+						if (channelTime >= currentTime)
+							break;
+					}
+					float values[16];
+					for (unsigned short i = 0; i < 16; i++)
+					{
+						values[i] = ReadFloat(*channel.values, *channel.valuesAcc,
+							indexInChannel, i);
+					}
+
+					//	If the current timer is not present in this channel,
+					//	interpolate between previous and next ones
+					if (channelTime > currentTime && indexInChannel > 0)
+					{
+						float prevTime = ReadFloat(*channel.times, *channel.timesAcc,
+							indexInChannel - 1, 0);
+						float percentage = (channelTime - currentTime) / (prevTime - channelTime);
+
+						for (unsigned short i = 0; i < 16; i++)
+						{
+							float value = ReadFloat(*channel.values, *channel.valuesAcc,
+								indexInChannel - 1, i);
+							values[i] = (value - values[i]) * percentage;
+						}
+					}
+					for (unsigned short i = 0; i < 4; i++)
+					{
+						for (unsigned short j = 0; j < 4; j++)
+						{
+							nodeTransforms[channel.transformIndex].matrix[i][j] = values[i * 4 + j];
+						}
+					}
+				}
+				mft::mat4 finalTransform;
+				for (size_t i = 0; i < nodeTransforms.size(); i++)
+				{
+					finalTransform *= nodeTransforms[i].matrix;
+				}
+				transforms.push_back(finalTransform);
+
 				//	Find the closest next timestamp
 				float nextTime = std::numeric_limits<float>::max();
 				for (const auto& channel: channels)
@@ -205,7 +266,7 @@ namespace notrealengine
 					for (size_t i = 0; i < channel.times->size(); i++)
 					{
 						float t = ReadFloat(*channel.times, *channel.timesAcc, i, 0);
-						if (t > time)
+						if (t > currentTime)
 						{
 							//	Take the min with the time of the other channels
 							nextTime = std::min(t, nextTime);
@@ -213,9 +274,90 @@ namespace notrealengine
 						}
 					}
 				}
-				time = nextTime;
+				currentTime = nextTime;
 			}
+			if (transforms.empty())
+				continue;
+			cpNodeAnim* nodeAnim = new cpNodeAnim();
+			nodeAnim->mNodeName = node->mName;
+			nodeAnim->mNumPositionKeys = static_cast<unsigned int>(transforms.size());
+			nodeAnim->mNumRotationKeys = static_cast<unsigned int>(transforms.size());
+			nodeAnim->mNumScalingKeys = static_cast<unsigned int>(transforms.size());
+			nodeAnim->mPositionKeys = new cpVectorKey[nodeAnim->mNumPositionKeys]();
+			nodeAnim->mRotationKeys = new cpQuatKey[nodeAnim->mNumRotationKeys]();
+			nodeAnim->mScalingKeys = new cpVectorKey[nodeAnim->mNumScalingKeys]();
+			for (size_t i = 0; i < nodeAnim->mNumPositionKeys; i++)
+			{
+				nodeAnim->mPositionKeys[i].mTime = times[i] * 1000.0;
+				nodeAnim->mRotationKeys[i].mTime = times[i] * 1000.0;
+				nodeAnim->mScalingKeys[i].mTime = times[i] * 1000.0;
+				DecomposeMatrix(transforms[i],
+					nodeAnim->mPositionKeys[i].mValue,
+					nodeAnim->mRotationKeys[i].mValue,
+					nodeAnim->mScalingKeys[i].mValue);
+			}
+			nodeAnims.push_back(nodeAnim);
 		}
+		if (nodeAnims.empty())
+			return;
+		cpAnimation* newAnim = new cpAnimation();
+		newAnim->mName = name;
+		newAnim->mNumChannels = static_cast<unsigned int>(nodeAnims.size());
+		if (newAnim->mNumChannels > 0)
+		{
+			newAnim->mChannels = new cpNodeAnim * [newAnim->mNumChannels]();
+			std::copy(nodeAnims.begin(), nodeAnims.end(), newAnim->mChannels);
+		}
+		newAnim->mDuration = 0.0f;
+		for (const auto& anim : nodeAnims)
+		{
+			newAnim->mDuration = std::max(newAnim->mDuration,
+				anim->mPositionKeys[anim->mNumPositionKeys - 1].mTime);
+			newAnim->mDuration = std::max(newAnim->mDuration,
+				anim->mRotationKeys[anim->mNumRotationKeys - 1].mTime);
+			newAnim->mDuration = std::max(newAnim->mDuration,
+				anim->mScalingKeys[anim->mNumScalingKeys - 1].mTime);
+		}
+		newAnim->mTicksPerSecond = 1000.0;
+		this->animations.push_back(newAnim);
+	}
+
+	void ColladaSceneBuilder::DecomposeMatrix(const mft::mat4& mat,
+		mft::vec3& pos, mft::quat& rot, mft::vec3& scale)
+	{
+		pos.x = mat[0][3];
+		pos.y = mat[1][3];
+		pos.z = mat[2][3];
+
+		mft::vec3 columns[3] =
+		{
+			{ mat[0][0], mat[1][0], mat[2][0] },
+			{ mat[0][1], mat[1][1], mat[2][1] },
+			{ mat[0][2], mat[1][2], mat[2][2] }
+		};
+
+		scale.x = mft::vec3::length(columns[0]);
+		scale.y = mft::vec3::length(columns[1]);
+		scale.z = mft::vec3::length(columns[2]);
+
+		if (mft::mat4::determinant(mat) < 0)
+			scale *= -1;
+
+		if (scale.x)
+			columns[0] /= scale.x;
+		if (scale.y)
+			columns[1] /= scale.y;
+		if (scale.z)
+			columns[2] /= scale.z;
+
+		float m[3][3] =
+		{
+			{ columns[0].x, columns[1].x, columns[2].x },
+			{ columns[0].y, columns[1].y, columns[2].y },
+			{ columns[0].z, columns[1].z, columns[2].z }
+		};
+
+		rot = mft::quat(m);
 	}
 
 	void ColladaSceneBuilder::BuildAnimation(const ColladaParser& parser,
@@ -240,6 +382,82 @@ namespace notrealengine
 		{
 			BuildAnimation(parser, scene, anim.second, "");
 		}
+
+		//std::cout << "Before "
+		for (size_t i = 0; i < this->animations.size(); i++)
+		{
+			//	At this point, we may have many animations only affecting
+			//	one node. We can combine them into a single one
+			cpAnimation* currAnim = this->animations[i];
+			if (currAnim->mNumChannels == 1)
+			{
+				std::vector<size_t> combinableAnimsIndices;
+				for (size_t j = i + 1; j < this->animations.size(); j++)
+				{
+					cpAnimation* a = this->animations[j];
+					if (a->mNumChannels == 1 && a->mDuration == currAnim->mDuration
+						&& a->mTicksPerSecond == currAnim->mTicksPerSecond)
+						combinableAnimsIndices.push_back(j);
+				}
+
+				//	Make sure that those animations affect different nodes
+				std::unordered_set<std::string> affectedNodes;
+				affectedNodes.insert(currAnim->mChannels[0]->mNodeName);
+				bool differentNodes = true;
+				for (const auto& animIndex : combinableAnimsIndices)
+				{
+					cpAnimation* possibleAnim = this->animations[animIndex];
+					std::string affectedNode = this->animations[animIndex]->mChannels[0]->mNodeName;
+					if (affectedNodes.find(affectedNode) == affectedNodes.end())
+					{
+						affectedNodes.insert(affectedNode);
+					}
+					else
+					{
+						differentNodes = false;
+						break;
+					}
+				}
+				if (differentNodes == false || combinableAnimsIndices.empty())
+					continue;
+				cpAnimation* newAnim = new cpAnimation();
+				newAnim->mName = "CombinedAnimation_" + std::to_string(i);
+				newAnim->mNumChannels =
+					static_cast<unsigned int>(combinableAnimsIndices.size() + 1);
+				newAnim->mDuration = currAnim->mDuration;
+				newAnim->mTicksPerSecond = currAnim->mTicksPerSecond;
+				newAnim->mChannels = new cpNodeAnim * [newAnim->mNumChannels]();
+
+				newAnim->mChannels[0] = currAnim->mChannels[0];
+				delete [] currAnim->mChannels;
+				delete currAnim;
+
+				
+				this->animations[i] = newAnim;
+				for (size_t j = 0; j < combinableAnimsIndices.size(); j++)
+				{
+					cpAnimation* toCombine = this->animations[combinableAnimsIndices[j]];
+					newAnim->mChannels[j + 1] = toCombine->mChannels[0];
+
+					delete [] toCombine->mChannels;
+					delete toCombine;
+				}
+
+				//	Remove the combined pointers from this->animations
+				//	Backwards so the vector does not pack itself after each deletion
+				for (size_t j = 0; j < combinableAnimsIndices.size(); j++)
+				{
+					this->animations.erase(this->animations.begin()
+						+ combinableAnimsIndices[combinableAnimsIndices.size() - 1 - j]);
+				}
+			}
+		}
+		
+		if (this->animations.empty())
+			return;
+		scene->mNumAnimations = static_cast<unsigned int>(this->animations.size());
+		scene->mAnimations = new cpAnimation * [scene->mNumAnimations]();
+		std::copy(this->animations.begin(), this->animations.end(), scene->mAnimations);
 	}
 
 	cpNode* ColladaSceneBuilder::BuildNode(ColladaParser& parser,
@@ -276,7 +494,7 @@ namespace notrealengine
 		}
 
 		newNode->mNumChildren = static_cast<unsigned int>(node->children.size() + nbInstances);
-		newNode->mChildren = new cpNode * [newNode->mNumChildren];
+		newNode->mChildren = new cpNode * [newNode->mNumChildren]();
 		for (size_t i = 0; i < node->children.size(); i++)
 		{
 			newNode->mChildren[i] = BuildNode(parser, &node->children[i]);
@@ -409,7 +627,7 @@ namespace notrealengine
 		newNode->mNumMeshes = meshIndices.size();
 		if (newNode->mNumMeshes > 0)
 		{
-			newNode->mMeshes = new unsigned int [newNode->mNumMeshes];
+			newNode->mMeshes = new unsigned int [newNode->mNumMeshes]();
 			for (size_t i = 0; i < newNode->mNumMeshes; i++)
 			{
 				newNode->mMeshes[i] = meshIndices[i];
@@ -475,7 +693,7 @@ namespace notrealengine
 		{
 			if (vertexStart + res->mNumVertices < src->colors[i].size())
 			{
-				res->mColors[currentChannel] = new mft::vec4[res->mNumVertices];
+				res->mColors[currentChannel] = new mft::vec4[res->mNumVertices]();
 				for (size_t j = 0; j < res->mNumVertices; j++)
 				{
 					res->mColors[currentChannel][j] = src->colors[i][vertexStart + j];
@@ -487,7 +705,7 @@ namespace notrealengine
 
 		//	Faces
 		res->mNumFaces = subMesh.nbFaces;
-		res->mFaces = new cpFace[res->mNumFaces];
+		res->mFaces = new cpFace[res->mNumFaces]();
 
 		size_t	vertex = 0;
 		for (size_t i = 0; i < res->mNumFaces; i++)
@@ -587,36 +805,29 @@ namespace notrealengine
 					res->mNumBones++;
 			}
 
-			res->mBones = new cpBone * [res->mNumBones];
+			res->mBones = new cpBone * [res->mNumBones]();
 			for (unsigned int i = 0, boneIndex = 0; i < boneNames.size(); i++)
 			{
 				if (bones[i].empty())
 					continue;
-				cpBone* bone = new cpBone;
+				cpBone* bone = new cpBone();
 				bone->mName = ReadString(boneNames, boneNamesAcc, i, 0);
 				bone->mNumWeights = bones[i].size();
-				bone->mWeights = new cpVertexWeight [bone->mNumWeights];
+				bone->mWeights = new cpVertexWeight [bone->mNumWeights]();
 				for (unsigned int j = 0; j < bone->mNumWeights; j++)
 				{
 					bone->mWeights[j] = bones[i][j];
 				}
+				float values[16];
+				for (short int j = 0; j < 16; j++)
+				{
+					values[j] = ReadFloat(boneMatrices, bonesMatrixAcc, i, j);
+				}
 				bone->mOffsetMatrix = mft::mat4(
-					{ ReadFloat(boneMatrices, bonesMatrixAcc, i, 0),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 1),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 2),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 3) },
-					{ ReadFloat(boneMatrices, bonesMatrixAcc, i, 4),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 5),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 6),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 7) },
-					{ ReadFloat(boneMatrices, bonesMatrixAcc, i, 8),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 9),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 10),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 11) },
-					{ ReadFloat(boneMatrices, bonesMatrixAcc, i, 12),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 13),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 14),
-						ReadFloat(boneMatrices, bonesMatrixAcc, i, 15) });
+					{ values[0], values[1], values[2], values[3] },
+					{ values[4], values[5], values[6], values[7] },
+					{ values[8], values[9], values[10], values[11] },
+					{ values[12], values[13], values[14], values[15] });
 				bone->mOffsetMatrix *= controller->bindShapeMatrix;
 				res->mBones[boneIndex++] = bone;
 			}

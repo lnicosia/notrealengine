@@ -266,6 +266,7 @@ namespace notrealengine
 		struct ColladaTransform
 		{
 			std::string id;
+			TransformType type;
 			mft::mat4		matrix;
 		};
 

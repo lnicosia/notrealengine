@@ -3,22 +3,22 @@
 namespace notrealengine
 {
 
-  mft::vec3	AssimpToMftVec3(aiVector3D& vec)
+  mft::vec3	AssimpToMftVec3(const aiVector3D& vec)
   {
     return (mft::vec3(vec.x, vec.y, vec.z));
   }
 
-  mft::vec4	AssimpToMftVec4(aiColor4D& vec)
+  mft::vec4	AssimpToMftVec4(const aiColor4D& vec)
   {
     return (mft::vec4(vec.r, vec.g, vec.b, vec.a));
   }
 
-  mft::quat	AssimpToMftQuat(aiQuaternion& quat)
+  mft::quat	AssimpToMftQuat(const aiQuaternion& quat)
   {
     return (mft::quat(quat.w, quat.x, quat.y, quat.z));
   }
 
-  mft::mat4	AssimpToMftMatrix(aiMatrix4x4 mat)
+  mft::mat4	AssimpToMftMatrix(const aiMatrix4x4 mat)
   {
     mft::mat4	res(
       { static_cast<float>(mat.a1), static_cast<float>(mat.a2), static_cast<float>(mat.a3), static_cast<float>(mat.a4) },

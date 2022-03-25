@@ -37,6 +37,86 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
+	constexpr quaternion<T>::quaternion( const T m[3][3] )
+	{
+		T t = m[0][0] + m[1][1] + m[2][2];
+
+		if (t > static_cast<T>(0))
+		{
+			T s = std::sqrt(1 + t) * static_cast<T>(2.0);
+			i = (m[2][1] - m[1][2]) / s;
+			j = (m[0][2] - m[2][0]) / s;
+			k = (m[1][0] - m[0][1]) / s;
+			r = static_cast<T>(0.25) * s;
+		}
+		else if (m[0][0] > m[1][1] && m[0][0] > m[2][2])
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[0][0] - m[1][1] - m[2][2]) * static_cast<T>(2.0);
+			i = static_cast<T>(0.25) * s;
+			j = (m[1][0] + m[0][1]) / s;
+			k = (m[0][2] + m[2][0]) / s;
+			r = (m[2][1] - m[1][2]) / s;
+		}
+		else if (m[1][1] > m[2][2])
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[1][1] - m[0][0] - m[2][2]) * static_cast<T>(2.0);
+			i = (m[1][0] + m[0][1]) / s;
+			j = static_cast<T>(0.25) * s;
+			k = (m[2][1] + m[1][2]) / s;
+			r = (m[0][2] - m[2][0]) / s;
+		}
+		else
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[2][2] - m[0][0] - m[1][1]) * static_cast<T>(2.0);
+			i = (m[0][2] + m[2][0]) / s;
+			j = (m[2][1] + m[1][2]) / s;
+			k = static_cast<T>(0.25) * s;
+			r = (m[1][0] - m[0][1]) / s;
+		}
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr quaternion<T>::quaternion( const T m[4][4] )
+	{
+		T t = m[0][0] + m[1][1] + m[2][2];
+
+		if (t > static_cast<T>(0))
+		{
+			T s = std::sqrt(1 + t) * static_cast<T>(2.0);
+			i = (m[2][1] - m[1][2]) / s;
+			j = (m[0][2] - m[2][0]) / s;
+			k = (m[1][0] - m[0][1]) / s;
+			r = static_cast<T>(0.25) * s;
+		}
+		else if (m[0][0] > m[1][1] && m[0][0] > m[2][2])
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[0][0] - m[1][1] - m[2][2]) * static_cast<T>(2.0);
+			i = static_cast<T>(0.25) * s;
+			j = (m[1][0] - m[0][1]) / s;
+			k = (m[0][2] - m[2][0]) / s;
+			r = (m[2][1] - m[1][2]) / s;
+		}
+		else if (m[1][1] > m[2][2])
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[1][1] - m[0][0] - m[2][2]) * static_cast<T>(2.0);
+			i = (m[1][0] - m[0][1]) / s;
+			j = static_cast<T>(0.25) * s;
+			k = (m[2][1] - m[1][2]) / s;
+			r = (m[0][2] - m[2][0]) / s;
+		}
+		else
+		{
+			T s = std::sqrt(static_cast<T>(1.0) + m[2][2] - m[0][0] - m[1][1]) * static_cast<T>(2.0);
+			i = (m[0][2] - m[2][0]) / s;
+			j = (m[2][1] - m[1][2]) / s;
+			k = static_cast<T>(0.25) * s;
+			r = (m[1][0] - m[0][1]) / s;
+		}
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
 	quaternion<T> & quaternion<T>::operator=( const quaternion<T> & from )
 	{
 		std::copy(std::begin(from.data), std::end(from.data), std::begin(data));
