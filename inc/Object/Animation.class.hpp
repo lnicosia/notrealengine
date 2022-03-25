@@ -45,7 +45,7 @@ namespace notrealengine
 			getDuration( void ) const;
 
 		void
-			processNode(cpNode* node, cpAnimation* animation, int parentId);
+			processNode(const void* nnode, const void* aanimation, int parentId);
 
 		virtual const std::string
 			getAssetType() const;

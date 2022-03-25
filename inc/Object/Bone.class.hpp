@@ -32,7 +32,7 @@ namespace notrealengine
 	{
 	public:
 		Bone();
-		Bone(const std::string& name, const int id, const cpNodeAnim* node);
+		Bone(const std::string& name, const int id, const void* node);
 		Bone(const Bone& ref);
 		Bone& operator=(const Bone& ref);
 		~Bone();

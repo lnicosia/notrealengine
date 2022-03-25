@@ -233,6 +233,8 @@ namespace notrealengine
 				deleteNode(this->mRootNode);
 		}
 
+		bool HasAnimations() const { return this->mNumAnimations > 0; }
+
 	private:
 		void deleteBone(cpBone* bone)
 		{

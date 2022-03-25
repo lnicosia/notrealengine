@@ -10,39 +10,50 @@ namespace notrealengine
 
 	}
 
-	Bone::Bone(const std::string& name, const int id, const cpNodeAnim* node)
+	Bone::Bone(const std::string& name, const int id, const void* nnode)
 	: id(0), name(name), globalMatrix(), localMatrix(),
 	positions(), rotations(), scales(), transforms(), modelMatrices(),
 	nbPositions(0), nbRotations(0), nbScales(0)
 	{
-		//std::cout << "Bone " << name << std::endl;
+
+#ifdef USING_EXTERNAL_LIBS
+		const aiNodeAnim* node = static_cast<const aiNodeAnim*>(nnode);
+#else
+		const cpNodeAnim* node = static_cast<const cpNodeAnim*>(nnode);
+#endif // USING_EXTERNAL_LIBS
 		for (unsigned int j = 0; j < node->mNumPositionKeys; j++)
 		{
 			VecKeyFrame	keyFrame;
+#ifdef USING_EXTERNAL_LIBS
+			keyFrame.vec = AssimpToMftVec3(node->mPositionKeys[j].mValue);
+#else
 			keyFrame.vec = node->mPositionKeys[j].mValue;
+#endif
 			keyFrame.time = node->mPositionKeys[j].mTime;
-			//std::cout << "Time = " << keyFrame.time << std::endl;
 			positions.push_back(keyFrame);
 			nbPositions++;
 		}
-		//std::cout << std::endl;
 		for (unsigned int j = 0; j < node->mNumRotationKeys; j++)
 		{
 			QuatKeyFrame	keyFrame;
+#ifdef USING_EXTERNAL_LIBS
+			keyFrame.quat = AssimpToMftQuat(node->mRotationKeys[j].mValue);
+#else
 			keyFrame.quat = node->mRotationKeys[j].mValue;
+#endif
 			keyFrame.time = node->mRotationKeys[j].mTime;
-			//std::cout << "Time = " << keyFrame.time << std::endl;
 			rotations.push_back(keyFrame);
-			//std::cout << "Rotation " << j << " = " << keyFrame.quat << std::endl;
 			nbRotations++;
 		}
-		//std::cout << std::endl;
 		for (unsigned int j = 0; j < node->mNumScalingKeys; j++)
 		{
 			VecKeyFrame	keyFrame;
+#ifdef USING_EXTERNAL_LIBS
+			keyFrame.vec = AssimpToMftVec3(node->mScalingKeys[j].mValue);
+#else
 			keyFrame.vec = node->mScalingKeys[j].mValue;
+#endif
 			keyFrame.time = node->mScalingKeys[j].mTime;
-			//std::cout << "Time = " << keyFrame.time << std::endl;
 			scales.push_back(keyFrame);
 			nbScales++;
 		}
@@ -64,14 +75,6 @@ namespace notrealengine
 			else
 				rotation = mft::mat4::rotate(mft::quat::normalized(rotations[rotations.size() - 1].quat));
 			mft::mat4 transform = scale * rotation * translation;
-			/*if (j == 70)
-			{
-				std::cout << "Bone " << this->name << " transform " << j << ":" << std::endl;
-				std::cout << "Scale = " << scales[j].vec << std::endl;
-				std::cout << "Rotation = " << rotations[j].quat << std::endl;
-				std::cout << "Position = " << positions[j].vec << std::endl;
-				std::cout << "Matrix = " << transform << std::endl;
-			}*/
 			transforms.push_back(transform);
 		}
 	}
@@ -113,8 +116,6 @@ namespace notrealengine
 	{
 		if (keyFrame >= transforms.size())
 			return transforms[transforms.size() - 1];
-			//throw std::out_of_range ("Index " + std::to_string(keyFrame) + " is out of bone '"
-			//+ name + "' transforms range");
 		return transforms[keyFrame];
 	}
 
