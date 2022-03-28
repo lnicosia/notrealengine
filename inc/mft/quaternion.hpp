@@ -29,6 +29,7 @@ namespace mft
 		constexpr quaternion<T>( void );
 		constexpr quaternion<T>( T e1, T e2, T e3, T e4 );
 		constexpr quaternion<T>( std::array<T,4> from );
+		//	Construct from a rotation matrix
 		constexpr quaternion<T>( const T m[3][3] );
 		constexpr quaternion<T>( const T m[4][4] );
 		template<typename U>

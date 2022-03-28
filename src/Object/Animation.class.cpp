@@ -17,12 +17,14 @@ namespace notrealengine
 		: Asset({path}), duration(0), ticksPerSecond(0), type(Skeletal),
 		bones(), currentFrame(0), nodes(), ended(false)
 	{
-		std::cout << "Loading animation " << index << " of " << path << std::endl;
+		std::cout << "Loading animation " << index << " of '" << path;
 
 #ifdef USING_EXTERNAL_LIBS
+		std::cout << "' with assimp..." << std::endl;
 		Assimp::Importer	importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
 #else
+	std::cout << "' with custom parser..." << std::endl;
 		ColladaSceneBuilder importer;
 		const cpScene* scene = importer.ReadFile(path, 0);
 #endif
@@ -37,7 +39,7 @@ namespace notrealengine
 		}
 		if (scene->HasAnimations() == false || index >= scene->mNumAnimations)
 		{
-			std::cerr << path << " does not have " << index << " animations" << std::endl;
+			std::cerr << "Animation " << index << " does not exist" << std::endl;
 			return;
 		}
 #ifdef USING_EXTERNAL_LIBS
@@ -67,6 +69,18 @@ namespace notrealengine
 #endif
 	}
 
+	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)
+		: Asset({""}), duration(0), ticksPerSecond(1000.0), type(Solid), bones(bones),
+		currentFrame(0), ended(false), nodes()
+	{
+		std::cout << "Loading animation from bones..." << std::endl;
+		for (const auto& pair: bones)
+		{
+			const Bone& bone = pair.second;
+			this->duration = std::max(this->duration, bone.getMaxTime());
+		}
+	}
+
 	Animation::~Animation()
 	{
 	}
@@ -88,9 +102,9 @@ namespace notrealengine
 		newNode.name = node->mName;
 		newNode.transform = node->mTransformation;
 #endif
-		
+
 		newNode.parentId = parentId;
-		
+
 		this->nodes.push_back(newNode);
 		for (int i = 0; i < node->mNumChildren; i++)
 		{
@@ -116,7 +130,17 @@ namespace notrealengine
 
 	const double	Animation::getDuration(void) const
 	{
-		return duration;
+		return this->duration;
+	}
+
+	const double	Animation::getTicksPerSecond(void) const
+	{
+		return this->ticksPerSecond;
+	}
+
+	const Animation::AnimType	Animation::getType(void) const
+	{
+		return this->type;
 	}
 
 }

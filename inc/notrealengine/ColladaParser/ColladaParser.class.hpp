@@ -277,6 +277,12 @@ namespace notrealengine
 			std::string	id;
 			std::string	sid;
 			std::string	name;
+			//	When building the final cpNode's hierarchy, we'll have
+			//	to choose a final name (id if there is one,
+			//	otherwise sid, otherwise name)
+			//	We will also have to solve bones references with ColladNodes
+			//	and set their name's to the final one, so we save it here
+			std::string finalName;
 
 			std::vector<ColladaTransform>	transforms;
 

@@ -16,7 +16,7 @@ namespace notrealengine
 		mft::mat4	offsetMatrix;
 		mft::mat4	localMatrix;
 		mft::mat4	modelMatrix;
-		mft::mat4	fromParentMatrix;
+		mft::mat4	originalMatrix;
 	};
 
 	class ObjectImporter

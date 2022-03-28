@@ -26,6 +26,7 @@ enum RenderingMode
 using namespace notrealengine;
 
 std::shared_ptr<GLObject>	InitBobby(void);
+std::shared_ptr<Animation>	InitBobbyWalking(void);
 
 int		main(int ac, char** av)
 {
@@ -45,15 +46,16 @@ int		main(int ac, char** av)
 	context.makeCurrent();
 	SDL_Event	e;
 	int	running = 1;
-	int	mode = Object;
+	int	mode = Bob;
 	int selectedBone = 0;
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
 	std::shared_ptr<Animation>	anim;
 	if (ac == 3 && av[2][0] != '-')
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
-	else if (ac == 2)
+	else if (ac >= 2)
 	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
+	std::shared_ptr<Animation> bobbyWalking = InitBobbyWalking();
 	std::shared_ptr<Light>	light1(new Light(LightType::Directional));
 	light1->move(mft::vec3(0.0f, 4.0f, -5.0f));
 
@@ -68,7 +70,7 @@ int		main(int ac, char** av)
 
 	std::shared_ptr<GLObject>	bobby = InitBobby();
 
-	Mesh& selectedMesh = (*bobby->getMeshes()[0]);
+	Mesh& selectedMesh = (*bobby->getMeshes()[0]->getChildren()[2]);
 
 
 	//upperLeftArm.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.2f));
@@ -93,9 +95,9 @@ int		main(int ac, char** av)
 
 	scene.addObject(obj);
 	scene.addObject(bobby);
-	bobby->visible = false;
-	//obj->visible = false;
-	obj->setAnimation(anim.get());
+	//bobby->visible = false;
+	obj->visible = false;
+	//obj->setAnimation(anim.get());
 	scene.addLight(light1);
 
 	InputState	mouseState = InputState::NRE_RELEASED;
@@ -179,21 +181,28 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
-					scene.left(deltaTime);
+					scene.left(deltaTime / 2.0);
 				}
 				if (e.key.keysym.sym == SDLK_d)
 				{
-					scene.right(deltaTime);
+					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
-					scene.forward(deltaTime);
+					scene.forward(deltaTime / 2.0);
 				}
 				if (e.key.keysym.sym == SDLK_s)
 				{
-					scene.backward(deltaTime);
+					scene.backward(deltaTime / 2.0);
+				}
+				if (e.key.keysym.sym == SDLK_z)
+				{
+					if (scene.getDrawMode() != DrawMode::Wireframe)
+						scene.setDrawMode(DrawMode::Wireframe);
+					else
+						scene.setDrawMode(DrawMode::Fill);
 				}
 				if (e.key.keysym.sym == SDLK_4)
 				{
@@ -258,29 +267,34 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_p)
 				{
 					std::cout << "Animation status = ";
-					AnimationState animState = obj->getAnimationState();
+					std::shared_ptr<GLObject> object;
+					std::shared_ptr<Animation> animation;
+					if (mode == Object || mode == Bones)
+					{
+						object = obj;
+						animation = anim;
+					}
+					else if (mode == Bob)
+					{
+						object = bobby;
+						animation = bobbyWalking;
+					}
+					AnimationState animState = object->getAnimationState();
 					if (animState == AnimationState::Stopped)
 					{
-						obj->playAnimation(anim.get());
+						object->playAnimation(animation.get());
 						std::cout << " started " << std::endl;
 					}
 					else if (animState == AnimationState::Playing)
 					{
-						obj->pauseAnimation();
+						object->pauseAnimation();
 						std::cout << " pause " << std::endl;
 					}
 					else if (animState == AnimationState::Paused)
 					{
-						obj->resumeAnimation();
+						object->resumeAnimation();
 						std::cout << " resumed " << std::endl;
 					}
-				}
-				if (e.key.keysym.sym == SDLK_w)
-				{
-					if (scene.getDrawMode() != DrawMode::Wireframe)
-						scene.setDrawMode(DrawMode::Wireframe);
-					else
-						scene.setDrawMode(DrawMode::Fill);
 				}
 				if (e.key.keysym.sym == SDLK_l)
 				{
@@ -292,7 +306,10 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_o)
 				{
 					mode = Object;
-					obj->setShader(context.getShader("default"));
+					if (scene.getLightingMode() == LightingMode::Lit)
+						obj->setShader(context.getShader("default"));
+					else
+						obj->setShader(context.getShader("unlit"));
 					obj->bindBones();
 				}
 				if (e.key.keysym.sym == SDLK_v)
@@ -308,7 +325,10 @@ int		main(int ac, char** av)
 				}
 				if (e.key.keysym.sym == SDLK_r)
 				{
-					obj->resetPose();
+					if (mode == Object || mode == Bones)
+						obj->resetPose();
+					else if (mode == Bob)
+						bobby->resetPose();
 				}
 				if (e.key.keysym.sym == SDLK_KP_PLUS)
 				{

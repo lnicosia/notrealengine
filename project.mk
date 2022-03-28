@@ -43,7 +43,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Tests/RunTests.cpp \
 
 
-CC = clang++ --std=c++20 -g3 -fsanitize=address
+CC = clang++ --std=c++20 -O3
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

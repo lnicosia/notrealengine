@@ -1345,7 +1345,7 @@ namespace notrealengine
 	const ColladaParser::ColladaNode* FindNode(const ColladaParser::ColladaNode* node,
 		const std::string& name)
 	{
-		if (node->name == name || node->id == name)
+		if (node->name == name || node->id == name || node->sid == name)
 		{
 			return node;
 		}

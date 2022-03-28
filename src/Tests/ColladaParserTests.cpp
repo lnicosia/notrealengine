@@ -562,14 +562,14 @@ static int compareParsers(const std::string& path)
       | aiProcess_GenUVCoords);
     if (!customScene || !customScene->mRootNode)
     {
-      out << "Collada parser failed to import object" << std::endl;
+      out << "nre: scene is empty" << std::endl;
       out.close();
       exit(-1);
     }
   }
   catch (ColladaException& e)
   {
-    out << "nre: " << std::endl;
+    out << "nre: Failed to import object: " << e.what() << std::endl;
     if (customScene != nullptr)
       delete customScene;
     out.close();

@@ -95,24 +95,33 @@ namespace notrealengine
 			for (int j = 0; j < 10; j++)
 			{
 				std::shared_ptr<Mesh> mesh(new Mesh(square));
+				mesh->setName("Grid component ["
+				+ std::to_string(i) + "][" + std::to_string(j) + "]");
 				mesh->transform.move(mft::vec3(i, 0.0f, j));
 				mesh->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh);
 				std::shared_ptr<Mesh> mesh2(new Mesh(square));
+				mesh2->setName("Grid component ["
+				+ std::to_string(-i) + "][" + std::to_string(-j) + "]");
 				mesh2->transform.move(mft::vec3(-i, 0.0f, -j));
 				mesh2->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh2);
 				std::shared_ptr<Mesh> mesh3(new Mesh(square));
+				mesh3->setName("Grid component ["
+				+ std::to_string(i) + "][" + std::to_string(-j) + "]");
 				mesh3->transform.move(mft::vec3(i, 0.0f, -j));
 				mesh3->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh3);
 				std::shared_ptr<Mesh> mesh4(new Mesh(square));
+				mesh4->setName("Grid component ["
+				+ std::to_string(-i) + "][" + std::to_string(j) + "]");
 				mesh4->transform.move(mft::vec3(-i, 0.0f, j));
 				mesh4->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh4);
 			}
 		}
 
+		std::cout << "Initializing grid..." << std::endl;
 		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
 		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);

@@ -53,6 +53,8 @@ namespace notrealengine
 					{ 0, 0, 0, 1 });
 		}
 
+		ResolveBonesName(parser, scene->mRootNode);
+
 		scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
 		scene->mMeshes = new cpMesh * [scene->mNumMeshes]();
 		std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
@@ -71,6 +73,21 @@ namespace notrealengine
 		BuildAnimations(parser, scene);
 
 		return scene;
+	}
+
+	void ColladaSceneBuilder::ResolveBonesName(const ColladaParser& parser, const cpNode* node)
+	{
+		for (cpMesh* mesh: this->meshes)
+		{
+			for (unsigned int i = 0; i < mesh->mNumBones; i++)
+			{
+				cpBone* bone = mesh->mBones[i];
+				const ColladaParser::ColladaNode* colladaNode = FindNode(parser.rootNode, bone->mName);
+				if (colladaNode == nullptr)
+					throw ColladaException("Unable to resolve bone '" + bone->mName + "'");
+				bone->mName = colladaNode->finalName;
+			}
+		}
 	}
 
 	void ColladaSceneBuilder::SaveNodeAsVector(cpNode* node)
@@ -208,7 +225,7 @@ namespace notrealengine
 			{
 				//std::cout << "Time = " << time << std::endl;
 				times.push_back(currentTime);
-				
+
 				for (const auto& channel : channels)
 				{
 					size_t indexInChannel = 0;
@@ -369,6 +386,7 @@ namespace notrealengine
 		std::string name = prefix.empty() ? anim.name : prefix + "_" + anim.name;
 		for (const auto& child: anim.children)
 		{
+
 			BuildAnimation(parser, scene, child, name);
 		}
 		if (!anim.channels.empty())
@@ -432,7 +450,7 @@ namespace notrealengine
 				delete [] currAnim->mChannels;
 				delete currAnim;
 
-				
+
 				this->animations[i] = newAnim;
 				for (size_t j = 0; j < combinableAnimsIndices.size(); j++)
 				{
@@ -452,7 +470,7 @@ namespace notrealengine
 				}
 			}
 		}
-		
+
 		if (this->animations.empty())
 			return;
 		scene->mNumAnimations = static_cast<unsigned int>(this->animations.size());
@@ -471,6 +489,7 @@ namespace notrealengine
 			newNode->mName = node->sid;
 		else
 			newNode->mName = "Node_" + std::to_string(this->unamedNodes++);
+		node->finalName = newNode->mName;
 
 		newNode->mTransformation = mft::mat4();
 		for (const auto& transform : node->transforms)
@@ -532,9 +551,10 @@ namespace notrealengine
 				meshIt = parser.meshes.find(meshInstance.id);
 			if (meshIt == parser.meshes.end())
 			{
-				//	If it's not from the mesh map, it's probably a controller
+				//	If it's not from the mesh map, it's a controller/bone
 				srcController = &ResolveReference(parser.controllers, meshInstance.id,
 					"controller instance");
+				//	Retrieve the mesh with the controller id
 				srcMesh = ResolveReference(parser.meshes, srcController->meshId,
 					"controller's mesh");;
 			}
@@ -719,6 +739,7 @@ namespace notrealengine
 			}
 		}
 
+		//	Bones
 		if (controller != nullptr
 			&& controller->type == ColladaParser::ControllerType::Skin)
 		{
@@ -811,6 +832,8 @@ namespace notrealengine
 				if (bones[i].empty())
 					continue;
 				cpBone* bone = new cpBone();
+				//	Temporary name. We will need to resolve references once
+				//	the whole node hierarchy is built
 				bone->mName = ReadString(boneNames, boneNamesAcc, i, 0);
 				bone->mNumWeights = bones[i].size();
 				bone->mWeights = new cpVertexWeight [bone->mNumWeights]();
@@ -895,5 +918,21 @@ namespace notrealengine
 			throw ColladaException("Out of bound index " + std::to_string(realIndex)
 				+ "/" + std::to_string(array.size()) + " of array " + acc.sourceId);
 		return array[realIndex];
+	}
+
+	const cpNode* FindCpNode(const cpNode* node,
+		const std::string& name)
+	{
+		if (node->mName == name)
+		{
+			return node;
+		}
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			const cpNode* node = FindCpNode(node->mChildren[i], name);
+			if (node != nullptr)
+				return node;
+		}
+		return nullptr;
 	}
 }

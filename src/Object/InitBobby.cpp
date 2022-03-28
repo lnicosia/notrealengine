@@ -5,15 +5,11 @@ using namespace notrealengine;
 
 std::shared_ptr<GLObject> InitBobby(void)
 {
-
+  std::cout << "Initializing Bobby..." << std::endl;
   std::shared_ptr<Mesh> mesh(new Mesh(GLContext::cube));
   std::vector<std::shared_ptr<Mesh>> meshes;
   meshes.push_back(mesh);
-  std::shared_ptr<GLObject>	character(new GLObject(meshes));
-  character->setName("Bobby");
-  character->setShader(GLContext::getShader("color"));
-  character->transform.move(mft::vec3(0.0f, 1.15f, 0.0f));
-  Mesh& torso = (*character->getMeshes()[0]);
+  Mesh& torso = *mesh;
 
 
   //torso.addMesh(std::shared_ptr<Mesh>(new Mesh(GLContext::cube)));
@@ -88,5 +84,30 @@ std::shared_ptr<GLObject> InitBobby(void)
   rightCalf.setColor(mft::vec3(0.0f, 0.0f, 0.6f));
   rightCalf.transform.move(mft::vec3(0.0f, -1.0f, 0.0f));
 
+  std::shared_ptr<GLObject>	character(new GLObject(meshes));
+  character->setName("Bobby");
+  character->setShader(GLContext::getShader("color"));
+  character->transform.move(mft::vec3(0.0f, 1.15f, 0.0f));
+
   return character;
+}
+
+std::shared_ptr<Animation> InitBobbyWalking(void)
+{
+  std::map<std::string, Bone> bones;
+  std::vector<VecKeyFrame> positions = std::vector<VecKeyFrame>();
+  std::vector<QuatKeyFrame> rotations = std::vector<QuatKeyFrame>();
+  std::vector<VecKeyFrame> scales = std::vector<VecKeyFrame>();
+  //positions.push_back(VecKeyFrame(mft::vec3(0.0f, 0.0f, 0.0f), 0.0));
+  //positions.push_back(VecKeyFrame(mft::vec3(0.0f, 0.0f, -2.0f), 2000.0));
+  Bone torso("Torso", positions, rotations, scales);
+  bones["Torso"] = torso;
+  positions.clear();
+  rotations.clear();
+  scales.clear();
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.0f), 0.0f), 0.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), 45.0f), 1000.0));
+  Bone upperRightArm("Upper right arm", positions, rotations, scales);
+  bones["Upper right arm"] = upperRightArm;
+  return std::shared_ptr<Animation>(new Animation("Bobby walking", bones));
 }

@@ -441,6 +441,18 @@ namespace notrealengine
 			DecomposeMatrix(const mft::mat4& mat,
 				mft::vec3& pos, mft::quat& rot, mft::vec3& scale);
 
+		/**	Search for a cpNode in the scene's hierarchy
+		*/
+		const cpNode*
+			FindCpNode(const cpNode* node, const std::string& name);
+
+		/**	Once the node hierarchy and meshes are built,
+		**	resolve bones name's references
+		**	(sometimes they're linked to node's id, sometimes sid and sometimes name)
+		*/
+		void
+			ResolveBonesName(const ColladaParser& parser, const cpNode* node);
+
 	};
 
 }

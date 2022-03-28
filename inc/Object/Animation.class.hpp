@@ -27,14 +27,14 @@ namespace notrealengine
 
 	class Animation: public Asset
 	{
-		enum Type
+	public:
+		enum AnimType
 		{
 			Skeletal,
-			Raw
+			Solid
 		};
-
-	public:
 		Animation(const std::string& path, int index);
+		Animation(const std::string& name, std::map<std::string, Bone>& bones);
 		~Animation();
 
 		const std::map<std::string, Bone>&
@@ -43,9 +43,10 @@ namespace notrealengine
 			getNodes( void );
 		const double
 			getDuration( void ) const;
-
-		void
-			processNode(const void* nnode, const void* aanimation, int parentId);
+		const double
+			getTicksPerSecond( void ) const;
+		const AnimType
+			getType( void ) const;
 
 		virtual const std::string
 			getAssetType() const;
@@ -53,14 +54,21 @@ namespace notrealengine
 	private:
 		double		duration;
 		double		ticksPerSecond;
-		int				type;
+		AnimType	type;
 		std::map<std::string, Bone>	bones;
+		//std::map<std::string, std::shared_ptr<Mesh>> meshes;
 
 		int	currentFrame;
 
 		bool	ended;
 
 		std::vector<AnimNode>	nodes;
+
+		/**	Run through the importer's node hierarchy to save it with its
+		**	transformations
+		*/
+		void
+			processNode(const void* nnode, const void* aanimation, int parentId);
 	};
 }
 #endif

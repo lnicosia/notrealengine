@@ -29,9 +29,6 @@ namespace notrealengine
 
 		// Transform is public so its non-const operations can be called efficiently
 		Transform	transform;
-		mft::mat4	parentMatrix;
-		mft::mat4	transformMatrix;
-		mft::mat3	normalMatrix;
 
 		//	Setters
 
@@ -43,6 +40,8 @@ namespace notrealengine
 			setShader(unsigned int shader);
 		void
 			setShader(GLShaderProgram* shader);
+		void
+			setAnimMatrix(const mft::mat4& mat);
 
 		void
 			addTexture(std::shared_ptr < Texture >& text);
@@ -63,11 +62,16 @@ namespace notrealengine
 		std::vector<std::shared_ptr<Mesh>>	children;
 		std::shared_ptr<Mesh>	*parent;
 
-
+		mft::mat4	parentMatrix;
+		mft::mat4	transformMatrix;
+		mft::mat4	animMatrix;
+		mft::mat3	normalMatrix;
 
 		mft::vec3	color;
 
 		unsigned int	shader;
+
+		bool	animDirty;
 
 	};
 

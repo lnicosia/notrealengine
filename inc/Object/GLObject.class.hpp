@@ -48,31 +48,33 @@ namespace notrealengine
 			void
 				drawBones( void ) const;
 
-			/**
+			/**	Update bones matrices with the actual bones state
 			*/
 			void
 				bindBones( void ) const;
 
-			/**
+			/**	Set all the bones of the objet to their original state (no anim)
 			*/
 			void
 				resetPose( void );
 
-			/**
+			/**	Set the object to a given keyframe of its current animation
 			*/
 			void
 				setToKeyFrame(unsigned int keyFrame);
 
-			/**
+			/**	Launch a given animation for this object
 			*/
 			void
 				playAnimation(Animation* anim,
 					AnimationRepeat	animationRepeat = AnimationRepeat::Repeat);
-			/**
+
+			/**	Pause the current object's animation
 			*/
 			void
 				pauseAnimation( void );
-			/**
+
+			/**	Resume the current object's animation
 			*/
 			void
 				resumeAnimation( void );
@@ -129,7 +131,12 @@ namespace notrealengine
 
 			std::string	directory;
 
+			//	All the bones of the object. Named BoneInfo to differenciate from
+			//	animations' bones
 			std::map<std::string, BoneInfo>	bones;
+			//	Save the whole mesh hierarchy as a map too to access it
+			//	in an easier way when applying a solid animation
+			std::map<std::string, std::shared_ptr<Mesh>> meshesMap;
 			int	nbBones;
 
 			unsigned int	shader;
@@ -146,10 +153,32 @@ namespace notrealengine
 			float			pauseTime;
 			AnimationState	animationState;
 
+			/**	Update the current animation of the object according to
+			**	the program's time
+			*/
+			void
+				updateAnim( void );
+
+			/**	Update a skeletal animation according to currentTime
+			*/
+			void
+				updateSkeletalAnim(float currentTime);
+
+			/**	Update a solid animation according to currentTime
+			*/
+			void
+				updateSolidAnim(float currentTime);
+
+			/**	Save the whole mesh hierarchy as a map too to access it
+			**	in an easier way when applying a solid animation
+			*/
+			void
+				BuildMeshesMap();
+
 			/**
 			*/
 			void
-				updateAnim();
+				SaveMeshInMap(const std::shared_ptr<Mesh>& mesh);
 	};
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj);

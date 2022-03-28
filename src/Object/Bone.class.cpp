@@ -3,16 +3,16 @@
 
 namespace notrealengine
 {
-	Bone::Bone(): id(0), name(), globalMatrix(), localMatrix(),
-	positions(), rotations(), scales(), transforms(), modelMatrices(),
+	Bone::Bone(): name(),
+	positions(), rotations(), scales(), transforms(),
 	nbPositions(0), nbRotations(0), nbScales(0)
 	{
 
 	}
 
 	Bone::Bone(const std::string& name, const int id, const void* nnode)
-	: id(0), name(name), globalMatrix(), localMatrix(),
-	positions(), rotations(), scales(), transforms(), modelMatrices(),
+	: name(name),
+	positions(), rotations(), scales(), transforms(),
 	nbPositions(0), nbRotations(0), nbScales(0)
 	{
 
@@ -79,11 +79,22 @@ namespace notrealengine
 		}
 	}
 
+	Bone::Bone(const std::string& name,
+		const std::vector<VecKeyFrame>& positions,
+		const std::vector<QuatKeyFrame>& rotations,
+		const std::vector<VecKeyFrame>& scales)
+		: name(name), positions(positions), rotations(rotations), scales(scales),
+		transforms(), nbPositions(0), nbRotations(0), nbScales(0)
+	{
+		this->nbPositions = static_cast<unsigned int>(positions.size());
+		this->nbRotations = static_cast<unsigned int>(rotations.size());
+		this->nbScales = static_cast<unsigned int>(scales.size());
+	}
+
 	Bone::Bone(const Bone& ref):
-		id(ref.id), name(ref.name),
-		globalMatrix(ref.globalMatrix), localMatrix(ref.localMatrix),
+		name(ref.name),
 		positions(ref.positions), rotations(ref.rotations), scales(ref.scales),
-		transforms(ref.transforms), modelMatrices(ref.modelMatrices),
+		transforms(ref.transforms),
 		nbPositions(ref.nbPositions), nbRotations(ref.nbRotations), nbScales(ref.nbScales)
 	{
 
@@ -91,15 +102,11 @@ namespace notrealengine
 
 	Bone&	Bone::operator=(const Bone& ref)
 	{
-		this->id = ref.id;
 		this->name = ref.name;
-		this->globalMatrix = ref.globalMatrix;
-		this->localMatrix = ref.localMatrix;
 		this->positions = ref.positions;
 		this->rotations = ref.rotations;
 		this->scales = ref.scales;
 		this->transforms = ref.transforms;
-		this->modelMatrices = ref.modelMatrices;
 		this->nbPositions = ref.nbPositions;
 		this->nbRotations = ref.nbRotations;
 		this->nbScales = ref.nbScales;
@@ -130,6 +137,8 @@ namespace notrealengine
 
 	const  mft::vec3	Bone::getPosition(const unsigned int frameTime) const
 	{
+		if (this->positions.empty())
+			return mft::vec3();
 		for (unsigned int i = 0; i < this->nbPositions - 1; i++)
 		{
 			const VecKeyFrame& nextKeyFrame = this->positions[i + 1];
@@ -149,6 +158,8 @@ namespace notrealengine
 
 	const mft::quat	Bone::getRotation(const unsigned int frameTime) const
 	{
+		if (this->rotations.empty())
+			return mft::quat();
 		for (unsigned int i = 0; i < this->nbRotations - 1; i++)
 		{
 			const QuatKeyFrame& nextKeyFrame = this->rotations[i + 1];
@@ -164,6 +175,8 @@ namespace notrealengine
 
 	const  mft::vec3	Bone::getScale(const int unsigned frameTime) const
 	{
+		if (this->scales.empty())
+			return mft::vec3(1.0f, 1.0f, 1.0f);
 		for (unsigned int i = 0; i < this->nbScales - 1; i++)
 		{
 			const VecKeyFrame& nextKeyFrame = this->scales[i + 1];
@@ -206,17 +219,19 @@ namespace notrealengine
 		return this->nbScales;
 	}
 
+	const double	Bone::getMaxTime( void ) const
+	{
+		double duration = 0;
+		for (const auto& position: this->positions)
+			duration = std::max(duration, position.time);
+		for (const auto& rotation: this->rotations)
+			duration = std::max(duration, rotation.time);
+		for (const auto& scale: this->scales)
+			duration = std::max(duration, scale.time);
+		return duration;
+	}
+
 	//	Setters
-
-	void Bone::setGlobalMatrix(const mft::mat4& ref)
-	{
-		this->globalMatrix = ref;
-	}
-
-	void Bone::setLocalMatrix(const mft::mat4& ref)
-	{
-		this->localMatrix = ref;
-	}
 
 	void Bone::updateTransforms(const mft::mat4& mat)
 	{

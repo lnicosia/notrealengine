@@ -14,8 +14,6 @@ namespace notrealengine
 
 	void	CustomObjectImporter::ReadFile(const std::string& path, unsigned int flags)
 	{
-		std::cout << "Loading object '" << path << "'..." << std::endl;
-
 		this->path = path;
 		ColladaSceneBuilder importer;
 		const cpScene* scene;
@@ -66,7 +64,7 @@ namespace notrealengine
 				bone.offsetMatrix = mesh->mBones[i]->mOffsetMatrix;
 				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
 				bone.localMatrix = mft::mat4();
-				bone.fromParentMatrix = mft::mat4();
+				bone.originalMatrix = mft::mat4();
 				this->bones[boneName] = bone;
 				this->nbBones++;
 			}
@@ -189,6 +187,7 @@ namespace notrealengine
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
 		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
 		res->setName(mesh->mName);
+		std::cout << "Setting name '" << mesh->mName << "' to new mesh" << std::endl;
 		return res;
 	}
 
@@ -196,9 +195,19 @@ namespace notrealengine
 	{
 		mft::mat4	transform = node->mTransformation * parentMat;
 		std::string name(node->mName);
+		static bool done = false;
 		if (bones.contains(name))
 		{
-			bones[name].fromParentMatrix = transform;
+			/*if (done == false)
+			{
+				done = true;
+				transform *= mft::mat4(
+					{ 1, 0, 0, 0 },
+					{ 0, 0, 1, 0 },
+					{ 0, -1, 0, 0 },
+					{ 0, 0, 0, 1 });
+			}*/
+			bones[name].originalMatrix = transform;
 			bones[name].localMatrix = bones[name].offsetMatrix * transform;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)

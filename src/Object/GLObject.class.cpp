@@ -43,6 +43,7 @@ namespace notrealengine
 		animationRepeat(AnimationRepeat::Repeat)
 	{
 		loadObject(path);
+		BuildMeshesMap();
 		//bindBones();
 	}
 
@@ -56,13 +57,36 @@ namespace notrealengine
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat)
 	{
-
+		std::cout << "Building object from meshes..." << std::endl;
+		BuildMeshesMap();
 	}
 
 	GLObject& GLObject::operator=(GLObject const& ref)
 	{
 		// TODO
 		return *this;
+	}
+
+	void GLObject::SaveMeshInMap(const std::shared_ptr<Mesh>& mesh)
+	{
+		this->meshesMap[mesh->getName()] = mesh;
+		for (const auto child: mesh->getChildren())
+		{
+			SaveMeshInMap(child);
+		}
+	}
+
+	void GLObject::BuildMeshesMap()
+	{
+		for (auto& mesh: this->meshes)
+		{
+			SaveMeshInMap(mesh);
+		}
+		for (const auto& pair: this->meshesMap)
+		{
+			const std::shared_ptr<Mesh>& mesh = pair.second;
+			std::cout << "MapMesh: '" << mesh->getName() << "'" << std::endl;
+		}
 	}
 
 	//	Texture utility
@@ -77,14 +101,16 @@ namespace notrealengine
 
 	void	GLObject::loadObject(const std::string& path, unsigned int flags)
 	{
-		std::cout << "Loading object '" << path << "'..." << std::endl;
+		std::cout << "Loading object '" << path;
 
 		std::unique_ptr<ObjectImporter>	importer;
 //#define USING_EXTERNAL_LIBS
 #ifdef USING_EXTERNAL_LIBS
 		importer = std::make_unique<AssimpObjectImporter>();
+		std::cout << "' with assimp..." << std::endl;
 #else
 		importer = std::make_unique<CustomObjectImporter>();
+		std::cout << "' with custom parser..." << std::endl;
 #endif // USING_EXTERNAL_LIBS
 
 		importer->ReadFile(path, flags);
@@ -143,13 +169,16 @@ namespace notrealengine
 		mft::mat4 scaleMatrix = mft::mat4::scale(cubeScale);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw(scaleMatrix * (*it).second.fromParentMatrix * transform.getMatrix());
+			//std::cout << "From parent matrix = " << (*it).second.originalMatrix << std::endl;
+			cube.draw(scaleMatrix * (*it).second.originalMatrix * transform.getMatrix());
 		}
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			//cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
+			//std::cout << "Model matrix = " << (*it).second.modelMatrix << std::endl;
+			cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
 		}
+		//std::cout << std::endl << std::endl;
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
@@ -171,22 +200,34 @@ namespace notrealengine
 
 	void	GLObject::resetPose()
 	{
-		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
-		GLCallThrow(glUseProgram, shader);
-		GLint location;
-		mft::mat4	mat = mft::mat4();
-		std::string str;
-		int i = 0;
-		std::map<std::string, BoneInfo>::iterator it;
-		for (it = bones.begin(); it != bones.end(); it++)
+		if (this->anim == nullptr)
+			return ;
+		if (this->anim->getType() == Animation::Skeletal)
 		{
-			it->second.localMatrix = it->second.offsetMatrix * it->second.fromParentMatrix;
-			it->second.modelMatrix = it->second.fromParentMatrix;
-			str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
-			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
-			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
-				static_cast<const float*>(it->second.localMatrix));
-			i++;
+			unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
+			GLCallThrow(glUseProgram, shader);
+			GLint location;
+			mft::mat4	mat = mft::mat4();
+			std::string str;
+			int i = 0;
+			std::map<std::string, BoneInfo>::iterator it;
+			for (it = bones.begin(); it != bones.end(); it++)
+			{
+				it->second.localMatrix = it->second.offsetMatrix * it->second.originalMatrix;
+				it->second.modelMatrix = it->second.originalMatrix;
+				str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
+				location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
+				GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
+					static_cast<const float*>(it->second.localMatrix));
+				i++;
+			}
+		}
+		else if (this->anim->getType() == Animation::Solid)
+		{
+			for (const auto& pair : this->meshesMap)
+			{
+				pair.second->setAnimMatrix(mft::mat4());
+			}
 		}
 		this->animationState = AnimationState::Stopped;
 	}
@@ -207,6 +248,66 @@ namespace notrealengine
 		this->animationState = AnimationState::Playing;
 	}
 
+	void	GLObject::updateSolidAnim(float currentTime)
+	{
+		std::map<std::string, Bone> animBones = anim->getBones();
+		for (auto& pair: animBones)
+		{
+			Bone& bone = pair.second;
+			//	If a bone of the animation is associated with this node,
+			//	use its animation transform
+
+			//std::cout << "Updating node " << node.name << std::endl;
+
+			std::map<std::string, std::shared_ptr<Mesh>>::iterator it =
+				this->meshesMap.find(pair.first);
+			if (it != this->meshesMap.end())
+			{
+				std::cout << "Bone " << pair.first << " sending " << bone.getTransform(currentTime) << std::endl;
+				it->second->setAnimMatrix(bone.getTransform(currentTime));
+			}
+		}
+	}
+
+	void	GLObject::updateSkeletalAnim(float currentTime)
+	{
+		std::map<std::string, Bone> animBones = anim->getBones();
+		std::vector<AnimNode>& animNodes = anim->getNodes();
+		for (unsigned int i = 0; i < animNodes.size(); i++)
+		{
+			AnimNode& node = animNodes[i];
+
+			//	If a bone of the animation is associated with this node,
+			//	use its animation transform
+
+			//std::cout << "Updating node " << node.name << std::endl;
+			std::map<std::string, Bone>::iterator it =
+				animBones.find(node.name);
+			if (it != animBones.end())
+			{
+				node.transform = it->second.getTransform(currentTime)
+					* animNodes[node.parentId].transform;
+			}
+			//	Otherwise, use the original node's transform
+			else
+			{
+				node.transform = node.transform
+					* animNodes[node.parentId].transform;
+			}
+			//	If a bone of the object is associated with this node,
+			//	update its transform with what we just computed
+			std::map<std::string, BoneInfo>::iterator it2 = this->bones.find(node.name);
+			if (it2 != this->bones.end())
+			{
+				BoneInfo& bone = it2->second;
+
+				bone.modelMatrix = node.transform;
+				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
+			}
+		}
+		this->bindBones();
+	}
+
 	void	GLObject::updateAnim( void )
 	{
 		if (this->anim == nullptr)
@@ -224,39 +325,10 @@ namespace notrealengine
 				resetPose();
 			return;
 		}
-		std::map<std::string, Bone> animBones = anim->getBones();
-		std::vector<AnimNode>& animNodes = anim->getNodes();
-		for (unsigned int i = 0; i < animNodes.size(); i++)
-		{
-			AnimNode& node = animNodes[i];
-
-			//	If a bone of the animation is associated with this node,
-			//	use its animation transform
-
-			//std::cout << "Updating node " << node.name << std::endl;
-
-			if (animBones.contains(node.name))
-			{
-				node.transform = animBones[node.name].getTransform(currentTime)
-					* animNodes[node.parentId].transform;
-			}
-			//	Otherwise, use the original node's transform
-			else
-			{
-				node.transform = node.transform
-					* animNodes[node.parentId].transform;
-			}
-			//	If a bone of the object is associated with this node,
-			//	update its transform with what we just computed
-			if (this->bones.contains(node.name))
-			{
-				BoneInfo& bone = this->bones[node.name];
-
-				bone.modelMatrix = node.transform;
-				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
-			}
-		}
-		this->bindBones();
+		if (this->anim->getType() == Animation::Skeletal)
+			updateSkeletalAnim(currentTime);
+		else if (this->anim->getType() == Animation::Solid)
+			updateSolidAnim(currentTime);
 	}
 
 	void	GLObject::setToKeyFrame(unsigned int keyFrame)

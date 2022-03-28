@@ -19,13 +19,17 @@ namespace notrealengine
 	struct	VecKeyFrame
 	{
 		mft::vec3	vec;
-		float			time;
+		double		time;
+		VecKeyFrame(): vec(), time() {}
+		VecKeyFrame(const mft::vec3& vec, const double& time): vec(vec), time(time) {}
 	};
 
 	struct	QuatKeyFrame
 	{
 		mft::quat	quat;
-		float			time;
+		double		time;
+		QuatKeyFrame(): quat(), time() {}
+		QuatKeyFrame(const mft::quat& quat, const double& time): quat(quat), time(time) {}
 	};
 
 	class Bone
@@ -33,6 +37,10 @@ namespace notrealengine
 	public:
 		Bone();
 		Bone(const std::string& name, const int id, const void* node);
+		Bone(const std::string& name,
+			const std::vector<VecKeyFrame>& positions,
+			const std::vector<QuatKeyFrame>& rotations,
+			const std::vector<VecKeyFrame>& scales);
 		Bone(const Bone& ref);
 		Bone& operator=(const Bone& ref);
 		~Bone();
@@ -52,20 +60,18 @@ namespace notrealengine
 		const std::string&
 			getName( void ) const;
 		const unsigned int
-			getNbTransforms() const;
+			getNbTransforms( void ) const;
 		const unsigned int
-			getNbPositions() const;
+			getNbPositions( void ) const;
 		const unsigned int
-			getNbRotations() const;
+			getNbRotations( void ) const;
 		const unsigned int
-			getNbScales() const;
+			getNbScales( void ) const;
+		const double
+			getMaxTime( void ) const;
 
 		//	Setters
 
-		void
-			setGlobalMatrix(const mft::mat4& ref);
-		void
-			setLocalMatrix(const mft::mat4& ref);
 		void
 			setPosition(const int index, const mft::mat4& pos);
 		void
@@ -79,11 +85,7 @@ namespace notrealengine
 			mft::mat4	modelMatrix;
 
 	private:
-		int			id;
 		std::string name;
-		mft::mat4	globalMatrix;
-		mft::mat4	localMatrix;
-
 
 		std::vector<VecKeyFrame>	positions;
 		std::vector<QuatKeyFrame>	rotations;
@@ -93,8 +95,9 @@ namespace notrealengine
 		unsigned int				nbRotations;
 		unsigned int				nbScales;
 
+		//	Precomputed matrices for each keyframe by combining pos, rot and scales
+		//	-- not needed anymore but can be usefull for debugging
 		std::vector<mft::mat4>		transforms;
-		std::vector<mft::mat4>		modelMatrices;
 	};
 
 }
