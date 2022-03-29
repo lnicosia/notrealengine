@@ -149,9 +149,10 @@ namespace notrealengine
 	{
 		if (this->animationState == AnimationState::Playing)
 			this->updateAnim();
+		this->transform.getMatrix();
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			meshes[i]->draw(transform.getMatrix(), this->shader);
+			meshes[i]->draw(transform, this->shader);
 		}
 	}
 
@@ -170,13 +171,13 @@ namespace notrealengine
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			//std::cout << "From parent matrix = " << (*it).second.originalMatrix << std::endl;
-			cube.draw(scaleMatrix * (*it).second.originalMatrix * transform.getMatrix());
+			//cube.draw(scaleMatrix * (*it).second.originalMatrix * transform.getMatrix());
 		}
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			//std::cout << "Model matrix = " << (*it).second.modelMatrix << std::endl;
-			cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
+			//cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
 		}
 		//std::cout << std::endl << std::endl;
 		GLCallThrow(glEnable, GL_DEPTH_TEST);

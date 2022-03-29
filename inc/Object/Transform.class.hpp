@@ -19,6 +19,8 @@ namespace notrealengine
 
 		Transform &
 			operator=( const Transform & other );
+		bool
+			operator==( const Transform & other ) const ;
 
 		~Transform( void );
 
@@ -42,6 +44,13 @@ namespace notrealengine
 		void move( vec3 translation );
 		void rotate( quat rotation );
 		void scale( vec3 magnitude );
+
+		const mat4 &
+			getPosMatrix( void ) const;
+		const mat4 &
+			getRotationMatrix( void ) const;
+		const mat4 &
+			getScaleMatrix( void ) const;
 
 		/** Others **/
 
@@ -67,12 +76,6 @@ namespace notrealengine
 
 		mutable int dirty_flags;
 
-		const mat4 &
-			getPosMatrix( void ) const;
-		const mat4 &
-			getRotationMatrix( void ) const;
-		const mat4 &
-			getScaleMatrix( void ) const;
 	};
 }
 

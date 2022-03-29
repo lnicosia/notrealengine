@@ -70,8 +70,6 @@ int		main(int ac, char** av)
 
 	std::shared_ptr<GLObject>	bobby = InitBobby();
 
-	Mesh& selectedMesh = (*bobby->getMeshes()[0]->getChildren()[2]);
-
 
 	//upperLeftArm.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.2f));
 	//head.transform.rotate(mft::quat::rotation(mft::vec3(mft::radians(90.0f), 0.0f, 0.0f));
@@ -95,6 +93,21 @@ int		main(int ac, char** av)
 
 	scene.addObject(obj);
 	scene.addObject(bobby);
+
+	std::shared_ptr<Mesh> mesh(new Mesh(GLContext::cube));
+	//mesh->transform.scale(mft::vec3(0.35f, 0.475f, 1.0f));
+	mesh->setName("Mesh");
+	mesh->setColor(mft::vec3(0.9f, 0.9f, 0.9f));
+	mesh->addMesh(std::shared_ptr<Mesh>(new Mesh(GLContext::cube)));
+	mesh->getChildren()[0]->setColor(mft::vec3(0.9f, 0.5f, 0.9f));
+	mesh->getChildren()[0]->transform.move(mft::vec3(2.0f, 0.0f, 0.0f));
+	mesh->getChildren()[0]->setName("Mesh 2");
+	std::vector<std::shared_ptr<Mesh>> meshes;
+	meshes.push_back(mesh);
+	std::shared_ptr<GLObject>	object(new GLObject(meshes));
+	object->setShader(GLContext::getShader("color"));
+
+	scene.addObject(object);
 	//bobby->visible = false;
 	obj->visible = false;
 	//obj->setAnimation(anim.get());
@@ -106,7 +119,10 @@ int		main(int ac, char** av)
 
 	int frame = 0;
 
-	scene.setLightingMode(LightingMode::Unlit);
+	scene.setLightingMode(LightingMode::Lit);
+
+	std::shared_ptr<Mesh> selectedMesh = object->getMeshes()[0];
+	//std::shared_ptr<Mesh> selectedMesh = bobby->getMeshes()[0]->getChildren()[2];
 
 	while (running)
 	{
@@ -136,10 +152,10 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_LEFT)
 				{
 					//scene.left(deltaTime);
-					selectedMesh.transform.move(mft::vec3(-0.05f, 0.0f, 0.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.move(mft::vec3(-0.05f, 0.0f, 0.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//std::cout << "Object matrix: " << character->transform.getMatrix() << std::endl;
 					//std::cout << "Torso matrix: " << torso.transformMatrix << std::endl;
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
@@ -148,10 +164,10 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_RIGHT)
 				{
 					//scene.right(deltaTime);
-					selectedMesh.transform.move(mft::vec3(0.05f, 0.0f, 0.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.move(mft::vec3(0.05f, 0.0f, 0.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//std::cout << "Object matrix: " << character->transform.getMatrix() << std::endl;
 					//std::cout << "Torso matrix: " << torso.transformMatrix << std::endl;
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
@@ -160,10 +176,10 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_UP)
 				{
 					//scene.forward(deltaTime);
-					selectedMesh.transform.move(mft::vec3(0.0f, 0.05f, 0.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.move(mft::vec3(0.0f, 0.05f, 0.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//std::cout << "Object matrix: " << character->transform.getMatrix() << std::endl;
 					//std::cout << "Torso matrix: " << torso.transformMatrix << std::endl;
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
@@ -172,10 +188,10 @@ int		main(int ac, char** av)
 				if (e.key.keysym.sym == SDLK_DOWN)
 				{
 					//scene.backward(deltaTime);
-					selectedMesh.transform.move(mft::vec3(0.0f, -0.05f, 0.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.move(mft::vec3(0.0f, -0.05f, 0.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//std::cout << "Object matrix: " << character->transform.getMatrix() << std::endl;
 					//std::cout << "Torso matrix: " << torso.transformMatrix << std::endl;
 					//std::cout << "Head matrix: " << head.transformMatrix << std::endl;
@@ -204,65 +220,65 @@ int		main(int ac, char** av)
 					else
 						scene.setDrawMode(DrawMode::Fill);
 				}
-				if (e.key.keysym.sym == SDLK_4)
+				if (e.key.keysym.sym == SDLK_8)
 				{
 					//obj->transform.move(mft::vec3(-1.0f, 0.0f, 0.0f));
 					//character->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, -0.2f), mft::radians(90.0f)));
-					selectedMesh.transform.scale(mft::vec3(1.05f, 1.0f, 1.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.scale(mft::vec3(1.05f, 1.0f, 1.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_6)
 				{
-					selectedMesh.transform.scale(mft::vec3(0.95f, 1.0f, 1.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.scale(mft::vec3(0.95f, 1.0f, 1.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//obj->transform.move(mft::vec3(1.0f, 0.0f, 0.0f));
 					//character->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.2f), mft::radians(90.0f)));
 				}
-				if (e.key.keysym.sym == SDLK_8)
+				if (e.key.keysym.sym == SDLK_4)
 				{
-					selectedMesh.transform.scale(mft::vec3(1.0f, 1.05f, 1.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.scale(mft::vec3(1.0f, 1.05f, 1.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, 1.0f));
 					//character->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.2f, 0.0f), mft::radians(90.0f)));
 				}
 				if (e.key.keysym.sym == SDLK_2)
 				{
-					selectedMesh.transform.scale(mft::vec3(1.0f, 0.95f, 1.0f));
-					std::cout << selectedMesh.getName() << ": pos = ";
-					std::cout << selectedMesh.transform.getPos();
-					std::cout << ", scale = " << selectedMesh.transform.getScale() << std::endl;
+					selectedMesh->transform.scale(mft::vec3(1.0f, 0.95f, 1.0f));
+					std::cout << selectedMesh->getName() << ": pos = ";
+					std::cout << selectedMesh->transform.getPos();
+					std::cout << ", scale = " << selectedMesh->transform.getScale() << std::endl;
 					//obj->transform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 					//character->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, -0.2f, 0.0f), mft::radians(90.0f)));
 				}
 				if (e.key.keysym.sym == SDLK_KP_4)
 				{
-					selectedMesh.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(10.0f)));
-					std::cout << selectedMesh.getName() << ": rotation = ";
-					std::cout << selectedMesh.transform.getRotation() << std::endl;
+					selectedMesh->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(10.0f)));
+					std::cout << selectedMesh->getName() << ": rotation = ";
+					std::cout << selectedMesh->transform.getRotation() << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_6)
 				{
-					selectedMesh.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(-10.0f)));
-					std::cout << selectedMesh.getName() << ": rotation = ";
-					std::cout << selectedMesh.transform.getRotation() << std::endl;
+					selectedMesh->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(-10.0f)));
+					std::cout << selectedMesh->getName() << ": rotation = ";
+					std::cout << selectedMesh->transform.getRotation() << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_8)
 				{
-					selectedMesh.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(10.0f)));
-					std::cout << selectedMesh.getName() << ": rotation = ";
-					std::cout << selectedMesh.transform.getRotation() << std::endl;
+					selectedMesh->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(10.0f)));
+					std::cout << selectedMesh->getName() << ": rotation = ";
+					std::cout << selectedMesh->transform.getRotation() << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_2)
 				{
-					selectedMesh.transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(-10.0f)));
-					std::cout << selectedMesh.getName() << ": rotation = ";
-					std::cout << selectedMesh.transform.getRotation() << std::endl;
+					selectedMesh->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(-10.0f)));
+					std::cout << selectedMesh->getName() << ": rotation = ";
+					std::cout << selectedMesh->transform.getRotation() << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_p)
 				{
@@ -338,6 +354,16 @@ int		main(int ac, char** av)
 					bindInt(context.getShader("bonesInfluence")->programID, "selectedBone", selectedBone);
 					frame += 1;
 					obj->setToKeyFrame(frame);
+					if (selectedMesh == object->getMeshes()[0])
+					{
+						selectedMesh = selectedMesh->getChildren()[0];
+						std::cout << "Child selected " << std::endl;
+					}
+					else if (selectedMesh == object->getMeshes()[0]->getChildren()[0])
+					{
+						selectedMesh = object->getMeshes()[0];
+						std::cout << "Main selected " << std::endl;
+					}
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{

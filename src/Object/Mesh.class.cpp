@@ -73,21 +73,29 @@ namespace notrealengine
 		this->animDirty = true;
 	}
 
-	void	Mesh::draw(const mft::mat4& parentMat, unsigned int overrideShader)
+	void	Mesh::draw(const Transform& parentTransform, unsigned int overrideShader)
 	{
 		unsigned int finalShader = overrideShader == 0 ? this->shader : overrideShader;
 		//	Recompute transform matrix if parent's one has changed
-		if (parentMat != this->parentMatrix || this->transform.isDirty() || this->animDirty)
+		if (parentTransform != this->parentTransform || this->transform.isDirty() || this->animDirty)
 		{
-			this->transformMatrix = this->transform.getMatrix() * parentMat * this->animMatrix;
+			this->transformMatrix = this->transform.getMatrix() * parentTransform.getMatrix();
+			/*this->transformMatrix =
+				this->transform.getScaleMatrix() * parentTransform.getScaleMatrix()
+				* this->transform.getRotationMatrix() * parentTransform.getRotationMatrix()
+				* this->transform.getPosMatrix() * parentTransform.getPosMatrix();*/
+			//this->transformMatrix = parentTransform.getMatrix() * this->transform.getMatrix();
 			mft::mat4 tmp = mft::mat4::transpose(mft::mat4::inverse(this->transformMatrix));
 			this->normalMatrix = mft::mat3(
 				{ tmp[0][0], tmp[0][1], tmp[0][2] },
 				{ tmp[1][0], tmp[1][1], tmp[1][2] },
 				{ tmp[2][0], tmp[2][1], tmp[2][2] }
 				);
-			this->parentMatrix = parentMat;
+			//this->parentMatrix = parentMat;
+			this->parentTransform = parentTransform;
 			this->animDirty = false;
+			if (this->name == "Mesh" || this->name == "Mesh 2")
+				std::cout << this->name << " matrix: " << this->transformMatrix << std::endl;
 		}
 		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
 		GLCallThrow(glUseProgram, finalShader);
@@ -97,7 +105,7 @@ namespace notrealengine
 		glMesh->draw(finalShader, this->transformMatrix, normalMatrix);
 		for (auto child: children)
 		{
-			child->draw(this->transformMatrix, finalShader);
+			child->draw(this->transform, finalShader);
 		}
 	}
 

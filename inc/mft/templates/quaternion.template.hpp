@@ -258,11 +258,12 @@ namespace mft
 		requires std::is_floating_point_v<T>
 	constexpr quaternion<T> quaternion<T>::rotation( const vec<T,T,T> axis, T angle )
 	{
+			vec<T, T, T> tmp = vec<T, T, T>::normalized(axis);
 		return quaternion<T>(
 				cos(angle / 2),
-				axis.x * sin(angle / 2),
-				axis.y * sin(angle / 2),
-				axis.z * sin(angle / 2)
+				tmp.x * sin(angle / 2),
+				tmp.y * sin(angle / 2),
+				tmp.z * sin(angle / 2)
 				);
 	}
 

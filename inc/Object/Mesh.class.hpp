@@ -50,7 +50,7 @@ namespace notrealengine
 		**	instead of the mesh's shader data
 		*/
 		void
-			draw(const mft::mat4& parentMat, unsigned int shader = 0);
+			draw(const Transform& parentMat, unsigned int shader = 0);
 
 		void
 			addMesh(std::shared_ptr<Mesh> mesh);
@@ -63,6 +63,7 @@ namespace notrealengine
 		std::shared_ptr<Mesh>	*parent;
 
 		mft::mat4	parentMatrix;
+		Transform	parentTransform;
 		mft::mat4	transformMatrix;
 		mft::mat4	animMatrix;
 		mft::mat3	normalMatrix;

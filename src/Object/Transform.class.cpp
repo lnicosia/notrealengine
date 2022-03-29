@@ -139,4 +139,23 @@ namespace notrealengine
 		}
 		return scale_mat;
 	}
+
+	Transform& Transform::operator=(const Transform& ref)
+	{
+		this->tPos = ref.tPos;
+		this->tRotation = ref.tRotation;
+		this->tScale = ref.tScale;
+		this->dirty_flags = ref.dirty_flags;
+		this->pos_mat = ref.pos_mat;
+		this->rotation_mat = ref.rotation_mat;
+		this->scale_mat = ref.scale_mat;
+		this->transform_mat = ref.transform_mat;
+		return *this;
+	}
+
+	bool Transform::operator==(const Transform& other) const
+	{
+		return (this->tPos == other.tPos && this->tRotation == other.tRotation
+			&& this->tScale == other.tScale);
+	}
 }
