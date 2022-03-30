@@ -193,12 +193,12 @@ namespace notrealengine
 
 	void	AssimpObjectImporter::processNodeBones(aiNode* node, const aiScene* scene, const mft::mat4& parentMat)
 	{
-		mft::mat4	transform = AssimpToMftMatrix(node->mTransformation) * parentMat;
+		mft::mat4	transform =  parentMat * AssimpToMftMatrix(node->mTransformation);
 		std::string name(node->mName.data);
 		if (bones.contains(name))
 		{
 			bones[name].originalMatrix = transform;
-			bones[name].localMatrix = bones[name].offsetMatrix * transform;
+			bones[name].localMatrix = transform * bones[name].offsetMatrix;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{

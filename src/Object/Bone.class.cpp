@@ -129,9 +129,9 @@ namespace notrealengine
 	const mft::mat4	Bone::getTransform(const unsigned int frameTime) const
 	{
 		return (
-			mft::mat4::scale(getScale(frameTime))
+			mft::mat4::translate(getPosition(frameTime))
 			* mft::mat4::rotate(getRotation(frameTime))
-			* mft::mat4::translate(getPosition(frameTime))
+			* mft::mat4::scale(getScale(frameTime))
 			);
 	}
 

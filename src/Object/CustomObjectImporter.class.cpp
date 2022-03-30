@@ -193,22 +193,12 @@ namespace notrealengine
 
 	void	CustomObjectImporter::processNodeBones(cpNode* node, const cpScene* scene, const mft::mat4& parentMat)
 	{
-		mft::mat4	transform = node->mTransformation * parentMat;
+		mft::mat4	transform =  parentMat * node->mTransformation;
 		std::string name(node->mName);
-		static bool done = false;
 		if (bones.contains(name))
 		{
-			/*if (done == false)
-			{
-				done = true;
-				transform *= mft::mat4(
-					{ 1, 0, 0, 0 },
-					{ 0, 0, 1, 0 },
-					{ 0, -1, 0, 0 },
-					{ 0, 0, 0, 1 });
-			}*/
 			bones[name].originalMatrix = transform;
-			bones[name].localMatrix = bones[name].offsetMatrix * transform;
+			bones[name].localMatrix = transform * bones[name].offsetMatrix;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{

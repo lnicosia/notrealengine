@@ -130,7 +130,7 @@ namespace mft
 			for (int j = 0; j <= sizeof...(Tn); j++)
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += (*this)[k][j] * m2[i][k];
+					ret[i][j] += (*this)[i][k] * m2[k][j];
 				}
 		return ret;
 	}
@@ -187,7 +187,7 @@ namespace mft
 			for (int j = 0; j <= sizeof...(Tn); j++)
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += (*this)[k][j] * m2[i][k];
+					ret[i][j] += (*this)[i][k] * m2[k][j];
 				}
 		*this = ret;
 		return *this;

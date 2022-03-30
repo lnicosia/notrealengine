@@ -56,7 +56,17 @@ namespace notrealengine
 		//std::cout << "Rotation mat = " << getRotationMatrix() << std::endl;
 		//std::cout << "Scale mat = " << getScaleMatrix() << std::endl;
 		if (dirty_flags & DIRTY_FLAG_ANY)
-			transform_mat = getScaleMatrix() * getRotationMatrix() * getPosMatrix();
+		{
+			//transform_mat = getScaleMatrix() * getRotationMatrix() * getPosMatrix();
+			transform_mat = mft::mat4();
+			transform_mat *= getPosMatrix();
+			//std::cout << "Matrix after scale = " << transform_mat << std::endl;
+			transform_mat *= getRotationMatrix();
+			//std::cout << "Matrix after rotation = " << transform_mat << std::endl;
+			transform_mat *= getScaleMatrix();
+			//std::cout << "Matrix after translation = " << transform_mat << std::endl;
+			//std::cout << "Translation = " << getPosMatrix() << std::endl;
+		}
 		//std::cout << "Final mat = " << transform_mat << std::endl;
 		return transform_mat;
 	}

@@ -214,7 +214,7 @@ namespace notrealengine
 			std::map<std::string, BoneInfo>::iterator it;
 			for (it = bones.begin(); it != bones.end(); it++)
 			{
-				it->second.localMatrix = it->second.offsetMatrix * it->second.originalMatrix;
+				it->second.localMatrix = it->second.originalMatrix * it->second.offsetMatrix;
 				it->second.modelMatrix = it->second.originalMatrix;
 				str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
 				location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
@@ -286,14 +286,14 @@ namespace notrealengine
 				animBones.find(node.name);
 			if (it != animBones.end())
 			{
-				node.transform = it->second.getTransform(currentTime)
-					* animNodes[node.parentId].transform;
+				node.transform = animNodes[node.parentId].transform
+					* it->second.getTransform(currentTime);
 			}
 			//	Otherwise, use the original node's transform
 			else
 			{
-				node.transform = node.transform
-					* animNodes[node.parentId].transform;
+				node.transform = animNodes[node.parentId].transform
+					* node.transform;
 			}
 			//	If a bone of the object is associated with this node,
 			//	update its transform with what we just computed
@@ -303,7 +303,7 @@ namespace notrealengine
 				BoneInfo& bone = it2->second;
 
 				bone.modelMatrix = node.transform;
-				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
+				bone.localMatrix = bone.modelMatrix * bone.offsetMatrix;
 			}
 		}
 		this->bindBones();

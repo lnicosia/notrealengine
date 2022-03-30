@@ -79,7 +79,9 @@ namespace notrealengine
 		//	Recompute transform matrix if parent's one has changed
 		if (parentTransform != this->parentTransform || this->transform.isDirty() || this->animDirty)
 		{
-			this->transformMatrix = this->transform.getMatrix() * parentTransform.getMatrix();
+			if (this->name == "Mesh" || this->name == "Mesh 2")
+				std::cout << "mult = " << this->transform.getMatrix() << " * " << parentTransform.getMatrix() << std::endl;
+			this->transformMatrix = parentTransform.getMatrix() * this->transform.getMatrix();
 			/*this->transformMatrix =
 				this->transform.getScaleMatrix() * parentTransform.getScaleMatrix()
 				* this->transform.getRotationMatrix() * parentTransform.getRotationMatrix()
