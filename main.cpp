@@ -98,6 +98,7 @@ int		main(int ac, char** av)
 	//mesh->transform.scale(mft::vec3(0.35f, 0.475f, 1.0f));
 	mesh->setName("Mesh");
 	mesh->setColor(mft::vec3(0.9f, 0.9f, 0.9f));
+	mesh->transform.scale(mft::vec3(1.0f, 1.0f, 1.0f));
 	mesh->addMesh(std::shared_ptr<Mesh>(new Mesh(GLContext::cube)));
 	mesh->getChildren()[0]->setColor(mft::vec3(0.9f, 0.5f, 0.9f));
 	mesh->getChildren()[0]->transform.move(mft::vec3(2.0f, 0.0f, 0.0f));
@@ -108,7 +109,7 @@ int		main(int ac, char** av)
 	object->setShader(GLContext::getShader("color"));
 
 	scene.addObject(object);
-	//bobby->visible = false;
+	bobby->visible = false;
 	obj->visible = false;
 	//obj->setAnimation(anim.get());
 	scene.addLight(light1);

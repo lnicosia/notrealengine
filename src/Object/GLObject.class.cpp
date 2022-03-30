@@ -149,10 +149,9 @@ namespace notrealengine
 	{
 		if (this->animationState == AnimationState::Playing)
 			this->updateAnim();
-		this->transform.getMatrix();
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			meshes[i]->draw(transform, this->shader);
+			meshes[i]->draw(transform, transform.getMatrix(), this->shader);
 		}
 	}
 
