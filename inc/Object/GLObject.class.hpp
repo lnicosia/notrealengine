@@ -96,6 +96,8 @@ namespace notrealengine
 				getShader() const;
 			const AnimationState&
 				getAnimationState() const;
+			std::map<std::string, std::shared_ptr<Mesh>>&
+				getMeshesMap();
 
 			const std::string
 				getAssetType() const override;

@@ -6,8 +6,8 @@ namespace notrealengine
 	Mesh::Mesh(std::shared_ptr<GLMesh> const& glMesh)
 		: name(glMesh->getName()),
 		localTransform(), animTransform(), finalLocalTransform(),
-		glMesh(glMesh), animDirty(false),
-		parentMatrix(), globalMatrix(), animMatrix(), normalMatrix(),
+		glMesh(glMesh), visible(true),
+		globalMatrix(), normalMatrix(),
 		shader(GLContext::getShader("default")->programID),
 		color(mft::vec3(0.239f, 0.282f, 0.286f))
 	{
@@ -68,12 +68,6 @@ namespace notrealengine
 		this->shader = shader->programID;
 	}
 
-	void 	Mesh::setAnimMatrix(const mft::mat4& mat)
-	{
-		this->animMatrix = mat;
-		this->animDirty = true;
-	}
-
 	void Mesh::updateFinalTransform( void )
 	{
 		this->finalLocalTransform.setPos(this->localTransform.getPos() + this->animTransform.getPos());
@@ -122,15 +116,14 @@ namespace notrealengine
 				{ tmp[2][0], tmp[2][1], tmp[2][2] }
 				);
 			this->parentMatrix = parentGlobalMat;
-			//this->parentTransform = parentGlobalTransform;
-			this->animDirty = false;
 		}
-		//std::cout << parentMat << " * " << matrix << " = " << tmp << std::endl;
-		GLCallThrow(glUseProgram, finalShader);
-		GLint location = GLCallThrow(glGetUniformLocation, finalShader, "baseColor");
-		GLCallThrow(glUniform3f, location, color.x, color.y, color.z);
-		//std::cout << "Drawing mesh " << name << " with matrix " << transformMatrix << std::endl;
-		glMesh->draw(finalShader, this->globalMatrix, normalMatrix);
+		if (this->visible == true)
+		{
+			GLCallThrow(glUseProgram, finalShader);
+			GLint location = GLCallThrow(glGetUniformLocation, finalShader, "baseColor");
+			GLCallThrow(glUniform3f, location, color.x, color.y, color.z);
+			glMesh->draw(finalShader, this->globalMatrix, this->normalMatrix);
+		}
 		for (auto child: children)
 		{
 			child->draw(globalScale * this->finalLocalTransform.getScale(), this->globalMatrix, finalShader);

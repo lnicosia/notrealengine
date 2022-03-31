@@ -130,6 +130,9 @@ int		main(int ac, char** av)
 	//std::shared_ptr<Mesh> selectedMesh = object->getMeshes()[0];
 	std::shared_ptr<Mesh> selectedMesh = bobby->getMeshes()[0];
 
+	std::map<std::string, std::shared_ptr<Mesh>>::iterator bobbyMeshesIt =
+		bobby->getMeshesMap().begin();
+
 	while (running)
 	{
 		uint32_t	deltaTime = SDL_GetTicks() - moveTime;
@@ -422,6 +425,10 @@ int		main(int ac, char** av)
 					{
 						selectedMesh = bobby->getMeshes()[0];
 					}
+					bobbyMeshesIt++;
+					if (bobbyMeshesIt == bobby->getMeshesMap().end())
+						bobbyMeshesIt = bobby->getMeshesMap().begin();
+					//selectedMesh = bobbyMeshesIt->second;
 					std::cout << selectedMesh->getName() << " selected" << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)

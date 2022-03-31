@@ -419,6 +419,11 @@ namespace notrealengine
 		return shader;
 	}
 
+	std::map<std::string, std::shared_ptr<Mesh>>& GLObject::getMeshesMap()
+	{
+		return meshesMap;
+	}
+
 	const AnimationState& GLObject::getAnimationState() const
 	{
 		return animationState;

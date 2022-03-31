@@ -34,6 +34,9 @@ namespace notrealengine
 		//	i.e. the real and final local transform during a frame
 		Transform finalLocalTransform;
 
+		//	Invisible meshes/nodes can be very usefull in a hierarchical model
+		bool	visible;
+
 		//	Setters
 
 		void
@@ -62,23 +65,19 @@ namespace notrealengine
 			addMesh(std::shared_ptr<Mesh> mesh);
 
 	private:
-		std::string				name;
+		std::string	name;
 
 		std::shared_ptr<GLMesh>	glMesh;
 		std::vector<std::shared_ptr<Mesh>>	children;
 		std::shared_ptr<Mesh>	*parent;
 
 		mft::mat4	parentMatrix;
-		Transform	parentTransform;
 		mft::mat4	globalMatrix;
-		mft::mat4	animMatrix;
 		mft::mat3	normalMatrix;
 
 		mft::vec3	color;
 
 		unsigned int	shader;
-
-		bool	animDirty;
 
 		void
 			updateFinalTransform( void );
