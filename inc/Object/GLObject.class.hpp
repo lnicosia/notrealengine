@@ -79,6 +79,11 @@ namespace notrealengine
 			void
 				resumeAnimation( void );
 
+			/**	Stop the current object's animation
+			*/
+			void
+				stopAnimation( void );
+
 			//	Accessors
 
 			const std::vector<std::shared_ptr<Mesh>>&
@@ -92,8 +97,8 @@ namespace notrealengine
 			const AnimationState&
 				getAnimationState() const;
 
-			virtual const std::string
-				getAssetType() const;
+			const std::string
+				getAssetType() const override;
 
 			//	Setters
 

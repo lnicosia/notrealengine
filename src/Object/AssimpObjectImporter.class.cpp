@@ -187,7 +187,6 @@ namespace notrealengine
 		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
 		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
 		res->setName(mesh->mName.C_Str());
-		std::cout << "Setting name '" << res->getName() << "' to new mesh" << std::endl;
 		return res;
 	}
 

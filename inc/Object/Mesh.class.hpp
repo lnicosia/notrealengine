@@ -27,9 +27,12 @@ namespace notrealengine
 		unsigned int const&
 				getShader() const;
 
-		// Transform is public so its non-const operations can be called efficiently
-		Transform	transform;
-		Transform globalTransform;
+		//	Local transform of the mesh
+		Transform	localTransform;
+		//	Local animation transform
+		Transform	animTransform;
+		//	i.e. the real and final local transform during a frame
+		Transform finalLocalTransform;
 
 		//	Setters
 
@@ -43,6 +46,8 @@ namespace notrealengine
 			setShader(GLShaderProgram* shader);
 		void
 			setAnimMatrix(const mft::mat4& mat);
+		void
+			setAnimTransform(const Transform& transform);
 
 		void
 			addTexture(std::shared_ptr < Texture >& text);
@@ -51,7 +56,7 @@ namespace notrealengine
 		**	instead of the mesh's shader data
 		*/
 		void
-			draw(const Transform& parentTransform, const mft::mat4& parentGlobalMat, unsigned int shader = 0);
+			draw(const mft::vec3 globalScale, const mft::mat4& parentGlobalMat, unsigned int shader = 0);
 
 		void
 			addMesh(std::shared_ptr<Mesh> mesh);
@@ -74,6 +79,9 @@ namespace notrealengine
 		unsigned int	shader;
 
 		bool	animDirty;
+
+		void
+			updateFinalTransform( void );
 
 	};
 

@@ -4,7 +4,7 @@
 namespace notrealengine
 {
 	Transform::Transform( void ):
-		tPos(), tRotation(), tScale(1),
+		tPos(), tRotation(), tScale(1.0f),
 		pos_mat(), rotation_mat(), scale_mat(),
 		dirty_flags(DIRTY_FLAG_NONE)
 	{

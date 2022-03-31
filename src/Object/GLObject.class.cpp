@@ -48,7 +48,7 @@ namespace notrealengine
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
-		: Asset({std::filesystem::path()}),
+		: Asset(),
 		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(meshes), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
@@ -85,7 +85,7 @@ namespace notrealengine
 		for (const auto& pair: this->meshesMap)
 		{
 			const std::shared_ptr<Mesh>& mesh = pair.second;
-			std::cout << "MapMesh: '" << mesh->getName() << "'" << std::endl;
+			//std::cout << "MapMesh: '" << mesh->getName() << "'" << std::endl;
 		}
 	}
 
@@ -149,9 +149,10 @@ namespace notrealengine
 	{
 		if (this->animationState == AnimationState::Playing)
 			this->updateAnim();
+		mft::vec3 scale = this->transform.getScale();
 		for (size_t i = 0; i < meshes.size(); i++)
 		{
-			meshes[i]->draw(transform, transform.getMatrix(), this->shader);
+			meshes[i]->draw(scale, this->transform.getMatrix(), this->shader);
 		}
 	}
 
@@ -226,7 +227,10 @@ namespace notrealengine
 		{
 			for (const auto& pair : this->meshesMap)
 			{
-				pair.second->setAnimMatrix(mft::mat4());
+				//	Hack to make the transform dirty and recompute it
+				pair.second->animTransform.setPos(mft::vec3());
+				pair.second->animTransform.setRotation(mft::quat());
+				pair.second->animTransform.setScale(mft::vec3(1.0f));
 			}
 		}
 		this->animationState = AnimationState::Stopped;
@@ -248,6 +252,11 @@ namespace notrealengine
 		this->animationState = AnimationState::Playing;
 	}
 
+	void	GLObject::stopAnimation( void )
+	{
+		this->animationState = AnimationState::Stopped;
+	}
+
 	void	GLObject::updateSolidAnim(float currentTime)
 	{
 		std::map<std::string, Bone> animBones = anim->getBones();
@@ -263,8 +272,11 @@ namespace notrealengine
 				this->meshesMap.find(pair.first);
 			if (it != this->meshesMap.end())
 			{
-				std::cout << "Bone " << pair.first << " sending " << bone.getTransform(currentTime) << std::endl;
-				it->second->setAnimMatrix(bone.getTransform(currentTime));
+				//std::cout << "Bone " << pair.first << " sending " << bone.getTransform(currentTime) << std::endl;
+				//it->second->setAnimMatrix(bone.getTransform(currentTime));
+				it->second->animTransform.setPos(bone.getPosition(currentTime));
+				it->second->animTransform.setRotation(bone.getRotation(currentTime));
+				it->second->animTransform.setScale(bone.getScale(currentTime));
 			}
 		}
 	}
@@ -432,7 +444,12 @@ namespace notrealengine
 	void GLObject::setAnimation(Animation* anim)
 	{
 		this->anim = anim;
+		AnimationState state = this->animationState;
 		this->resetPose();
+		if (state == AnimationState::Paused)
+			this->animationState = AnimationState::Stopped;
+		else
+			this->animationState = state;
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)

@@ -10,8 +10,13 @@ namespace notrealengine
 	class Asset
 	{
 	public:
-		Asset() = delete;
+		Asset();
+		/**	Constructor for loading assets from files
+		*/
 		Asset(const std::vector<std::filesystem::path>& paths);
+		/**	Constructor for creating assets from code
+		*/
+		Asset(const std::string& name);
 		Asset(const Asset& ref) = delete;
 		Asset(Asset&& ref);
 		Asset& operator=(const Asset& ref) = delete;

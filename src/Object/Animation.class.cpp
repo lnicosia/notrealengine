@@ -70,7 +70,7 @@ namespace notrealengine
 	}
 
 	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)
-		: Asset({""}), duration(0), ticksPerSecond(1000.0), type(Solid), bones(bones),
+		: Asset(name), duration(0), ticksPerSecond(1000.0), type(Solid), bones(bones),
 		currentFrame(0), ended(false), nodes()
 	{
 		std::cout << "Loading animation from bones..." << std::endl;
