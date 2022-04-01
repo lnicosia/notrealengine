@@ -22,9 +22,6 @@ namespace notrealengine
 
 		registerShader("text", "shaders/text.vs", "shaders/text.fs");
 
-		//std::shared_ptr<GLObject> obj = AssetManager::getInstance().loadAsset<GLObject>("resources/objects/cube.obj");
-		//cube = obj->getMeshes()[0]->getGLMesh();
-
 		std::vector<Vertex>	vertices;
 
 		vertices.push_back(Vertex(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f));
@@ -77,6 +74,58 @@ namespace notrealengine
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
 		cube = std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+
+		vertices.clear();
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f));
+
+		vertices.push_back(Vertex(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+
+		vertices.push_back(Vertex(-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f));
+
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f));
+
+		vertices.push_back(Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f));
+		vertices.push_back(Vertex(-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f));
+		indices.clear();
+		for (unsigned int i = 0; i < vertices.size(); i++)
+		{
+			indices.push_back(i);
+		}
+
+		MeshData	data1(vertices, indices);
+		textures.clear();
+		centeredCube = std::shared_ptr<GLMesh>(new GLMesh(data1, textures));
 
 		vertices.clear();
 		vertices.push_back(Vertex(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
@@ -197,6 +246,7 @@ namespace notrealengine
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
 	std::map<std::string, GLShaderProgram> GLContext::shaders = std::map<std::string, GLShaderProgram>();
 	std::shared_ptr<GLMesh>	GLContext::cube = std::shared_ptr<GLMesh>();
+	std::shared_ptr<GLMesh>	GLContext::centeredCube = std::shared_ptr<GLMesh>();
 	std::shared_ptr<GLObject>	GLContext::grid = std::shared_ptr<GLObject>();
 	long GLContext::CurrentContext = 0;
 

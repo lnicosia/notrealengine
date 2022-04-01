@@ -140,7 +140,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		//this->transform.scale(mft::vec3(scale));
+		this->transform.scale(mft::vec3(scale));
 	}
 
 	//	Drawing functions
@@ -162,28 +162,31 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		std::map<std::string, BoneInfo>::const_iterator it;
-		Mesh	cube(GLContext::cube);
+		Mesh	cube(GLContext::centeredCube);
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
-		const mft::vec3& objScale = this->transform.getScale();
-		
-		mft::vec3 boneScale = 0.05f / objScale;
-		
-		mft::mat4 scaleMatrix = mft::mat4::scale(boneScale);
-		for (it = bones.begin(); it != bones.end(); it++)
+
+		//	Draw the original bones pose without any animation (most probably a T-pose) 
+		/*for (it = bones.begin(); it != bones.end(); it++)
 		{
-			std::cout << "Original matrix = " << (*it).second.originalMatrix << std::endl;
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),  transform.getMatrix() * (*it).second.originalMatrix * scaleMatrix);
-		}
+			const mft::vec3& objScale = mft::mat4::getScale(it->second.originalMatrix);
+			mft::vec3 boneScale = 0.05f / objScale;
+			mft::mat4 scaleMatrix = mft::mat4::scale(boneScale);
+			//std::cout << "Original matrix = " << (*it).second.originalMatrix << std::endl;
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),  transform.getMatrix() * it->second.originalMatrix * scaleMatrix);
+		}*/
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
+			const mft::vec3& objScale = this->transform.getScale();
+			mft::vec3 invObjScale = 0.05f / objScale;
+			mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
+			const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
+			mft::vec3 invBoneScale = 0.05f / boneScale;
+			mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
 			//std::cout << "Model matrix = " << (*it).second.modelMatrix << std::endl;
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * (*it).second.modelMatrix * scaleMatrix);
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix);
 		}
-		std::cout << "Obj scale = " << objScale << std::endl;
-		std::cout << "Bone scale = " << boneScale << std::endl;
-		std::cout << std::endl << std::endl;
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 
