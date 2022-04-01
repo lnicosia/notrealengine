@@ -62,15 +62,12 @@ namespace notrealengine
 			{
 				bone.id = nbBones;
 				bone.offsetMatrix = mesh->mBones[i]->mOffsetMatrix;
-				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
-				bone.localMatrix = mft::mat4();
-				bone.originalMatrix = mft::mat4();
 				this->bones[boneName] = bone;
 				this->nbBones++;
 			}
 			else
 			{
-				bone.id = this-> bones[boneName].id;
+				bone.id = this->bones[boneName].id;
 			}
 			//std::cout << "Bone " << boneName <<  " id = " << bone.id << std::endl;
 			cpVertexWeight* weights = mesh->mBones[i]->mWeights;
@@ -194,10 +191,14 @@ namespace notrealengine
 	{
 		mft::mat4	transform =  parentMat * node->mTransformation;
 		std::string name(node->mName);
-		if (bones.contains(name))
+		std::map<std::string, BoneInfo>::iterator it =
+			this->bones.find(name);
+		if (it != this->bones.end())
 		{
-			bones[name].originalMatrix = transform;
-			bones[name].localMatrix = transform * bones[name].offsetMatrix;
+			BoneInfo& bone = it->second;
+			bone.originalMatrix = transform;
+			bone.modelMatrix = transform;
+			bone.localMatrix = transform * bone.offsetMatrix;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{

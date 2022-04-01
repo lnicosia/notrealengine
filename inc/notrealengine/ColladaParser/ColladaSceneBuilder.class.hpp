@@ -434,13 +434,6 @@ namespace notrealengine
 			ReadString(const std::vector<std::string>& array, const ColladaParser::ColladaAccessor& acc,
 			size_t index, size_t offset);
 
-		/**	Decompose a given matrix into the three position,
-		**	rotation and scale components
-		*/
-		void
-			DecomposeMatrix(const mft::mat4& mat,
-				mft::vec3& pos, mft::quat& rot, mft::vec3& scale);
-
 		/**	Search for a cpNode in the scene's hierarchy
 		*/
 		const cpNode*

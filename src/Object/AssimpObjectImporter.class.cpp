@@ -67,9 +67,6 @@ namespace notrealengine
 			{
 				bone.id = nbBones;
 				bone.offsetMatrix = AssimpToMftMatrix(mesh->mBones[i]->mOffsetMatrix);
-				bone.modelMatrix = mft::mat4::inverse(bone.offsetMatrix);
-				bone.localMatrix = mft::mat4();
-				bone.originalMatrix = mft::mat4();
 				this->bones[boneName] = bone;
 				this->nbBones++;
 			}
@@ -194,10 +191,14 @@ namespace notrealengine
 	{
 		mft::mat4	transform =  parentMat * AssimpToMftMatrix(node->mTransformation);
 		std::string name(node->mName.data);
-		if (bones.contains(name))
+		std::map<std::string, BoneInfo>::iterator it =
+			this->bones.find(name);
+		if (it != this->bones.end())
 		{
-			bones[name].originalMatrix = transform;
-			bones[name].localMatrix = transform * bones[name].offsetMatrix;
+			BoneInfo& bone = it->second;
+			bone.originalMatrix = transform;
+			bone.modelMatrix = transform;
+			bone.localMatrix = transform * bone.offsetMatrix;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{

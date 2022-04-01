@@ -44,7 +44,7 @@ int		main(int ac, char** av)
 	context.makeCurrent();
 	SDL_Event	e;
 	int	running = 1;
-	int	mode = Bob;
+	int	mode = Object;
 	int selectedBone = 0;
 
 	std::shared_ptr<GLObject>	obj = AssetManager::getInstance().loadAsset<GLObject>(av[1]);
@@ -113,8 +113,8 @@ int		main(int ac, char** av)
 	object->setShader(GLContext::getShader("color"));
 
 	scene.addObject(object);
-	//bobby->visible = false;
-	obj->visible = false;
+	bobby->visible = false;
+	obj->visible = true;
 	object->visible = false;
 	//obj->setAnimation(anim.get());
 	scene.addLight(light1);
@@ -125,7 +125,7 @@ int		main(int ac, char** av)
 
 	int frame = 0;
 
-	scene.setLightingMode(LightingMode::Lit);
+	scene.setLightingMode(LightingMode::Unlit);
 
 	//std::shared_ptr<Mesh> selectedMesh = object->getMeshes()[0];
 	std::shared_ptr<Mesh> selectedMesh = bobby->getMeshes()[0];

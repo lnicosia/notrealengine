@@ -36,22 +36,26 @@ namespace notrealengine
 
 		if (parser.axis == ColladaParser::X_UP)
 		{
-			scene->mRootNode->mTransformation *=
+			std::cout << "Up axis = X" << std::endl;
+			/*scene->mRootNode->mTransformation *=
 				mft::mat4(
 					{ 0, -1, 0, 0 },
 					{ 1, 0, 0, 0 },
 					{ 0, 0, 1, 0 },
-					{ 0, 0, 0, 1 });
+					{ 0, 0, 0, 1 });*/
 		}
 		else if (parser.axis == ColladaParser::Z_UP)
 		{
-			scene->mRootNode->mTransformation *=
+			std::cout << "Up axis = Z" << std::endl;
+			/*scene->mRootNode->mTransformation *=
 				mft::mat4(
 					{ 1, 0, 0, 0 },
 					{ 0, 0, 1, 0 },
 					{ 0, -1, 0, 0 },
-					{ 0, 0, 0, 1 });
+					{ 0, 0, 0, 1 });*/
 		}
+		else
+			std::cout << "Up axis = Y" << std::endl;
 
 		ResolveBonesName(parser, scene->mRootNode);
 
@@ -308,7 +312,7 @@ namespace notrealengine
 				nodeAnim->mPositionKeys[i].mTime = times[i] * 1000.0;
 				nodeAnim->mRotationKeys[i].mTime = times[i] * 1000.0;
 				nodeAnim->mScalingKeys[i].mTime = times[i] * 1000.0;
-				DecomposeMatrix(transforms[i],
+				transforms[i].decompose(transforms[i],
 					nodeAnim->mPositionKeys[i].mValue,
 					nodeAnim->mRotationKeys[i].mValue,
 					nodeAnim->mScalingKeys[i].mValue);
@@ -337,44 +341,6 @@ namespace notrealengine
 		}
 		newAnim->mTicksPerSecond = 1000.0;
 		this->animations.push_back(newAnim);
-	}
-
-	void ColladaSceneBuilder::DecomposeMatrix(const mft::mat4& mat,
-		mft::vec3& pos, mft::quat& rot, mft::vec3& scale)
-	{
-		pos.x = mat[0][3];
-		pos.y = mat[1][3];
-		pos.z = mat[2][3];
-
-		mft::vec3 columns[3] =
-		{
-			{ mat[0][0], mat[1][0], mat[2][0] },
-			{ mat[0][1], mat[1][1], mat[2][1] },
-			{ mat[0][2], mat[1][2], mat[2][2] }
-		};
-
-		scale.x = mft::vec3::length(columns[0]);
-		scale.y = mft::vec3::length(columns[1]);
-		scale.z = mft::vec3::length(columns[2]);
-
-		if (mft::mat4::determinant(mat) < 0)
-			scale *= -1;
-
-		if (scale.x)
-			columns[0] /= scale.x;
-		if (scale.y)
-			columns[1] /= scale.y;
-		if (scale.z)
-			columns[2] /= scale.z;
-
-		float m[3][3] =
-		{
-			{ columns[0].x, columns[1].x, columns[2].x },
-			{ columns[0].y, columns[1].y, columns[2].y },
-			{ columns[0].z, columns[1].z, columns[2].z }
-		};
-
-		rot = mft::quat(m);
 	}
 
 	void ColladaSceneBuilder::BuildAnimation(const ColladaParser& parser,

@@ -140,7 +140,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		this->transform.scale(mft::vec3(scale));
+		//this->transform.scale(mft::vec3(scale));
 	}
 
 	//	Drawing functions
@@ -165,21 +165,25 @@ namespace notrealengine
 		Mesh	cube(GLContext::cube);
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
-		const mft::vec3& objTransform = this->transform.getScale();
-		mft::vec3 cubeScale = 0.05f / objTransform;
-		mft::mat4 scaleMatrix = mft::mat4::scale(cubeScale);
+		const mft::vec3& objScale = this->transform.getScale();
+		
+		mft::vec3 boneScale = 0.05f / objScale;
+		
+		mft::mat4 scaleMatrix = mft::mat4::scale(boneScale);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			//std::cout << "From parent matrix = " << (*it).second.originalMatrix << std::endl;
-			//cube.draw(scaleMatrix * (*it).second.originalMatrix * transform.getMatrix());
+			std::cout << "Original matrix = " << (*it).second.originalMatrix << std::endl;
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),  transform.getMatrix() * (*it).second.originalMatrix * scaleMatrix);
 		}
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			//std::cout << "Model matrix = " << (*it).second.modelMatrix << std::endl;
-			//cube.draw(scaleMatrix * (*it).second.modelMatrix * transform.getMatrix());
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * (*it).second.modelMatrix * scaleMatrix);
 		}
-		//std::cout << std::endl << std::endl;
+		std::cout << "Obj scale = " << objScale << std::endl;
+		std::cout << "Bone scale = " << boneScale << std::endl;
+		std::cout << std::endl << std::endl;
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 

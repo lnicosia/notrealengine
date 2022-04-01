@@ -258,6 +258,51 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
+	constexpr vec<T1, T1, T1> mat<T1, Tn...>::getTranslation(const mat<T1, T1, T1, T1>& m)
+	{
+		return vec<T1, T1, T1>(m[0][3], m[1][3], m[2][3]);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr quaternion<T1> mat<T1, Tn...>::getRotation(const mat<T1, T1, T1, T1>& m)
+	{
+		return vec<T1, T1, T1>(m[0][3], m[1][3], m[2][3]);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, T1, T1> mat<T1, Tn...>::getScale(const mat<T1, T1, T1, T1>& m)
+	{
+		vec<T1, T1, T1> scale;
+		vec<T1, T1, T1> columns[3] =
+		{
+			{ m[0][0], m[1][0], m[2][0] },
+			{ m[0][1], m[1][1], m[2][1] },
+			{ m[0][2], m[1][2], m[2][2] }
+		};
+
+		scale.x = vec<T1, T1, T1>::length(columns[0]);
+		scale.y = vec<T1, T1, T1>::length(columns[1]);
+		scale.z = vec<T1, T1, T1>::length(columns[2]);
+		return scale;
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr void mat<T1, Tn...>::decompose(const mat<T1, T1, T1, T1>& m,
+		vec<T1, T1, T1>& pos, quaternion<T1>& rot, vec<T1, T1, T1>& scale)
+	{
+		pos = getTranslation(m);
+		scale = getScale(m);
+
+		float m3x3[3][3] =
+		{
+			{ m[0][0], m[0][1], m[0][2] },
+			{ m[1][0], m[1][1], m[1][2] },
+			{ m[2][0], m[2][1], m[2][2] }
+		};
+		rot = quaternion<T1>(m3x3);
+	}
+
+	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top )
 	{
 		return mat<T1,T1,T1,T1>(
