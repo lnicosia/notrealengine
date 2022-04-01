@@ -206,7 +206,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.localTransformMatrix << std::endl;
 					//obj->localTransform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime / 2.0);
 				}
@@ -214,7 +214,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime / 2.0);
 				}
@@ -222,7 +222,7 @@ int		main(int ac, char** av)
 				{
 					scene.backward(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);
@@ -291,7 +291,6 @@ int		main(int ac, char** av)
 				}
 				if (e.key.keysym.sym == SDLK_p)
 				{
-					std::cout << "Animation status = ";
 					std::shared_ptr<GLObject> object;
 					std::shared_ptr<Animation> animation;
 					if (mode == Object || mode == Bones)
@@ -308,17 +307,14 @@ int		main(int ac, char** av)
 					if (animState == AnimationState::Stopped)
 					{
 						object->playAnimation(animation.get());
-						std::cout << " started " << std::endl;
 					}
 					else if (animState == AnimationState::Playing)
 					{
 						object->pauseAnimation();
-						std::cout << " pause " << std::endl;
 					}
 					else if (animState == AnimationState::Paused)
 					{
 						object->resumeAnimation();
-						std::cout << " resumed " << std::endl;
 					}
 				}
 				if (e.key.keysym.sym == SDLK_l)
@@ -372,7 +368,6 @@ int		main(int ac, char** av)
 					else if (bobbyAnim == bobbyJumping)
 						bobbyAnim = bobbyIdle;
 					bobby->setAnimation(bobbyAnim.get());
-					std::cout << "Bobby anim = " << bobbyAnim->getName() << std::endl;
 					if (selectedMesh == object->getMeshes()[0])
 					{
 						selectedMesh = selectedMesh->getChildren()[0];
@@ -429,7 +424,6 @@ int		main(int ac, char** av)
 					if (bobbyMeshesIt == bobby->getMeshesMap().end())
 						bobbyMeshesIt = bobby->getMeshesMap().begin();
 					//selectedMesh = bobbyMeshesIt->second;
-					std::cout << selectedMesh->getName() << " selected" << std::endl;
 				}
 				if (e.key.keysym.sym == SDLK_KP_MINUS)
 				{
@@ -485,9 +479,17 @@ int		main(int ac, char** av)
 		GLCallThrow(glClearColor, 0.2f, 0.2f, 0.2f, 1.0f);
 		GLCallThrow(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(0, 0), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::string("Selected Mesh = " + selectedMesh->getName()), mft::vec2(600, 800), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::string("Current anim = " + bobbyAnim->getName()), mft::vec2(600, 700), 1, mft::vec3(1.0, 1.0, 1.0));
+		std::shared_ptr<GLObject> currentObj;
+		if (mode == Bob)
+			currentObj = bobby;
+		else if (mode == Object || mode == Bones)
+			currentObj = obj;
+
+		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2(50, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2(50, 700), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(50, 50), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2(900, 800), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2(900, 700), 1, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
 		scene.renderBones();

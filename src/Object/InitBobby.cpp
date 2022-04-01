@@ -63,7 +63,7 @@ std::shared_ptr<GLObject> InitBobby(void)
   Mesh&	leftThigh = (*torso.getChildren()[3]);
   leftThigh.setName("Left thigh");
   leftThigh.setColor(mft::vec3(0.0f, 0.0f, 0.5f));
-  leftThigh.localTransform.move(mft::vec3(0.4f, 0.0f, 0.0f));
+  leftThigh.localTransform.move(mft::vec3(0.95f, 0.0f, 0.0f));
   leftThigh.localTransform.scale(mft::vec3(0.35f, 0.5f, 1.0f));
   leftThigh.localTransform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(180.0f)));
 
@@ -77,7 +77,7 @@ std::shared_ptr<GLObject> InitBobby(void)
   Mesh& rightThigh = (*torso.getChildren()[4]);
   rightThigh.setName("Right thigh");
   rightThigh.setColor(mft::vec3(0.0f, 0.0f, 0.5f));
-  rightThigh.localTransform.move(mft::vec3(0.95f, 0.0f, 0.0f));
+  rightThigh.localTransform.move(mft::vec3(0.4f, 0.0f, 0.0f));
   rightThigh.localTransform.scale(mft::vec3(0.35f, 0.5f, 1.0f));
   rightThigh.localTransform.rotate(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 1.0f), mft::radians(180.0f)));
 
@@ -103,7 +103,7 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   std::vector<VecKeyFrame> scales = std::vector<VecKeyFrame>();
 
   positions.push_back(VecKeyFrame(mft::vec3(0.0f, 0.0f, 0.0f), 0.0));
-  positions.push_back(VecKeyFrame(mft::vec3(0.0f, 0.0f, -2.0f), 2000.0));
+  positions.push_back(VecKeyFrame(mft::vec3(0.0f, 0.0f, -3.0f), 4000.0));
   Bone torso("Torso", positions, rotations, scales);
   bones["Torso"] = torso;
 
@@ -113,6 +113,8 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(15.0f)), 1000.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(15.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 4000.0));
   Bone upperRightArm("Upper right arm", positions, rotations, scales);
   bones["Upper right arm"] = upperRightArm;
 
@@ -120,8 +122,10 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.clear();
   scales.clear();
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(0.0f, 0.0f, 0.0f), mft::radians(0.0f)), 0.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-30.0f)), 1000.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 1000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 4000.0));
   Bone lowerRightArm("Lower right arm", positions, rotations, scales);
   bones["Lower right arm"] = lowerRightArm;
 
@@ -131,15 +135,19 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(15.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 1000.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(15.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(15.0f)), 4000.0));
   Bone upperLeftArm("Upper left arm", positions, rotations, scales);
   bones["Upper left arm"] = upperLeftArm;
 
   positions.clear();
   rotations.clear();
   scales.clear();
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-30.0f)), 0.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 1000.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-30.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 0.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 1000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-15.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 4000.0));
   Bone lowerLeftArm("Lower left arm", positions, rotations, scales);
   bones["Lower left arm"] = lowerLeftArm;
 
@@ -149,6 +157,8 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(20.0f)), 1000.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(20.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 4000.0));
   Bone rightThigh("Right thigh", positions, rotations, scales);
   bones["Right thigh"] = rightThigh;
 
@@ -157,7 +167,12 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   scales.clear();
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 1000.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 1750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 3750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 4000.0));
+
   Bone rightCalf("Right calf", positions, rotations, scales);
   bones["Right calf"] = rightCalf;
 
@@ -167,6 +182,8 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(20.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 1000.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(20.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(20.0f)), 4000.0));
   Bone leftThigh("Left thigh", positions, rotations, scales);
   bones["Left thigh"] = leftThigh;
 
@@ -174,8 +191,12 @@ std::shared_ptr<Animation> InitBobbyWalking(void)
   rotations.clear();
   scales.clear();
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 0.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 1000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 1000.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 2000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(30.0f)), 2750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 3000.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 4000.0));
   Bone leftCalf("Left calf", positions, rotations, scales);
   bones["Left calf"] = leftCalf;
 
@@ -217,7 +238,7 @@ std::shared_ptr<Animation> InitBobbyJumping(void)
   scales.clear();
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-30.0f)), 500.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 750.0));
   Bone lowerRightArm("Lower right arm", positions, rotations, scales);
   bones["Lower right arm"] = lowerRightArm;
 
@@ -237,7 +258,7 @@ std::shared_ptr<Animation> InitBobbyJumping(void)
   scales.clear();
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 0.0));
   rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-30.0f)), 500.0));
-  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(0.0f)), 750.0));
+  rotations.push_back(QuatKeyFrame(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(-20.0f)), 750.0));
   Bone lowerLeftArm("Lower left arm", positions, rotations, scales);
   bones["Lower left arm"] = lowerLeftArm;
 

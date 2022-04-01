@@ -257,7 +257,7 @@ namespace notrealengine
 		this->animationState = AnimationState::Stopped;
 	}
 
-	void	GLObject::updateSolidAnim(float currentTime)
+	void	GLObject::updateSolidAnim( void )
 	{
 		std::map<std::string, Bone> animBones = anim->getBones();
 		for (auto& pair: animBones)
@@ -274,14 +274,14 @@ namespace notrealengine
 			{
 				//std::cout << "Bone " << pair.first << " sending " << bone.getTransform(currentTime) << std::endl;
 				//it->second->setAnimMatrix(bone.getTransform(currentTime));
-				it->second->animTransform.setPos(bone.getPosition(currentTime));
-				it->second->animTransform.setRotation(bone.getRotation(currentTime));
-				it->second->animTransform.setScale(bone.getScale(currentTime));
+				it->second->animTransform.setPos(bone.getPosition(this->currentTime));
+				it->second->animTransform.setRotation(bone.getRotation(this->currentTime));
+				it->second->animTransform.setScale(bone.getScale(this->currentTime));
 			}
 		}
 	}
 
-	void	GLObject::updateSkeletalAnim(float currentTime)
+	void	GLObject::updateSkeletalAnim( void )
 	{
 		std::map<std::string, Bone> animBones = anim->getBones();
 		std::vector<AnimNode>& animNodes = anim->getNodes();
@@ -298,7 +298,7 @@ namespace notrealengine
 			if (it != animBones.end())
 			{
 				node.transform = animNodes[node.parentId].transform
-					* it->second.getTransform(currentTime);
+					* it->second.getTransform(this->currentTime);
 			}
 			//	Otherwise, use the original node's transform
 			else
@@ -327,8 +327,10 @@ namespace notrealengine
 			this->resetPose();
 			return;
 		}
-		float currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
-		if (currentTime >= anim->getDuration())
+		this->currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
+		//if (this->name == "Bobby")
+			//std::cout << "Current time = " << this->currentTime << std::endl;
+		if (this->currentTime >= anim->getDuration())
 		{
 			this->animationState = AnimationState::Stopped;
 			if (this->animationRepeat == AnimationRepeat::Repeat)
@@ -338,9 +340,9 @@ namespace notrealengine
 			return;
 		}
 		if (this->anim->getType() == Animation::Skeletal)
-			updateSkeletalAnim(currentTime);
+			updateSkeletalAnim();
 		else if (this->anim->getType() == Animation::Solid)
-			updateSolidAnim(currentTime);
+			updateSolidAnim();
 	}
 
 	void	GLObject::setToKeyFrame(unsigned int keyFrame)
@@ -427,6 +429,32 @@ namespace notrealengine
 	const AnimationState& GLObject::getAnimationState() const
 	{
 		return animationState;
+	}
+
+	const float GLObject::getStartTime() const
+	{
+		return startTime;
+	}
+
+	const float GLObject::getCurrentTime() const
+	{
+		return currentTime;
+	}
+
+	const std::string GLObject::getAnimationStateStr() const
+	{
+		switch (animationState)
+		{
+		case Playing:
+			return "Playing";
+			break;
+		case Paused:
+			return "Paused";
+			break;
+		case Stopped:
+			return "Stopped";
+			break;
+		}
 	}
 
 	//	Setters

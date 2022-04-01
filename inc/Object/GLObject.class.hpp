@@ -98,6 +98,18 @@ namespace notrealengine
 				getAnimationState() const;
 			std::map<std::string, std::shared_ptr<Mesh>>&
 				getMeshesMap();
+			/**	Returns the start time of the current anim
+			*/
+			const float
+				getStartTime() const;
+			/**	Returns the start time of the current anim
+			*/
+			const float
+				getCurrentTime() const;
+			/**	ToStrings the actual animation state (ie Playing, Paused, Stopped)
+			*/
+			const std::string
+				getAnimationStateStr() const;
 
 			const std::string
 				getAssetType() const override;
@@ -156,8 +168,17 @@ namespace notrealengine
 			//	Animations
 
 			Animation*		anim;
+			/**	Start time of the current animation (in ms)
+			*/
 			float			startTime;
+			/**	Program time when the current animation is paused
+			**	to be able to resume at the correct time 
+			*/
 			float			pauseTime;
+			/**	We do not need to store the current time value
+			**	it's only for debugging purposes 
+			*/
+			float			currentTime;
 			AnimationState	animationState;
 
 			/**	Update the current animation of the object according to
@@ -169,12 +190,12 @@ namespace notrealengine
 			/**	Update a skeletal animation according to currentTime
 			*/
 			void
-				updateSkeletalAnim(float currentTime);
+				updateSkeletalAnim( void );
 
 			/**	Update a solid animation according to currentTime
 			*/
 			void
-				updateSolidAnim(float currentTime);
+				updateSolidAnim( void );
 
 			/**	Save the whole mesh hierarchy as a map too to access it
 			**	in an easier way when applying a solid animation
