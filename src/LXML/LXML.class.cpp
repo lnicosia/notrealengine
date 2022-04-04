@@ -40,19 +40,8 @@ namespace lxml
 		try
 		{
 			file.open(path);
-			try
-			{
-				stream << file.rdbuf();
-			}
-			catch (std::exception& e)
-			{
-				std::cerr << "Could not read the buffer: " << e.what() << std::endl;
-			}
-
-			std::cout << "File stream correctly read" << std::endl;
+			stream << file.rdbuf();
 			file.close();
-
-			std::cout << "File stream correctly closed" << std::endl;
 
 			content = stream.str();
 		}
