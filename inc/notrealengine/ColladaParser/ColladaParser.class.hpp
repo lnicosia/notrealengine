@@ -68,11 +68,38 @@ namespace notrealengine
 			SamplerParam
 		};
 
+		enum BlendMode
+		{
+			BlendNone,
+			BlendMultiply,
+
+		};
+
 		/**	A parameter for an effect */
 		struct EffectParam
 		{
 			std::string ref;
 			ParamType	type;
+		};
+
+		/**	Data representing an actual effect in a material
+		**	i.e diffuse, ambient etc properties
+		*/
+		struct	EffectProperty
+		{
+			std::string sampler;
+			std::string channel;
+
+			mft::vec4 color;
+
+			bool wrapU;
+			bool wrapV;
+			float offsetU;
+			float offsetV;
+			float angle;
+			float scaleU;
+			float scaleV;
+
 		};
 
 		/**	I.E.Material definition
@@ -81,6 +108,17 @@ namespace notrealengine
 		struct ColladaEffect
 		{
 			std::map<std::string, EffectParam> params;
+			EffectProperty ambient;
+			EffectProperty diffuse;
+			EffectProperty emission;
+			EffectProperty specular;
+			EffectProperty reflective;
+			EffectProperty transparent;
+
+			float	shininess;
+			float	transparency;
+			float reflectivity;
+			float refractionIndex;
 		};
 
 		/**	Name/path of an image used for materials
@@ -387,6 +425,22 @@ namespace notrealengine
 		*/
 		void
 			ReadEffectParam(const lxml::Tag& paramTag, EffectParam& param);
+
+		/**	Retrieve effect properties from the file
+		*/
+		void
+			ReadEffectProperties(const lxml::Tag& techniqueTag, ColladaEffect& effect);
+
+		/**	Retrieve an effect float value from the file
+		*/
+		void
+			ReadEffectFloat(const lxml::Tag& propertyTag, float& property);
+
+
+		/**	Retrieve an effect property from the file
+		*/
+		void
+			ReadEffectProperty(const lxml::Tag& propertyTag, EffectProperty& property);
 
 		/**	Retrieve an effect from the file
 		*/

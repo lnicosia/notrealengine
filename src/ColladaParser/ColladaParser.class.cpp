@@ -563,11 +563,11 @@ namespace notrealengine
 				{
 					ColladaMesh* mesh = new ColladaMesh();
 					mesh->id = id;
+					this->meshes.insert({ id, mesh });
 
 					lxml::GetStrAttribute(child, "name", mesh->name);
 
 					ReadGeometry(child, *mesh);
-					this->meshes.insert({ id, mesh });
 				}
 			}
 		}
@@ -657,6 +657,92 @@ namespace notrealengine
 		}
 	}
 
+	void		ColladaParser::ReadEffectFloat(const lxml::Tag& propertyTag,
+		float &property)
+	{
+		if (propertyTag.children.size() != 1)
+			return ;
+		lxml::Tag floatTag = propertyTag.children[0];
+		if (floatTag.name != "float")
+			return ;
+		const char* content = floatTag.content.c_str();
+		property = std::strtof(content, nullptr);
+	}
+
+	void		ColladaParser::ReadEffectProperty(const lxml::Tag& propertyTag,
+		EffectProperty &property)
+	{
+		for (const auto& child: propertyTag.children)
+		{
+			if (child.name == "texture")
+			{
+				lxml::GetStrAttribute(child, "texture", property.sampler);
+				lxml::GetStrAttribute(child, "texcoord", property.channel);
+			}
+			else if (child.name == "color")
+			{
+				const char* content = child.content.c_str();
+				char* next = nullptr;
+				for (unsigned int i = 0; i < 4; i++)
+				{
+					property.color[i] = std::strtof(content, &next);
+					content = next;
+					content = lxml::SkipWhitespaces(content);
+				}
+			}
+		}
+	}
+
+	void		ColladaParser::ReadEffectProperties(const lxml::Tag& techniqueTag,
+		ColladaEffect& effect)
+	{
+		for (const auto& property: techniqueTag.children)
+		{
+			//	Properties
+			if (property.name == "diffuse")
+			{
+				ReadEffectProperty(property, effect.diffuse);
+			}
+			else if (property.name == "specular")
+			{
+				ReadEffectProperty(property, effect.specular);
+			}
+			else if (property.name == "ambient")
+			{
+				ReadEffectProperty(property, effect.ambient);
+			}
+			else if (property.name == "emission")
+			{
+				ReadEffectProperty(property, effect.emission);
+			}
+			else if (property.name == "reflective")
+			{
+				ReadEffectProperty(property, effect.reflective);
+			}
+			else if (property.name == "transparent")
+			{
+				ReadEffectProperty(property, effect.transparent);
+			}
+			//	Float values
+			else if (property.name == "transparency")
+			{
+				ReadEffectFloat(property, effect.transparency);
+			}
+			else if (property.name == "reflectivity")
+			{
+				ReadEffectFloat(property, effect.reflectivity);
+			}
+			else if (property.name == "index_of_refraction")
+			{
+				ReadEffectFloat(property, effect.refractionIndex);
+			}
+			else if (property.name == "shininess")
+			{
+				ReadEffectFloat(property, effect.shininess);
+			}
+		}
+	}
+
 	void		ColladaParser::ReadEffect(const lxml::Tag& effectTag,
 		ColladaEffect& effect)
 	{
@@ -676,7 +762,21 @@ namespace notrealengine
 				}
 				else if (effectChild.name == "technique")
 				{
-
+					for (const auto& technique: effectChild.children)
+					{
+						if (technique.name == "phong")
+						{
+							ReadEffectProperties(technique, effect);
+						}
+						else if (technique.name == "extra")
+						{
+							
+						}
+						else
+						{
+							std::cerr << "Material shading '" << technique.name << "' not handled" << std::endl;
+						}
+					}
 				}
 			}
 		}

@@ -9,7 +9,8 @@ namespace notrealengine
 	{
 		diffuse,
 		specular,
-		ambient
+		ambient,
+		reflective
 	};
 	struct cpTexture
 	{
@@ -23,9 +24,11 @@ namespace notrealengine
 		unsigned int mNumDiffuses;
 		unsigned int mNumSpeculars;
 		unsigned int mNumAmbients;
+		unsigned int mNumReflectives;
 		std::vector<cpTexture> mDiffuse;
 		std::vector<cpTexture> mSpecular;
 		std::vector<cpTexture> mAmbient;
+		std::vector<cpTexture> mReflective;
 
 		unsigned int
 			GetTextureCount(cpTextureType type)
@@ -39,6 +42,9 @@ namespace notrealengine
 				return this->mNumSpeculars;
 				break;
 			case cpTextureType::ambient:
+				return this->mNumAmbients;
+				break;
+			case cpTextureType::reflective:
 				return this->mNumAmbients;
 				break;
 			}
@@ -177,6 +183,16 @@ namespace notrealengine
 			mTransformation(), mName(""), mNumChildren(0), mNumMeshes()
 		{}
 	};
+
+	//	Free functions
+	void deleteBone(cpBone* bone);
+
+	void deleteMesh(cpMesh* mesh);
+
+	void deleteAnim(cpAnimation* anim);
+
+	void deleteNode(cpNode* node);
+
 	struct cpScene
 	{
 		cpAnimation** mAnimations;
@@ -235,84 +251,7 @@ namespace notrealengine
 
 		bool HasAnimations() const { return this->mNumAnimations > 0; }
 
-	private:
-		void deleteBone(cpBone* bone)
-		{
-			if (bone->mWeights != nullptr)
-				delete[] bone->mWeights;
-			delete bone;
-		}
 
-		void deleteMesh(cpMesh* mesh)
-		{
-			if (mesh->mVertices != nullptr)
-				delete[] mesh->mVertices;
-			if (mesh->mNormals != nullptr)
-				delete[] mesh->mNormals;
-			for (unsigned int i = 0; i < MAX_TEXTURE_CHANNELS; i++)
-			{
-				if (mesh->mTextureCoords[i] != nullptr)
-					delete[] mesh->mTextureCoords[i];
-				if (mesh->mColors[i] != nullptr)
-					delete[] mesh->mColors[i];
-			}
-			if (mesh->mFaces != nullptr)
-			{
-				for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-				{
-					if (mesh->mFaces[i].mIndices != nullptr)
-						delete[] mesh->mFaces[i].mIndices;
-				}
-				delete[] mesh->mFaces;
-			}
-			if (mesh->mBones != nullptr)
-			{
-				for (unsigned int i = 0; i < mesh->mNumBones; i++)
-				{
-					if (mesh->mBones[i] != nullptr)
-						deleteBone(mesh->mBones[i]);
-				}
-				delete[] mesh->mBones;
-			}
-			delete mesh;
-		}
-
-		void deleteAnim(cpAnimation* anim)
-		{
-			if (anim->mChannels == nullptr)
-				return;
-			for (unsigned int i = 0; i < anim->mNumChannels; i++)
-			{
-				if (anim->mChannels[i] != nullptr)
-				{
-					if (anim->mChannels[i]->mPositionKeys != nullptr)
-						delete[] anim->mChannels[i]->mPositionKeys;
-					if (anim->mChannels[i]->mRotationKeys != nullptr)
-						delete[] anim->mChannels[i]->mRotationKeys;
-					if (anim->mChannels[i]->mScalingKeys != nullptr)
-						delete[] anim->mChannels[i]->mScalingKeys;
-					delete anim->mChannels[i];
-				}
-			}
-			delete[] anim->mChannels;
-			delete anim;
-		}
-
-		void deleteNode(cpNode* node)
-		{
-			if (node->mChildren != nullptr)
-			{
-				for (unsigned int i = 0; i < node->mNumChildren; i++)
-				{
-					if (node->mChildren[i] != nullptr)
-						deleteNode(node->mChildren[i]);
-				}
-				delete[] node->mChildren;
-			}
-			if (node->mMeshes != nullptr)
-				delete[] node->mMeshes;
-			delete node;
-		}
 	};
 	/**	Build the scene hierarchy with the data
 	**	extracted from the collada file
@@ -375,8 +314,8 @@ namespace notrealengine
 
 		/**	Build a cpNode recursively
 		*/
-		cpNode*
-			BuildNode(ColladaParser& parser, ColladaParser::ColladaNode* node);
+		void
+			BuildNode(ColladaParser& parser, cpNode* newNode, ColladaParser::ColladaNode* node);
 
 		/**	Build all the cpMeshes for a node
 		**	by creating them or using already existing ones
@@ -410,17 +349,25 @@ namespace notrealengine
 
 		/**	Create a new cpMesh ptr with all the collada data
 		*/
-		cpMesh*
+		void
 			CreateMesh(const ColladaParser& parser,
+				cpMesh* res,
 				const ColladaParser::ColladaMesh* src,
 				const ColladaParser::SubMesh& subMesh,
 				const ColladaParser::ColladaController* controller,
 				const size_t vertexStart, const size_t faceStart);
 
+		/**	Add a texture to a new material from a given effect property
+		**	(diffuse, specular, etc)
+		*/
+		void AddTexture(const ColladaParser& parser,
+			cpMaterial* newMat, cpTextureType type, const ColladaParser::ColladaEffect& effect);
+
 		/**	Create a final cpMaterial from a Collada effect
 		*/
-		cpMaterial*
-			CreateMaterial(const ColladaParser& parser, const ColladaParser::ColladaEffect& effect);
+		void
+			CreateMaterial(const ColladaParser& parser,
+				cpMaterial* newMat, const ColladaParser::ColladaEffect& effect);
 
 		/**	Helper to read a float from a source array with the right accessor
 		*/

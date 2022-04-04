@@ -14,6 +14,96 @@ namespace notrealengine
 
 	ColladaSceneBuilder::~ColladaSceneBuilder()
 	{
+		for (auto& mesh: this->meshes)
+		{
+			deleteMesh(mesh);
+		}
+		for (auto& material: this->materials)
+		{
+			delete material;
+		}
+		for (auto& texture: this->textures)
+		{
+			delete texture;
+		}
+	}
+
+	void deleteBone(cpBone* bone)
+	{
+		if (bone->mWeights != nullptr)
+			delete[] bone->mWeights;
+		delete bone;
+	}
+
+	void deleteMesh(cpMesh* mesh)
+	{
+		if (mesh->mVertices != nullptr)
+			delete[] mesh->mVertices;
+		if (mesh->mNormals != nullptr)
+			delete[] mesh->mNormals;
+		for (unsigned int i = 0; i < MAX_TEXTURE_CHANNELS; i++)
+		{
+			if (mesh->mTextureCoords[i] != nullptr)
+				delete[] mesh->mTextureCoords[i];
+			if (mesh->mColors[i] != nullptr)
+				delete[] mesh->mColors[i];
+		}
+		if (mesh->mFaces != nullptr)
+		{
+			for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+			{
+				if (mesh->mFaces[i].mIndices != nullptr)
+					delete[] mesh->mFaces[i].mIndices;
+			}
+			delete[] mesh->mFaces;
+		}
+		if (mesh->mBones != nullptr)
+		{
+			for (unsigned int i = 0; i < mesh->mNumBones; i++)
+			{
+				if (mesh->mBones[i] != nullptr)
+					deleteBone(mesh->mBones[i]);
+			}
+			delete[] mesh->mBones;
+		}
+		delete mesh;
+	}
+
+	void deleteAnim(cpAnimation* anim)
+	{
+		if (anim->mChannels == nullptr)
+			return;
+		for (unsigned int i = 0; i < anim->mNumChannels; i++)
+		{
+			if (anim->mChannels[i] != nullptr)
+			{
+				if (anim->mChannels[i]->mPositionKeys != nullptr)
+					delete[] anim->mChannels[i]->mPositionKeys;
+				if (anim->mChannels[i]->mRotationKeys != nullptr)
+					delete[] anim->mChannels[i]->mRotationKeys;
+				if (anim->mChannels[i]->mScalingKeys != nullptr)
+					delete[] anim->mChannels[i]->mScalingKeys;
+				delete anim->mChannels[i];
+			}
+		}
+		delete[] anim->mChannels;
+		delete anim;
+	}
+
+	void deleteNode(cpNode* node)
+	{
+		if (node->mChildren != nullptr)
+		{
+			for (unsigned int i = 0; i < node->mNumChildren; i++)
+			{
+				if (node->mChildren[i] != nullptr)
+					deleteNode(node->mChildren[i]);
+			}
+			delete[] node->mChildren;
+		}
+		if (node->mMeshes != nullptr)
+			delete[] node->mMeshes;
+		delete node;
 	}
 
 	cpScene* ColladaSceneBuilder::ReadFile(const std::string& path, unsigned int flags)
@@ -29,53 +119,66 @@ namespace notrealengine
 		}
 		scene = new cpScene();
 
-		BuildMaterials(parser, scene);
-		scene->mRootNode = BuildNode(parser, parser.rootNode);
-
-		SaveNodeAsVector(scene->mRootNode);
-
-		if (parser.axis == ColladaParser::X_UP)
+		try
 		{
-			std::cout << "Up axis = X" << std::endl;
-			scene->mRootNode->mTransformation *=
-				mft::mat4(
-					{ 0, -1, 0, 0 },
-					{ 1, 0, 0, 0 },
-					{ 0, 0, 1, 0 },
-					{ 0, 0, 0, 1 });
+			BuildMaterials(parser, scene);
+			scene->mRootNode = new cpNode();
+			BuildNode(parser, scene->mRootNode, parser.rootNode);
+
+			SaveNodeAsVector(scene->mRootNode);
+
+			if (parser.axis == ColladaParser::X_UP)
+			{
+				std::cout << "Up axis = X" << std::endl;
+				scene->mRootNode->mTransformation *=
+					mft::mat4(
+						{ 0, -1, 0, 0 },
+						{ 1, 0, 0, 0 },
+						{ 0, 0, 1, 0 },
+						{ 0, 0, 0, 1 });
+			}
+			else if (parser.axis == ColladaParser::Z_UP)
+			{
+				std::cout << "Up axis = Z" << std::endl;
+				scene->mRootNode->mTransformation *=
+					mft::mat4(
+						{ 1, 0, 0, 0 },
+						{ 0, 0, 1, 0 },
+						{ 0, -1, 0, 0 },
+						{ 0, 0, 0, 1 });
+			}
+			else
+				std::cout << "Up axis = Y" << std::endl;
+
+			ResolveBonesName(parser, scene->mRootNode);
+
+			scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
+			scene->mMeshes = new cpMesh * [scene->mNumMeshes]();
+			std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
+			this->meshes.clear();
+
+			scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
+			scene->mMaterials = new cpMaterial * [scene->mNumMaterials]();
+			for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+			{
+				scene->mMaterials[i] = this->materials[i];
+			}
+			this->materials.clear();
+
+			scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
+			scene->mTextures = new cpTexture * [scene->mNumTextures]();
+			std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
+			this->textures.clear();
+
+			BuildAnimations(parser, scene);
+
 		}
-		else if (parser.axis == ColladaParser::Z_UP)
+		catch (const ColladaException& e)
 		{
-			std::cout << "Up axis = Z" << std::endl;
-			scene->mRootNode->mTransformation *=
-				mft::mat4(
-					{ 1, 0, 0, 0 },
-					{ 0, 0, 1, 0 },
-					{ 0, -1, 0, 0 },
-					{ 0, 0, 0, 1 });
+			std::cerr << e.what() << std::endl;
+			delete scene;
+			return nullptr;
 		}
-		else
-			std::cout << "Up axis = Y" << std::endl;
-
-		ResolveBonesName(parser, scene->mRootNode);
-
-		scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
-		scene->mMeshes = new cpMesh * [scene->mNumMeshes]();
-		std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
-
-		scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
-		scene->mMaterials = new cpMaterial * [scene->mNumMaterials]();
-		for (unsigned int i = 0; i < scene->mNumMaterials; i++)
-		{
-			scene->mMaterials[i] = this->materials[i];
-		}
-
-		scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
-		scene->mTextures = new cpTexture * [scene->mNumTextures]();
-		std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
-
-		BuildAnimations(parser, scene);
-
 		return scene;
 	}
 
@@ -444,11 +547,9 @@ namespace notrealengine
 		std::copy(this->animations.begin(), this->animations.end(), scene->mAnimations);
 	}
 
-	cpNode* ColladaSceneBuilder::BuildNode(ColladaParser& parser,
-		ColladaParser::ColladaNode* node)
+	void ColladaSceneBuilder::BuildNode(ColladaParser& parser,
+		cpNode* newNode, ColladaParser::ColladaNode* node)
 	{
-		cpNode* newNode = new cpNode();
-
 		if (!node->id.empty())
 			newNode->mName = node->id;
 		else if (!node->sid.empty())
@@ -482,19 +583,19 @@ namespace notrealengine
 		newNode->mChildren = new cpNode * [newNode->mNumChildren]();
 		for (size_t i = 0; i < node->children.size(); i++)
 		{
-			newNode->mChildren[i] = BuildNode(parser, &node->children[i]);
+			newNode->mChildren[i] = new cpNode();
+			BuildNode(parser, newNode->mChildren[i], &node->children[i]);
 			newNode->mChildren[i]->mParent = newNode;
 		}
 
 		for (size_t i = 0; i < nbInstances; i++)
 		{
-			newNode->mChildren[newNode->mNumChildren + i] = BuildNode(parser, instances[i]);
+			newNode->mChildren[newNode->mNumChildren + i] = new cpNode();
+			BuildNode(parser, newNode->mChildren[newNode->mNumChildren + i], instances[i]);
 			newNode->mChildren[newNode->mNumChildren + i]->mParent = newNode;
 		}
 
 		BuildMeshes(parser, node, newNode);
-
-		return newNode;
 	}
 
 	void	ColladaSceneBuilder::BuildMeshes(const ColladaParser& parser,
@@ -538,33 +639,39 @@ namespace notrealengine
 				if (subMesh.nbFaces == 0)
 					continue;
 
-				/*
+
 				//	Resolve material reference
 				//	Nodes in <library_visual_scenes> give material instances
 				//	but also the <triangles>/<vertices>/etc submeshes in
 				//	<library_geometry>
+				//	Do it now because we are supposed to apply some effects
+				//	to the material here even if we don't create a mesh..
+				//	Maybe I'll do it one day
 				const std::map<std::string, ColladaParser::MaterialInstance>::const_iterator
-					mat = mesh.materials.find(subMesh.material);
+					mat = meshInstance.materials.find(subMesh.material);
 				const ColladaParser::MaterialInstance* matInstance = nullptr;
 				std::string meshMat = "";
-				if (mat == mesh.materials.end())
+				if (mat == meshInstance.materials.end())
 				{
-					std::cerr << "Unknown submesh of " << mesh.id;
+					std::cerr << "Unknown submesh of " << meshInstance.id;
 					std::cerr << " material reference : " << subMesh.material << std::endl;
-					//	Don't skip, create the mesh with no material associated
+					//	Set the first material of the map then
+					if (!meshInstance.materials.empty())
+						meshMat = meshInstance.materials.begin()->second.name;
 				}
 				else
 				{
 					matInstance = &mat->second;
 					meshMat = matInstance->name;
 				}
-				std::cout << "Mesh " << mesh.id << " has material " << meshMat << std::endl;
 				//	Then search for it in our materials map
 				std::map<std::string, size_t>::const_iterator matIt =
 					this->matIndices.find(meshMat);
 				size_t matIndex = 0;
 				if (matIt != this->matIndices.end())
-					matIndex = matIt->second;*/
+				{
+					matIndex = matIt->second;
+				}
 
 				//	Check if we already created a mesh combination
 				//	with this mesh id, subMesh number and material id
@@ -586,18 +693,21 @@ namespace notrealengine
 				if (found == false)
 				{
 					//std::cout << "Creating mesh for node " << node->name << std::endl;
-					cpMesh* newMesh = CreateMesh(parser, srcMesh, subMesh,
+					cpMesh* newMesh = new cpMesh();
+					//	Add this new mesh index to the node
+					meshIndices.push_back(this->meshes.size());
+					//	Save this new mesh in the meshes array
+					this->meshes.push_back(newMesh);
+
+					CreateMesh(parser, newMesh, srcMesh, subMesh,
 						srcController, vertexStart, faceStart);
 
 					vertexStart += newMesh->mNumVertices;
 					faceStart += newMesh->mNumFaces;
 
-					//	Add this new mesh index to the node
-					meshIndices.push_back(this->meshes.size());
+
 					//	Save this new mesh id, submesh and material combination
 					this->meshIDs.push_back(id);
-					//	Save this new mesh in the meshes array
-					this->meshes.push_back(newMesh);
 
 					std::map<std::string, size_t>::const_iterator matIt =
 						this->matIndices.find(subMesh.material);
@@ -606,6 +716,10 @@ namespace notrealengine
 					if (matIt != this->matIndices.end())
 					{
 						newMesh->mMaterialIndex = static_cast<unsigned int>(matIt->second);
+					}
+					else
+					{
+						newMesh->mMaterialIndex = matIndex;
 					}
 				}
 			}
@@ -621,18 +735,18 @@ namespace notrealengine
 		}
 	}
 
-	cpMesh* ColladaSceneBuilder::CreateMesh(const ColladaParser& parser,
+	void ColladaSceneBuilder::CreateMesh(const ColladaParser& parser,
+		cpMesh* res,
 		const ColladaParser::ColladaMesh* src,
 		const ColladaParser::SubMesh& subMesh,
 		const ColladaParser::ColladaController* controller,
 		const size_t vertexStart,const size_t faceStart)
 	{
-		cpMesh* res = new cpMesh();
 
 		res->mName = src->id;
 
 		if (src->pos.empty())
-			return res;
+			return ;
 
 		res->mNumVertices = 0;
 		for (size_t i = faceStart; i < faceStart + subMesh.nbFaces; i++)
@@ -673,6 +787,7 @@ namespace notrealengine
 				currentChannel++;
 			}
 		}
+
 
 		//	Color channels
 		for (size_t i = 0, currentChannel = 0; i < MAX_TEXTURE_CHANNELS; i++)
@@ -798,6 +913,7 @@ namespace notrealengine
 				if (bones[i].empty())
 					continue;
 				cpBone* bone = new cpBone();
+				res->mBones[boneIndex++] = bone;
 				//	Temporary name. We will need to resolve references once
 				//	the whole node hierarchy is built
 				bone->mName = ReadString(boneNames, boneNamesAcc, i, 0);
@@ -818,17 +934,84 @@ namespace notrealengine
 					{ values[8], values[9], values[10], values[11] },
 					{ values[12], values[13], values[14], values[15] });
 				bone->mOffsetMatrix *= controller->bindShapeMatrix;
-				res->mBones[boneIndex++] = bone;
 			}
 		}
-
-		return res;
 	}
 
-	cpMaterial* ColladaSceneBuilder::CreateMaterial(const ColladaParser& parser,
-		const ColladaParser::ColladaEffect& effect)
+	void ColladaSceneBuilder::AddTexture(const ColladaParser& parser,
+		cpMaterial* newMat, cpTextureType type, const ColladaParser::ColladaEffect& effect)
 	{
-		cpMaterial* newMat = new cpMaterial();
+		cpTexture text;
+		switch (type)
+		{
+			case cpTextureType::diffuse:
+			{
+				const ColladaParser::EffectParam& sampler =
+					ResolveReference(effect.params, effect.diffuse.sampler, "diffuse property sampler param");
+				const ColladaParser::EffectParam& surface =
+					ResolveReference(effect.params, sampler.ref, "diffuse property surface param");
+				const ColladaParser::ColladaImage& img =
+					ResolveReference(parser.images, surface.ref, "diffuse image");
+				text.mName = img.id;
+				text.path = img.path;
+				text.type = type;
+				newMat->mDiffuse.push_back(text);
+				newMat->mNumDiffuses++;
+				break;
+			}
+			case cpTextureType::ambient:
+			{
+				const ColladaParser::EffectParam& sampler =
+					ResolveReference(effect.params, effect.ambient.sampler, "ambient property sampler param");
+				const ColladaParser::EffectParam& surface =
+					ResolveReference(effect.params, sampler.ref, "ambient property surface param");
+				const ColladaParser::ColladaImage& img =
+					ResolveReference(parser.images, surface.ref, "ambient image");
+				text.mName = img.id;
+				text.path = img.path;
+				text.type = type;
+				newMat->mAmbient.push_back(text);
+				newMat->mNumAmbients++;
+				break;
+			}
+			case cpTextureType::specular:
+			{
+				const ColladaParser::EffectParam& sampler =
+					ResolveReference(effect.params, effect.specular.sampler, "specular property sampler param");
+				const ColladaParser::EffectParam& surface =
+					ResolveReference(effect.params, sampler.ref, "specular property surface param");
+				const ColladaParser::ColladaImage& img =
+					ResolveReference(parser.images, surface.ref, "specular image");
+				text.mName = img.id;
+				text.path = img.path;
+				text.type = type;
+				newMat->mSpecular.push_back(text);
+				newMat->mNumSpeculars++;
+				break;
+			}
+			case cpTextureType::reflective:
+			{
+				const ColladaParser::EffectParam& sampler =
+					ResolveReference(effect.params, effect.reflective.sampler, "reflective property sampler param");
+				const ColladaParser::EffectParam& surface =
+					ResolveReference(effect.params, sampler.ref, "reflective property surface param");
+				const ColladaParser::ColladaImage& img =
+					ResolveReference(parser.images, surface.ref, "reflective image");
+				text.mName = img.id;
+				text.path = img.path;
+				text.type = type;
+				newMat->mReflective.push_back(text);
+				newMat->mNumReflectives++;
+				break;
+			}
+			default:
+				break;
+		}
+	}
+
+	void ColladaSceneBuilder::CreateMaterial(const ColladaParser& parser,
+		cpMaterial* newMat, const ColladaParser::ColladaEffect& effect)
+	{
 		for (const auto& pair : effect.params)
 		{
 			const ColladaParser::EffectParam& param = pair.second;
@@ -838,15 +1021,16 @@ namespace notrealengine
 					ResolveReference(effect.params, param.ref, "material effect");
 				const ColladaParser::ColladaImage& img =
 					ResolveReference(parser.images, surface.ref, "effect image");
-				cpTexture text;
-				text.mName = img.id;
-				text.path = img.path;
-				text.type = cpTextureType::diffuse;
-				newMat->mDiffuse.push_back(text);
-				newMat->mNumDiffuses++;
 			}
 		}
-		return newMat;
+		if (!effect.ambient.sampler.empty())
+			AddTexture(parser, newMat, cpTextureType::ambient, effect);
+		if (!effect.diffuse.sampler.empty())
+			AddTexture(parser, newMat, cpTextureType::diffuse, effect);
+		if (!effect.specular.sampler.empty())
+			AddTexture(parser, newMat, cpTextureType::specular, effect);
+		if (!effect.reflective.sampler.empty())
+			AddTexture(parser, newMat, cpTextureType::reflective, effect);
 	}
 
 	void	ColladaSceneBuilder::BuildMaterials(ColladaParser& parser, cpScene* scene)
@@ -859,10 +1043,11 @@ namespace notrealengine
 			if (effectIt == parser.effects.end())
 				continue;
 			ColladaParser::ColladaEffect& effect = effectIt->second;
-			cpMaterial* newMat = CreateMaterial(parser, effect);
-			newMat->mName = mat.name.empty() ? pair.first : mat.name;
+			cpMaterial* newMat = new cpMaterial();
 			this->matIndices[mat.id] = this->materials.size();
 			this->materials.push_back(newMat);
+			CreateMaterial(parser, newMat, effect);
+			newMat->mName = mat.name.empty() ? pair.first : mat.name;
 		}
 	}
 
