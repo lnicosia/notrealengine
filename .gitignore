@@ -7,3 +7,4 @@ lib/**/build
 windows/*
 .vs/
 test/logs/*
+*.out

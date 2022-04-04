@@ -166,7 +166,7 @@ namespace notrealengine
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
 
-		//	Draw the original bones pose without any animation (most probably a T-pose) 
+		//	Draw the original bones pose without any animation (most probably a T-pose)
 		/*for (it = bones.begin(); it != bones.end(); it++)
 		{
 			const mft::vec3& objScale = mft::mat4::getScale(it->second.originalMatrix);

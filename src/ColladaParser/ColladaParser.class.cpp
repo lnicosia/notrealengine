@@ -1121,7 +1121,7 @@ namespace notrealengine
 					content = lxml::SkipWhitespaces(content);
 				}
 				if (index != vertexCount)
-					throw ColladaException("Not enough values in ertex weight vcount ("
+					throw ColladaException("Not enough values in vertex weight vcount ("
 					+ std::to_string(index) + " / " + std::to_string(vertexCount) + ")");
 				controller.weights.resize(totalWeights);
 			}
@@ -1182,6 +1182,7 @@ namespace notrealengine
 							throw ColladaException("Not enough values in bind shape matrix");
 						controller.bindShapeMatrix[i][j] = strtof(content, &next);
 						content = next;
+						content = lxml::SkipWhitespaces(content);
 					}
 				}
 				if (*content)
