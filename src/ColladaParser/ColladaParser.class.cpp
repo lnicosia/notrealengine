@@ -768,9 +768,13 @@ namespace notrealengine
 						{
 							ReadEffectProperties(technique, effect);
 						}
+						else if (technique.name == "lambert")
+						{
+							ReadEffectProperties(technique, effect);
+						}
 						else if (technique.name == "extra")
 						{
-							
+
 						}
 						else
 						{

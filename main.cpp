@@ -53,6 +53,7 @@ int		main(int ac, char** av)
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
 	else if (ac >= 2)
 	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
+	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>("./resources/objects/rock.dae");
 	std::shared_ptr<Animation> bobbyWalking = InitBobbyWalking();
 	std::shared_ptr<Animation> bobbyJumping = InitBobbyJumping();
 	std::shared_ptr<Animation> bobbyIdle = InitBobbyIdle();
@@ -61,6 +62,7 @@ int		main(int ac, char** av)
 	light1->move(mft::vec3(0.0f, 4.0f, -5.0f));
 
 	obj->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 0.0f), mft::radians(180.0f)));
+	rock->transform.move(mft::vec3(5.0f, 0.0f, 5.0f));
 	//obj->localTransform.move(mft::vec3(0.0f, -5.0f, 10.0f));
 	//obj->setShader(context.getShader("color"));
 
@@ -93,6 +95,7 @@ int		main(int ac, char** av)
 	scene.setCameraSpeed(0.05f);
 
 	scene.addObject(obj);
+	scene.addObject(rock);
 	scene.addObject(bobby);
 
 	std::shared_ptr<Mesh> mesh(new Mesh(GLContext::cube));
@@ -116,6 +119,7 @@ int		main(int ac, char** av)
 	bobby->visible = false;
 	obj->visible = true;
 	object->visible = false;
+	//rock->visble = false;
 	//obj->setAnimation(anim.get());
 	scene.addLight(light1);
 
@@ -333,6 +337,7 @@ int		main(int ac, char** av)
 						obj->setShader(context.getShader("unlit"));
 					obj->bindBones();
 					obj->visible = true;
+					rock->visible = true;
 					bobby->visible = false;
 				}
 				if (e.key.keysym.sym == SDLK_v)
@@ -344,6 +349,7 @@ int		main(int ac, char** av)
 				{
 					mode = Bob;
 					obj->visible = false;
+					rock->visible = false;
 					bobby->visible = true;
 				}
 				if (e.key.keysym.sym == SDLK_r)
