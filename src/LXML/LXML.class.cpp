@@ -5,6 +5,8 @@
 #include <fstream>
 #include <ctype.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 namespace lxml
 {
@@ -24,6 +26,13 @@ namespace lxml
 			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
+		struct stat fileStats;
+		lstat(path.c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "lxml: Invalid file type" << std::endl;
+			return ;
+		}
 		std::ifstream file;
 		std::string content;
 		std::stringstream	stream;
@@ -31,8 +40,19 @@ namespace lxml
 		try
 		{
 			file.open(path);
-			stream << file.rdbuf();
+			try
+			{
+				stream << file.rdbuf();
+			}
+			catch (std::exception& e)
+			{
+				std::cerr << "Could not read the buffer: " << e.what() << std::endl;
+			}
+
+			std::cout << "File stream correctly read" << std::endl;
 			file.close();
+
+			std::cout << "File stream correctly closed" << std::endl;
 
 			content = stream.str();
 		}

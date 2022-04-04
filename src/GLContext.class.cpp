@@ -8,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
+#include <sys/stat.h>
 
 namespace notrealengine
 {
@@ -185,6 +187,22 @@ namespace notrealengine
 	{
 		std::cout << "Loading shader " << vertex << ", " << fragment << " as \"";
  		std::cout << name << "\"";
+
+		struct stat fileStats;
+		lstat(vertex.string().c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "lxml: Invalid vertex shader file type" << std::endl;
+			return ;
+		}
+
+		lstat(fragment.string().c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "lxml: Invalid fragment shader file type" << std::endl;
+			return ;
+		}
+
 		if (shaders.contains(name))
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
 		std::string
