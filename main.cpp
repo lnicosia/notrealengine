@@ -53,7 +53,7 @@ int		main(int ac, char** av)
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
 	else if (ac >= 2)
 	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
-	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>("./resources/objects/rock.dae");
+	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>("./resources/objects/Rock/rock.dae");
 	std::shared_ptr<Animation> bobbyWalking = InitBobbyWalking();
 	std::shared_ptr<Animation> bobbyJumping = InitBobbyJumping();
 	std::shared_ptr<Animation> bobbyIdle = InitBobbyIdle();
@@ -491,11 +491,12 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
-		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2(50, 800), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2(50, 700), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(50, 50), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2(900, 800), 1, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2(900, 700), 1, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
 
 		scene.render();
 		scene.renderBones();

@@ -16,8 +16,8 @@
 namespace notrealengine
 {
 	Animation::Animation(const std::string& path, int index)
-		: Asset({path}), duration(0), ticksPerSecond(0), type(Skeletal),
-		bones(), currentFrame(0), nodes(), ended(false)
+		: Asset({path}), duration(0), ticksPerSecond(1000), ticksFactor(1.0),
+		type(Skeletal), bones(), currentFrame(0), nodes(), ended(false)
 	{
 		std::cout << "Loading animation " << index << " of '" << path;
 
@@ -63,11 +63,14 @@ namespace notrealengine
 		int upAxis = -1;
 		scene->mMetaData->Get<int>("UpAxis", upAxis);
 		std::cout << "Up axis = " << upAxis << std::endl;
+		//scene->mRootNode->mMetaData->Get<int>("UpAxis", upAxis);
+		//std::cout << "Up axis = " << upAxis << std::endl;
 #else
 		cpAnimation* animation = scene->mAnimations[index];
 #endif
 		this->duration = animation->mDuration;
 		this->ticksPerSecond = animation->mTicksPerSecond;
+		this->ticksFactor = this->ticksPerSecond / 1000;
 		for (unsigned int i = 0; i < animation->mNumChannels; i++)
 		{
 			if (animation->mChannels[i] != nullptr)
@@ -89,8 +92,8 @@ namespace notrealengine
 	}
 
 	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)
-		: Asset(name), duration(0), ticksPerSecond(1000.0), type(Solid), bones(bones),
-		currentFrame(0), ended(false), nodes()
+		: Asset(name), duration(0), ticksPerSecond(1000.0), ticksFactor(1.0), 
+		type(Solid), bones(bones), currentFrame(0), ended(false), nodes()
 	{
 		std::cout << "Creating animation from hard coded bones..." << std::endl;
 		for (const auto& pair: bones)
@@ -154,6 +157,11 @@ namespace notrealengine
 	const double	Animation::getTicksPerSecond(void) const
 	{
 		return this->ticksPerSecond;
+	}
+
+	const double	Animation::getTicksFactor(void) const
+	{
+		return this->ticksFactor;
 	}
 
 	const Animation::AnimType	Animation::getType(void) const

@@ -140,6 +140,8 @@ namespace notrealengine
 
 			AnimationRepeat	animationRepeat;
 
+			double	animationSpeed;
+
 		private:
 
 			mft::vec3	max;

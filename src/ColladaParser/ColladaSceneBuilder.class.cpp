@@ -115,6 +115,7 @@ namespace notrealengine
 
 		if (parser.rootNode == nullptr)
 		{
+			std::cerr << "Empty Collada file" << std::endl;
 			return nullptr;
 		}
 		scene = new cpScene();

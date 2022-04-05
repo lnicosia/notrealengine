@@ -45,6 +45,8 @@ namespace notrealengine
 			getDuration( void ) const;
 		const double
 			getTicksPerSecond( void ) const;
+		const double
+			getTicksFactor( void ) const;
 		const AnimType
 			getType( void ) const;
 
@@ -54,6 +56,8 @@ namespace notrealengine
 	private:
 		double		duration;
 		double		ticksPerSecond;
+		//	TicksPerSecond / 1000
+		double		ticksFactor;
 		AnimType	type;
 		std::map<std::string, Bone>	bones;
 		//std::map<std::string, std::shared_ptr<Mesh>> meshes;

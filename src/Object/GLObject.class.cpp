@@ -42,7 +42,8 @@ namespace notrealengine
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
 		animationState(AnimationState::Stopped),
-		animationRepeat(AnimationRepeat::Repeat)
+		animationRepeat(AnimationRepeat::Repeat),
+		animationSpeed(1.0)
 	{
 		std::filesystem::path	fPath(path);
 		if (!std::filesystem::exists(fPath))
@@ -70,7 +71,8 @@ namespace notrealengine
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
 		animationState(AnimationState::Stopped),
-		animationRepeat(AnimationRepeat::Repeat)
+		animationRepeat(AnimationRepeat::Repeat),
+		animationSpeed(2.0)
 	{
 		std::cout << "Building object from meshes..." << std::endl;
 		BuildMeshesMap();
@@ -350,6 +352,7 @@ namespace notrealengine
 			return;
 		}
 		this->currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
+		this->currentTime *= this->anim->getTicksFactor() * this->animationSpeed;
 		//if (this->name == "Bobby")
 			//std::cout << "Current time = " << this->currentTime << std::endl;
 		if (this->currentTime >= anim->getDuration())
