@@ -9,6 +9,13 @@
 
 namespace notrealengine
 {
+	enum Axis
+	{
+		X_UP,
+		Y_UP,
+		Z_UP
+	};
+
 	struct BoneInfo
 	{
 		int	id;
@@ -36,9 +43,9 @@ namespace notrealengine
 
 		std::map<std::string, BoneInfo>	bones;
 		int	nbBones;
-
 		virtual void
 			ReadFile(const std::string& path, unsigned int flags) = 0;
+		Axis axis;
 
 	private:
 

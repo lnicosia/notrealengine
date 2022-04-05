@@ -19,6 +19,8 @@
 
 #include <fstream>
 #include <algorithm>
+#include <unistd.h>
+#include <sys/stat.h>
 
 namespace notrealengine
 {
@@ -42,6 +44,19 @@ namespace notrealengine
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat)
 	{
+		std::filesystem::path	fPath(path);
+		if (!std::filesystem::exists(fPath))
+		{
+			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			return;
+		}
+		struct stat fileStats;
+		lstat(path.c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "nre: Invalid file type" << std::endl;
+			return ;
+		}
 		loadObject(path);
 		BuildMeshesMap();
 		//bindBones();
@@ -141,6 +156,16 @@ namespace notrealengine
 
 		float scale = 2.0f / minRange;
 		this->transform.scale(mft::vec3(scale));
+#ifndef USING_EXTERNAL_LIBS
+		if (importer->axis == Axis::X_UP)
+		{
+			this->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 1.0f), mft::radians(90.0f)));
+		}
+		else if (importer->axis == Axis::Z_UP)
+		{
+			this->transform.rotate(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(90.0f)));
+		}
+#endif
 	}
 
 	//	Drawing functions
@@ -166,26 +191,16 @@ namespace notrealengine
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
 
-		//	Draw the original bones pose without any animation (most probably a T-pose)
-		/*for (it = bones.begin(); it != bones.end(); it++)
-		{
-			const mft::vec3& objScale = mft::mat4::getScale(it->second.originalMatrix);
-			mft::vec3 boneScale = 0.05f / objScale;
-			mft::mat4 scaleMatrix = mft::mat4::scale(boneScale);
-			//std::cout << "Original matrix = " << (*it).second.originalMatrix << std::endl;
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),  transform.getMatrix() * it->second.originalMatrix * scaleMatrix);
-		}*/
 		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
+		const mft::vec3& objScale = this->transform.getScale();
+		mft::vec3 invObjScale = 0.05f / objScale;
+		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
+		const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
+		mft::vec3 invBoneScale = 0.05f / boneScale;
+		mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			const mft::vec3& objScale = this->transform.getScale();
-			mft::vec3 invObjScale = 0.05f / objScale;
-			mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
-			const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
-			mft::vec3 invBoneScale = 0.05f / boneScale;
-			mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
-			//std::cout << "Model matrix = " << (*it).second.modelMatrix << std::endl;
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix);
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}

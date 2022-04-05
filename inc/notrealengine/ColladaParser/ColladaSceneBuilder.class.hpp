@@ -292,6 +292,8 @@ namespace notrealengine
 		cpScene*
 			ReadFile(const std::string& path, unsigned int flags);
 
+		Axis	axis;
+
 	private:
 
 		std::vector<cpMesh*> meshes;

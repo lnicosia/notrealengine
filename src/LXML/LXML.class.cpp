@@ -26,13 +26,6 @@ namespace lxml
 			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
-		struct stat fileStats;
-		lstat(path.c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
-		{
-			std::cerr << "lxml: Invalid file type" << std::endl;
-			return ;
-		}
 		std::ifstream file;
 		std::string content;
 		std::stringstream	stream;
@@ -227,13 +220,7 @@ namespace lxml
 		if (len < 3 || str[0] != '<' || str[1] == '<'
 			|| str[len - 1] != '>' || str[len - 2] == '>')
 		{
-			std::cerr << "Name error" << std::endl;
-			std::cerr << "Len = " << len << std::endl;
-			std::cerr << "str[0] = " << str[0] << std::endl;
-			std::cerr << "str[1] = " << str[1] << std::endl;
-			std::cerr << "str[len] = " << str[len] << std::endl;
-			std::cerr << "str[len - 1] = " << str[len - 1] << std::endl;
-			std::cerr << "str = " << str << std::endl;
+			std::cerr << "lxml: Name error" << std::endl;
 			throw std::exception();
 		}
 		size_t pos = 1;

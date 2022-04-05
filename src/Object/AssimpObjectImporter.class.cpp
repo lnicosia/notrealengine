@@ -17,7 +17,7 @@ namespace notrealengine
 		this->path = path;
 		Assimp::Importer	importer;
 		const aiScene* scene;
-		if (path.substr(path.find_last_of('.')) == ".dae")
+		if (path.substr(path.find_last_of('.')) == ".dae" || path.substr(path.find_last_of('.')) == ".obj") 
 			scene = importer.ReadFile(path, aiProcess_Triangulate
 				| aiProcess_GenUVCoords);
 		else

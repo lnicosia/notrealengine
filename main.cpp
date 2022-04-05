@@ -210,7 +210,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.localTransformMatrix << std::endl;
 					//obj->localTransform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime / 2.0);
 				}
@@ -218,7 +218,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime / 2.0);
 				}
@@ -226,7 +226,7 @@ int		main(int ac, char** av)
 				{
 					scene.backward(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);

@@ -127,28 +127,7 @@ namespace notrealengine
 
 			SaveNodeAsVector(scene->mRootNode);
 
-			if (parser.axis == ColladaParser::X_UP)
-			{
-				std::cout << "Up axis = X" << std::endl;
-				scene->mRootNode->mTransformation *=
-					mft::mat4(
-						{ 0, -1, 0, 0 },
-						{ 1, 0, 0, 0 },
-						{ 0, 0, 1, 0 },
-						{ 0, 0, 0, 1 });
-			}
-			else if (parser.axis == ColladaParser::Z_UP)
-			{
-				std::cout << "Up axis = Z" << std::endl;
-				scene->mRootNode->mTransformation *=
-					mft::mat4(
-						{ 1, 0, 0, 0 },
-						{ 0, 0, 1, 0 },
-						{ 0, -1, 0, 0 },
-						{ 0, 0, 0, 1 });
-			}
-			else
-				std::cout << "Up axis = Y" << std::endl;
+			this->axis = parser.axis;
 
 			ResolveBonesName(parser, scene->mRootNode);
 

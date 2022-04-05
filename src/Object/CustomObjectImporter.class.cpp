@@ -23,8 +23,30 @@ namespace notrealengine
 			std::cerr << "Collada parser failed to import object" << std::endl;
 			return;
 		}
+		this->axis = importer.axis;
 		this->directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
+		mft::mat4 axisTransform;
+		if (importer.axis == Axis::X_UP)
+		{
+			axisTransform *=
+			mft::mat4(
+			{ 0, -1, 0, 0 },
+			{ 1, 0, 0, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, 0, 0, 1 });
+		}
+		else if (importer.axis == Axis::Z_UP)
+		{
+			axisTransform *=
+			mft::mat4(
+			{ 1, 0, 0, 0 },
+			{ 0, 0, 1, 0 },
+			{ 0, -1, 0, 0 },
+			{ 0, 0, 0, 1 });
+		}
+		else
+			axisTransform = mft::mat4();
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
 		delete scene;

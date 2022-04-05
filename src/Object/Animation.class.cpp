@@ -10,6 +10,8 @@
 #include "assimp/postprocess.h"
 
 #include <algorithm>
+#include <unistd.h>
+#include <sys/stat.h>
 
 namespace notrealengine
 {
@@ -19,6 +21,19 @@ namespace notrealengine
 	{
 		std::cout << "Loading animation " << index << " of '" << path;
 
+		std::filesystem::path	fPath(path);
+		if (!std::filesystem::exists(fPath))
+		{
+			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			return;
+	}
+		struct stat fileStats;
+		lstat(path.c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "nre: Invalid file type" << std::endl;
+			return ;
+		}
 #ifdef USING_EXTERNAL_LIBS
 		std::cout << "' with assimp..." << std::endl;
 		Assimp::Importer	importer;
@@ -44,6 +59,10 @@ namespace notrealengine
 		}
 #ifdef USING_EXTERNAL_LIBS
 		aiAnimation* animation = scene->mAnimations[index];
+		const aiMetadata* metadata = scene->mMetaData;
+		int upAxis = -1;
+		scene->mMetaData->Get<int>("UpAxis", upAxis);
+		std::cout << "Up axis = " << upAxis << std::endl;
 #else
 		cpAnimation* animation = scene->mAnimations[index];
 #endif
@@ -102,7 +121,6 @@ namespace notrealengine
 		newNode.name = node->mName;
 		newNode.transform = node->mTransformation;
 #endif
-
 		newNode.parentId = parentId;
 
 		this->nodes.push_back(newNode);

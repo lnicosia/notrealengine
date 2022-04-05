@@ -3,6 +3,7 @@
 
 #include "LXML/LXML.class.hpp"
 #include "ColladaParser/ColladaException.class.hpp"
+#include "Object/ObjectImporter.class.hpp"
 #include "mft/mft.hpp"
 #include <string>
 
@@ -23,12 +24,6 @@ namespace notrealengine
 			P_Triangles,
 			P_Polygons,
 			P_Polylist
-		};
-		enum Axis
-		{
-			X_UP,
-			Y_UP,
-			Z_UP
 		};
 		enum InputType
 		{
