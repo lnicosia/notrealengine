@@ -71,6 +71,8 @@ namespace notrealengine
 		this->duration = animation->mDuration;
 		this->ticksPerSecond = animation->mTicksPerSecond;
 		this->ticksFactor = this->ticksPerSecond / 1000;
+		std::cout << "Ticks per second = " << this->ticksPerSecond << std::endl;
+		std::cout << "Ticks factor = " << this->ticksFactor << std::endl;
 		for (unsigned int i = 0; i < animation->mNumChannels; i++)
 		{
 			if (animation->mChannels[i] != nullptr)
@@ -89,10 +91,17 @@ namespace notrealengine
 #ifndef USING_EXTERNAL_LIBS
 		delete scene;
 #endif
+		std::cout << "Anim nodes: " << std::endl;
+		for (size_t i = 0; i < this->nodes.size(); i++)
+		{
+			std::cout << this->nodes[i].name << " (" << i << "): " << this->nodes[i].transform << std::endl;
+			if (this->bones.find(this->nodes[i].name) != this->bones.end())
+				std::cout << "Bone exists " << std::endl;
+		}
 	}
 
 	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)
-		: Asset(name), duration(0), ticksPerSecond(1000.0), ticksFactor(1.0), 
+		: Asset(name), duration(0), ticksPerSecond(1000.0), ticksFactor(1.0),
 		type(Solid), bones(bones), currentFrame(0), ended(false), nodes()
 	{
 		std::cout << "Creating animation from hard coded bones..." << std::endl;

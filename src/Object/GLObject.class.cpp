@@ -40,7 +40,7 @@ namespace notrealengine
 		directory(""), meshes(), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
-		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
+		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
 		animationSpeed(1.0)
@@ -60,7 +60,7 @@ namespace notrealengine
 		}
 		loadObject(path);
 		BuildMeshesMap();
-		//bindBones();
+		bindBones();
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
@@ -69,10 +69,10 @@ namespace notrealengine
 		directory(""), meshes(meshes), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),
 		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
-		anim(nullptr), startTime(0.0f), pauseTime(0.0f),
+		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
-		animationSpeed(2.0)
+		animationSpeed(0.0)
 	{
 		std::cout << "Building object from meshes..." << std::endl;
 		BuildMeshesMap();
@@ -158,14 +158,15 @@ namespace notrealengine
 
 		float scale = 2.0f / minRange;
 		this->transform.scale(mft::vec3(scale));
+		std::cout << "Scale = " << scale << std::endl;
 #ifndef USING_EXTERNAL_LIBS
 		if (importer->axis == Axis::X_UP)
 		{
-			this->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 1.0f), mft::radians(90.0f)));
+			//this->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 1.0f), mft::radians(90.0f)));
 		}
 		else if (importer->axis == Axis::Z_UP)
 		{
-			this->transform.rotate(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(90.0f)));
+			//this->transform.rotate(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(90.0f)));
 		}
 #endif
 	}
@@ -209,6 +210,7 @@ namespace notrealengine
 
 	void	GLObject::bindBones( void ) const
 	{
+		std::cout << "Binding bones" << std::endl;
 		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
@@ -216,6 +218,7 @@ namespace notrealengine
 		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
+			std::cout << "Sending bone " << it->first << " matrix " << it->second.localMatrix << std::endl;
 			str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
 			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,
@@ -266,6 +269,15 @@ namespace notrealengine
 			return;
 		this->pauseTime = static_cast<float>(SDL_GetTicks());
 		this->animationState = AnimationState::Paused;
+		std::vector<AnimNode>& animNodes = anim->getNodes();
+		std::cout << "Anim nodes: " << std::endl;
+		for (size_t i = 0; i < animNodes.size(); i++)
+		{
+			if (i == 6)
+			{
+				std::cout << animNodes[i].name << " (" << i << "): " << animNodes[i].transform << std::endl;
+			}
+		}
 	}
 
 	void	GLObject::resumeAnimation( void )
@@ -308,7 +320,13 @@ namespace notrealengine
 	void	GLObject::updateSkeletalAnim( void )
 	{
 		std::map<std::string, Bone> animBones = anim->getBones();
-		std::vector<AnimNode>& animNodes = anim->getNodes();
+		//	Make sure that we take a copy of it
+		//	and not the reference; do not modify the real anim nodes
+		//	Could be optimized by saving a new vector each time we bind
+		//	an animation and precompute nodes that are not linked to any bone
+		//	only once instead of each frame
+		std::vector<AnimNode> animNodes = anim->getNodes();
+		//animNodes[0].transform *= this->transform.getMatrix();
 		for (unsigned int i = 0; i < animNodes.size(); i++)
 		{
 			AnimNode& node = animNodes[i];
@@ -325,7 +343,7 @@ namespace notrealengine
 					* it->second.getTransform(this->currentTime);
 			}
 			//	Otherwise, use the original node's transform
-			else
+			else if (i > 0)
 			{
 				node.transform = animNodes[node.parentId].transform
 					* node.transform;
@@ -351,8 +369,7 @@ namespace notrealengine
 			this->resetPose();
 			return;
 		}
-		this->currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
-		this->currentTime *= this->anim->getTicksFactor() * this->animationSpeed;
+		this->currentTime = (static_cast<float>(SDL_GetTicks()) - this->startTime);
 		//if (this->name == "Bobby")
 			//std::cout << "Current time = " << this->currentTime << std::endl;
 		if (this->currentTime >= anim->getDuration())

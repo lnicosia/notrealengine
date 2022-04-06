@@ -17,7 +17,7 @@ namespace notrealengine
 		this->path = path;
 		Assimp::Importer	importer;
 		const aiScene* scene;
-		if (path.substr(path.find_last_of('.')) == ".dae" || path.substr(path.find_last_of('.')) == ".obj") 
+		if (path.substr(path.find_last_of('.')) == ".dae" || path.substr(path.find_last_of('.')) == ".obj")
 			scene = importer.ReadFile(path, aiProcess_Triangulate
 				| aiProcess_GenUVCoords);
 		else
@@ -199,6 +199,15 @@ namespace notrealengine
 			bone.originalMatrix = transform;
 			bone.modelMatrix = transform;
 			bone.localMatrix = transform * bone.offsetMatrix;
+		}
+		else
+		{
+			BoneInfo bone;
+			bone.originalMatrix = transform;
+			bone.modelMatrix = transform;
+			bone.offsetMatrix = mft::mat4::inverse(bone.modelMatrix);
+			bone.localMatrix = transform * bone.offsetMatrix;
+			this->bones[name] = bone;
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
