@@ -128,6 +128,25 @@ namespace notrealengine
 
 			SaveNodeAsVector(scene->mRootNode);
 
+			if (parser.axis == Axis::X_UP)
+			{
+				scene->mRootNode->mTransformation *=
+					mft::mat4(
+						{ 0, -1, 0, 0 },
+						{ 1, 0, 0, 0 },
+						{ 0, 0, 1, 0 },
+						{ 0, 0, 0, 1 });
+			}
+			else if (parser.axis == Axis::Z_UP)
+			{
+				scene->mRootNode->mTransformation *=
+					mft::mat4(
+						{ 1, 0, 0, 0 },
+						{ 0, 0, 1, 0 },
+						{ 0, -1, 0, 0 },
+						{ 0, 0, 0, 1 });
+			}
+
 			this->axis = parser.axis;
 
 			ResolveBonesName(parser, scene->mRootNode);

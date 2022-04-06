@@ -91,13 +91,6 @@ namespace notrealengine
 #ifndef USING_EXTERNAL_LIBS
 		delete scene;
 #endif
-		std::cout << "Anim nodes: " << std::endl;
-		for (size_t i = 0; i < this->nodes.size(); i++)
-		{
-			std::cout << this->nodes[i].name << " (" << i << "): " << this->nodes[i].transform << std::endl;
-			if (this->bones.find(this->nodes[i].name) != this->bones.end())
-				std::cout << "Bone exists " << std::endl;
-		}
 	}
 
 	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)

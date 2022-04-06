@@ -60,7 +60,7 @@ namespace notrealengine
 		}
 		loadObject(path);
 		BuildMeshesMap();
-		bindBones();
+		//bindBones();
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
@@ -158,16 +158,7 @@ namespace notrealengine
 
 		float scale = 2.0f / minRange;
 		this->transform.scale(mft::vec3(scale));
-		std::cout << "Scale = " << scale << std::endl;
 #ifndef USING_EXTERNAL_LIBS
-		if (importer->axis == Axis::X_UP)
-		{
-			//this->transform.rotate(mft::quat::rotation(mft::vec3(0.0f, 1.0f, 1.0f), mft::radians(90.0f)));
-		}
-		else if (importer->axis == Axis::Z_UP)
-		{
-			//this->transform.rotate(mft::quat::rotation(mft::vec3(1.0f, 0.0f, 0.0f), mft::radians(90.0f)));
-		}
 #endif
 	}
 
@@ -210,7 +201,6 @@ namespace notrealengine
 
 	void	GLObject::bindBones( void ) const
 	{
-		std::cout << "Binding bones" << std::endl;
 		unsigned int shader = this->shader == 0 ? GLContext::getShader("default")->programID : this->shader;
 		GLCallThrow(glUseProgram, shader);
 		GLint location;
@@ -218,7 +208,6 @@ namespace notrealengine
 		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			std::cout << "Sending bone " << it->first << " matrix " << it->second.localMatrix << std::endl;
 			str = "bonesMatrices[" + std::to_string(it->second.id) + "]";
 			location = GLCallThrow(glGetUniformLocation, shader, str.c_str());
 			GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE,

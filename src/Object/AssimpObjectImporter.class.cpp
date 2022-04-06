@@ -200,15 +200,6 @@ namespace notrealengine
 			bone.modelMatrix = transform;
 			bone.localMatrix = transform * bone.offsetMatrix;
 		}
-		else
-		{
-			BoneInfo bone;
-			bone.originalMatrix = transform;
-			bone.modelMatrix = transform;
-			bone.offsetMatrix = mft::mat4::inverse(bone.modelMatrix);
-			bone.localMatrix = transform * bone.offsetMatrix;
-			this->bones[name] = bone;
-		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
 			processNodeBones(node->mChildren[i], scene, transform);
