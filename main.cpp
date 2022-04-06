@@ -3,7 +3,6 @@
 #include "notrealengine/notrealengine.hpp"
 #include "Object/GLObject.class.hpp"
 #include "Object/Animation.class.hpp"
-#include "Object/TextureLoader.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "Object/Light.class.hpp"
 #include "Object/Scene.class.hpp"
@@ -15,6 +14,8 @@
 #include "Camera.class.hpp"
 #include "Inputs/SDLEvents.class.hpp"
 #include "Tests/RunTests.hpp"
+#include "UI/Button.class.hpp"
+#include "UI/UIManager.class.hpp"
 #include <vector>
 
 enum RenderingMode
@@ -23,6 +24,15 @@ enum RenderingMode
 	Bob,
 	Bones
 };
+
+std::string	str = "Num " + std::to_string(0);
+int	value = 0;
+int		updateText(void)
+{
+	value++;
+	str = "Num " + std::to_string(value);
+	return 0;
+}
 
 using namespace notrealengine;
 
@@ -89,9 +99,6 @@ int		main(int ac, char** av)
 
 	uint32_t	moveTime = 0;
 
-	std::cout << "Asset manager content:" << std::endl;
-	AssetManager::getInstance().printContent();
-
 	scene.setCameraSpeed(0.05f);
 
 	scene.addObject(obj);
@@ -136,6 +143,32 @@ int		main(int ac, char** av)
 
 	std::map<std::string, std::shared_ptr<Mesh>>::iterator bobbyMeshesIt =
 		bobby->getMeshesMap().begin();
+
+	UIManager	ui;
+	Button		testButton(context.getShader("2d"));
+	testButton.setPos(mft::vec2i(800, 450));
+	std::shared_ptr<GLFont>	fontPtr = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf");
+	testButton.setFont(fontPtr);
+	testButton.setText("Coucou");
+	testButton.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
+	testButton.setReleaseFunc(updateText);
+	int i = 0;
+	std::shared_ptr<Button>		buttonPtr(new Button(testButton));
+	Button		testButton2(context.getShader("2d"));
+	testButton2.setFont(fontPtr);
+	testButton2.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
+	testButton2.setPos(mft::vec2i(800, 550));
+	testButton2.setText(str);
+	//testButton2.setText("Bouton de test");
+	std::shared_ptr<Button>		buttonPtr2(new Button(testButton2));
+	//UIElement	testUI(context.getShader("2d"));
+	//testUI.setPos(mft::vec2(800, 450));
+	//std::shared_ptr<UIElement>		uiPtr(new UIElement(testUI));
+	ui.registerElement(buttonPtr);
+	ui.registerElement(buttonPtr2);
+
+	std::cout << "Asset manager content:" << std::endl;
+	AssetManager::getInstance().printContent();
 
 	while (running)
 	{
@@ -491,15 +524,18 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
-		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
 
+
+		buttonPtr2->setText(str);
 		scene.render();
 		scene.renderBones();
+		ui.update(mousePos, mouseState);
 		context.swapWindow();
 	}
 	return 0;

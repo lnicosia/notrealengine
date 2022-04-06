@@ -6,6 +6,9 @@
 #include <string>
 #include <set>
 
+#include "mft/mft.hpp"
+#include "GLShaderProgram.class.hpp"
+
 namespace notrealengine
 {
 	class Texture: public Asset
@@ -29,18 +32,25 @@ namespace notrealengine
 
 		const unsigned int&
 			getGLId() const;
-		const std::string&
-			getType() const;
 		virtual const std::string
 			getAssetType() const;
+		const std::string&
+			getType() const;
+		const mft::vec2i&
+			getSize() const;
 
 		//	Setters
 
 		void	setType(const std::string& type);
 
+		void
+			draw(GLShaderProgram* shader, mft::vec2i pos,
+				mft::vec2i size, float rotation, mft::vec3 color) const;
+
 	private:
-		unsigned int	glId;
+		unsigned int	glId, VAO, VBO;
 		std::string		type;
+		mft::vec2i		size;
 
 	};
 }

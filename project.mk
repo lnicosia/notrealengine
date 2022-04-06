@@ -32,7 +32,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/GLCharacter.class.cpp \
 		$S/TextRendering/GLFont.class.cpp \
 		$S/TextRendering/Freetype.class.cpp \
-    $S/Inputs/Binding.class.cpp \
+    	$S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
 		$S/Camera.class.cpp \
 		$S/ColladaParser/ColladaParser.class.cpp \
@@ -41,9 +41,11 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/LXML/LXML.class.cpp \
 		$S/Tests/ColladaParserTests.cpp \
 		$S/Tests/RunTests.cpp \
+		$S/UI/Button.class.cpp \
+		$S/UI/UIElement.class.cpp \
+		$S/UI/UIManager.class.cpp \
 
-
-CC = clang++ --std=c++20 -O3
+CC = clang++ --std=c++20 -O3 
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

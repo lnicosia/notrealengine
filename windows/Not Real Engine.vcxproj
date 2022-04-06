@@ -154,6 +154,7 @@
     <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
+    <ClCompile Include="..\src\UI\Button.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\inc\UI\Button.class.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\2dProjected.fs" />
@@ -217,6 +219,10 @@
     <None Include="..\shaders\text.fs" />
     <None Include="..\shaders\text.vs" />
     <None Include="..\shaders\unlit.fs" />
+    <None Include="..\shaders\2d.fs" />
+    <None Include="..\shaders\2d.vs" />
+    <None Include="..\test\shaders\test.fs" />
+    <None Include="..\test\shaders\test.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

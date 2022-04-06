@@ -1,5 +1,4 @@
 #include "Object/GLObject.class.hpp"
-#include "Object/TextureLoader.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "Object/AssimpHelpers.hpp"
 #include "Object/AssimpObjectImporter.class.hpp"
@@ -158,8 +157,6 @@ namespace notrealengine
 
 		float scale = 2.0f / minRange;
 		this->transform.scale(mft::vec3(scale));
-#ifndef USING_EXTERNAL_LIBS
-#endif
 	}
 
 	//	Drawing functions

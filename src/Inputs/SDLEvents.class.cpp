@@ -45,12 +45,12 @@ namespace notrealengine
 			case InputState::NRE_PRESS:
 				f = binding.onPress.begin();
 				fe = binding.onPress.end();
-				(*it).setState(InputState::NRE_PRESSED);
+				it->setState(InputState::NRE_PRESSED);
 				break;
 			case InputState::NRE_RELEASE:
 				f = binding.onRelease.begin();
 				fe = binding.onRelease.end();
-				(*it).setState(InputState::NRE_RELEASED);
+				it->setState(InputState::NRE_RELEASED);
 				break;
 			case InputState::NRE_PRESSED:
 				f = binding.whenPressed.begin();
@@ -59,6 +59,8 @@ namespace notrealengine
 			case InputState::NRE_RELEASED:
 				f = binding.whenReleased.begin();
 				fe = binding.whenReleased.end();
+				break;
+			default:
 				break;
 			}
 			while (f != fe)

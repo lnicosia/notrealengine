@@ -128,6 +128,17 @@
     </ClCompile>
     <ClCompile Include="..\src\Tests\RunTests.cpp">
       <Filter>Source Files</Filter>
+    <ClCompile Include="..\src\mft\matrix_project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mft\matrix_transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mft\vertex_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UI\Button.class.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +277,12 @@
     <ClInclude Include="..\inc\Tests\ColladaParserTests.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\UI\Button.class.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\test.fs">
@@ -290,6 +307,11 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\2dProjected.fs">
+      <Filter>Resource Files</Filter>
+    <None Include="..\shaders\2d.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\shaders\2d.vs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\shaders\bonesInfluence.fs" />

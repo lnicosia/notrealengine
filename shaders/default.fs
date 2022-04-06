@@ -57,7 +57,7 @@ vec3	computeDirLight(DirLight light, vec3 normal, vec3 cameraDir)
 
 	//	Ambient
 	vec3	ambient = light.ambient * vec3(texture(material.diffuse, TextCoord));
-	
+
 	//	Diffuse
 	float	diff = max(dot(normal, lightDir), 0.0);
 	vec3	diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TextCoord));
@@ -72,11 +72,11 @@ vec3	computeDirLight(DirLight light, vec3 normal, vec3 cameraDir)
 
 vec3	computePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 cameraDir)
 {
-	vec3	lightDir = normalize(-light.pos - FragPos);
+	vec3	lightDir = normalize(light.pos - FragPos);
 
 	//	Ambient
 	vec3	ambient = light.ambient * vec3(texture(material.diffuse, TextCoord));
-	
+
 	//	Diffuse
 	float	diff = max(dot(normal, lightDir), 0.0);
 	vec3	diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TextCoord));
@@ -90,7 +90,8 @@ vec3	computePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 cameraD
 	float	attenuation = 1.0 /
 		(light.constant + light.linear * dist + light.quadratic * dist * dist);
 
-	return (ambient + diffuse + specular) * attenuation;
+	//return (ambient + diffuse + specular) * attenuation;
+	return (diffuse);
 }
 
 void main()

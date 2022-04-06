@@ -9,7 +9,8 @@ enum class InputState
 	NRE_PRESS,
 	NRE_RELEASE,
 	NRE_PRESSED,
-	NRE_RELEASED
+	NRE_RELEASED,
+	NRE_HOVERED
 };
 
 namespace notrealengine
@@ -52,6 +53,7 @@ namespace notrealengine
 		bool const	editable = true;
 
 	};
+
 }
 
 #endif
