@@ -19,6 +19,8 @@ namespace notrealengine
 
 		Transform &
 			operator=( const Transform & other );
+		bool
+			operator==( const Transform & other ) const ;
 
 		~Transform( void );
 
@@ -32,6 +34,8 @@ namespace notrealengine
 
 		const mat4 &
 			getMatrix( void ) const;
+		const bool
+			isDirty( void ) const;
 
 		void setPos( vec3 new_pos );
 		void setRotation( quat new_rotation );
@@ -41,12 +45,19 @@ namespace notrealengine
 		void rotate( quat rotation );
 		void scale( vec3 magnitude );
 
+		const mat4 &
+			getPosMatrix( void ) const;
+		const mat4 &
+			getRotationMatrix( void ) const;
+		const mat4 &
+			getScaleMatrix( void ) const;
+
 		/** Others **/
 
 	private:
-		vec3 pos;
-		quat rotation;
-		vec3 scale;
+		vec3 tPos;
+		quat tRotation;
+		vec3 tScale;
 
 		// Used for caching, along with the dirty flags
 		mutable mat4
@@ -63,16 +74,9 @@ namespace notrealengine
 			DIRTY_FLAG_ANY = DIRTY_FLAG_POS | DIRTY_FLAG_ROTATION | DIRTY_FLAG_SCALE
 		};
 
-		int dirty_flags;
+		mutable int dirty_flags;
 
-		const mat4 &
-			getPosMatrix( void ) const;
-		const mat4 &
-			getRotationMatrix( void ) const;
-		const mat4 &
-			getScaleMatrix( void ) const;
 	};
 }
 
 #endif
-

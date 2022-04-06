@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -36,7 +36,7 @@
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -71,7 +71,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
-    <TargetExt>.dll</TargetExt>
     <TargetName>NotRealEngine</TargetName>
     <LibraryPath>..\lib\freetype\build-windows\Debug;..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -113,30 +112,45 @@
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Camera.class.cpp" />
+    <ClCompile Include="..\src\ColladaParser\ColladaException.class.cpp" />
+    <ClCompile Include="..\src\ColladaParser\ColladaParser.class.cpp" />
+    <ClCompile Include="..\src\ColladaParser\ColladaSceneBuilder.class.cpp" />
     <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
     <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
-    <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\src\glad\glad.c" />
     <ClCompile Include="..\src\GLContext.class.cpp" />
     <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
     <ClCompile Include="..\src\GLException.class.cpp" />
-    <ClCompile Include="..\src\GLException.cpp" />
     <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
+    <ClCompile Include="..\src\LXML\LXML.class.cpp" />
     <ClCompile Include="..\src\mft\math_utils.cpp" />
-    <ClCompile Include="..\src\mft\matrix_project.cpp" />
-    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
-    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
+    <ClCompile Include="..\src\Object\Animation.class.cpp" />
+    <ClCompile Include="..\src\Object\Asset.class.cpp" />
+    <ClCompile Include="..\src\Object\AssetManager.class.cpp" />
+    <ClCompile Include="..\src\Object\AssimpHelpers.cpp" />
+    <ClCompile Include="..\src\Object\AssimpObjectImporter.class.cpp" />
+    <ClCompile Include="..\src\Object\Bone.class.cpp" />
+    <ClCompile Include="..\src\Object\CustomObjectImporter.class.cpp" />
     <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
+    <ClCompile Include="..\src\Object\InitBobby.cpp" />
+    <ClCompile Include="..\src\Object\Light.class.cpp" />
     <ClCompile Include="..\src\Object\Mesh.class.cpp" />
     <ClCompile Include="..\src\Object\MeshData.class.cpp" />
     <ClCompile Include="..\src\object\GLObject.class.cpp" />
+    <ClCompile Include="..\src\Object\ObjectImporter.class.cpp" />
+    <ClCompile Include="..\src\Object\Scene.class.cpp" />
     <ClCompile Include="..\src\Object\Texture.class.cpp" />
-    <ClCompile Include="..\src\Object\TextureLoader.class.cpp" />
+    <ClCompile Include="..\src\Object\Transform.class.cpp" />
     <ClCompile Include="..\src\SDL.class.cpp" />
     <ClCompile Include="..\src\SDLWindow.class.cpp" />
+    <ClCompile Include="..\src\Tests\ColladaParserTests.cpp" />
+    <ClCompile Include="..\src\Tests\RunTests.cpp" />
     <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
     <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
@@ -144,12 +158,19 @@
   <ItemGroup>
     <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
     <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
+    <ClInclude Include="..\inc\LXML\LXML.class.hpp" />
     <ClInclude Include="..\inc\mft\mat.hpp" />
     <ClInclude Include="..\inc\mft\math_utils.hpp" />
     <ClInclude Include="..\inc\mft\mft.hpp" />
+    <ClInclude Include="..\inc\mft\quaternion.hpp" />
     <ClInclude Include="..\inc\mft\templates\mat.template.hpp" />
+    <ClInclude Include="..\inc\mft\templates\quaternion.template.hpp" />
     <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
+    <ClInclude Include="..\inc\notrealengine\Camera.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaException.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaParser.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaSceneBuilder.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GL.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
@@ -158,21 +179,44 @@
     <ClInclude Include="..\inc\notrealengine\notrealengine.hpp" />
     <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="..\inc\Object\Animation.class.hpp" />
+    <ClInclude Include="..\inc\Object\Asset.class.hpp" />
+    <ClInclude Include="..\inc\Object\AssetManager.class.hpp" />
+    <ClInclude Include="..\inc\Object\AssimpHelpers.hpp" />
+    <ClInclude Include="..\inc\Object\AssimpObjectImporter.class.hpp" />
+    <ClInclude Include="..\inc\Object\Bone.class.hpp" />
+    <ClInclude Include="..\inc\Object\CustomObjectImporter.class.hpp" />
     <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
+    <ClInclude Include="..\inc\Object\Light.class.hpp" />
     <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
     <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
     <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
+    <ClInclude Include="..\inc\Object\ObjectImporter.class.hpp" />
+    <ClInclude Include="..\inc\Object\Scene.class.hpp" />
     <ClInclude Include="..\inc\Object\Texture.class.hpp" />
-    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp" />
+    <ClInclude Include="..\inc\Object\Transform.class.hpp" />
+    <ClInclude Include="..\inc\Tests\ColladaParserTests.hpp" />
+    <ClInclude Include="..\inc\Tests\RunTests.hpp" />
     <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
     <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\resources\shaders\text.fs" />
-    <None Include="..\resources\shaders\text.vs" />
-    <None Include="..\test\shaders\test.fs" />
-    <None Include="..\test\shaders\test.vs" />
+    <None Include="..\shaders\2dProjected.fs" />
+    <None Include="..\shaders\2dProjected.vs" />
+    <None Include="..\shaders\anim.vs" />
+    <None Include="..\shaders\bonesInfluence.fs" />
+    <None Include="..\shaders\color.fs" />
+    <None Include="..\shaders\colorUnlit.fs" />
+    <None Include="..\shaders\default.fs" />
+    <None Include="..\shaders\default.vs" />
+    <None Include="..\shaders\test.fs" />
+    <None Include="..\shaders\test.glsl" />
+    <None Include="..\shaders\test.vs" />
+    <None Include="..\shaders\text.fs" />
+    <None Include="..\shaders\text.vs" />
+    <None Include="..\shaders\unlit.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

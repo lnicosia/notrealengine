@@ -4,6 +4,7 @@
 
 # include <type_traits>
 # include "mft/templates/vec.template.hpp"
+# include "mft/mat.hpp"
 
 namespace mft
 {
@@ -28,6 +29,11 @@ namespace mft
 		constexpr quaternion<T>( void );
 		constexpr quaternion<T>( T e1, T e2, T e3, T e4 );
 		constexpr quaternion<T>( std::array<T,4> from );
+		//	Construct from a rotation matrix
+		//	takes float arrays instead of matrices to avoid circular dependency
+		//	between matrices and quaternions
+		constexpr quaternion<T>( const T m[3][3] );
+		constexpr quaternion<T>( const T m[4][4] );
 		template<typename U>
 		constexpr quaternion<T>( const quaternion<U> from );
 		quaternion<T> & operator=( const quaternion<T> & from );
@@ -41,6 +47,11 @@ namespace mft
 		constexpr quaternion<T>		operator-( const quaternion<T> & v2 ) const;
 		constexpr quaternion<T>		operator*( const quaternion<T> & v2 ) const;
 
+		constexpr quaternion<T>		operator*(const T& scalar) const;
+		constexpr quaternion<T>		operator/(const T& scalar) const;
+
+		constexpr quaternion<T>		operator-( void ) const;
+
 		constexpr bool				operator==( const quaternion<T> & v2 ) const;
 		constexpr bool				operator!=( const quaternion<T> & v2 ) const;
 
@@ -52,9 +63,13 @@ namespace mft
 		quaternion<T> & operator-=( const quaternion<T> & v2 );
 		quaternion<T> & operator*=( const quaternion<T> & v2 );
 
-		static constexpr quaternion<T> rotate( const vector<T,T,T> axis, T radians);
+		static constexpr quaternion<T> rotation( const vec<T,T,T> axis, T radians );
+		static constexpr T dot( const quaternion<T>& x, const quaternion<T>& y );
+		static constexpr T length( const quaternion<T>& quat );
+		static constexpr quaternion<T> normalized( const quaternion<T>& quat );
+		static constexpr quaternion<T> slerp( const quaternion<T>& q1,
+			const quaternion<T>& q2, T percentage );
 	};
 }
 
 #endif
-

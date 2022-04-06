@@ -11,8 +11,18 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/MeshData.class.cpp \
 		$S/Object/Mesh.class.cpp \
 		$S/Object/Texture.class.cpp \
-		$S/Object/TextureLoader.class.cpp \
+		$S/Object/Animation.class.cpp \
+		$S/Object/Bone.class.cpp \
 		$S/Object/Transform.class.cpp \
+		$S/Object/AssetManager.class.cpp \
+		$S/Object/Asset.class.cpp \
+		$S/Object/Light.class.cpp \
+		$S/Object/Scene.class.cpp \
+		$S/Object/InitBobby.cpp \
+		$S/Object/AssimpHelpers.cpp \
+		$S/Object/ObjectImporter.class.cpp \
+		$S/Object/AssimpObjectImporter.class.cpp \
+		$S/Object/CustomObjectImporter.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
@@ -24,13 +34,21 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/TextRendering/Freetype.class.cpp \
     $S/Inputs/Binding.class.cpp \
 		$S/Inputs/SDLEvents.class.cpp \
+		$S/Camera.class.cpp \
+		$S/ColladaParser/ColladaParser.class.cpp \
+		$S/ColladaParser/ColladaException.class.cpp \
+		$S/ColladaParser/ColladaSceneBuilder.class.cpp \
+		$S/LXML/LXML.class.cpp \
+		$S/Tests/ColladaParserTests.cpp \
+		$S/Tests/RunTests.cpp \
 
-CC = clang++ --std=c++20 -g3
+
+CC = clang++ --std=c++20 -O3
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =
 
-LIB_MOD = 
+LIB_MOD =
 CMAKE_LIB_MOD = SDL assimp freetype
 
 #libft_LIB = libft.a
@@ -39,7 +57,7 @@ CMAKE_LIB_MOD = SDL assimp freetype
 SDL_LIB =
 SDL_INC = include
 
-assimp_LIB = bin/libassimp.so
+assimp_LIB = lib/libassimp.a
 assimp_INC = include build/include
 
 freetype_LIB = libfreetype.a

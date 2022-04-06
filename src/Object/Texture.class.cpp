@@ -25,11 +25,13 @@
 
 namespace notrealengine
 {
-	Texture::Texture(std::string const& path, std::string const& type): type(type), glId(0)
+	Texture::Texture(const std::string& path, const std::string& type)
+		: Asset({path}), type(type), glId(0)
 	{
-		
+
 		int	w, h, nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		stbi_set_flip_vertically_on_load(true);
 		unsigned char* img = stbi_load(path.c_str(), &w, &h, &nChannels, 0);
 		if (!img)
 		{
@@ -57,14 +59,48 @@ namespace notrealengine
 		stbi_image_free(img);
 	}
 
+	Texture::Texture(const std::string& path, unsigned char *data, unsigned int width, std::string const& type)
+		: Asset({path}), type(type), glId(0)
+	{
+
+		int	w, h, nChannels;
+		std::cout << "Loading embedded texture in '" << path << "'..." << std::endl;
+		unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
+		if (!img)
+		{
+			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			std::cerr << stbi_failure_reason() << std::endl;
+			stbi_image_free(img);
+			return;
+		}
+		GLenum	format;
+		if (nChannels == 1)
+			format = GL_RED;
+		else if (nChannels == 3)
+			format = GL_RGB;
+		else if (nChannels == 4)
+			format = GL_RGBA;
+
+		GLCallThrow(glGenTextures, 1, &glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		stbi_image_free(img);
+	}
+
 	Texture::Texture(Texture && ref) noexcept
-		: glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
+		: Asset(std::move(ref)), glId(std::exchange(ref.glId, 0)), type(std::move(ref.type))
 	{
 
 	}
 
 	Texture& Texture::operator=(Texture&& text) noexcept
 	{
+		Asset::operator=(std::move(text));
 		this->glId = std::exchange(text.glId, 0);
 		this->type = std::move(text.type);
 
@@ -73,24 +109,29 @@ namespace notrealengine
 
 	Texture::~Texture()
 	{
-		glDeleteBuffers(1, &glId);
+		GLCallThrow(glDeleteBuffers, 1, &glId);
 	}
 
 	//	Accessors
 
-	unsigned int const& Texture::getId() const
+	const unsigned int& Texture::getGLId() const
 	{
 		return glId;
 	}
 
-	std::string const& Texture::getType() const
+	const std::string& Texture::getType() const
 	{
 		return type;
 	}
 
+	const std::string	Texture::getAssetType() const
+	{
+		return std::string("Texture");
+	}
+
 	//	Setters
 
-	void	Texture::setType(std::string const& type)
+	void	Texture::setType(const std::string& type)
 	{
 		this->type = type;
 	}
