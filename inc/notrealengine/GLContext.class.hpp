@@ -9,6 +9,7 @@
 # include <map>
 
 # include "GL.hpp"
+# include "Object/GLObject.class.hpp"
 
 namespace notrealengine
 {
@@ -25,13 +26,20 @@ namespace notrealengine
 		virtual bool
 			isCurrent( void ) = 0;
 
-		void
+		static void
 			registerShader( std::string name, std::filesystem::path, std::filesystem::path );
-		GLShaderProgram *
+		static GLShaderProgram *
 			getShader( std::string );
 
 		static std::filesystem::path
 			DefaultShaderPath;
+
+		static std::shared_ptr<GLMesh>
+			cube;
+		static std::shared_ptr<GLMesh>
+			centeredCube;
+		static std::shared_ptr<GLObject>
+			grid;
 
 	protected:
 		static long
@@ -40,11 +48,10 @@ namespace notrealengine
 		~GLContext( void );
 
 	private:
-		std::map<std::string,GLShaderProgram>
+		static std::map<std::string,GLShaderProgram>
 			shaders;
 
 	};
 }
 
 #endif
-

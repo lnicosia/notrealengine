@@ -4,6 +4,7 @@
 # include "mft/math_utils.hpp"
 # include "mft/templates/mat.template.hpp"
 # include "mft/templates/vec.template.hpp"
+# include "mft/templates/quaternion.template.hpp"
 
 namespace	mft
 {
@@ -16,6 +17,8 @@ namespace	mft
 	typedef vec<float,float,float,float>	vec4;
 
 	typedef vec<int,int>					vec2i;
+
+	typedef quaternion<float>				quat;
 }
 
 #endif

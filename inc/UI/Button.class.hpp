@@ -3,9 +3,9 @@
 
 #include "Inputs/Binding.class.hpp"
 #include "Object/Texture.class.hpp"
+#include "Object/AssetManager.class.hpp"
 #include "mft/mft.hpp"
 #include "UI/UIElement.class.hpp"
-#include "Object/TextureLoader.class.hpp"
 #include "TextRendering/GLFont.class.hpp"
 
 #include <functional>
@@ -16,9 +16,9 @@ namespace notrealengine
 	{
 	public:
 		Button(GLShaderProgram* shader,
-			std::shared_ptr<Texture> imgReleased = TextureLoader::loadTexture("resources/UI/defaultUI-released.png", "UI"),
-			std::shared_ptr<Texture> imgPressed = TextureLoader::loadTexture("resources/UI/defaultUI-pressed.png", "UI"),
-			std::shared_ptr<Texture> imgHovered = TextureLoader::loadTexture("resources/UI/defaultUI-hovered.png", "UI"),
+			std::shared_ptr<Texture> imgReleased = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-released.png", "UI"),
+			std::shared_ptr<Texture> imgPressed = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-pressed.png", "UI"),
+			std::shared_ptr<Texture> imgHovered = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
 			mft::vec2i pos = mft::vec2i(0, 0));
 		~Button();
 
@@ -55,7 +55,7 @@ namespace notrealengine
 			setPressedStyle(std::shared_ptr<Texture> img, mft::vec2i size);
 		void
 			setReleasedStyle(std::shared_ptr<Texture> img, mft::vec2i size);
-		
+
 
 		//	Set the image for each state
 

@@ -21,6 +21,9 @@ namespace notrealengine
 		private:
 			SDL_Window * windowHandle;
 			SDL_GLContext glHandle;
+
+			void
+				loadGLfunctions( void );
 	};
 }
 

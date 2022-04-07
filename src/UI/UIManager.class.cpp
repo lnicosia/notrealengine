@@ -26,5 +26,6 @@ namespace notrealengine
 			if (element->visible == true)
 				element->draw();
 		}
+		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
 }

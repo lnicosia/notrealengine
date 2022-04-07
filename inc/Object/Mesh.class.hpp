@@ -2,6 +2,7 @@
 # define _MESH_CLASS_H_
 
 #include "GLMesh.class.hpp"
+#include "Transform.class.hpp"
 #include <memory>
 
 namespace notrealengine
@@ -17,38 +18,70 @@ namespace notrealengine
 
 		std::shared_ptr<GLMesh> const&
 			getGLMesh() const;
-		std::vector<Mesh> const&
+		std::vector<std::shared_ptr<Mesh>> const&
 			getChildren() const;
-		mft::mat4 const&
-			getMatrix() const;
-		Transform const&
-			getTransform() const;
 		std::string const&
 			getName() const;
+		mft::vec3 const&
+			getColor() const;
+		unsigned int const&
+				getShader() const;
+
+		//	Local transform of the mesh
+		Transform	localTransform;
+		//	Local animation transform
+		Transform	animTransform;
+		//	i.e. the real and final local transform during a frame
+		Transform finalLocalTransform;
+
+		//	Invisible meshes/nodes can be very usefull in a hierarchical model
+		bool	visible;
 
 		//	Setters
 
-		void	setName(std::string name);
+		void
+			setName(std::string name);
+		void
+			setColor(mft::vec3 color);
+		void
+			setShader(unsigned int shader);
+		void
+			setShader(GLShaderProgram* shader);
+		void
+			setAnimMatrix(const mft::mat4& mat);
+		void
+			setAnimTransform(const Transform& transform);
 
-		//	Tranform
+		void
+			addTexture(std::shared_ptr < Texture >& text);
+		/**	Draw the mesh from the given parent matrix
+		**	If a shader is given, the mesh will be drawn with it
+		**	instead of the mesh's shader data
+		*/
+		void
+			draw(const mft::vec3 globalScale, const mft::mat4& parentGlobalMat, unsigned int shader = 0);
 
-		void	update();
-		void	move(mft::vec3 move);
-		void	rotate(mft::vec3 rotation);
-		void	scale(mft::vec3 scale);
-
-		void	addTexture(std::shared_ptr < Texture >& text);
-		void	draw(GLShaderProgram *shader, mft::mat4 parentMat);
+		void
+			addMesh(std::shared_ptr<Mesh> mesh);
 
 	private:
-		std::string				name;
+		std::string	name;
 
 		std::shared_ptr<GLMesh>	glMesh;
-		std::vector<Mesh>		children;
-		Mesh					*parent;
+		std::vector<std::shared_ptr<Mesh>>	children;
+		std::shared_ptr<Mesh>	*parent;
 
-		Transform	transform;
-		mft::mat4	matrix;
+		mft::mat4	parentMatrix;
+		mft::mat4	globalMatrix;
+		mft::mat3	normalMatrix;
+
+		mft::vec3	color;
+
+		unsigned int	shader;
+
+		void
+			updateFinalTransform( void );
+
 	};
 
 	std::ostream& operator<<(std::ostream& o, Mesh const& mesh);

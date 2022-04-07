@@ -2,7 +2,7 @@
 #define _UIELEMENT_CLASS_H_
 
 #include "mft/mft.hpp"
-#include "Object/TextureLoader.class.hpp"
+#include "Object/AssetManager.class.hpp"
 #include "GLContext.class.hpp"
 #include "Inputs/Binding.class.hpp"
 
@@ -14,7 +14,7 @@ namespace notrealengine
 	{
 	public:
 		UIElement(GLShaderProgram* shader = nullptr,
-			std::shared_ptr<Texture> image = TextureLoader::loadTexture("resources/UI/defaultUI-hovered.png", "UI"),
+			std::shared_ptr<Texture> image = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
 			mft::vec2i pos = mft::vec2i(0, 0));
 		~UIElement();
 
