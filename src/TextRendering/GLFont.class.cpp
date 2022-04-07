@@ -1,10 +1,12 @@
 #include "TextRendering/GLFont.class.hpp"
 #include "TextRendering/Freetype.class.hpp"
 #include "GL.hpp"
+#include "GLContext.class.hpp"
 
 namespace notrealengine
 {
-	GLFont::GLFont(const std::string& path): Asset({path})
+	GLFont::GLFont(const std::string& path): Asset({path}), VAO(0), VBO(0), characters(),
+		shader(GLContext::getShader("text"))
 	{
 		std::cout << "Loading font '" << path << "'..." << std::endl;
 		Freetype::Init();
@@ -51,7 +53,8 @@ namespace notrealengine
 	GLFont::GLFont(GLFont&& ref) noexcept
 		: Asset(std::move(ref)), characters(std::move(ref.characters)),
 		VAO(std::exchange(ref.VAO, 0)),
-		VBO(std::exchange(ref.VBO, 0))
+		VBO(std::exchange(ref.VBO, 0)),
+		shader(std::exchange(ref.shader, nullptr))
 	{
 
 	}
@@ -65,6 +68,17 @@ namespace notrealengine
 			delete c.second;
 		}
 	}
+
+	GLFont& GLFont::operator=(GLFont&& font) noexcept
+	{
+		Asset::operator=(std::move(font));
+		this->characters = std::move(font.characters);
+		this->VAO = std::exchange(font.VAO, 0);
+		this->VBO = std::exchange(font.VBO, 0);
+		return *this;
+	}
+
+	//	Getters
 
 	const std::map<char, GLCharacter*>& GLFont::getCharacters() const
 	{
@@ -81,27 +95,42 @@ namespace notrealengine
 		return std::string("GLFont");
 	}
 
-	GLFont& GLFont::operator=(GLFont&& font) noexcept
+	const GLShaderProgram* GLFont::getShader() const
 	{
-		Asset::operator=(std::move(font));
-		this->characters = std::move(font.characters);
-		this->VAO = std::exchange(font.VAO, 0);
-		this->VBO = std::exchange(font.VBO, 0);
-		return *this;
+		return this->shader;
 	}
 
-	void	GLFont::RenderText(GLShaderProgram* shader, std::string text,
-		mft::vec2i pos, float scale, mft::vec3 color)
+	const unsigned int GLFont::getShaderID() const
 	{
-		GLCallThrow(glUseProgram, shader->programID);
-		GLint location = GLCallThrow(glGetUniformLocation, shader->programID, "textColor");
-		GLCallThrow(glUniform3f, location, color.x, color.y, color.z);
+		if (this->shader != nullptr)
+			return this->shader->programID;
+		return 0;
+	}
+
+	//	Setters
+
+	void	GLFont::setShader(GLShaderProgram* shader)
+	{
+		this->shader = shader;
+	}
+
+	void	GLFont::RenderText(std::string text, mft::vec2i pos, float scale, mft::vec3 color,
+		GLShaderProgram* shader)
+	{
+		if (shader == nullptr)
+		{
+			if (this->shader == nullptr)
+				return;
+			shader = this->shader;
+		}
+		bindVector(shader->programID, "textColor", color);
+		bindMatrix(shader->programID, "model", mft::mat4());
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
 
 		for (auto c : text)
 		{
-			GLCharacter* ch = characters[c];
+			GLCharacter* ch = this->characters[c];
 
 			float	xpos = pos.x + ch->getBearing().x * scale;
 			float	ypos = pos.y - (ch->getSize().y - ch->getBearing().y) * scale;

@@ -103,6 +103,13 @@ namespace notrealengine
 		GLCallThrow(glUniform1i, location, nb);
 	}
 
+	void	GLShaderProgram::bindVector(std::string name, const mft::vec3& vec) const
+	{
+		GLCallThrow(glUseProgram, this->programID);
+		GLint location = GLCallThrow(glGetUniformLocation, this->programID, name.c_str());
+		GLCallThrow(glUniform3f, location, vec.x, vec.y, vec.z);
+	}
+
 	template class GLShaderProgram::ShaderPart<GL_VERTEX_SHADER>;
 	template class GLShaderProgram::ShaderPart<GL_FRAGMENT_SHADER>;
 
@@ -125,6 +132,13 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, shader);
 		GLint location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
 		GLCallThrow(glUniform1i, location, nb);
+	}
+
+	void	bindVector(unsigned int shader, std::string name, const mft::vec3& vec)
+	{
+		GLCallThrow(glUseProgram, shader);
+		GLint location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
+		GLCallThrow(glUniform3f, location, vec.x, vec.y, vec.z);
 	}
 }
 

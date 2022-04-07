@@ -21,8 +21,15 @@ namespace notrealengine
 		GLFont& operator=(GLFont&& font) noexcept;
 		~GLFont();
 
-		void	RenderText(GLShaderProgram* shader, std::string text,
-			mft::vec2i pos, float scale, mft::vec3 color);
+		/**	Draw the text at the giving pos, with the given scale and color
+		**	and either a specific shader pointer of the font's one
+		**	- Not const to get characters from the map
+		*/
+		void
+			RenderText(std::string text, mft::vec2i pos, float scale, mft::vec3 color,
+				GLShaderProgram* shader = nullptr);
+
+		//	Getters
 
 		const std::map<char, GLCharacter*>&
 			getCharacters() const;
@@ -33,10 +40,21 @@ namespace notrealengine
 		virtual const std::string
 			getAssetType() const;
 
+		const GLShaderProgram*
+			getShader() const;
+		const unsigned int
+			getShaderID() const;
+
+		//	Setters
+
+		void	setShader(GLShaderProgram* shader);
+
 	private:
 		std::map<char, GLCharacter*>	characters;
 
 		unsigned int	VAO, VBO;
+
+		GLShaderProgram* shader;
 	};
 }
 

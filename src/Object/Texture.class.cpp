@@ -1,5 +1,6 @@
 #include "Object/Texture.class.hpp"
 #include "GL.hpp"
+#include "GLContext.class.hpp"
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -26,7 +27,8 @@
 namespace notrealengine
 {
 	Texture::Texture(std::string const& path, std::string const& type)
-		: type(type), glId(0), VAO(0), VBO(0), size(0, 0)
+		: Asset({ path }), type(type), glId(0), VAO(0), VBO(0), size(0, 0),
+		shader(GLContext::getShader("2d"))
 	{
 		//	2D Image setup
 		float	vertices[] =
@@ -86,7 +88,8 @@ namespace notrealengine
 	}
 
 	Texture::Texture(const std::string& path, unsigned char *data, unsigned int width, std::string const& type)
-		: Asset({path}), type(type), glId(0)
+		: Asset({ path }), type(type), glId(0), VAO(0), VBO(0), size(0, 0),
+		shader(GLContext::getShader("2d"))
 	{
 
 		int	w, h, nChannels;
@@ -165,6 +168,18 @@ namespace notrealengine
 		return size;
 	}
 
+	const GLShaderProgram* Texture::getShader() const
+	{
+		return this->shader;
+	}
+
+	const unsigned int Texture::getShaderID() const
+	{
+		if (this->shader != nullptr)
+			return this->shader->programID;
+		return 0;
+	}
+
 	//	Setters
 
 	void	Texture::setType(const std::string& type)
@@ -172,22 +187,31 @@ namespace notrealengine
 		this->type = type;
 	}
 
-	void	Texture::draw(GLShaderProgram* shader, mft::vec2i pos,
-		mft::vec2i size, float rotation, mft::vec3 color) const
+	void	Texture::setShader(GLShaderProgram* shader)
 	{
-		GLCallThrow(glUseProgram, shader->programID);
+		this->shader = shader;
+	}
 
+	void	Texture::draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec3 color,
+		GLShaderProgram* shader) const
+	{
+		if (shader == nullptr)
+		{
+			if (this->shader == nullptr)
+				return;
+			shader = this->shader;
+		}
 		mft::mat4	model;
-		model *= mft::mat4::scale(mft::vec3(size.x, size.y, 1.0f));
-		model *= mft::mat4::translate(mft::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-		model *= mft::mat4::rotate(mft::radians(rotation), mft::vec3(0.0f, 0.0f, 1.0f));
-		model *= mft::mat4::translate(mft::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+
 		model *= mft::mat4::translate(mft::vec3(pos.x, pos.y, 0.0f));
+		model *= mft::mat4::translate(mft::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+		model *= mft::mat4::rotate(mft::radians(rotation), mft::vec3(0.0f, 0.0f, 1.0f));
+		model *= mft::mat4::translate(mft::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+		model *= mft::mat4::scale(mft::vec3(size.x, size.y, 1.0f));
 
-		GLCallThrow(glUniformMatrix4fv, GLCallThrow(glGetUniformLocation, shader->programID, "model"), 1, GL_TRUE, static_cast<float*>(model));
-		GLCallThrow(glUniform3f,
-			GLCallThrow(glGetUniformLocation, shader->programID, "color"), color.x, color.y, color.z);
-
+		bindVector(shader->programID, "color", color);
+		bindMatrix(shader->programID, "model", model);
+		GLCallThrow(glUseProgram, shader->programID);
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
 

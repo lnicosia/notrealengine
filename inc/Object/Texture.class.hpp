@@ -2,12 +2,11 @@
 # define _TEXTURE_CLASS_H_
 
 #include "Object/Asset.class.hpp"
+#include "GLShaderProgram.class.hpp"
+#include "mft/mft.hpp"
 
 #include <string>
 #include <set>
-
-#include "mft/mft.hpp"
-#include "GLShaderProgram.class.hpp"
 
 namespace notrealengine
 {
@@ -38,17 +37,28 @@ namespace notrealengine
 			getType() const;
 		const mft::vec2i&
 			getSize() const;
+		const GLShaderProgram*
+			getShader() const;
+		const unsigned int
+			getShaderID() const;
 
 		//	Setters
 
 		void	setType(const std::string& type);
+		void	setShader(GLShaderProgram* shader);
 
+		//	Draw
+
+		/**	Draw the texture at the giving pos, with the given size, color and rotation
+		**	and either a specific shader pointer of the texture's one
+		*/
 		void
-			draw(GLShaderProgram* shader, mft::vec2i pos,
-				mft::vec2i size, float rotation, mft::vec3 color) const;
+			draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec3 color,
+				GLShaderProgram* shader = nullptr) const;
 
 	private:
 		unsigned int	glId, VAO, VBO;
+		GLShaderProgram* shader;
 		std::string		type;
 		mft::vec2i		size;
 

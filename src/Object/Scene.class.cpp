@@ -18,6 +18,7 @@ namespace notrealengine
 		mft::mat4	ortho = mft::mat4::ortho(0.0f, 1600.0f, 0.0f, 900.0f);
 
 		bindMatrix(GLContext::getShader("text")->programID, "projection", ortho);
+		bindMatrix(GLContext::getShader("2d")->programID, "projection", ortho);
 		//	Binding matrices and light manually for global shaders
 		bindMatrices(GLContext::getShader("2dProjected")->programID);
 

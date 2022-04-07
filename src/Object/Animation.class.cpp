@@ -62,8 +62,6 @@ namespace notrealengine
 		const aiMetadata* metadata = scene->mMetaData;
 		int upAxis = -1;
 		scene->mMetaData->Get<int>("UpAxis", upAxis);
-		std::cout << "Up axis = " << upAxis << std::endl;
-		//scene->mRootNode->mMetaData->Get<int>("UpAxis", upAxis);
 		//std::cout << "Up axis = " << upAxis << std::endl;
 #else
 		cpAnimation* animation = scene->mAnimations[index];
@@ -71,8 +69,6 @@ namespace notrealengine
 		this->duration = animation->mDuration;
 		this->ticksPerSecond = animation->mTicksPerSecond;
 		this->ticksFactor = this->ticksPerSecond / 1000;
-		std::cout << "Ticks per second = " << this->ticksPerSecond << std::endl;
-		std::cout << "Ticks factor = " << this->ticksFactor << std::endl;
 		for (unsigned int i = 0; i < animation->mNumChannels; i++)
 		{
 			if (animation->mChannels[i] != nullptr)

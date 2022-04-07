@@ -147,15 +147,14 @@ int		main(int ac, char** av)
 	UIManager	ui;
 	Button		testButton(context.getShader("2d"));
 	testButton.setPos(mft::vec2i(800, 450));
-	std::shared_ptr<GLFont>	fontPtr = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf");
-	testButton.setFont(fontPtr);
+	testButton.setFont(font);
 	testButton.setText("Coucou");
 	testButton.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
 	testButton.setReleaseFunc(updateText);
 	int i = 0;
 	std::shared_ptr<Button>		buttonPtr(new Button(testButton));
 	Button		testButton2(context.getShader("2d"));
-	testButton2.setFont(fontPtr);
+	testButton2.setFont(font);
 	testButton2.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
 	testButton2.setPos(mft::vec2i(800, 550));
 	testButton2.setText(str);
@@ -166,6 +165,8 @@ int		main(int ac, char** av)
 	//std::shared_ptr<UIElement>		uiPtr(new UIElement(testUI));
 	ui.registerElement(buttonPtr);
 	ui.registerElement(buttonPtr2);
+
+	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/images/bulb-light.png", "UI");
 
 	std::cout << "Asset manager content:" << std::endl;
 	AssetManager::getInstance().printContent();
@@ -243,7 +244,7 @@ int		main(int ac, char** av)
 					//std::cout << "Head matrix: " << head.localTransformMatrix << std::endl;
 					//obj->localTransform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
-				if (e.key.keysym.sym == SDLK_a)
+				if (e.key.keysym.sym == SDLK_q)
 				{
 					scene.left(deltaTime / 2.0);
 				}
@@ -251,7 +252,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					scene.forward(deltaTime / 2.0);
 				}
@@ -259,7 +260,7 @@ int		main(int ac, char** av)
 				{
 					scene.backward(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);
@@ -524,18 +525,18 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
-		font->RenderText(context.getShader("text"), "Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(context.getShader("text"), "Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-
+		font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText("Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText("Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText(std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
 
 		buttonPtr2->setText(str);
 		scene.render();
 		scene.renderBones();
 		ui.update(mousePos, mouseState);
+		texture->draw(mft::vec2i(500, 500), mft::vec2i(400, 400), 0.0f, mft::vec3(1.0f));
 		context.swapWindow();
 	}
 	return 0;

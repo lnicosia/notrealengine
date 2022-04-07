@@ -10,7 +10,7 @@ namespace notrealengine
 		:
 		UIElement(shader, imgReleased, pos),
 		state(InputState::NRE_RELEASED),
-		text(""),
+		text(""), textPos(mft::vec2i()), textScale(1.0f),
 		sizeReleased(image->getSize()),
 		sizePressed(image->getSize()),
 		sizeHovered(image->getSize()),
@@ -89,19 +89,19 @@ namespace notrealengine
 		switch (state)
 		{
 		case InputState::NRE_HOVERED:
-			imgHovered->draw(shader, pos, sizeHovered, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgHovered->draw(pos, sizeHovered, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
 		case InputState::NRE_PRESS:
 		case InputState::NRE_PRESSED:
-			imgPressed->draw(shader, pos, sizePressed, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgPressed->draw(pos, sizePressed, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
 			break;
 		case InputState::NRE_RELEASE:
 		case InputState::NRE_RELEASED:
-			imgReleased->draw(shader, pos, sizeReleased, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgReleased->draw(pos, sizeReleased, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
 			break;
 		}
 		if (text != "" && font != nullptr)
 		{
-			font->RenderText(shader, text, textPos, textScale, fontColor);
+			font->RenderText(text, textPos, textScale, fontColor);
 		}
 	}
 
