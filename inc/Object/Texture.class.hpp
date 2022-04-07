@@ -53,7 +53,7 @@ namespace notrealengine
 		**	and either a specific shader pointer of the texture's one
 		*/
 		void
-			draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec3 color,
+			draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec4 color,
 				GLShaderProgram* shader = nullptr) const;
 
 	private:

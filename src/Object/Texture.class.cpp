@@ -192,7 +192,7 @@ namespace notrealengine
 		this->shader = shader;
 	}
 
-	void	Texture::draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec3 color,
+	void	Texture::draw(mft::vec2i pos, mft::vec2i size, float rotation, mft::vec4 color,
 		GLShaderProgram* shader) const
 	{
 		if (shader == nullptr)

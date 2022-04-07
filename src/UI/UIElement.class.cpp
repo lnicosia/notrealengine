@@ -29,7 +29,7 @@ namespace notrealengine
 
 	void	UIElement::draw() const
 	{
-		image->draw(pos, size, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f), shader);
+		image->draw(pos, size, 0.0f, mft::vec4(1.0f));
 		for (auto& child : children)
 		{
 			child->draw();

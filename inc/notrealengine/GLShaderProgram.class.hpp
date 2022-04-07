@@ -35,6 +35,8 @@ namespace notrealengine
 			bindInt(std::string name, const int nb) const;
 		void
 			bindVector(std::string name, const mft::vec3& vec) const;
+		void
+			bindVector(std::string name, const mft::vec4& vec) const;
 
 		const GLuint programID;
 
@@ -48,6 +50,8 @@ namespace notrealengine
 		bindInt(unsigned int shader, std::string name, const int nb);
 	void
 		bindVector(unsigned int shader, std::string name, const mft::vec3& vec);
+	void
+		bindVector(unsigned int shader, std::string name, const mft::vec4& vec);
 }
 
 #endif

@@ -114,7 +114,7 @@ namespace notrealengine
 		this->shader = shader;
 	}
 
-	void	GLFont::RenderText(std::string text, mft::vec2i pos, float scale, mft::vec3 color,
+	void	GLFont::RenderText(std::string text, mft::vec2i pos, float scale, const mft::vec4& color,
 		GLShaderProgram* shader)
 	{
 		if (shader == nullptr)

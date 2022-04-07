@@ -10,7 +10,7 @@ namespace notrealengine
 		:
 		UIElement(shader, imgReleased, pos),
 		state(InputState::NRE_RELEASED),
-		text(""), textPos(mft::vec2i()), textScale(1.0f),
+		text(""), textPos(mft::vec2i()), textScale(1.0f), textColor(mft::vec4(1.0f)),
 		sizeReleased(image->getSize()),
 		sizePressed(image->getSize()),
 		sizeHovered(image->getSize()),
@@ -44,9 +44,9 @@ namespace notrealengine
 		updateDrawData();
 	}
 
-	void	Button::setFontColor(const mft::vec3& fontColor)
+	void	Button::setTextColor(const mft::vec4& color)
 	{
-		this->fontColor = fontColor;
+		this->textColor = color;
 	}
 
 	void	Button::setPos(const mft::vec2i&& newPos)
@@ -66,20 +66,16 @@ namespace notrealengine
 			return;
 		mft::vec2i size(font->getCharacter('C')->getSize().x * text.length(),
 			font->getCharacter('C')->getSize().y);
-		//std::cout << "Text lenght = " << size << std::endl;
 		mft::vec2 scale;
 		if (size.x > this->size.x * 0.75)
 			scale.x = (this->size.x * 0.75) / size.x;
 		if (size.y > this->size.y * 0.75)
 			scale.y = (this->size.y * 0.75) / size.y;
-		//std::cout << "scale = " << scale << std::endl;
 		textScale = scale.x < scale.y ? scale.x : scale.y;
 		size.x *= textScale;
 		size.y *= textScale;
-		//std::cout << "Final scale = " << textScale << std::endl << std::endl;
 		textPos = mft::vec2i(this->pos.x + this->size.x / 2 - size.x / 2,
 			this->pos.y + this->size.y / 2 - size.y / 2);
-		//std::cout << "Text pos = " << textPos << std::endl;
 	}
 
 	void	Button::draw() const
@@ -89,19 +85,20 @@ namespace notrealengine
 		switch (state)
 		{
 		case InputState::NRE_HOVERED:
-			imgHovered->draw(pos, sizeHovered, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgHovered->draw(pos, sizeHovered, 0.0f, mft::vec4(1.0f));
+			break;
 		case InputState::NRE_PRESS:
 		case InputState::NRE_PRESSED:
-			imgPressed->draw(pos, sizePressed, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgPressed->draw(pos, sizePressed, 0.0f, mft::vec4(1.0f));
 			break;
 		case InputState::NRE_RELEASE:
 		case InputState::NRE_RELEASED:
-			imgReleased->draw(pos, sizeReleased, 0.0f, mft::vec3(1.0f, 1.0f, 1.0f));
+			imgReleased->draw(pos, sizeReleased, 0.0f, mft::vec4(1.0f));
 			break;
 		}
 		if (text != "" && font != nullptr)
 		{
-			font->RenderText(text, textPos, textScale, fontColor);
+			font->RenderText(text, textPos, textScale, textColor);
 		}
 	}
 

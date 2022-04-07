@@ -25,12 +25,12 @@ enum RenderingMode
 	Bones
 };
 
-std::string	str = "Num " + std::to_string(0);
+std::string	str = "Value = " + std::to_string(0);
 int	value = 0;
 int		updateText(void)
 {
 	value++;
-	str = "Num " + std::to_string(value);
+	str = "Value = " + std::to_string(value);
 	return 0;
 }
 
@@ -149,13 +149,13 @@ int		main(int ac, char** av)
 	testButton.setPos(mft::vec2i(800, 450));
 	testButton.setFont(font);
 	testButton.setText("Coucou");
-	testButton.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
+	testButton.setTextColor(mft::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	testButton.setReleaseFunc(updateText);
 	int i = 0;
 	std::shared_ptr<Button>		buttonPtr(new Button(testButton));
 	Button		testButton2(context.getShader("2d"));
 	testButton2.setFont(font);
-	testButton2.setFontColor(mft::vec3(0.0f, 0.0f, 0.0f));
+	testButton2.setTextColor(mft::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	testButton2.setPos(mft::vec2i(800, 550));
 	testButton2.setText(str);
 	//testButton2.setText("Bouton de test");
@@ -166,7 +166,7 @@ int		main(int ac, char** av)
 	ui.registerElement(buttonPtr);
 	ui.registerElement(buttonPtr2);
 
-	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/images/bulb-light.png", "UI");
+	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
 
 	std::cout << "Asset manager content:" << std::endl;
 	AssetManager::getInstance().printContent();
@@ -198,51 +198,31 @@ int		main(int ac, char** av)
 					running = 0;
 				if (e.key.keysym.sym == SDLK_LEFT)
 				{
-					//scene.left(deltaTime);
 					selectedMesh->localTransform.move(mft::vec3(-0.05f, 0.0f, 0.0f));
 					std::cout << selectedMesh->getName() << ": pos = ";
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
-					//std::cout << "Object matrix: " << character->locallocalTransform.getMatrix() << std::endl;
-					//std::cout << "Torso matrix: " << torso.locallocalTransformMatrix << std::endl;
-					//std::cout << "Head matrix: " << head.locallocalTransformMatrix << std::endl;
-					//obj->locallocalTransform.move(mft::vec3(-1.0f, 0.0f, 0.0f));
 				}
 				if (e.key.keysym.sym == SDLK_RIGHT)
 				{
-					//scene.right(deltaTime);
 					selectedMesh->localTransform.move(mft::vec3(0.05f, 0.0f, 0.0f));
 					std::cout << selectedMesh->getName() << ": pos = ";
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
-					//std::cout << "Object matrix: " << character->locallocalTransform.getMatrix() << std::endl;
-					//std::cout << "Torso matrix: " << torso.locallocalTransformMatrix << std::endl;
-					//std::cout << "Head matrix: " << head.locallocalTransformMatrix << std::endl;
-					//obj->locallocalTransform.move(mft::vec3(1.0f, 0.0f, 0.0f));
 				}
 				if (e.key.keysym.sym == SDLK_UP)
 				{
-					//scene.forward(deltaTime);
 					selectedMesh->localTransform.move(mft::vec3(0.0f, 0.05f, 0.0f));
 					std::cout << selectedMesh->getName() << ": pos = ";
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
-					//std::cout << "Object matrix: " << character->locallocalTransform.getMatrix() << std::endl;
-					//std::cout << "Torso matrix: " << torso.localTransformMatrix << std::endl;
-					//std::cout << "Head matrix: " << head.localTransformMatrix << std::endl;
-					//obj->localTransform.move(mft::vec3(0.0f, 0.0f, 1.0f));
 				}
 				if (e.key.keysym.sym == SDLK_DOWN)
 				{
-					//scene.backward(deltaTime);
 					selectedMesh->localTransform.move(mft::vec3(0.0f, -0.05f, 0.0f));
 					std::cout << selectedMesh->getName() << ": pos = ";
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
-					//std::cout << "Object matrix: " << character->localTransform.getMatrix() << std::endl;
-					//std::cout << "Torso matrix: " << torso.localTransformMatrix << std::endl;
-					//std::cout << "Head matrix: " << head.localTransformMatrix << std::endl;
-					//obj->localTransform.move(mft::vec3(0.0f, 0.0f, -1.0f));
 				}
 				if (e.key.keysym.sym == SDLK_q)
 				{
@@ -525,18 +505,18 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
-		font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText("Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText("Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText(std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec3(1.0, 1.0, 1.0));
-		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec3(1.0, 1.0, 1.0));
+		font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec4(1.0));
+		font->RenderText("Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec4(1.0));
+		font->RenderText("Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec4(1.0));
+		font->RenderText(std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec4(1.0));
+		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec4(1.0));
+		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec4(1.0));
 
 		buttonPtr2->setText(str);
 		scene.render();
 		scene.renderBones();
 		ui.update(mousePos, mouseState);
-		texture->draw(mft::vec2i(500, 500), mft::vec2i(400, 400), 0.0f, mft::vec3(1.0f));
+		texture->draw(mft::vec2i(1200, 0), mft::vec2i(200, 200), 0.0f, mft::vec4(1.0f));
 		context.swapWindow();
 	}
 	return 0;

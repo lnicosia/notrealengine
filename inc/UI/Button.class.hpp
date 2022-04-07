@@ -92,7 +92,7 @@ namespace notrealengine
 		void
 			setFont(const std::shared_ptr<GLFont>& font);
 		void
-			setFontColor(const mft::vec3& color);
+			setTextColor(const mft::vec4& color);
 
 		virtual void
 			setPos(const mft::vec2i&& newPos);
@@ -115,7 +115,7 @@ namespace notrealengine
 		mft::vec2i	textPos;
 		float		textScale;
 		std::shared_ptr<GLFont>	font;
-		mft::vec3	fontColor;
+		mft::vec4	textColor;
 
 		void
 			updateDrawData();
