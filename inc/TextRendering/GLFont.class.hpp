@@ -55,6 +55,11 @@ namespace notrealengine
 		unsigned int	VAO, VBO;
 
 		GLShaderProgram* shader;
+
+#ifdef USING_EXTERNAL_LIBS
+#else
+		mft::vec2i size;
+#endif
 	};
 }
 

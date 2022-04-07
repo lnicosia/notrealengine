@@ -9,6 +9,7 @@ namespace notrealengine
 		shader(GLContext::getShader("text"))
 	{
 		std::cout << "Loading font '" << path << "'..." << std::endl;
+#ifdef USING_EXTERNAL_LIBS
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();
@@ -47,6 +48,25 @@ namespace notrealengine
 
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
+#else
+
+		int	nChannels;
+		unsigned char* img = stbi_load(path.c_str(), &this->size.x, &this->size.y, &nChannels, 0);
+		if (!img)
+		{
+			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			std::cerr << stbi_failure_reason() << std::endl;
+			stbi_image_free(img);
+			return;
+		}
+		GLenum	format;
+		if (nChannels == 1)
+			format = GL_RED;
+		else if (nChannels == 3)
+			format = GL_RGB;
+		else if (nChannels == 4)
+			format = GL_RGBA;
+#endif
 
 	}
 
@@ -132,6 +152,7 @@ namespace notrealengine
 		{
 			GLCharacter* ch = this->characters[c];
 
+#ifdef USING_EXTERNAL_LIBS
 			float	xpos = pos.x + ch->getBearing().x * scale;
 			float	ypos = pos.y - (ch->getSize().y - ch->getBearing().y) * scale;
 
@@ -158,6 +179,8 @@ namespace notrealengine
 			GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 6);
 
 			pos.x += (ch->getNext() >> 6) * scale;
+#else
+#endif
 		}
 
 		GLCallThrow(glBindVertexArray, 0);
