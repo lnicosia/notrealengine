@@ -170,8 +170,7 @@ int		main(int ac, char** av)
 	ui.registerElement(buttonPtr);
 	ui.registerElement(buttonPtr2);
 
-	//std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
-	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/fonts/ExportedFont.png", "UI");
+	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
 	std::cout << "Asset manager content:" << std::endl;
 	AssetManager::getInstance().printContent();
 
@@ -509,19 +508,17 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
+		buttonPtr2->setText(str);
+		scene.render();
+		scene.renderBones();
+		ui.update(mousePos, mouseState);
+		texture->draw(mft::vec2i(0, 600), mft::vec2i(1200, 0), 0.0f, mft::vec4(1.0f));
 		font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec4(1.0));
 		font->RenderText("Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec4(1.0));
 		font->RenderText("Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec4(1.0));
 		font->RenderText(std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec4(1.0));
 		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec4(1.0));
 		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec4(1.0));
-
-		//buttonPtr2->setText(str);
-		scene.render();
-		scene.renderBones();
-		//ui.update(mousePos, mouseState);
-		//texture->draw(mft::vec2i(0, 600), mft::vec2i(1024, 256), 0.0f, mft::vec4(1.0f));
-		//font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 0), 1.0f, mft::vec4(1.0));
 		context.swapWindow();
 	}
 	return 0;

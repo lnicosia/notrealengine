@@ -21,10 +21,15 @@ namespace notrealengine
 		GLFont& operator=(GLFont&& font) noexcept;
 		~GLFont();
 
+#ifndef USING_EXTERNAL_LIBS
 		/**	Loads a BitmapFont generated image
 		*/
 		void
 			LoadBFF(const std::string& path);
+
+		const mft::vec2i
+			getCharacterSize(char c) const;
+#endif
 
 		/**	Draw the text at the giving pos, with the given scale and color
 		**	and either a specific shader pointer of the font's one

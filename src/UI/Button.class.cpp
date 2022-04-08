@@ -67,6 +67,10 @@ namespace notrealengine
 #ifdef USING_EXTERNAL_LIBS
 		mft::vec2i size(font->getCharacter('C')->getSize().x * text.length(),
 			font->getCharacter('C')->getSize().y);
+#else
+		mft::vec2i size(font->getCharacterSize('C').x * text.length(),
+			font->getCharacterSize('C').y);
+#endif
 		mft::vec2 scale;
 		if (size.x > this->size.x * 0.75)
 			scale.x = (this->size.x * 0.75) / size.x;
@@ -77,7 +81,6 @@ namespace notrealengine
 		size.y *= textScale;
 		textPos = mft::vec2i(this->pos.x + this->size.x / 2 - size.x / 2,
 			this->pos.y + this->size.y / 2 - size.y / 2);
-#endif
 	}
 
 	void	Button::draw() const

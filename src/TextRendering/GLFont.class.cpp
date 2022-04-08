@@ -22,7 +22,7 @@ namespace notrealengine
 	GLFont::GLFont(const std::string& path):
 		Asset({path}), VAO(0), VBO(0), characters(),
 #ifdef USING_EXTERNAL_LIBS
-		shader(GLContext::getShader("text")),
+		shader(GLContext::getShader("text"))
 #else
 		glId(0), imgSize(mft::vec2i()), cellSize(mft::vec2i()),
 		factor(mft::vec2()), widths(), firstChar(0),
@@ -133,7 +133,9 @@ namespace notrealengine
 		 factor(std::move(ref.factor))
 #endif
 	{
+#ifndef USING_EXTERNAL_LIBS
 		std::move(std::begin(ref.widths), std::end(ref.widths), &this->widths[0]);
+#endif
 	}
 
 	GLFont::~GLFont()
@@ -166,6 +168,7 @@ namespace notrealengine
 		return *this;
 	}
 
+#ifndef USING_EXTERNAL_LIBS
 	void GLFont::LoadBFF(const std::string& path)
 	{
 		std::ifstream file;
@@ -215,8 +218,9 @@ namespace notrealengine
 		}
 
 		this->charsPerLine = this->imgSize.x / static_cast<float>(this->cellSize.x);
-		this->factor.x = this->cellSize.x / static_cast<float>(this->imgSize.x);
-		this->factor.y = this->cellSize.y / static_cast<float>(this->imgSize.y);
+		//	x0.5 because of the format GL_LUMINANCE_ALPHA
+		this->factor.x = this->cellSize.x / static_cast<float>(this->imgSize.x) * 0.5f;
+		this->factor.y = this->cellSize.y / static_cast<float>(this->imgSize.y) * 0.5f;
 
 		memcpy(this->widths, &str[WIDTH_DATA_OFFSET], 256);
 		unsigned char* img = new unsigned char [this->imgSize.x * this->imgSize.y * (bpp / 8)];
@@ -232,7 +236,7 @@ namespace notrealengine
 		switch (bpp)
 		{
 			case 8:
-				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)GL_RED, this->imgSize.x, this->imgSize.y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, img);
+				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)GL_RGBA, this->imgSize.x, this->imgSize.y, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, img);
 				break;
 			case 24:
 				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGB, this->imgSize.x, this->imgSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
@@ -263,6 +267,12 @@ namespace notrealengine
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 	}
+
+	const mft::vec2i GLFont::getCharacterSize(char c) const
+	{
+		return mft::vec2i(this->widths[c], this->cellSize.y);
+	}
+#endif
 
 	//	Getters
 
@@ -350,13 +360,6 @@ namespace notrealengine
 
 #else
 
-		mft::mat4	model;
-
-		model *= mft::mat4::translate(mft::vec3(pos.x, pos.y, 0.0f));
-		model *= mft::mat4::translate(mft::vec3(0.5f * scale * this->imgSize.x, 0.5f * scale * this->imgSize.y, 0.0f));
-		model *= mft::mat4::translate(mft::vec3(-0.5f * scale * this->imgSize.x, -0.5f * scale * this->imgSize.y, 0.0f));
-		model *= mft::mat4::scale(mft::vec3(this->imgSize.x * scale, this->imgSize.y * scale, 1.0f));
-
 		bindVector(shader->programID, "color", color);
 		bindMatrix(shader->programID, "model", mft::mat4());
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
@@ -374,7 +377,6 @@ namespace notrealengine
 			float u1 = u + factor.x * (this->widths[c] / static_cast<float>(this->cellSize.x));
 			float v1 = v + factor.y;
 
-
 			float xpos = pos.x;
 			float ypos = pos.y;
 
@@ -391,6 +393,7 @@ namespace notrealengine
 				xend, yend, u1, v,
 				xend, ypos, u1, v1
 			};
+
 			GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
 			GLCallThrow(glBufferSubData, GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 			GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
