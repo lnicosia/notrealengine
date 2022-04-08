@@ -26,6 +26,13 @@ namespace lxml
 			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
+		struct stat fileStats;
+		lstat(path.c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "nre: Invalid file type" << std::endl;
+			return ;
+		}
 		std::ifstream file;
 		std::string content;
 		std::stringstream	stream;

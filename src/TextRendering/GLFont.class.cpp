@@ -3,13 +3,37 @@
 #include "GL.hpp"
 #include "GLContext.class.hpp"
 
+//	Image loading library
+# ifdef __unix__
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wconversion"
+# endif
+# include "../lib/stb_image.h"
+# ifdef __unix__
+#  pragma GCC diagnostic pop
+# endif
+
+#include <fstream>
+#include <unistd.h>
+#include <sys/stat.h>
+
 namespace notrealengine
 {
-	GLFont::GLFont(const std::string& path): Asset({path}), VAO(0), VBO(0), characters(),
-		shader(GLContext::getShader("text"))
-	{
-		std::cout << "Loading font '" << path << "'..." << std::endl;
+	GLFont::GLFont(const std::string& path):
+		Asset({path}), VAO(0), VBO(0), characters(),
 #ifdef USING_EXTERNAL_LIBS
+		shader(GLContext::getShader("text")),
+#else
+		glId(0), imgSize(mft::vec2i()), cellSize(mft::vec2i()),
+		factor(mft::vec2()), widths(), firstChar(0),
+		shader(GLContext::getShader("2d"))
+#endif
+	{
+
+		std::cout << "Loading font '" << path << "'..." << std::endl;
+
+#ifdef USING_EXTERNAL_LIBS
+
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();
@@ -41,17 +65,21 @@ namespace notrealengine
 		GLCallThrow(glBindVertexArray, VAO);
 
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
-		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
 
 		GLCallThrow(glEnableVertexAttribArray, 0);
-		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
+
 #else
 
+		LoadBFF(path);
+		return ;
+
 		int	nChannels;
-		unsigned char* img = stbi_load(path.c_str(), &this->size.x, &this->size.y, &nChannels, 0);
+		unsigned char* img = stbi_load(path.c_str(), &this->imgSize.x, &this->imgSize.y, &nChannels, 0);
 		if (!img)
 		{
 			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
@@ -66,6 +94,30 @@ namespace notrealengine
 			format = GL_RGB;
 		else if (nChannels == 4)
 			format = GL_RGBA;
+
+		GLCallThrow(glGenBuffers, 1, &VBO);
+		GLCallThrow(glGenVertexArrays, 1, &VAO);
+
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
+		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
+
+		GLCallThrow(glBindVertexArray, VAO);
+		GLCallThrow(glEnableVertexAttribArray, 0);
+		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
+		GLCallThrow(glBindVertexArray, 0);
+
+		GLCallThrow(glGenTextures, 1, &glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, this->imgSize.x, this->imgSize.y, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		stbi_image_free(img);
+
 #endif
 
 	}
@@ -75,8 +127,13 @@ namespace notrealengine
 		VAO(std::exchange(ref.VAO, 0)),
 		VBO(std::exchange(ref.VBO, 0)),
 		shader(std::exchange(ref.shader, nullptr))
+#ifndef USING_EXTERNAL_LIBS
+		, glId(std::exchange(ref.glId, 0)), firstChar(std::exchange(ref.firstChar, 0)),
+		 imgSize(std::move(ref.imgSize)), cellSize(std::move(ref.cellSize)),
+		 factor(std::move(ref.factor))
+#endif
 	{
-
+		std::move(std::begin(ref.widths), std::end(ref.widths), &this->widths[0]);
 	}
 
 	GLFont::~GLFont()
@@ -87,6 +144,9 @@ namespace notrealengine
 		{
 			delete c.second;
 		}
+#ifndef USING_EXTERNAL_LIBS
+		GLCallThrow(glDeleteBuffers, 1, &glId);
+#endif
 	}
 
 	GLFont& GLFont::operator=(GLFont&& font) noexcept
@@ -95,7 +155,113 @@ namespace notrealengine
 		this->characters = std::move(font.characters);
 		this->VAO = std::exchange(font.VAO, 0);
 		this->VBO = std::exchange(font.VBO, 0);
+#ifndef USING_EXTERNAL_LIBS
+		this->glId = std::exchange(font.glId, 0);
+		this->firstChar = std::exchange(font.firstChar, 0);
+		this->imgSize = std::move(font.imgSize);
+		this->cellSize = std::move(font.cellSize);
+		this->factor = std::move(font.factor);
+		std::move(std::begin(font.widths), std::end(font.widths), &this->widths[0]);
+#endif
 		return *this;
+	}
+
+	void GLFont::LoadBFF(const std::string& path)
+	{
+		std::ifstream file;
+		std::string content;
+		std::stringstream	stream;
+		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		try
+		{
+			file.open(path);
+			stream << file.rdbuf();
+			file.close();
+
+			content = stream.str();
+		}
+		catch (std::ifstream::failure& e)
+		{
+			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			return;
+		}
+		struct stat fileStats;
+		lstat(path.c_str(), &fileStats);
+		if (!S_ISREG(fileStats.st_mode))
+		{
+			std::cerr << "nre: Invalid file type" << std::endl;
+			return ;
+		}
+		const char* str = content.c_str();
+		size_t size = content.size();
+
+		if (size < 20)
+		{
+			std::cerr << "Bitmap font size is too low (" << size << ")" << std::endl;
+			return ;
+		}
+
+		memcpy(&this->imgSize.x, &str[2], sizeof(int));
+	  memcpy(&this->imgSize.y, &str[6], sizeof(int));
+	  memcpy(&this->cellSize.x, &str[10], sizeof(int));
+	  memcpy(&this->cellSize.y, &str[14], sizeof(int));
+	  int bpp = str[18];
+	  this->firstChar = str[19];
+
+		if (size != MAP_DATA_OFFSET + imgSize.x * imgSize.y * bpp / 8)
+		{
+			std::cerr << "Invalid bitmap font size " << std::endl;
+			return ;
+		}
+
+		this->charsPerLine = this->imgSize.x / static_cast<float>(this->cellSize.x);
+		this->factor.x = this->cellSize.x / static_cast<float>(this->imgSize.x);
+		this->factor.y = this->cellSize.y / static_cast<float>(this->imgSize.y);
+
+		memcpy(this->widths, &str[WIDTH_DATA_OFFSET], 256);
+		unsigned char* img = new unsigned char [this->imgSize.x * this->imgSize.y * (bpp / 8)];
+		memcpy(img, &str[MAP_DATA_OFFSET], this->imgSize.x * this->imgSize.y * (bpp / 8));
+
+		GLCallThrow(glGenTextures, 1, &this->glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
+		GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	  GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	  GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	  GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+
+		switch (bpp)
+		{
+			case 8:
+				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)GL_RED, this->imgSize.x, this->imgSize.y, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, img);
+				break;
+			case 24:
+				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGB, this->imgSize.x, this->imgSize.y, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+				break;
+			case 32:
+				GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA, this->imgSize.x, this->imgSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+				break;
+			default:
+			{
+				std::cerr << "Unsupported bits per pixel: " << bpp << std::endl;
+				delete [] img;
+				return ;
+			}
+		}
+
+		delete [] img;
+
+		GLCallThrow(glGenBuffers, 1, &VBO);
+		GLCallThrow(glGenVertexArrays, 1, &VAO);
+
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
+		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
+
+		GLCallThrow(glBindVertexArray, VAO);
+		GLCallThrow(glEnableVertexAttribArray, 0);
+		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
+		GLCallThrow(glBindVertexArray, 0);
 	}
 
 	//	Getters
@@ -143,6 +309,9 @@ namespace notrealengine
 				return;
 			shader = this->shader;
 		}
+
+#ifdef USING_EXTERNAL_LIBS
+
 		bindVector(shader->programID, "textColor", color);
 		bindMatrix(shader->programID, "model", mft::mat4());
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
@@ -151,8 +320,6 @@ namespace notrealengine
 		for (auto c : text)
 		{
 			GLCharacter* ch = this->characters[c];
-
-#ifdef USING_EXTERNAL_LIBS
 			float	xpos = pos.x + ch->getBearing().x * scale;
 			float	ypos = pos.y - (ch->getSize().y - ch->getBearing().y) * scale;
 
@@ -179,11 +346,64 @@ namespace notrealengine
 			GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 6);
 
 			pos.x += (ch->getNext() >> 6) * scale;
-#else
-#endif
 		}
+
+#else
+
+		mft::mat4	model;
+
+		model *= mft::mat4::translate(mft::vec3(pos.x, pos.y, 0.0f));
+		model *= mft::mat4::translate(mft::vec3(0.5f * scale * this->imgSize.x, 0.5f * scale * this->imgSize.y, 0.0f));
+		model *= mft::mat4::translate(mft::vec3(-0.5f * scale * this->imgSize.x, -0.5f * scale * this->imgSize.y, 0.0f));
+		model *= mft::mat4::scale(mft::vec3(this->imgSize.x * scale, this->imgSize.y * scale, 1.0f));
+
+		bindVector(shader->programID, "color", color);
+		bindMatrix(shader->programID, "model", mft::mat4());
+		GLCallThrow(glActiveTexture, GL_TEXTURE0);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
+		GLCallThrow(glBindVertexArray, VAO);
+
+		for (auto c: text)
+		{
+			unsigned int row = (c - this->firstChar) / this->charsPerLine;
+			unsigned int col = (c - this->firstChar) - row * this->charsPerLine;
+
+			float u = col * factor.x;
+			float v = row * factor.y;
+
+			float u1 = u + factor.x * (this->widths[c] / static_cast<float>(this->cellSize.x));
+			float v1 = v + factor.y;
+
+
+			float xpos = pos.x;
+			float ypos = pos.y;
+
+			float xend = xpos + this->widths[c] * scale;
+			float yend = ypos + this->cellSize.y * scale;
+
+			float	vertices[] =
+			{
+				xpos, yend, u, v,
+				xend, ypos, u1, v1,
+				xpos, ypos, u, v1,
+
+				xpos, yend, u, v,
+				xend, yend, u1, v,
+				xend, ypos, u1, v1
+			};
+			GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
+			GLCallThrow(glBufferSubData, GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
+
+			GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 6);
+
+			pos.x = xend;
+		}
+
+#endif
 
 		GLCallThrow(glBindVertexArray, 0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, 0);
+
 	}
 }

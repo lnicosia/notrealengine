@@ -45,7 +45,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/UI/UIElement.class.cpp \
 		$S/UI/UIManager.class.cpp \
 
-CC = clang++ --std=c++20 -O3 
+CC = clang++ --std=c++20 -O3
 CPPFLAGS =
 LDFLAGS =
 INCLUDE =

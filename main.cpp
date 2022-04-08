@@ -90,7 +90,11 @@ int		main(int ac, char** av)
 	Scene	scene;
 	scene.drawGrid = true;
 
+#ifdef USING_EXTERNAL_LIBS
 	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf");
+#else
+	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/pt-sans-48.bff");
+#endif
 
 	uint32_t	newTime = 0;
 	uint32_t	fpsCount = 0;
@@ -166,8 +170,8 @@ int		main(int ac, char** av)
 	ui.registerElement(buttonPtr);
 	ui.registerElement(buttonPtr2);
 
-	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
-
+	//std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
+	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/fonts/ExportedFont.png", "UI");
 	std::cout << "Asset manager content:" << std::endl;
 	AssetManager::getInstance().printContent();
 
@@ -224,7 +228,7 @@ int		main(int ac, char** av)
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
 					scene.left(deltaTime / 2.0);
 				}
@@ -232,7 +236,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					scene.forward(deltaTime / 2.0);
 				}
@@ -240,7 +244,7 @@ int		main(int ac, char** av)
 				{
 					scene.backward(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);
@@ -512,11 +516,12 @@ int		main(int ac, char** av)
 		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec4(1.0));
 		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec4(1.0));
 
-		buttonPtr2->setText(str);
+		//buttonPtr2->setText(str);
 		scene.render();
 		scene.renderBones();
-		ui.update(mousePos, mouseState);
-		texture->draw(mft::vec2i(1200, 0), mft::vec2i(200, 200), 0.0f, mft::vec4(1.0f));
+		//ui.update(mousePos, mouseState);
+		//texture->draw(mft::vec2i(0, 600), mft::vec2i(1024, 256), 0.0f, mft::vec4(1.0f));
+		//font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 0), 1.0f, mft::vec4(1.0));
 		context.swapWindow();
 	}
 	return 0;
