@@ -44,6 +44,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/UI/Button.class.cpp \
 		$S/UI/UIElement.class.cpp \
 		$S/UI/UIManager.class.cpp \
+		$S/CheckFileType.cpp
 
 CC = clang++ --std=c++20 -O3 
 CPPFLAGS =

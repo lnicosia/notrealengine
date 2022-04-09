@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Camera.class.cpp" />
+    <ClCompile Include="..\src\CheckFileType.cpp" />
     <ClCompile Include="..\src\ColladaParser\ColladaException.class.cpp" />
     <ClCompile Include="..\src\ColladaParser\ColladaParser.class.cpp" />
     <ClCompile Include="..\src\ColladaParser\ColladaSceneBuilder.class.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
     <ClInclude Include="..\inc\mft\vec.hpp" />
     <ClInclude Include="..\inc\notrealengine\Camera.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\CheckFileType.hpp" />
     <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaException.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaParser.class.hpp" />
     <ClInclude Include="..\inc\notrealengine\ColladaParser\ColladaSceneBuilder.class.hpp" />

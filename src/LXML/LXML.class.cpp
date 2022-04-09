@@ -1,12 +1,11 @@
 #include "LXML/LXML.class.hpp"
+#include "CheckFileType.hpp"
 
 #include <filesystem>
 #include <iostream>
 #include <fstream>
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
 
 namespace lxml
 {
@@ -25,6 +24,11 @@ namespace lxml
 		{
 			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
 			return;
+		}
+		if (!notrealengine::IsReg(path))
+		{
+			std::cerr << "lxml: Invalid xml file type" << std::endl;
+			return ;
 		}
 		std::ifstream file;
 		std::string content;

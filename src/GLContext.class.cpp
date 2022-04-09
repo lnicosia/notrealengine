@@ -2,14 +2,13 @@
 #include "GLContext.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "Object/GLObject.class.hpp"
+#include "CheckFileType.hpp"
 
 #include <stdexcept>
 #include <utility>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <unistd.h>
-#include <sys/stat.h>
 
 namespace notrealengine
 {
@@ -188,18 +187,15 @@ namespace notrealengine
 		std::cout << "Loading shader " << vertex << ", " << fragment << " as \"";
  		std::cout << name << "\"";
 
-		struct stat fileStats;
-		lstat(vertex.string().c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
+		if (!IsReg(vertex))
 		{
-			std::cerr << "lxml: Invalid vertex shader file type" << std::endl;
+			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
 			return ;
 		}
 
-		lstat(fragment.string().c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
+		if (!IsReg(fragment))
 		{
-			std::cerr << "lxml: Invalid fragment shader file type" << std::endl;
+			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
 			return ;
 		}
 

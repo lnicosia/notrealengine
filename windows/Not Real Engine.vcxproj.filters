@@ -41,6 +41,7 @@
     <ClCompile Include="..\src\UI\Button.class.cpp" />
     <ClCompile Include="..\src\UI\UIElement.class.cpp" />
     <ClCompile Include="..\src\UI\UIManager.class.cpp" />
+    <ClCompile Include="..\src\CheckFileType.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="..\inc\UI\Button.class.hpp" />
     <ClInclude Include="..\inc\UI\UIElement.class.hpp" />
     <ClInclude Include="..\inc\UI\UIManager.class.hpp" />
+    <ClInclude Include="..\inc\notrealengine\CheckFileType.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\shaders\2dProjected.fs" />

@@ -4,6 +4,7 @@
 #include "Object/AssimpObjectImporter.class.hpp"
 #include "Object/CustomObjectImporter.class.hpp"
 #include "GLContext.class.hpp"
+#include "CheckFileType.hpp"
 #include "mft/mft.hpp"
 #include "SDL.h"
 
@@ -18,7 +19,6 @@
 
 #include <fstream>
 #include <algorithm>
-#include <unistd.h>
 #include <sys/stat.h>
 
 namespace notrealengine
@@ -50,9 +50,7 @@ namespace notrealengine
 			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
-		struct stat fileStats;
-		lstat(path.c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
+		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file type" << std::endl;
 			return ;
@@ -186,11 +184,11 @@ namespace notrealengine
 		const mft::vec3& objScale = this->transform.getScale();
 		mft::vec3 invObjScale = 0.05f / objScale;
 		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
-		const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
-		mft::vec3 invBoneScale = 0.05f / boneScale;
-		mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
+			//const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
+			//mft::vec3 invBoneScale = 0.05f / boneScale;
+			//mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
 			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
@@ -482,6 +480,8 @@ namespace notrealengine
 		case Stopped:
 			return "Stopped";
 			break;
+		default:
+			return "Invalid animation state";
 		}
 	}
 

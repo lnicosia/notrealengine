@@ -1,6 +1,7 @@
 #include "Object/Animation.class.hpp"
 #include "Object/AssimpHelpers.hpp"
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
+#include "CheckFileType.hpp"
 
 //	Fix for assimp
 #undef max
@@ -10,8 +11,6 @@
 #include "assimp/postprocess.h"
 
 #include <algorithm>
-#include <unistd.h>
-#include <sys/stat.h>
 
 namespace notrealengine
 {
@@ -26,10 +25,8 @@ namespace notrealengine
 		{
 			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
 			return;
-	}
-		struct stat fileStats;
-		lstat(path.c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
+		}
+		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file type" << std::endl;
 			return ;

@@ -11,7 +11,7 @@
 
 namespace notrealengine
 {
-	SDLWindow::SDLWindow( std::string name, std::pair<int, int> winsize )
+	SDLWindow::SDLWindow( const std::string& name, std::pair<int, int> winsize )
 	{
 		SDL::Init();
 

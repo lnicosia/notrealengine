@@ -12,8 +12,11 @@
 #include <filesystem>
 #include <fstream>
 #include <csignal>
-#include <unistd.h>
-#include <sys/wait.h>
+
+#ifdef __unix__
+# include <sys/wait.h>
+# include <unistd.h>
+#endif
 
 using namespace notrealengine;
 
@@ -532,6 +535,7 @@ static int compareParsers(const std::string& path)
   const cpScene* customScene = nullptr;
   const aiScene* assimpScene = nullptr;
 
+#ifdef __unix__
   pid_t id = fork();
   if (id != 0)
   {
@@ -543,6 +547,7 @@ static int compareParsers(const std::string& path)
       std::cout << "INVALID" << std::endl;
     return ret;
   }
+#endif
   try
   {
     out.open(outputPath);

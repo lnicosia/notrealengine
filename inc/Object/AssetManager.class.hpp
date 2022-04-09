@@ -27,6 +27,7 @@ namespace notrealengine
 			{
 				std::shared_ptr<Asset> asset = pair.second;
 				if (std::filesystem::exists(std::filesystem::path(path))
+					&& std::filesystem::exists(asset->getPath())
 					&& std::filesystem::equivalent(std::filesystem::path(asset->getPath()),
 						std::filesystem::path(path)))
 				{

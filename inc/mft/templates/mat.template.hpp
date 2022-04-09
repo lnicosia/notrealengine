@@ -314,37 +314,37 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far )
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 nearPlane, const T1 farPlane )
 	{
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0					  , -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0					  , -(top + bottom) / (top - bottom) },
-				{ 0					, 0					, 1 / (far - near)	  ,	-near / (far - near)			 },
+				{ 0					, 0					, 1 / (farPlane - nearPlane)	  ,	-nearPlane / (farPlane - nearPlane)			 },
 				{ 0					, 0					, 0					  , 1								 }
 				);
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far)
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 nearPlane, const T1 farPlane)
 	{
 		const T1 tang = std::tan(fovy * 0.5f);
 
 		return mat<T1, T1, T1, T1>(
-			{ 1 / (aspect * tang), 0	   , 0	  , 0 },
-			{ 0					 , 1 / tang, 0	  , 0 },
-			{ 0					 , 0	   , far / (far - near)	  , -(far * near) / (far - near) },
-			{ 0					 , 0	   , 1, 0 }
+			{ 1 / (aspect * tang), 0	   , 0,									0 },
+			{ 0					 , 1 / tang, 0,									0 },
+			{ 0					 , 0	   , farPlane / (farPlane - nearPlane),	-(farPlane * nearPlane) / (farPlane - nearPlane) },
+			{ 0					 , 0	   , 1,									0 }
 		);
 	}
 
 	// Does not work??
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far)
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 nearPlane, const T1 farPlane)
 	{
 		return mat<T1, T1, T1, T1>(
-			{ (2 * near) / (right - left),	0,	(right + left) / (right - left), 0 },
-			{ 0,			(2 * near) / (top - bottom), (top + bottom) / (top - bottom), 0 },
-			{ 0,			0,			far / (far - near),	-(far * near) / (far - near) },
+			{ (2 * nearPlane) / (right - left),	0,	(right + left) / (right - left), 0 },
+			{ 0,			(2 * nearPlane) / (top - bottom), (top + bottom) / (top - bottom), 0 },
+			{ 0,			0,			farPlane / (farPlane - nearPlane),	-(farPlane * nearPlane) / (farPlane - nearPlane) },
 			{ 0,			0,			1,								0 }
 		);
 	}

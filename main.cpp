@@ -36,10 +36,23 @@ int		updateText(void)
 
 using namespace notrealengine;
 
+//	Windows test solution is located in ./windows/NotRealEngineTest
+//	so we need to add ../../ to every path
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+# define PROJECT_DIR "./"
+#else
+# define PROJECT_DIR "./"
+#endif
+
 int		main(int ac, char** av)
 {
 	if (ac < 2)
+	{
+		std::cout << "Not enough arguments" << std::endl;
 		return 1;
+	}
+
+	std::cout << "Current directory = " << std::filesystem::current_path() << std::endl;
 
 	bool shouldRunTests = true;
 	for (int i = 1; i < ac; i++)
@@ -48,7 +61,7 @@ int		main(int ac, char** av)
 			shouldRunTests = false;
 	}
 	if (shouldRunTests == true)
-		runTests("test/testList.txt");
+		runTests(PROJECT_DIR "test/testList.txt");
 	SDLWindow window("Not real engine", std::pair<int, int>(1600, 900));
 	GLContext_SDL	context(window.getContext(), window.getWindow());
 	context.makeCurrent();
@@ -63,7 +76,7 @@ int		main(int ac, char** av)
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
 	else if (ac >= 2)
 	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
-	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>("./resources/objects/Rock/rock.dae");
+	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>(PROJECT_DIR "resources/objects/Rock/rock.dae");
 	std::shared_ptr<Animation> bobbyWalking = InitBobbyWalking();
 	std::shared_ptr<Animation> bobbyJumping = InitBobbyJumping();
 	std::shared_ptr<Animation> bobbyIdle = InitBobbyIdle();
@@ -90,7 +103,7 @@ int		main(int ac, char** av)
 	Scene	scene;
 	scene.drawGrid = true;
 
-	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf");
+	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>(PROJECT_DIR "resources/fonts/arial.ttf");
 
 	uint32_t	newTime = 0;
 	uint32_t	fpsCount = 0;
@@ -166,7 +179,7 @@ int		main(int ac, char** av)
 	ui.registerElement(buttonPtr);
 	ui.registerElement(buttonPtr2);
 
-	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>("resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
+	std::shared_ptr<Texture> texture = AssetManager::getInstance().loadAsset<Texture>(PROJECT_DIR "resources/objects/Graves Pool Party/graves_skin05_TX_CM.png", "UI");
 
 	std::cout << "Asset manager content:" << std::endl;
 	AssetManager::getInstance().printContent();
