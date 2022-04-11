@@ -24,6 +24,10 @@ namespace notrealengine
 		mft::mat4	localMatrix;
 		mft::mat4	modelMatrix;
 		mft::mat4	originalMatrix;
+
+		BoneInfo(): id(0), name(),
+		offsetMatrix(), localMatrix(), modelMatrix(), originalMatrix()
+		{}
 	};
 
 	class ObjectImporter

@@ -175,7 +175,6 @@ namespace notrealengine
 		unsigned int shader = GLContext::getShader("colorUnlit")->programID;
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
-		std::map<std::string, BoneInfo>::const_iterator it;
 		Mesh	cube(GLContext::centeredCube);
 		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
 		cube.setShader(shader);
@@ -184,11 +183,13 @@ namespace notrealengine
 		const mft::vec3& objScale = this->transform.getScale();
 		mft::vec3 invObjScale = 0.05f / objScale;
 		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
+		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
 			//const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
 			//mft::vec3 invBoneScale = 0.05f / boneScale;
 			//mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
+		
 			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);

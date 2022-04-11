@@ -4,23 +4,23 @@
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#include <windows.h>
-#include <glad/glad.h>
+# include <windows.h>
+# include <glad/glad.h>
 #else
 # define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
 #endif
 
 //	Image loading library
-#ifdef __unix__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-#define STB_IMAGE_IMPLEMENTATION
-#include "../lib/stb_image.h"
-#ifdef __unix__
-#pragma GCC diagnostic pop
-#endif
+# ifdef __unix__
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wconversion"
+# endif
+# define STB_IMAGE_IMPLEMENTATION
+# include "../lib/stb_image.h"
+# ifdef __unix__
+#  pragma GCC diagnostic pop
+# endif
 
 #include <iostream>
 
@@ -55,9 +55,11 @@ namespace notrealengine
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 
-
-		int	nChannels;
 		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		int	nChannels;
+
+#ifdef USING_EXTERNAL_LIBS
+
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
 		if (!img)
@@ -67,6 +69,21 @@ namespace notrealengine
 			stbi_image_free(img);
 			return;
 		}
+#else
+
+		//	Put custom PNG parser here
+
+		stbi_set_flip_vertically_on_load(true);
+		unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
+		if (!img)
+		{
+			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			std::cerr << stbi_failure_reason() << std::endl;
+			stbi_image_free(img);
+			return;
+		}
+#endif
+
 		GLenum	format;
 		if (nChannels == 1)
 			format = GL_RED;
@@ -94,6 +111,9 @@ namespace notrealengine
 
 		int	w, h, nChannels;
 		std::cout << "Loading embedded texture in '" << path << "'..." << std::endl;
+
+#ifdef USING_EXTERNAL_LIBS
+
 		unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
 		if (!img)
 		{
@@ -102,6 +122,22 @@ namespace notrealengine
 			stbi_image_free(img);
 			return;
 		}
+
+#else
+
+	//	Put custom PNG parser here
+
+	unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
+	if (!img)
+	{
+		std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+		std::cerr << stbi_failure_reason() << std::endl;
+		stbi_image_free(img);
+		return;
+	}
+
+#endif
+
 		GLenum	format;
 		if (nChannels == 1)
 			format = GL_RED;

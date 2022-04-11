@@ -65,6 +65,8 @@ int		main(int ac, char** av)
 	SDLWindow window("Not real engine", std::pair<int, int>(1600, 900));
 	GLContext_SDL	context(window.getContext(), window.getWindow());
 	context.makeCurrent();
+	const char* glVersion = (char*)glGetString(GL_VERSION);
+	std::cout << "GL Version: " << glVersion << std::endl;
 	SDL_Event	e;
 	int	running = 1;
 	int	mode = Object;
@@ -103,7 +105,11 @@ int		main(int ac, char** av)
 	Scene	scene;
 	scene.drawGrid = true;
 
+#ifdef USING_EXTERNAL_LIBS
 	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>(PROJECT_DIR "resources/fonts/arial.ttf");
+#else
+	std::shared_ptr<GLFont>	font = AssetManager::getInstance().loadAsset<GLFont>(PROJECT_DIR "resources/fonts/pt-sans-48.bff");
+#endif
 
 	uint32_t	newTime = 0;
 	uint32_t	fpsCount = 0;
@@ -237,7 +243,7 @@ int		main(int ac, char** av)
 					std::cout << selectedMesh->localTransform.getPos();
 					std::cout << ", scale = " << selectedMesh->localTransform.getScale() << std::endl;
 				}
-				if (e.key.keysym.sym == SDLK_q)
+				if (e.key.keysym.sym == SDLK_a)
 				{
 					scene.left(deltaTime / 2.0);
 				}
@@ -245,7 +251,7 @@ int		main(int ac, char** av)
 				{
 					scene.right(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_z)
+				if (e.key.keysym.sym == SDLK_w)
 				{
 					scene.forward(deltaTime / 2.0);
 				}
@@ -253,7 +259,7 @@ int		main(int ac, char** av)
 				{
 					scene.backward(deltaTime / 2.0);
 				}
-				if (e.key.keysym.sym == SDLK_w)
+				if (e.key.keysym.sym == SDLK_z)
 				{
 					if (scene.getDrawMode() != DrawMode::Wireframe)
 						scene.setDrawMode(DrawMode::Wireframe);
@@ -518,18 +524,17 @@ int		main(int ac, char** av)
 		else if (mode == Object || mode == Bones)
 			currentObj = obj;
 
+		buttonPtr2->setText(str);
+		scene.render();
+		scene.renderBones();
+		ui.update(mousePos, mouseState);
+		texture->draw(mft::vec2i(0, 600), mft::vec2i(1200, 0), 0.0f, mft::vec4(1.0f));
 		font->RenderText("Anim time (ms) = " + std::to_string(currentObj->getCurrentTime()), mft::vec2i(10, 850), 0.5f, mft::vec4(1.0));
 		font->RenderText("Anim speed = " + std::to_string(currentObj->animationSpeed), mft::vec2i(10, 800), 0.5f, mft::vec4(1.0));
 		font->RenderText("Anim state: " + currentObj->getAnimationStateStr(), mft::vec2i(10, 750), 0.5f, mft::vec4(1.0));
 		font->RenderText(std::to_string(fps), mft::vec2i(50, 50), 0.5f, mft::vec4(1.0));
 		font->RenderText("Selected Mesh = " + selectedMesh->getName(), mft::vec2i(1200, 850), 0.5f, mft::vec4(1.0));
 		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec4(1.0));
-
-		buttonPtr2->setText(str);
-		scene.render();
-		scene.renderBones();
-		ui.update(mousePos, mouseState);
-		texture->draw(mft::vec2i(1200, 0), mft::vec2i(200, 200), 0.0f, mft::vec4(1.0f));
 		context.swapWindow();
 	}
 	return 0;
