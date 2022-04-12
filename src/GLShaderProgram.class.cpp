@@ -28,20 +28,7 @@ namespace notrealengine
 
 	GLShaderProgram::~GLShaderProgram( void )
 	{
-		//std::cout << "Destroying shader" << std::endl;
-		try {
-			GLCallThrow(glDeleteProgram, (programID));
-			int	success;
-			char	infoLog[512];
-			GLCallThrow(glGetProgramiv, programID, GL_DELETE_STATUS, &success);
-			if (!success)
-			{
-				GLCallThrow(glGetProgramInfoLog, programID, 512, NULL, infoLog);
-				std::cerr << "Failed to delete shader " << std::to_string(programID) << ": " << infoLog << std::endl;
-			}
-		} catch (std::exception e) {
-			std::cerr << "Exception caught in destructor (!) :" << std::endl << e.what();
-		}
+		GLCallThrow(glDeleteProgram, (programID));
 	}
 
 	template<GLenum Type>
