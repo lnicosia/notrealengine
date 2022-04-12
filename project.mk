@@ -6,45 +6,45 @@ LIB_TARGET = libnre.a
 EXEC_TARGET =
 
 SRC =	$S/mft/math_utils.cpp \
-		$S/Object/GLMesh.class.cpp \
-		$S/Object/GLObject.class.cpp \
-		$S/Object/MeshData.class.cpp \
-		$S/Object/Mesh.class.cpp \
-		$S/Object/Texture.class.cpp \
-		$S/Object/Animation.class.cpp \
-		$S/Object/Bone.class.cpp \
-		$S/Object/Transform.class.cpp \
-		$S/Object/AssetManager.class.cpp \
-		$S/Object/Asset.class.cpp \
-		$S/Object/Light.class.cpp \
-		$S/Object/Scene.class.cpp \
-		$S/Object/InitBobby.cpp \
-		$S/Object/AssimpHelpers.cpp \
-		$S/Object/ObjectImporter.class.cpp \
-		$S/Object/AssimpObjectImporter.class.cpp \
-		$S/Object/CustomObjectImporter.class.cpp \
-		$S/SDL.class.cpp \
-		$S/SDLWindow.class.cpp \
-		$S/GLException.class.cpp \
-		$S/GLShaderProgram.class.cpp \
-		$S/GLContext.class.cpp \
-		$S/GLContext_SDL.class.cpp \
-		$S/TextRendering/GLCharacter.class.cpp \
-		$S/TextRendering/GLFont.class.cpp \
-		$S/TextRendering/Freetype.class.cpp \
-    	$S/Inputs/Binding.class.cpp \
-		$S/Inputs/SDLEvents.class.cpp \
-		$S/Camera.class.cpp \
-		$S/ColladaParser/ColladaParser.class.cpp \
-		$S/ColladaParser/ColladaException.class.cpp \
-		$S/ColladaParser/ColladaSceneBuilder.class.cpp \
+		$S/notrealengine/Object/GLMesh.class.cpp \
+		$S/notrealengine/Object/GLObject.class.cpp \
+		$S/notrealengine/Object/MeshData.class.cpp \
+		$S/notrealengine/Object/Mesh.class.cpp \
+		$S/notrealengine/Object/Texture.class.cpp \
+		$S/notrealengine/Object/Animation.class.cpp \
+		$S/notrealengine/Object/Bone.class.cpp \
+		$S/notrealengine/Object/Transform.class.cpp \
+		$S/notrealengine/Object/AssetManager.class.cpp \
+		$S/notrealengine/Object/Asset.class.cpp \
+		$S/notrealengine/Object/Light.class.cpp \
+		$S/notrealengine/Object/Scene.class.cpp \
+		$S/notrealengine/Object/InitBobby.cpp \
+		$S/notrealengine/Object/AssimpHelpers.cpp \
+		$S/notrealengine/Object/ObjectImporter.class.cpp \
+		$S/notrealengine/Object/AssimpObjectImporter.class.cpp \
+		$S/notrealengine/Object/CustomObjectImporter.class.cpp \
+		$S/notrealengine/SDL.class.cpp \
+		$S/notrealengine/SDLWindow.class.cpp \
+		$S/notrealengine/GLException.class.cpp \
+		$S/notrealengine/GLShaderProgram.class.cpp \
+		$S/notrealengine/GLContext.class.cpp \
+		$S/notrealengine/GLContext_SDL.class.cpp \
+		$S/notrealengine/TextRendering/GLCharacter.class.cpp \
+		$S/notrealengine/TextRendering/GLFont.class.cpp \
+		$S/notrealengine/TextRendering/Freetype.class.cpp \
+    	$S/notrealengine/Inputs/Binding.class.cpp \
+		$S/notrealengine/Inputs/SDLEvents.class.cpp \
+		$S/notrealengine/Camera.class.cpp \
+		$S/notrealengine/ColladaParser/ColladaParser.class.cpp \
+		$S/notrealengine/ColladaParser/ColladaException.class.cpp \
+		$S/notrealengine/ColladaParser/ColladaSceneBuilder.class.cpp \
 		$S/LXML/LXML.class.cpp \
-		$S/Tests/ColladaParserTests.cpp \
-		$S/Tests/RunTests.cpp \
-		$S/UI/Button.class.cpp \
-		$S/UI/UIElement.class.cpp \
-		$S/UI/UIManager.class.cpp \
-		$S/CheckFileType.cpp
+		$S/notrealengine/Tests/ColladaParserTests.cpp \
+		$S/notrealengine/Tests/RunTests.cpp \
+		$S/notrealengine/UI/Button.class.cpp \
+		$S/notrealengine/UI/UIElement.class.cpp \
+		$S/notrealengine/UI/UIManager.class.cpp \
+		$S/notrealengine/CheckFileType.cpp
 
 CC = clang++ --std=c++20 -O3
 CPPFLAGS =
