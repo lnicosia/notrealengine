@@ -1,5 +1,5 @@
 # notrealengine
-Cross platform OpenGL 3D Library aimed to be simple, flexible and usable in multiple 42 projects (https://42.fr/en).
+Cross platform C++ and OpenGL 3D library aimed to be simple, flexible and usable in multiple 42 projects (https://42.fr/en).
 
 ## Summary
 
@@ -12,6 +12,7 @@ Cross platform OpenGL 3D Library aimed to be simple, flexible and usable in mult
 
 This library was first created to fill the [HumanGL](https://github.com/42njaber/humangl) project requirements.
 The goal is to create an engine capable of printing 3D cubes of 1x1x1 in a hierarchical model, apply transformations to them to create a human character and most importantly apply animations to those members
+
 ![](doc/HumanGL.png)
 
 It was quickly decided that many more features would be usefull, for this project but also for the potential next ones.
