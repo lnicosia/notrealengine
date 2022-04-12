@@ -299,7 +299,7 @@ namespace notrealengine
 
 	//	Getters
 
-#ifdef USING_EXTERNAL_LIBRARY
+#ifdef USING_EXTERNAL_LIBS
 	const std::map<char, GLCharacter*>& GLFont::getCharacters() const
 	{
 		return characters;

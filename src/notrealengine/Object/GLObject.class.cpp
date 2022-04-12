@@ -120,13 +120,12 @@ namespace notrealengine
 		std::cout << "Loading object '" << path;
 
 		std::unique_ptr<ObjectImporter>	importer;
-//#define USING_EXTERNAL_LIBS
 #ifdef USING_EXTERNAL_LIBS
 		importer = std::make_unique<AssimpObjectImporter>();
 		std::cout << "' with assimp..." << std::endl;
 #else
 		importer = std::make_unique<CustomObjectImporter>();
-		std::cout << "' with custom parser..." << std::endl;
+		std::cout << "' with customss parser..." << std::endl;
 #endif // USING_EXTERNAL_LIBS
 
 		importer->ReadFile(path, flags);
