@@ -2,12 +2,14 @@
 #include "ColladaParser/ColladaException.class.hpp"
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
 #include "Object/AssimpHelpers.hpp"
+
+#ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp
-#undef max
-#undef min
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+# undef max
+# undef min
+# include "assimp/Importer.hpp"
+# include "assimp/scene.h"
+# include "assimp/postprocess.h"
 
 #include <filesystem>
 #include <fstream>
@@ -630,3 +632,11 @@ int testParser(TestType type, std::string path)
   }
   return 0;
 }
+#else
+
+int testParser(TestType type, std::string path)
+{
+    return -1;
+}
+
+#endif // !USING_EXTERNAL_LIBS

@@ -1,5 +1,7 @@
 #include "Object/AssimpHelpers.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
+
 namespace notrealengine
 {
 
@@ -28,3 +30,5 @@ namespace notrealengine
     return res;
   }
 }
+
+#endif 

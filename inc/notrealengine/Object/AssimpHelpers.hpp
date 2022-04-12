@@ -3,6 +3,7 @@
 
 #include "mft/mft.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp
 #undef max
 #undef min
@@ -21,5 +22,6 @@ namespace notrealengine
   mft::mat4
     AssimpToMftMatrix(const aiMatrix4x4 mat);
 }
+#endif // !USING_EXTERNAL_LIBS
 
-#endif
+#endif // !_ASSIMP_HELPERS_H_

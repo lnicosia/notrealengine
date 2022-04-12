@@ -3,6 +3,7 @@
 
 #include "mft/mft.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -34,4 +35,6 @@ namespace notrealengine
 	};
 }
 
-#endif
+#endif // !USING_EXTERNAL_LIBS
+
+#endif // !_GLCHARACTER_CLASS_H_

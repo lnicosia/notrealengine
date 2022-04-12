@@ -1,6 +1,7 @@
 #include "TextRendering/GLCharacter.class.hpp"
 #include "GL.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 namespace notrealengine
 {
 	GLCharacter::GLCharacter(FT_Face face, char c) :
@@ -77,3 +78,4 @@ namespace notrealengine
 		return next;
 	}
 }
+#endif

@@ -5,12 +5,14 @@
 #include "Object/Asset.class.hpp"
 #include "Object/Bone.class.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp
-#undef max
-#undef min
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+# undef max
+# undef min
+# include "assimp/Importer.hpp"
+# include "assimp/scene.h"
+# include "assimp/postprocess.h"
+#endif
 
 #include <map>
 
@@ -75,4 +77,4 @@ namespace notrealengine
 			processNode(const void* nnode, const void* aanimation, int parentId);
 	};
 }
-#endif
+#endif // !_ANIMATION_CLASS_H_

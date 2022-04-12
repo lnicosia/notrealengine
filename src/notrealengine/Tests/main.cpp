@@ -17,6 +17,7 @@
 #include "UI/Button.class.hpp"
 #include "UI/UIManager.class.hpp"
 #include <vector>
+#include <string.h>
 
 enum RenderingMode
 {

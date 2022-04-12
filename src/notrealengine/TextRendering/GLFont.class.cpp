@@ -5,22 +5,24 @@
 #include "GLContext.class.hpp"
 
 //	Image loading library
-# ifdef __unix__
+#ifdef __unix__
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wconversion"
-# endif
+#endif
 # include "../lib/stb_image.h"
-# ifdef __unix__
+#ifdef __unix__
 #  pragma GCC diagnostic pop
-# endif
+#endif
 
 #include <fstream>
+#include <string.h>
 
 namespace notrealengine
 {
 	GLFont::GLFont(const std::string& path):
-		Asset({path}), VAO(0), VBO(0), characters(),
+		Asset({path}), VAO(0), VBO(0),
 #ifdef USING_EXTERNAL_LIBS
+		characters(),
 		shader(GLContext::getShader("text"))
 #else
 		glId(0), imgSize(mft::vec2i()), cellSize(mft::vec2i()),
@@ -122,11 +124,13 @@ namespace notrealengine
 	}
 
 	GLFont::GLFont(GLFont&& ref) noexcept
-		: Asset(std::move(ref)), characters(std::move(ref.characters)),
+		: Asset(std::move(ref)),
 		VAO(std::exchange(ref.VAO, 0)),
 		VBO(std::exchange(ref.VBO, 0)),
 		shader(std::exchange(ref.shader, nullptr))
-#ifndef USING_EXTERNAL_LIBS
+#ifdef USING_EXTERNAL_LIBS
+		, characters(std::move(ref.characters))
+#else
 		, glId(std::exchange(ref.glId, 0)), firstChar(std::exchange(ref.firstChar, 0)),
 		 imgSize(std::move(ref.imgSize)), cellSize(std::move(ref.cellSize)),
 		 factor(std::move(ref.factor))
@@ -141,11 +145,12 @@ namespace notrealengine
 	{
 		GLCallThrow(glDeleteVertexArrays, 1, &VAO);
 		GLCallThrow(glDeleteBuffers, 1, &VBO);
+#ifdef USING_EXTERNAL_LIBS
 		for (auto& c: characters)
 		{
 			delete c.second;
 		}
-#ifndef USING_EXTERNAL_LIBS
+#else
 		GLCallThrow(glDeleteBuffers, 1, &glId);
 #endif
 	}
@@ -153,10 +158,11 @@ namespace notrealengine
 	GLFont& GLFont::operator=(GLFont&& font) noexcept
 	{
 		Asset::operator=(std::move(font));
-		this->characters = std::move(font.characters);
 		this->VAO = std::exchange(font.VAO, 0);
 		this->VBO = std::exchange(font.VBO, 0);
-#ifndef USING_EXTERNAL_LIBS
+#ifdef USING_EXTERNAL_LIBS
+		this->characters = std::move(font.characters);
+#else
 		this->glId = std::exchange(font.glId, 0);
 		this->firstChar = std::exchange(font.firstChar, 0);
 		this->imgSize = std::move(font.imgSize);
@@ -293,6 +299,7 @@ namespace notrealengine
 
 	//	Getters
 
+#ifdef USING_EXTERNAL_LIBRARY
 	const std::map<char, GLCharacter*>& GLFont::getCharacters() const
 	{
 		return characters;
@@ -302,6 +309,7 @@ namespace notrealengine
 	{
 		return characters[c];
 	}
+#endif
 
 	const std::string	GLFont::getAssetType() const
 	{

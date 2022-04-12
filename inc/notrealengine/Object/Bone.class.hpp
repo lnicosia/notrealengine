@@ -4,12 +4,15 @@
 #include "mft/mft.hpp"
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
 
-//	Fix for assimp
-#undef max
-#undef min
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+//	Fix for windows 
+# undef max
+# undef min
+
+#ifdef USING_EXTERNAL_LIBS
+# include "assimp/Importer.hpp"
+# include "assimp/scene.h"
+# include "assimp/postprocess.h"
+#endif
 
 #include <string>
 #include <vector>
@@ -102,4 +105,4 @@ namespace notrealengine
 
 }
 
-#endif
+#endif // !_BONE_CLASS_H_

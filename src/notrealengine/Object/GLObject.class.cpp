@@ -21,6 +21,10 @@
 #include <algorithm>
 #include <sys/stat.h>
 
+//	Fix for windows 
+# undef max
+# undef min
+
 namespace notrealengine
 {
 

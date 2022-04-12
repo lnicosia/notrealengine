@@ -52,16 +52,13 @@ LDFLAGS =
 INCLUDE =
 
 LIB_MOD =
-CMAKE_LIB_MOD = SDL assimp freetype
-
-#libft_LIB = libft.a
-#libft_INC = inc
+CMAKE_LIB_MOD = SDL 
 
 SDL_LIB =
 SDL_INC = include
 
-assimp_LIB = lib/libassimp.a
-assimp_INC = include build/include
+#assimp_LIB = lib/libassimp.a
+#assimp_INC = include build/include
 
-freetype_LIB = libfreetype.a
-freetype_INC = include
+#freetype_LIB = libfreetype.a
+#freetype_INC = include

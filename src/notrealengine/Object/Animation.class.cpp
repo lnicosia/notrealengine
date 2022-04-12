@@ -3,14 +3,11 @@
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
 #include "CheckFileType.hpp"
 
-//	Fix for assimp
-#undef max
-#undef min
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
-
 #include <algorithm>
+
+//	Fix for windows 
+# undef max
+# undef min
 
 namespace notrealengine
 {

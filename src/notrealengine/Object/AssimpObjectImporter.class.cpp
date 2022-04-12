@@ -2,6 +2,8 @@
 #include "Object/AssimpHelpers.hpp"
 #include "Object/AssetManager.class.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
+
 namespace notrealengine
 {
 	AssimpObjectImporter::AssimpObjectImporter(): ObjectImporter()
@@ -277,3 +279,4 @@ namespace notrealengine
 		return textures;
 	}
 }
+#endif

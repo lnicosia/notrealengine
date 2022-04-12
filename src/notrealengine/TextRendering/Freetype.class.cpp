@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#ifdef USING_EXTERNAL_LIBS
 namespace notrealengine
 {
 	void	Freetype::Init()
@@ -40,3 +41,5 @@ namespace notrealengine
 
 	bool Freetype::initialized = false;
 }
+
+#endif

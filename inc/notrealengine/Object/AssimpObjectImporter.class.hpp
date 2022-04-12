@@ -3,6 +3,7 @@
 
 #include "Object/ObjectImporter.class.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp
 #undef max
 #undef min
@@ -40,4 +41,6 @@ namespace notrealengine
 			readMissingBones(const aiScene* scene);
 	};
 }
+#endif // !USING_EXTERNAL_LIBS
+
 #endif // !_ASSIMP_OBJECT_IMPORTER_CLASS_H_

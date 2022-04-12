@@ -41,11 +41,13 @@ namespace notrealengine
 
 		//	Getters
 
+#ifdef USING_EXTERNAL_LIBS
 		const std::map<char, GLCharacter*>&
 			getCharacters() const;
 
 		const GLCharacter*
 			getCharacter(char c);
+#endif
 
 		virtual const std::string
 			getAssetType() const;
@@ -60,13 +62,13 @@ namespace notrealengine
 		void	setShader(GLShaderProgram* shader);
 
 	private:
-		std::map<char, GLCharacter*>	characters;
 
 		unsigned int	VAO, VBO;
 
 		GLShaderProgram* shader;
 
 #ifdef USING_EXTERNAL_LIBS
+		std::map<char, GLCharacter*>	characters;
 #else
 		mft::vec2i		imgSize;
 		mft::vec2i		cellSize;
@@ -81,4 +83,4 @@ namespace notrealengine
 	};
 }
 
-#endif
+#endif // !_GLFONT_CLASS_H_
