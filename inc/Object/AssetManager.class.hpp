@@ -51,6 +51,11 @@ namespace notrealengine
 		void
 			printContent(void) const;
 
+		/**	Clear contents
+		*/
+		void
+			clear(void);
+
 	private:
 		AssetManager();
 

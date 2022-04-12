@@ -8,6 +8,7 @@
 	# define GL_GLEXT_PROTOTYPES
 	#include <GL/gl.h>
 #endif
+
 #include <string>
 
 namespace notrealengine
@@ -112,7 +113,6 @@ namespace notrealengine
 	{
 		unsigned int	diffuse = 0;
 		unsigned int	specular = 0;
-		//GLCallThrow(glUseProgram, shader);
 		GLint location = GLCallThrow(glGetUniformLocation, shader, "model");
 		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(transform));
 		location = GLCallThrow(glGetUniformLocation, shader, "normalMatrix");

@@ -171,7 +171,6 @@ namespace notrealengine
 			}
 		}
 
-		std::cout << "Initializing grid..." << std::endl;
 		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
 		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);
@@ -179,7 +178,10 @@ namespace notrealengine
 
 	GLContext::~GLContext()
 	{
-
+		cube.reset();
+		centeredCube.reset();
+		grid.reset();
+		shaders.clear();
 	}
 
 	void GLContext::registerShader( std::string name, std::filesystem::path vertex, std::filesystem::path fragment )

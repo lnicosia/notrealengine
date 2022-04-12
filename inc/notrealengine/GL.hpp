@@ -12,6 +12,7 @@
 
 # include "GLException.class.hpp"
 # include <filesystem>
+#include <iostream>
 
 # define GLCallThrow(func_name, ...) GLCallTemplate<decltype(func_name)>::Call(#func_name, func_name, __FILE__, __LINE__, #__VA_ARGS__ __VA_OPT__(,) __VA_ARGS__)
 
@@ -58,6 +59,7 @@ namespace notrealengine
 	{
 		static R Call(std::string func_name, R GLFunction(Args ...), std::string file, int line, std::string arg, Args ... args)
 		{
+			
 			GLenum error;
 			error = glGetError();
 			if (error != GL_NO_ERROR)
@@ -75,6 +77,7 @@ namespace notrealengine
 	{
 		static void Call(std::string func_name, void GLFunction(Args ...), std::string file, int line, std::string arg, Args ... args)
 		{
+			
 			GLenum error;
 			error = glGetError();
 			if (error != GL_NO_ERROR)

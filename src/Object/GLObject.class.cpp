@@ -57,7 +57,6 @@ namespace notrealengine
 		}
 		loadObject(path);
 		BuildMeshesMap();
-		//bindBones();
 	}
 
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
@@ -99,7 +98,6 @@ namespace notrealengine
 		for (const auto& pair: this->meshesMap)
 		{
 			const std::shared_ptr<Mesh>& mesh = pair.second;
-			//std::cout << "MapMesh: '" << mesh->getName() << "'" << std::endl;
 		}
 	}
 
@@ -186,10 +184,6 @@ namespace notrealengine
 		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			//const mft::vec3& boneScale = mft::mat4::getScale(it->second.modelMatrix);
-			//mft::vec3 invBoneScale = 0.05f / boneScale;
-			//mft::mat4 invBoneScaleMatrix = mft::mat4::scale(invBoneScale);
-		
 			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
@@ -287,14 +281,11 @@ namespace notrealengine
 			//	If a bone of the animation is associated with this node,
 			//	use its animation transform
 
-			//std::cout << "Updating node " << node.name << std::endl;
 
 			std::map<std::string, std::shared_ptr<Mesh>>::iterator it =
 				this->meshesMap.find(pair.first);
 			if (it != this->meshesMap.end())
 			{
-				//std::cout << "Bone " << pair.first << " sending " << bone.getTransform(currentTime) << std::endl;
-				//it->second->setAnimMatrix(bone.getTransform(currentTime));
 				it->second->animTransform.setPos(bone.getPosition(this->currentTime));
 				it->second->animTransform.setRotation(bone.getRotation(this->currentTime));
 				it->second->animTransform.setScale(bone.getScale(this->currentTime));
@@ -319,7 +310,6 @@ namespace notrealengine
 			//	If a bone of the animation is associated with this node,
 			//	use its animation transform
 
-			//std::cout << "Updating node " << node.name << std::endl;
 			std::map<std::string, Bone>::iterator it =
 				animBones.find(node.name);
 			if (it != animBones.end())
@@ -355,8 +345,6 @@ namespace notrealengine
 			return;
 		}
 		this->currentTime = (static_cast<float>(SDL_GetTicks()) - this->startTime);
-		//if (this->name == "Bobby")
-			//std::cout << "Current time = " << this->currentTime << std::endl;
 		if (this->currentTime >= anim->getDuration())
 		{
 			this->animationState = AnimationState::Stopped;
@@ -402,8 +390,6 @@ namespace notrealengine
 			{
 				BoneInfo& bone = this->bones[node.name];
 
-				//if (keyFrame >= animBones[node.name].getNbTransforms())
-				//	node.transform = bone.offsetMatrix * node.transform;
 				bone.modelMatrix = node.transform;
 				bone.localMatrix = bone.offsetMatrix * bone.modelMatrix;
 			}

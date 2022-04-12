@@ -28,6 +28,7 @@ namespace notrealengine
 
 	GLShaderProgram::~GLShaderProgram( void )
 	{
+		//std::cout << "Destroying shader" << std::endl;
 		try {
 			GLCallThrow(glDeleteProgram, (programID));
 			int	success;

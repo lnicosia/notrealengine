@@ -16,7 +16,6 @@ namespace notrealengine
 
 	Mesh::~Mesh()
 	{
-
 	}
 
 	//	Accessors

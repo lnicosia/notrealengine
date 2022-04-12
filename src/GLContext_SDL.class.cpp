@@ -1,6 +1,6 @@
 
 #include "GLContext_SDL.class.hpp"
-
+#include <iostream>
 namespace notrealengine
 {
 	GLContext_SDL::GLContext_SDL( SDL_GLContext glHandle, SDL_Window * windowHandle ):
@@ -12,7 +12,6 @@ namespace notrealengine
 
 	GLContext_SDL::~GLContext_SDL( void )
 	{
-
 		return ;
 	}
 

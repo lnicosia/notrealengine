@@ -36,36 +36,15 @@ int		updateText(void)
 
 using namespace notrealengine;
 
-//	Windows test solution is located in ./windows/NotRealEngineTest
-//	so we need to add ../../ to every path
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 # define PROJECT_DIR "./"
 #else
 # define PROJECT_DIR "./"
 #endif
 
-int		main(int ac, char** av)
+int		program(int ac, char** av, GLContext_SDL& context, SDLWindow& window)
 {
-	if (ac < 2)
-	{
-		std::cout << "Not enough arguments" << std::endl;
-		return 1;
-	}
-
-	std::cout << "Current directory = " << std::filesystem::current_path() << std::endl;
-
-	bool shouldRunTests = true;
-	for (int i = 1; i < ac; i++)
-	{
-		if (strcmp(av[i], "-noTests") == 0)
-			shouldRunTests = false;
-	}
-	if (shouldRunTests == true)
-		runTests(PROJECT_DIR "test/testList.txt");
-	SDLWindow window("Not real engine", std::pair<int, int>(1600, 900));
-	GLContext_SDL	context(window.getContext(), window.getWindow());
-	context.makeCurrent();
-	const char* glVersion = (char*)glGetString(GL_VERSION);
+	const char* glVersion = (char*)GLCallThrow(glGetString, GL_VERSION);
 	std::cout << "GL Version: " << glVersion << std::endl;
 	SDL_Event	e;
 	int	running = 1;
@@ -77,7 +56,7 @@ int		main(int ac, char** av)
 	if (ac == 3 && av[2][0] != '-')
 		anim = AssetManager::getInstance().loadAsset<Animation>(av[2], 0);
 	else if (ac >= 2)
-	 	anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
+		anim = AssetManager::getInstance().loadAsset<Animation>(av[1], 0);
 	std::shared_ptr<GLObject>	rock = AssetManager::getInstance().loadAsset<GLObject>(PROJECT_DIR "resources/objects/Rock/rock.dae");
 	std::shared_ptr<Animation> bobbyWalking = InitBobbyWalking();
 	std::shared_ptr<Animation> bobbyJumping = InitBobbyJumping();
@@ -91,10 +70,10 @@ int		main(int ac, char** av)
 	//obj->localTransform.move(mft::vec3(0.0f, -5.0f, 10.0f));
 	//obj->setShader(context.getShader("color"));
 
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
+	GLCallThrow(glEnable, GL_DEPTH_TEST);
+	GLCallThrow(glEnable, GL_BLEND);
 	//glEnable(GL_CULL_FACE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GLCallThrow(glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	std::shared_ptr<GLObject>	bobby = InitBobby();
 
@@ -210,11 +189,15 @@ int		main(int ac, char** av)
 			switch (e.type)
 			{
 			case SDL_QUIT:
+			{
 				running = 0;
 				break;
+			}
 			case SDL_KEYDOWN:
 				if (e.key.keysym.sym == SDLK_ESCAPE)
+				{
 					running = 0;
+				}
 				if (e.key.keysym.sym == SDLK_LEFT)
 				{
 					selectedMesh->localTransform.move(mft::vec3(-0.05f, 0.0f, 0.0f));
@@ -476,35 +459,35 @@ int		main(int ac, char** av)
 					obj->setToKeyFrame(frame);
 				}
 				break;
-				case SDL_MOUSEBUTTONDOWN:
-					if (e.button.button == SDL_BUTTON_LEFT)
+			case SDL_MOUSEBUTTONDOWN:
+				if (e.button.button == SDL_BUTTON_LEFT)
+				{
+					if (mouseState == InputState::NRE_RELEASED)
 					{
-						if (mouseState == InputState::NRE_RELEASED)
-						{
-							mouseState = InputState::NRE_PRESS;
-							mouseStart = mousePos;
-							SDL_ShowCursor(SDL_DISABLE);
-						}
+						mouseState = InputState::NRE_PRESS;
+						mouseStart = mousePos;
+						SDL_ShowCursor(SDL_DISABLE);
 					}
-					else if (e.button.button == SDL_BUTTON_RIGHT)
-					{
+				}
+				else if (e.button.button == SDL_BUTTON_RIGHT)
+				{
 
-					}
-					break;
-				case SDL_MOUSEBUTTONUP:
-					if (e.button.button == SDL_BUTTON_LEFT)
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+				if (e.button.button == SDL_BUTTON_LEFT)
+				{
+					if (mouseState == InputState::NRE_PRESSED)
 					{
-						if (mouseState == InputState::NRE_PRESSED)
-						{
-							mouseState = InputState::NRE_RELEASE;
-							SDL_ShowCursor(SDL_ENABLE);
-						}
+						mouseState = InputState::NRE_RELEASE;
+						SDL_ShowCursor(SDL_ENABLE);
 					}
-					else if (e.button.button == SDL_BUTTON_RIGHT)
-					{
+				}
+				else if (e.button.button == SDL_BUTTON_RIGHT)
+				{
 
-					}
-					break;
+				}
+				break;
 			}
 		}
 		newTime = SDL_GetTicks();
@@ -537,5 +520,30 @@ int		main(int ac, char** av)
 		font->RenderText("Current anim = " + bobbyAnim->getName(), mft::vec2i(1200, 800), 0.5f, mft::vec4(1.0));
 		context.swapWindow();
 	}
+	AssetManager::getInstance().clear();
 	return 0;
+}
+
+int		main(int ac, char** av)
+{
+	if (ac < 2)
+	{
+		std::cout << "Not enough arguments" << std::endl;
+		return 1;
+	}
+
+	std::cout << "Current directory = " << std::filesystem::current_path() << std::endl;
+
+	bool shouldRunTests = true;
+	for (int i = 1; i < ac; i++)
+	{
+		if (strcmp(av[i], "-noTests") == 0)
+			shouldRunTests = false;
+	}
+	if (shouldRunTests == true)
+		runTests(PROJECT_DIR "test/testList.txt");
+	SDLWindow window("Not real engine", std::pair<int, int>(1600, 900));
+	GLContext_SDL	context(window.getContext(), window.getWindow());
+	context.makeCurrent();
+	return program(ac, av, context, window);
 }

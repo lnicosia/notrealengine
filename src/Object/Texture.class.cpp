@@ -42,13 +42,13 @@ namespace notrealengine
 			1.0f, 0.0f, 1.0f, 0.0f
 		};
 
-		GLCallThrow(glGenBuffers, 1, &VBO);
-		GLCallThrow(glGenVertexArrays, 1, &VAO);
+		GLCallThrow(glGenBuffers, 1, &this->VBO);
+		GLCallThrow(glGenVertexArrays, 1, &this->VAO);
 
-		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
+		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, this->VBO);
 		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		GLCallThrow(glBindVertexArray, VAO);
+		GLCallThrow(glBindVertexArray, this->VAO);
 		GLCallThrow(glEnableVertexAttribArray, 0);
 		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
@@ -92,9 +92,10 @@ namespace notrealengine
 		else if (nChannels == 4)
 			format = GL_RGBA;
 
-		GLCallThrow(glGenTextures, 1, &glId);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
-		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, img);
+		GLCallThrow(glGenTextures, 1, &this->glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
+		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format,
+			this->size.x, this->size.y, 0, format, GL_UNSIGNED_BYTE, img);
 		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -146,8 +147,8 @@ namespace notrealengine
 		else if (nChannels == 4)
 			format = GL_RGBA;
 
-		GLCallThrow(glGenTextures, 1, &glId);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
+		GLCallThrow(glGenTextures, 1, &this->glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
 		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
 		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -177,9 +178,9 @@ namespace notrealengine
 
 	Texture::~Texture()
 	{
-		GLCallThrow(glDeleteBuffers, 1, &glId);
-		GLCallThrow(glDeleteBuffers, 1, &VBO);
-		GLCallThrow(glDeleteVertexArrays, 1, &VAO);
+		GLCallThrow(glDeleteTextures, 1, &this->glId);
+		GLCallThrow(glDeleteBuffers, 1, &this->VBO);
+		GLCallThrow(glDeleteVertexArrays, 1, &this->VAO);
 	}
 
 	//	Accessors

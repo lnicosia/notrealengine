@@ -25,4 +25,9 @@ namespace notrealengine
 			std::cout << (*asset.second);
 		}
 	}
+
+	void	AssetManager::clear()
+	{
+		this->assets.clear();
+	}
 }

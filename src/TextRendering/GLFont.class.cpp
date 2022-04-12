@@ -248,7 +248,7 @@ namespace notrealengine
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
 		GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_RED};
-		glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+		GLCallThrow(glTexParameteriv, GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
 
 		switch (bpp)
 		{
