@@ -190,16 +190,10 @@ namespace notrealengine
  		std::cout << name << "\"";
 
 		if (!IsReg(vertex))
-		{
-			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
-			return ;
-		}
+			throw std::invalid_argument("\nnre: Invalid vertex shader file type");
 
 		if (!IsReg(fragment))
-		{
-			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
-			return ;
-		}
+			throw std::invalid_argument("\nnre: Invalid fragment shader file type");
 
 		if (shaders.contains(name))
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
