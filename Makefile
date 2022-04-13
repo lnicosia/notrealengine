@@ -23,7 +23,7 @@ endif
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
-DEP =	$(SRC:$S/%.cpp=$D/%.d)
+DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
 
 TMP_DIRS=$(sort $(foreach DIRS,$(OBJ) $(DEP),$(dir $(shell echo '$(DIRS)' | sed ':do;p;s,^\(.*\)/[^/]*$$,\1,;\%^\(.*\)/[^/]*$$%b do;d'))))
@@ -39,6 +39,7 @@ LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(
 LIB_DEP = $(LIB:%=%.d)
 
 $(foreach MOD,$(CMAKE_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(EXTERNAL_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
 CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$(patsubst %,$($(MOD)_DIR)/build/%,$($(MOD)_LIB))))
 INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_INC))))
@@ -105,7 +106,11 @@ $(LIB):
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
-$(LIB_TARGET): $(OBJ) project.mk
+$(LIB_TARGET): undefexternallibs $(OBJ) project.mk
+	ar -rc $@ $(OBJ)
+	ranlib $@
+
+$(LIB_TARGET_EXTERNAL): defineexternallibs $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
 
@@ -137,7 +142,22 @@ relib: libclean all
 force:
 	@true
 
+undefexternallibs:
+	@if grep "define USING_EXTERNAL_LIBS" inc/UsingExternalLibs.hpp > /dev/null; \
+	then sed -i -- 's/define USING_EXTERNAL_LIBS/undef USING_EXTERNAL_LIBS/g' \
+	inc/UsingExternalLibs.hpp; fi
+
+defineexternallibs:
+	@if grep "undef USING_EXTERNAL_LIBS" inc/UsingExternalLibs.hpp > /dev/null; \
+	then sed -i -- 's/undef USING_EXTERNAL_LIBS/define USING_EXTERNAL_LIBS/g' \
+	inc/UsingExternalLibs.hpp; fi
+
+
+externallibs:
+	@make -j4 CMAKE_LIB_MOD="SDL assimp freetype" $(LIB_TARGET_EXTERNAL)
+
 -include customrules.mk
+
 
 ifeq ($(filter %clean relib re %.d,$(MAKECMDGOALS)),)
 -include $(patsubst $O/%.o,$D/%.d,$(wildcard $(OBJ)))

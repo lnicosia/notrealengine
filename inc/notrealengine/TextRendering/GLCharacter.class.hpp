@@ -2,6 +2,7 @@
 # define _GLCHARACTER_CLASS_H_
 
 #include "mft/mft.hpp"
+#include "UsingExternalLibs.hpp"
 
 #ifdef USING_EXTERNAL_LIBS
 #include <ft2build.h>

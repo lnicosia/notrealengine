@@ -4,6 +4,7 @@
 #include "mft/mft.hpp"
 #include "Object/Asset.class.hpp"
 #include "Object/Bone.class.hpp"
+#include "UsingExternalLibs.hpp"
 
 #ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp

@@ -2,6 +2,8 @@
 #ifndef  _Freetype_CLASS_H_
 # define _Freetype_CLASS_H_
 
+#include "UsingExternalLibs.hpp"
+
 #ifdef USING_EXTERNAL_LIBS
 #include <ft2build.h>
 #include FT_FREETYPE_H

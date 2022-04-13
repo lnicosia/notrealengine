@@ -2,6 +2,7 @@
 #define _ASSIMP_HELPERS_H_
 
 #include "mft/mft.hpp"
+#include "UsingExternalLibs.hpp"
 
 #ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp

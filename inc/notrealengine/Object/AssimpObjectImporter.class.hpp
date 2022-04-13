@@ -2,6 +2,7 @@
 #define _ASSIMP_OBJECT_IMPORTER_CLASS_H_
 
 #include "Object/ObjectImporter.class.hpp"
+#include "UsingExternalLibs.hpp"
 
 #ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp

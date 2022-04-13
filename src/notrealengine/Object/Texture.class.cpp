@@ -1,6 +1,8 @@
 #include "Object/Texture.class.hpp"
 #include "GL.hpp"
 #include "GLContext.class.hpp"
+#include "UsingExternalLibs.hpp"
+
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)

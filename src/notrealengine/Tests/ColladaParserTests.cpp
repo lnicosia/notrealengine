@@ -2,6 +2,7 @@
 #include "ColladaParser/ColladaException.class.hpp"
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
 #include "Object/AssimpHelpers.hpp"
+#include "UsingExternalLibs.hpp"
 
 #ifdef USING_EXTERNAL_LIBS
 //	Fix for assimp

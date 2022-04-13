@@ -4,6 +4,7 @@
 #include "TextRendering/GLCharacter.class.hpp"
 #include "GLShaderProgram.class.hpp"
 #include "Object/Asset.class.hpp"
+#include "UsingExternalLibs.hpp"
 
 #include <string>
 #include <map>

@@ -7,6 +7,7 @@
 #include "CheckFileType.hpp"
 #include "mft/mft.hpp"
 #include "SDL.h"
+#include "UsingExternalLibs.hpp"
 
 //	OpenGL includes
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -21,7 +22,7 @@
 #include <algorithm>
 #include <sys/stat.h>
 
-//	Fix for windows 
+//	Fix for windows
 # undef max
 # undef min
 
@@ -125,7 +126,7 @@ namespace notrealengine
 		std::cout << "' with assimp..." << std::endl;
 #else
 		importer = std::make_unique<CustomObjectImporter>();
-		std::cout << "' with customss parser..." << std::endl;
+		std::cout << "' with custom parser..." << std::endl;
 #endif // USING_EXTERNAL_LIBS
 
 		importer->ReadFile(path, flags);
@@ -252,14 +253,6 @@ namespace notrealengine
 		this->pauseTime = static_cast<float>(SDL_GetTicks());
 		this->animationState = AnimationState::Paused;
 		std::vector<AnimNode>& animNodes = anim->getNodes();
-		std::cout << "Anim nodes: " << std::endl;
-		for (size_t i = 0; i < animNodes.size(); i++)
-		{
-			if (i == 6)
-			{
-				std::cout << animNodes[i].name << " (" << i << "): " << animNodes[i].transform << std::endl;
-			}
-		}
 	}
 
 	void	GLObject::resumeAnimation( void )

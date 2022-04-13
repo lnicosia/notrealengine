@@ -174,11 +174,11 @@ namespace notrealengine
 			*/
 			float			startTime;
 			/**	Program time when the current animation is paused
-			**	to be able to resume at the correct time 
+			**	to be able to resume at the correct time
 			*/
 			float			pauseTime;
 			/**	We do not need to store the current time value
-			**	it's only for debugging purposes 
+			**	it's only for debugging purposes
 			*/
 			float			currentTime;
 			AnimationState	animationState;

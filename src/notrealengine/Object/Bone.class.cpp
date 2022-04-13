@@ -1,5 +1,6 @@
 #include "Object/Bone.class.hpp"
 #include "Object/AssimpHelpers.hpp"
+#include "UsingExternalLibs.hpp"
 
 namespace notrealengine
 {

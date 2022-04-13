@@ -16,6 +16,7 @@
 #include "Tests/RunTests.hpp"
 #include "UI/Button.class.hpp"
 #include "UI/UIManager.class.hpp"
+#include "UsingExternalLibs.hpp"
 #include <vector>
 #include <string.h>
 

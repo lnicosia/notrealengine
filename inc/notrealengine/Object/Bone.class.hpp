@@ -3,8 +3,9 @@
 
 #include "mft/mft.hpp"
 #include "ColladaParser/ColladaSceneBuilder.class.hpp"
+#include "UsingExternalLibs.hpp"
 
-//	Fix for windows 
+//	Fix for windows
 # undef max
 # undef min
 
