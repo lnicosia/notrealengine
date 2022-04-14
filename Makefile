@@ -76,7 +76,7 @@ $D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
 
 .SECONDEXPANSION:
-$(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
+$(OBJ): $O/%.o: $S/%.cpp $D/%.flags | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
