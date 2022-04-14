@@ -66,7 +66,7 @@ $(TMP_DIRS) $I:
 
 .SECONDARY:
 .SECONDEXPANSION:
-$D/%.flags: $$(if $$(and $$(wildcard $$@),$$(shell echo "$$(CPPFLAGS)"|diff $$@ -)),force) | $$(dir $$@)
+$D/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$O/$$*.flags" -),,$$(if $$(shell diff "$O/$$*.flags" "$$@"),force)) | $$(dir $$@)
 	@echo $(CPPFLAGS)>$@
 
 .SECONDEXPANSION:
@@ -75,8 +75,13 @@ $D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
 	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
 
+.SECONDARY:
 .SECONDEXPANSION:
-$(OBJ): $O/%.o: $S/%.cpp $D/%.flags | $$(dir $$@) $(INCLUDES)
+$O/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$$@" -),force) | $$(dir $$@)
+	@echo $(CPPFLAGS)>$@
+
+.SECONDEXPANSION:
+$(OBJ): $O/%.o: $S/%.cpp $O/%.flags | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
