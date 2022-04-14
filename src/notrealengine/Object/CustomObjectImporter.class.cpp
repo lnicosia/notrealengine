@@ -294,6 +294,7 @@ namespace notrealengine
 			else
 			{*/
 				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
+			
 			textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
 			//}
 		}

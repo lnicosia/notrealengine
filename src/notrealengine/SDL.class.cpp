@@ -41,6 +41,7 @@ namespace notrealengine
 	{
 		if (initialized) {
 			SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+			SDL_Quit();
 			initialized = false;
 		}
 	}

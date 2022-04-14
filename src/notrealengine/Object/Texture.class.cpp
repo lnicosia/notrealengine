@@ -180,6 +180,7 @@ namespace notrealengine
 
 	Texture::~Texture()
 	{
+		std::cout << "Deleting texture " << this->name << std::endl;
 		GLCallThrow(glDeleteTextures, 1, &this->glId);
 		GLCallThrow(glDeleteBuffers, 1, &this->VBO);
 		GLCallThrow(glDeleteVertexArrays, 1, &this->VAO);
