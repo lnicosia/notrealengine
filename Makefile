@@ -64,8 +64,13 @@ all: $(LIB_TARGET) $(EXEC_TARGET)
 $(TMP_DIRS) $I:
 	@mkdir -p $@
 
+.SECONDARY:
 .SECONDEXPANSION:
-$D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
+$D/%.flags: $$(if $$(and $$(wildcard $$@),$$(shell echo "$$(CPPFLAGS)"|diff $$@ -)),force) | $$(dir $$@)
+	@echo $(CPPFLAGS)>$@
+
+.SECONDEXPANSION:
+$D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
 	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
@@ -106,11 +111,12 @@ $(LIB):
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
-$(LIB_TARGET): undefexternallibs $(OBJ) project.mk
+$(LIB_TARGET): $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
 
-$(LIB_TARGET_EXTERNAL): defineexternallibs $(OBJ) project.mk
+$(LIB_TARGET_EXTERNAL): 
+$(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
 
@@ -142,19 +148,8 @@ relib: libclean all
 force:
 	@true
 
-undefexternallibs:
-	@if grep "define USING_EXTERNAL_LIBS" inc/UsingExternalLibs.hpp > /dev/null; \
-	then sed -i -- 's/define USING_EXTERNAL_LIBS/undef USING_EXTERNAL_LIBS/g' \
-	inc/UsingExternalLibs.hpp; fi
-
-defineexternallibs:
-	@if grep "undef USING_EXTERNAL_LIBS" inc/UsingExternalLibs.hpp > /dev/null; \
-	then sed -i -- 's/undef USING_EXTERNAL_LIBS/define USING_EXTERNAL_LIBS/g' \
-	inc/UsingExternalLibs.hpp; fi
-
-
 externallibs:
-	@make -j4 CMAKE_LIB_MOD="SDL assimp freetype" $(LIB_TARGET_EXTERNAL)
+	@make -j4 CMAKE_LIB_MOD="SDL assimp freetype" $(LIB_TARGET_EXTERNAL) "CPPFLAGS=-D USING_EXTERNAL_LIBS"
 
 -include customrules.mk
 

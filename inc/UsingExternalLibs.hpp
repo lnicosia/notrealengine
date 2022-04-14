@@ -1,6 +1,8 @@
-//#ifndef _USING_EXTERNAL_LIBS_H_
-//#define _USING_EXTERNAL_LIBS_H_
+#ifndef _USING_EXTERNAL_LIBS_H_
+#define _USING_EXTERNAL_LIBS_H_
 
-# undef USING_EXTERNAL_LIBS
+# ifdef USING_EXTERNAL_LIBS
 
-//#endif // !_USING_EXTERNAL_LIBS_H_
+# endif
+
+#endif // !_USING_EXTERNAL_LIBS_H_
