@@ -21,18 +21,18 @@ namespace notrealengine
 	class Binding
 	{
 	public:
-		Binding(std::string name, uint8_t key1, uint8_t key2, bool editable);
+		Binding(std::string name, uint32_t key1, uint32_t key2, bool editable);
 		~Binding();
 
 		//	Accessors
 
 		std::string const	getName() const;
-		uint8_t const	getKey1() const;
-		uint8_t const	getKey2() const;
+		uint32_t const	getKey1() const;
+		uint32_t const	getKey2() const;
 		InputState const	getState() const;
 
-		void	setKey1(uint8_t key);
-		void	setKey2(uint8_t key);
+		void	setKey1(uint32_t key);
+		void	setKey2(uint32_t key);
 		void	setState(InputState state);
 
 		//	Events

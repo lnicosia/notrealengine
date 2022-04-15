@@ -25,6 +25,7 @@ namespace notrealengine
 	public:
 
 		Scene();
+		Scene(const std::string& name);
 		~Scene();
 
 		void
