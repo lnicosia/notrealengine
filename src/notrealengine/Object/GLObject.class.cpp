@@ -33,13 +33,13 @@ namespace notrealengine
 	{
 	}
 
-	GLObject::GLObject(GLObject const& ref): Asset(ref.getPaths())
+	GLObject::GLObject(GLObject const& ref)
 	{
 		*this = ref;
 	}
 
 	GLObject::GLObject(const std::string& path)
-		: Asset({path}),
+		: Asset(path),
 		transform(), polygonMode(GL_FILL),
 		directory(""), meshes(), bones(), nbBones(0),
 		shader(GLContext::getShader("default")->programID),

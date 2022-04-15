@@ -23,7 +23,7 @@ namespace notrealengine
 		template <typename T, typename ... Args>
 		std::shared_ptr<T> loadAsset(const std::string& path, Args... args)
 		{
-			for (const auto& pair : assets)
+			for (const auto& pair : this->assets)
 			{
 				std::shared_ptr<Asset> asset = pair.second;
 				if (std::filesystem::exists(std::filesystem::path(path))
@@ -31,9 +31,14 @@ namespace notrealengine
 					&& std::filesystem::equivalent(std::filesystem::path(asset->getPath()),
 						std::filesystem::path(path)))
 				{
-					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(assets[asset->getId()]);
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
+					//	If the cast successed, we found our asset. Return it instead of
+					//	loading it again
 					if (tmp)
 						return tmp;
+					//	If not, it can be an asset with the same path but of different type.
+					//	For example, embedded textures or animations share the same path
+					//	with their object
 				}
 			}
 
@@ -42,10 +47,23 @@ namespace notrealengine
 			return ptr;
 		}
 
-		template <typename T, typename ... Args>
+		template <typename T>
 		std::shared_ptr<T> getAsset(uint32_t id)
 		{
 			return assets[id];
+		}
+
+		template <typename T>
+		std::vector<std::shared_ptr<T>> getAssetsOfType()
+		{
+			std::vector<std::shared_ptr<T>> res;
+			for (const auto& pair: this->assets)
+			{
+				std::shared_ptr<T> asset = dynamic_pointer_cast<T>(this->assets[pair.second->getId()]);
+				if (asset)
+					res.push_back(asset);
+			}
+			return res;
 		}
 
 		void

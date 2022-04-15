@@ -4,20 +4,30 @@
 
 namespace notrealengine
 {
-	Asset::Asset(const std::vector<std::filesystem::path>& paths)
+	/*Asset::Asset(const std::vector<std::filesystem::path>& paths)
 	: paths(paths), loaded(true)
 	{
 		id = count;
 		count++;
 		for (int i = 0; i < paths.size(); i++)
 			this->paths[i].make_preferred();
+			std::cout << "Creating asset '" << paths[0] << std::endl;
 		name = this->paths[0].filename().string();
-	}
+		std::cout << "Filename = " << this->paths[0].filename() << std::endl;
+	}*/
 
-	Asset::Asset(const std::string& name): paths({""}), name(name), loaded(true)
+	Asset::Asset(const std::string& path): paths({std::filesystem::path(path)}),
+	name(""), loaded(true)
 	{
 		id = count;
 		count++;
+		size_t size = this->paths.size();
+		for (size_t i = 0; i < size; i++)
+		{
+			if (i != 0)
+				name += "-";
+			name += this->paths[i].filename();
+		}
 	}
 
 	Asset::Asset(): paths({""}), name(), loaded(true)
@@ -105,8 +115,8 @@ namespace notrealengine
 
 	std::ostream& operator<<(std::ostream& o, Asset const& asset)
 	{
-		std::cout << "- " << asset.getAssetType() << " [" << asset.getName();
-		std::cout << "]: ID = " << asset.getId() << ", path:";
+		std::cout << "- " << asset.getAssetType() << " '" << asset.getName();
+		std::cout << "': ID = " << asset.getId() << ", path:";
 		std::cout << asset.getPath();
 		if (asset.isLoaded())
 			std::cout << ",is loaded";
