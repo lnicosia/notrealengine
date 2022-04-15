@@ -76,7 +76,21 @@ namespace notrealengine
 		template <typename T>
 		std::shared_ptr<T> getAsset(uint32_t id)
 		{
-			return assets[id];
+			std::map<uint32_t, std::shared_ptr<Asset>>::iterator it =
+				this->assets.find(id);
+			if (it == this->assets.end())
+				return nullptr;
+			std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(it->second);
+			if (tmp)
+				return tmp;
+			return nullptr;
+		}
+
+		template <typename T>
+		void addAsset(std::shared_ptr<T> asset)
+		{
+			if (this->assets.find(asset->getId()) == this->assets.end())
+				assets.emplace(std::make_pair(asset->getId(), asset));
 		}
 
 		template <typename T>

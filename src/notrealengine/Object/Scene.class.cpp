@@ -303,18 +303,14 @@ namespace notrealengine
 
 	void	Scene::render()
 	{
-		/*for (const auto& pair: shaders)
-		{
-			std::vector<std::shared_ptr<Mesh>> meshes = pair.second;
-			for (const auto& mesh: meshes)
-			{
-				mesh->draw(mft::mat4());
-			}
-		}*/
 		if (this->drawMode == DrawMode::Wireframe || this->drawGrid == true)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
 		if (this->drawGrid == true)
+		{
+			glDisable(GL_CULL_FACE);
 			GLContext::grid->draw();
+			glEnable(GL_CULL_FACE);
+		}
 		if (this->drawMode != DrawMode::Wireframe)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
 		for (const auto& object: objects)
