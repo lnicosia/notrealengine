@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-//	Fix for windows 
+//	Fix for windows
 # undef max
 # undef min
 
@@ -78,9 +78,6 @@ namespace notrealengine
 			}
 		}
 		processNode(scene->mRootNode, animation, 0);
-#ifndef USING_EXTERNAL_LIBS
-		delete scene;
-#endif
 	}
 
 	Animation::Animation(const std::string& name, std::map<std::string, Bone>& bones)

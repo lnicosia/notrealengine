@@ -49,7 +49,6 @@ namespace notrealengine
 			axisTransform = mft::mat4();
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
-		delete scene;
 		//readMissingBones(scene);
 
 	}
@@ -294,7 +293,7 @@ namespace notrealengine
 			else
 			{*/
 				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
-			
+
 			textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
 			//}
 		}

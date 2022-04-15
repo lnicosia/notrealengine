@@ -32,6 +32,7 @@ namespace notrealengine
 		*/
 		void
 			readMissingBones(const cpScene* scene);
+
 	};
 }
 
