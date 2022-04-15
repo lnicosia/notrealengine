@@ -1,5 +1,5 @@
-#ifndef _SDLEVENTS_CLASS_HPP_
-# define _SDLEVENTS_CLASS_HPP_
+#ifndef _SDLEVENTS_CLASS_H_
+#define _SDLEVENTS_CLASS_H_
 
 #include "Binding.class.hpp"
 #include "SDL.h"
@@ -15,18 +15,25 @@ namespace notrealengine
 		SDLEvents();
 		~SDLEvents();
 
-		int	handle();
-		int	updateInputsState();
-		void	processInputs();
+		int
+			handle();
+		int
+			updateInputsState();
+		void
+			processInputs();
+		void
+			AddBinding(const Binding binding);
 
 	private:
 		std::vector<Binding>	bindings;
 
 		SDL_Event	e;
 
+		/**	Init default bindings
+		*/
 		std::vector<Binding>
 			initBindings();
 	};
 }
 
-#endif
+#endif // !_SDLEVENTS_CLASS_H_

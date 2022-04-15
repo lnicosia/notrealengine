@@ -1,10 +1,6 @@
 #ifndef _NOT_REAL_ENGINE_H_
 #define _NOT_REAL_ENGINE_H_
 
-//  Inputs
-
-#include "Inputs/SDLEvents.class.hpp"
-
 //  UI
 
 #include "TextRendering/GLFont.class.hpp"

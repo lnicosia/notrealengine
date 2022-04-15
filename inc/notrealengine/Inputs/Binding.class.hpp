@@ -1,5 +1,7 @@
-#ifndef _BINDING_CLASS_HPP_
-# define _BINDING_CLASS_HPP_
+#ifndef _BINDING_CLASS_H_
+#define _BINDING_CLASS_H_
+
+#include "Inputs/Action.class.hpp"
 
 #include <string>
 #include <vector>
@@ -35,10 +37,10 @@ namespace notrealengine
 
 		//	Events
 		//	Actions to perform in each event type
-		std::vector<int	(*)()>	onRelease;
-		std::vector<int	(*)()>	onPress;
-		std::vector<int	(*)()>	whenReleased;
-		std::vector<int	(*)()>	whenPressed;
+		ActionWrapper*	onRelease;
+		ActionWrapper*	onPress;
+		ActionWrapper*	whenReleased;
+		ActionWrapper*	whenPressed;
 
 		Binding& operator=(Binding const& ref);
 
@@ -56,4 +58,4 @@ namespace notrealengine
 
 }
 
-#endif
+#endif // !_BINDINGS_CLASS_H_

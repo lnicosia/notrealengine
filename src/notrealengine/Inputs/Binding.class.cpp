@@ -2,10 +2,10 @@
 
 namespace notrealengine
 {
-	Binding::Binding(std::string name, uint8_t key1, uint8_t key2, bool editable)
-		: name(name),
-		key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED),
-		onRelease(), onPress(), whenPressed(), whenReleased()
+	Binding::Binding(std::string name, uint8_t key1, uint8_t key2, bool editable):
+		name(name), key1(key1), key2(key2), editable(editable),
+		state(InputState::NRE_RELEASED), onRelease(nullptr),
+		onPress(nullptr), whenPressed(nullptr), whenReleased(nullptr)
 	{
 
 	}

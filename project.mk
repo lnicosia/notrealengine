@@ -33,7 +33,7 @@ SRC =		\
 		$S/notrealengine/TextRendering/GLCharacter.class.cpp \
 		$S/notrealengine/TextRendering/GLFont.class.cpp \
 		$S/notrealengine/TextRendering/Freetype.class.cpp \
-	    $S/notrealengine/Inputs/Binding.class.cpp \
+    $S/notrealengine/Inputs/Binding.class.cpp \
 		$S/notrealengine/Inputs/SDLEvents.class.cpp \
 		$S/notrealengine/Camera.class.cpp \
 		$S/notrealengine/ColladaParser/ColladaParser.class.cpp \

@@ -10,63 +10,64 @@ namespace notrealengine
 
 	SDLEvents::~SDLEvents()
 	{
-
+		for (auto binding: this->bindings)
+		{
+			if (binding.onRelease)
+				delete binding.onRelease;
+			if (binding.onPress)
+				delete binding.onPress;
+			if (binding.whenPressed)
+				delete binding.whenPressed;
+			if (binding.whenReleased)
+				delete binding.whenReleased;
+		}
 	}
 
-	//	Init all bindings here
+	//	Init default bindings
 	std::vector<Binding>	SDLEvents::initBindings()
 	{
 		std::vector<Binding>	res;
 
-		//	Test stuff here
-
-		Binding	tmp = Binding("Escape", SDLK_ESCAPE, 0, false);
-		tmp.onRelease.push_back([]() { std::exit(0); return 1; });
-		res.push_back(tmp);
-		/*std::cout << "Init bindings" << std::endl;
-
-		Binding	tmp2 = Binding("K key", SDLK_k, 0, false);
-		tmp2.onPress.push_back([]() { std::cout << "COUCOU" << std::endl; return 0; });
-		res.push_back(tmp2);*/
 		return res;
 	}
 
 	void	SDLEvents::processInputs()
 	{
-		std::vector<Binding>::iterator	it = bindings.begin();
-		std::vector<Binding>::iterator	ite = bindings.end();
+		std::vector<Binding>::iterator	it = this->bindings.begin();
+		std::vector<Binding>::iterator	ite = this->bindings.end();
 		while (it != ite)
 		{
-			Binding	binding = *it;
-			std::vector<int (*)()>::const_iterator f;
-			std::vector<int (*)()>::const_iterator fe;
+			Binding binding = *it;
 			switch (binding.getState())
 			{
 			case InputState::NRE_PRESS:
-				f = binding.onPress.begin();
-				fe = binding.onPress.end();
+			{
+				if (it->onPress)
+					it->onPress->execute();
 				it->setState(InputState::NRE_PRESSED);
 				break;
+			}
 			case InputState::NRE_RELEASE:
-				f = binding.onRelease.begin();
-				fe = binding.onRelease.end();
+			{
+				if (it->onRelease)
+					it->onRelease->execute();
 				it->setState(InputState::NRE_RELEASED);
 				break;
+			}
 			case InputState::NRE_PRESSED:
-				f = binding.whenPressed.begin();
-				fe = binding.whenPressed.end();
-				break;
-			case InputState::NRE_RELEASED:
-				f = binding.whenReleased.begin();
-				fe = binding.whenReleased.end();
-				break;
-			default:
+			{
+				if (it->whenPressed)
+					it->whenPressed->execute();
 				break;
 			}
-			while (f != fe)
+			case InputState::NRE_RELEASED:
 			{
-				(*f)();
-				f++;
+				if (it->whenReleased)
+					it->whenReleased->execute();
+				break;
+			}
+			default:
+				break;
 			}
 			it++;
 		}
@@ -119,5 +120,10 @@ namespace notrealengine
 			return (NRE_QUIT);
 		processInputs();
 		return (0);
+	}
+
+	void SDLEvents::AddBinding(const Binding b)
+	{
+		this->bindings.push_back(b);
 	}
 }
