@@ -20,7 +20,6 @@ SRC =		\
 		$S/notrealengine/Object/Asset.class.cpp \
 		$S/notrealengine/Object/Light.class.cpp \
 		$S/notrealengine/Object/Scene.class.cpp \
-		$S/notrealengine/Object/InitBobby.cpp \
 		$S/notrealengine/Object/AssimpHelpers.cpp \
 		$S/notrealengine/Object/ObjectImporter.class.cpp \
 		$S/notrealengine/Object/AssimpObjectImporter.class.cpp \
@@ -54,7 +53,7 @@ LDFLAGS =
 INCLUDE =
 
 LIB_MOD =
-CMAKE_LIB_MOD = SDL 
+CMAKE_LIB_MOD = SDL
 
 SDL_LIB =
 SDL_INC = include

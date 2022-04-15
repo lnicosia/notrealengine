@@ -20,6 +20,10 @@ namespace notrealengine
 		static AssetManager&
 			getInstance();
 
+		/**	For a given type, path and args, search the content of the manager
+		**	for an existing and corresponding asset. If found, return it.
+		**	If not, load it with its own load function
+		*/
 		template <typename T, typename ... Args>
 		std::shared_ptr<T> loadAsset(const std::string& path, Args... args)
 		{
@@ -45,6 +49,28 @@ namespace notrealengine
 			std::shared_ptr<T> ptr(new T(path, std::forward<Args>(args)...));
 			assets.emplace(std::make_pair(ptr->getId(), ptr));
 			return ptr;
+		}
+
+		/**	Same as loadAsset but does not load if not found.
+		**	Use this function when you know for sure that the asset is already loaded
+		*/
+		template <typename T>
+		std::shared_ptr<T> getAsset(const std::string& path)
+		{
+			for (const auto& pair : this->assets)
+			{
+				std::shared_ptr<Asset> asset = pair.second;
+				if (std::filesystem::exists(std::filesystem::path(path))
+					&& std::filesystem::exists(asset->getPath())
+					&& std::filesystem::equivalent(std::filesystem::path(asset->getPath()),
+						std::filesystem::path(path)))
+				{
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
+					if (tmp)
+						return tmp;
+				}
+			}
+			return nullptr;
 		}
 
 		template <typename T>

@@ -24,7 +24,7 @@ namespace notrealengine
 		tmp.onRelease.push_back([]() { std::exit(0); return 1; });
 		res.push_back(tmp);
 		/*std::cout << "Init bindings" << std::endl;
-		
+
 		Binding	tmp2 = Binding("K key", SDLK_k, 0, false);
 		tmp2.onPress.push_back([]() { std::cout << "COUCOU" << std::endl; return 0; });
 		res.push_back(tmp2);*/
