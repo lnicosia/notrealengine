@@ -26,7 +26,7 @@ namespace notrealengine
 		{
 			if (i != 0)
 				name += "-";
-			name += this->paths[i].filename();
+			name += this->paths[i].filename().string();
 		}
 	}
 

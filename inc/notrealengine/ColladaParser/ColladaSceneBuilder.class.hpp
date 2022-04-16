@@ -48,6 +48,7 @@ namespace notrealengine
 				return this->mNumAmbients;
 				break;
 			}
+			return 0;
 		}
 
 		void
