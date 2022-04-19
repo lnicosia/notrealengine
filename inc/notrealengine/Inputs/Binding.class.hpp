@@ -46,8 +46,8 @@ namespace notrealengine
 		Binding& operator=(Binding const& ref);
 
 	private:
-		uint8_t	key1;
-		uint8_t	key2;
+		uint32_t	key1;
+		uint32_t	key2;
 
 		InputState	state;
 
