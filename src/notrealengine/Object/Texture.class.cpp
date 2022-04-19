@@ -250,7 +250,6 @@ namespace notrealengine
 
 		bindVector(shader->programID, "color", color);
 		bindMatrix(shader->programID, "model", model);
-		GLCallThrow(glUseProgram, shader->programID);
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
 
