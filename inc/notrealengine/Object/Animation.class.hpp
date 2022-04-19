@@ -98,7 +98,7 @@ namespace notrealengine
 
 	/**	Load all the animations from a file in the AssetManager
 	*/
-	void
+	std::vector<std::shared_ptr<Animation>>
 		LoadAnimations(const std::string& path);
 }
 #endif // !_ANIMATION_CLASS_H_

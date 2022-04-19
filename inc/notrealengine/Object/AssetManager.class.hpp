@@ -53,6 +53,8 @@ namespace notrealengine
 
 		/**	Same as loadAsset but does not load if not found.
 		**	Use this function when you know for sure that the asset is already loaded
+		**	Paths are not unique, so the first asset found with this path
+		**	will be returned
 		*/
 		template <typename T>
 		std::shared_ptr<T> getAsset(const std::string& path)
@@ -73,6 +75,9 @@ namespace notrealengine
 			return nullptr;
 		}
 
+		/**	Retrieve an asset by its ID if found or nullptr.
+		**	IDs are unique
+		*/
 		template <typename T>
 		std::shared_ptr<T> getAsset(uint32_t id)
 		{
@@ -83,6 +88,26 @@ namespace notrealengine
 			std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(it->second);
 			if (tmp)
 				return tmp;
+			return nullptr;
+		}
+
+		/**	Retrieve an asset by its name if found or nullptr.
+		**	Names are not unique, so the first asset found with this name
+		**	will be returned
+		*/
+		template <typename T>
+		std::shared_ptr<T> getAssetByName(const std::string& name)
+		{
+			for (const auto& pair : this->assets)
+			{
+				std::shared_ptr<Asset> asset = pair.second;
+				if (asset->getName() == name)
+				{
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
+					if (tmp)
+						return tmp;
+				}
+			}
 			return nullptr;
 		}
 

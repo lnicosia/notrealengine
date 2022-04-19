@@ -196,20 +196,22 @@ namespace notrealengine
 		return this->type;
 	}
 
-	void	LoadAnimations(const std::string& path)
+	std::vector<std::shared_ptr<Animation>>	LoadAnimations(const std::string& path)
 	{
 		std::cout << "Loading animations of " << path;
+
+		std::vector<std::shared_ptr<Animation>> animations;
 
 		std::filesystem::path	fPath(path);
 		if (!std::filesystem::exists(fPath))
 		{
 			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
-			return;
+			return animations;
 		}
 		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file type" << std::endl;
-			return ;
+			return animations;
 		}
 #ifdef USING_EXTERNAL_LIBS
 		std::cout << "' with assimp..." << std::endl;
@@ -227,20 +229,22 @@ namespace notrealengine
 #else
 			std::cerr << "Custom parser failed to import animation" << std::endl;
 #endif
-			return;
+			return animations;
 		}
 		if (scene->HasAnimations() == false || scene->mNumAnimations == 0)
 		{
 			std::cerr << path << " does not contain any animation" << std::endl;
-			return;
+			return animations;
 		}
 		for(unsigned int i = 0; i < scene->mNumAnimations; i++)
 		{
 			std::shared_ptr<Animation> anim =
 				std::shared_ptr<Animation>(new Animation());
 			anim->Setup(scene, i);
+			animations.push_back(anim);
 			AssetManager::getInstance().addAsset(anim);
 		}
+		return animations;
 	}
 
 }
