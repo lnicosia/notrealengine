@@ -22,12 +22,12 @@ namespace notrealengine
 		std::filesystem::path	fPath(path);
 		if (!std::filesystem::exists(fPath))
 		{
-			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			std::cerr << std::endl << "nre: Unable to open file \"" << path << "\"" << std::endl;
 			return;
 		}
 		if (!IsReg(path))
 		{
-			std::cerr << "nre: Invalid file type" << std::endl;
+			std::cerr << std::endl << "nre: Invalid file type" << std::endl;
 			return ;
 		}
 #ifdef USING_EXTERNAL_LIBS
@@ -205,12 +205,12 @@ namespace notrealengine
 		std::filesystem::path	fPath(path);
 		if (!std::filesystem::exists(fPath))
 		{
-			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			std::cerr << std::endl << "nre: Unable to open file \"" << path << "\"" << std::endl;
 			return animations;
 		}
 		if (!IsReg(path))
 		{
-			std::cerr << "nre: Invalid file type" << std::endl;
+			std::cerr << std::endl << "nre: Invalid file type" << std::endl;
 			return animations;
 		}
 #ifdef USING_EXTERNAL_LIBS
