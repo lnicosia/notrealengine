@@ -9,30 +9,37 @@
 
 namespace notrealengine
 {
-	class SDLEvents
+	struct SDLEvents
 	{
 	public:
 		SDLEvents();
 		~SDLEvents();
 
+		/**	Run the whole input pipeline: update inputs state and launch
+		**	functions accordingly
+		*/
 		int
 			handle();
+
+		/**	Update the state of every input to one of the 5 possible values:
+		**	NRE_PRESS, NRE_RELEASE, NRE_PRESSED, NRE_RELEASED, NRE_HOVERED
+		*/
 		int
 			updateInputsState();
+
+		/**	According to the state of each input, launch binded functions
+		*/
 		void
 			processInputs();
-		void
-			AddBinding(const Binding binding);
 
-	private:
+		std::vector<MouseBinding> mouseBindings;
+
+		mft::vec2i	mousePos;
+
 		std::vector<Binding>	bindings;
 
 		SDL_Event	e;
 
-		/**	Init default bindings
-		*/
-		std::vector<Binding>
-			initBindings();
 	};
 }
 

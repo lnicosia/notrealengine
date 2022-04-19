@@ -10,6 +10,12 @@ namespace notrealengine
 
 	}
 
+	MouseBinding::MouseBinding(std::string name, uint32_t key1, uint32_t key2, bool editable):
+		Binding(name, key1, key2, editable), start(mft::vec2i())
+	{
+
+	}
+
 	Binding::~Binding()
 	{
 

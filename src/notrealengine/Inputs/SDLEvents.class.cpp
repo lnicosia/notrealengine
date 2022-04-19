@@ -3,7 +3,7 @@
 
 namespace notrealengine
 {
-	SDLEvents::SDLEvents(): e(), bindings(initBindings())
+	SDLEvents::SDLEvents(): e(), bindings()
 	{
 
 	}
@@ -23,92 +23,147 @@ namespace notrealengine
 		}
 	}
 
-	//	Init default bindings
-	std::vector<Binding>	SDLEvents::initBindings()
-	{
-		std::vector<Binding>	res;
-
-		return res;
-	}
-
 	void	SDLEvents::processInputs()
 	{
-		std::vector<Binding>::iterator	it = this->bindings.begin();
-		std::vector<Binding>::iterator	ite = this->bindings.end();
-		while (it != ite)
+		for (auto& binding: this->bindings)
 		{
-			Binding binding = *it;
 			switch (binding.getState())
 			{
-			case InputState::NRE_PRESS:
+				case InputState::NRE_PRESS:
+				{
+					if (binding.onPress)
+						binding.onPress->execute();
+					binding.setState(InputState::NRE_PRESSED);
+					break;
+				}
+				case InputState::NRE_RELEASE:
+				{
+					if (binding.onRelease)
+						binding.onRelease->execute();
+					binding.setState(InputState::NRE_RELEASED);
+					break;
+				}
+				case InputState::NRE_PRESSED:
+				{
+					if (binding.whenPressed)
+						binding.whenPressed->execute();
+					break;
+				}
+				case InputState::NRE_RELEASED:
+				{
+					if (binding.whenReleased)
+						binding.whenReleased->execute();
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		for (auto& mouseBinding: this->mouseBindings)
+		{
+			switch (mouseBinding.getState())
 			{
-				if (it->onPress)
-					it->onPress->execute();
-				it->setState(InputState::NRE_PRESSED);
-				break;
+				case InputState::NRE_PRESS:
+				{
+					if (mouseBinding.onPress)
+						mouseBinding.onPress->execute();
+					mouseBinding.setState(InputState::NRE_PRESSED);
+					break;
+				}
+				case InputState::NRE_RELEASE:
+				{
+					if (mouseBinding.onRelease)
+						mouseBinding.onRelease->execute();
+					mouseBinding.setState(InputState::NRE_RELEASED);
+					break;
+				}
+				case InputState::NRE_PRESSED:
+				{
+					if (mouseBinding.whenPressed)
+						mouseBinding.whenPressed->execute();
+					break;
+				}
+				case InputState::NRE_RELEASED:
+				{
+					if (mouseBinding.whenReleased)
+						mouseBinding.whenReleased->execute();
+					break;
+				}
+				default:
+					break;
 			}
-			case InputState::NRE_RELEASE:
-			{
-				if (it->onRelease)
-					it->onRelease->execute();
-				it->setState(InputState::NRE_RELEASED);
-				break;
-			}
-			case InputState::NRE_PRESSED:
-			{
-				if (it->whenPressed)
-					it->whenPressed->execute();
-				break;
-			}
-			case InputState::NRE_RELEASED:
-			{
-				if (it->whenReleased)
-					it->whenReleased->execute();
-				break;
-			}
-			default:
-				break;
-			}
-			it++;
 		}
 	}
 
 	int	SDLEvents::updateInputsState()
 	{
-		std::vector<Binding>::iterator	it;
-		std::vector<Binding>::iterator	ite;
 		while (SDL_PollEvent(&e))
 		{
-			it = bindings.begin();
-			ite = bindings.end();
 			switch (e.type)
 			{
-			case SDL_QUIT:
-				return(NRE_QUIT);
-				break;
-			case SDL_KEYDOWN:
-				while (it != ite)
+				case SDL_QUIT:
 				{
-					if (e.key.keysym.sym == (*it).getKey1()
-						|| e.key.keysym.sym == (*it).getKey2())
-					{
-						if ((*it).getState() == InputState::NRE_RELEASED)
-							(*it).setState(InputState::NRE_PRESS);
-					}
-					it++;
+					return(NRE_QUIT);
+					break;
 				}
-				break;
-			case SDL_KEYUP:
-				while (it != ite)
+				case SDL_KEYDOWN:
 				{
-					if (e.key.keysym.sym == (*it).getKey1()
-						|| e.key.keysym.sym == (*it).getKey2())
+					for (auto& binding: this->bindings)
 					{
-						(*it).setState(InputState::NRE_RELEASE);
+						if (e.key.keysym.sym == binding.getKey1()
+							|| e.key.keysym.sym == binding.getKey2())
+						{
+							if (binding.getState() == InputState::NRE_RELEASED)
+								binding.setState(InputState::NRE_PRESS);
+						}
 					}
-					it++;
+					break;
 				}
-				break;
+				case SDL_KEYUP:
+				{
+					for (auto& binding: this->bindings)
+					{
+						if (e.key.keysym.sym == binding.getKey1()
+							|| e.key.keysym.sym == binding.getKey2())
+						{
+							binding.setState(InputState::NRE_RELEASE);
+						}
+					}
+					break;
+				}
+				case SDL_MOUSEBUTTONDOWN:
+				{
+					for (auto& mouseBinding: this->mouseBindings)
+					{
+						if (e.button.button == mouseBinding.getKey1()
+								|| e.button.button == mouseBinding.getKey2())
+						{
+							if (mouseBinding.getState() == InputState::NRE_RELEASED)
+							{
+								mouseBinding.setState(InputState::NRE_PRESS);
+								mouseBinding.start = this->mousePos;
+							}
+						}
+					}
+					break;
+				}
+				case SDL_MOUSEBUTTONUP:
+				{
+					for (auto& mouseBinding: this->mouseBindings)
+					{
+						if (e.button.button == mouseBinding.getKey1()
+								|| e.button.button == mouseBinding.getKey2())
+						{
+							if (mouseBinding.getState() == InputState::NRE_PRESSED)
+							{
+								mouseBinding.setState(InputState::NRE_RELEASE);
+							}
+						}
+					}
+					break;
+				}
+				default:
+					break;
 			}
 		}
 		return (0);
@@ -120,10 +175,5 @@ namespace notrealengine
 			return (NRE_QUIT);
 		processInputs();
 		return (0);
-	}
-
-	void SDLEvents::AddBinding(const Binding b)
-	{
-		this->bindings.push_back(b);
 	}
 }

@@ -2,6 +2,7 @@
 #define _BINDING_CLASS_H_
 
 #include "Inputs/Action.class.hpp"
+#include "mft/mft.hpp"
 
 #include <string>
 #include <vector>
@@ -54,6 +55,12 @@ namespace notrealengine
 
 		bool const	editable = true;
 
+	};
+
+	struct MouseBinding: public Binding
+	{
+		MouseBinding(std::string name, uint32_t key1, uint32_t key2, bool editable);
+		mft::vec2i	start;
 	};
 
 }
