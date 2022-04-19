@@ -143,4 +143,3 @@ namespace notrealengine
 		GLCallThrow(glUniform4f, location, vec.x, vec.y, vec.z, vec.w);
 	}
 }
-

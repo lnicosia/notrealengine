@@ -120,6 +120,14 @@ namespace notrealengine
 		void
 			setDrawMode(DrawMode mode);
 
+		//	Free function
+
+		/**	Release all shared ptrs so they can be freed before OpenGL.
+		**	Needs to be called manually if the scene is a global object
+		*/
+		void
+			clear( void );
+
 		bool	drawGrid;
 
 	private:

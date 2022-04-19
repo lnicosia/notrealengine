@@ -40,6 +40,12 @@ namespace notrealengine
 	{
 	}
 
+	void Scene::clear( void )
+	{
+		objects.clear();
+		lights.clear();
+	}
+
 	//	Accessors
 
 	const mft::mat4& Scene::getProjectionMatrix() const
