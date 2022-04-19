@@ -50,13 +50,15 @@ namespace notrealengine
 			getCharacter(char c);
 #endif
 
-		virtual const std::string
-			getAssetType() const;
-
 		const GLShaderProgram*
 			getShader() const;
 		const unsigned int
 			getShaderID() const;
+
+		//	Asset class
+
+		const std::string
+			getAssetType() const override;
 
 		//	Setters
 

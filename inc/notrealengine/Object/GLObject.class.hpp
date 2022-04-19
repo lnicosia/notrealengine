@@ -111,6 +111,8 @@ namespace notrealengine
 			const std::string
 				getAnimationStateStr() const;
 
+			//	Asset class
+
 			const std::string
 				getAssetType() const override;
 

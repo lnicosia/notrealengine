@@ -119,9 +119,9 @@ namespace notrealengine
 		std::cout << "': ID = " << asset.getId() << ", path:";
 		std::cout << asset.getPath();
 		if (asset.isLoaded())
-			std::cout << ",is loaded";
+			std::cout << ", is loaded";
 		else
-			std::cout << ",is not loaded";
+			std::cout << ", is not loaded";
 		std::cout << std::endl;
 		return o;
 	}

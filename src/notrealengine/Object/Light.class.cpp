@@ -5,10 +5,9 @@
 namespace notrealengine
 {
 	Light::Light(LightType type)
-		: transform(),
+		: Asset(), transform(),
 		VBO(0), VAO(0), texture(0),
-		shader(GLContext::getShader("2dProjected")->programID),
-		name(""), dirty(false)
+		shader(GLContext::getShader("2dProjected")->programID), dirty(false)
 	{
 		name = "Light" + std::to_string(count);
 		count++;
@@ -70,6 +69,11 @@ namespace notrealengine
 	const bool	Light::isDirty() const
 	{
 		return dirty;
+	}
+
+	const std::string Light::getAssetType() const
+	{
+		return std::string("Light");
 	}
 
 	void	Light::draw() const

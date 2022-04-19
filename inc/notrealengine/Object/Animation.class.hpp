@@ -53,8 +53,10 @@ namespace notrealengine
 		const AnimType
 			getType( void ) const;
 
-		virtual const std::string
-			getAssetType() const;
+		//	Asset class
+
+		const std::string
+			getAssetType() const override;
 
 	private:
 		double		duration;
