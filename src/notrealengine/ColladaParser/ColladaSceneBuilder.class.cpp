@@ -181,7 +181,6 @@ namespace notrealengine
 		catch (const ColladaException& e)
 		{
 			std::cerr << e.what() << std::endl;
-			delete this->scene;
 			return nullptr;
 		}
 		return this->scene;
