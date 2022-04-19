@@ -17,8 +17,12 @@ namespace notrealengine
 		/**	Constructor for creating assets from code
 		*/
 		Asset(const std::string& path);
+		/**	The goal of assets is to keep their unicity
+		*/
 		Asset(const Asset& ref) = delete;
 		Asset(Asset&& ref);
+		/**	The goal of assets is to keep their unicity
+		*/
 		Asset& operator=(const Asset& ref) = delete;
 		Asset& operator=(Asset&& ref);
 		~Asset();

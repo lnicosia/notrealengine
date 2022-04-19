@@ -36,8 +36,18 @@ namespace notrealengine
 			Skeletal,
 			Solid
 		};
+
+		/**	Load animation #index of the given file
+		*/
 		Animation(const std::string& path, int index);
+
+		/**	Create an animation from existing bones
+		*/
 		Animation(const std::string& name, std::map<std::string, Bone>& bones);
+
+		Animation(const Animation& ref);
+		Animation& operator=(const Animation& ref);
+		Animation();
 		~Animation();
 
 		const std::map<std::string, Bone>&
@@ -57,6 +67,11 @@ namespace notrealengine
 
 		const std::string
 			getAssetType() const override;
+
+		/**	Intialize the animation #index of the parsed file
+		*/
+		void
+			Setup(const void* scene, int index);
 
 	private:
 		double		duration;
@@ -78,6 +93,12 @@ namespace notrealengine
 		*/
 		void
 			processNode(const void* nnode, const void* aanimation, int parentId);
+
 	};
+
+	/**	Load all the animations from a file in the AssetManager
+	*/
+	void
+		LoadAnimations(const std::string& path);
 }
 #endif // !_ANIMATION_CLASS_H_
