@@ -15,7 +15,7 @@ namespace notrealengine
 		view(), lightingMode(LightingMode::Unlit), drawMode(DrawMode::Fill),
 		drawGrid(false)
 	{
-		//camera.pitch += 15;
+		camera.pitch += 15;
 		camera.update();
 
 		shaders.push_back(GLContext::getShader("2dProjected")->programID);
