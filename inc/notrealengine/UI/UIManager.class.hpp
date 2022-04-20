@@ -30,7 +30,6 @@ namespace notrealengine
 		void
 			registerElement(std::shared_ptr<UIElement> element);
 
-	private:
 		std::vector<std::shared_ptr<UIElement>>	elements;
 	};
 

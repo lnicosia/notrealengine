@@ -45,6 +45,7 @@ namespace notrealengine
 		{
 			if (text.font != nullptr)
 			{
+				//std::cout << "Writing " << text.text << " at pos " << text.pos + this->pos << std::endl;
 				text.font->RenderText(text.text, this->pos + text.pos, text.scale, text.color);
 			}
 		}
@@ -76,6 +77,12 @@ namespace notrealengine
 	constexpr void	UIElement::hide()
 	{
 		visible = false;
+	}
+
+	void UIElement::addChild(std::shared_ptr<UIElement> child)
+	{
+		child->setPos(child->getPos() + this->pos);
+		this->children.push_back(child);
 	}
 
 }

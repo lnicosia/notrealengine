@@ -82,6 +82,9 @@ namespace notrealengine
 		virtual void
 			setSize(const mft::vec2i&& newSize);
 
+		void
+			addChild(std::shared_ptr<UIElement> child);
+
 		std::vector<UIText>	texts;
 
 	protected:
