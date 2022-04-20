@@ -317,9 +317,7 @@ namespace notrealengine
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
 		if (this->drawGrid == true)
 		{
-			glDisable(GL_CULL_FACE);
 			GLContext::grid->draw();
-			glEnable(GL_CULL_FACE);
 		}
 		if (this->drawMode != DrawMode::Wireframe)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
