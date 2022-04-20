@@ -15,10 +15,10 @@ namespace notrealengine
 
 	void	Camera::update()
 	{
-		if (pitch >= 90.0f)
-			pitch = 90.0f;
-		if (pitch <= -90.0f)
-			pitch = -90.0f;
+		if (pitch >= 89.0f)
+			pitch = 89.0f;
+		if (pitch <= -89.0f)
+			pitch = -89.0f;
 
 		mft::vec3 Front;
 		Front.x = cosf(mft::radians(yaw)) * cosf(mft::radians(pitch));
