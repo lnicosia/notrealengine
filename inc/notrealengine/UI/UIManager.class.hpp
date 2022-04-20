@@ -6,6 +6,7 @@
 
 namespace notrealengine
 {
+
 	/**	Registers and handles all UI elements
 	*/
 	class UIManager

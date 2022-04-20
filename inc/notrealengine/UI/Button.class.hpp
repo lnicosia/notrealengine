@@ -15,20 +15,23 @@ namespace notrealengine
 	class Button: public UIElement
 	{
 	public:
-		Button(GLShaderProgram* shader,
-			std::shared_ptr<Texture> imgReleased = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-released.png", "UI"),
-			std::shared_ptr<Texture> imgPressed = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-pressed.png", "UI"),
-			std::shared_ptr<Texture> imgHovered = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
-			mft::vec2i pos = mft::vec2i(0, 0));
+		Button(mft::vec2i pos = mft::vec2i(0, 0),
+		std::shared_ptr<Texture> imgReleased =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-released.png", "UI"),
+		std::shared_ptr<Texture> imgPressed =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-pressed.png", "UI"),
+		std::shared_ptr<Texture> imgHovered =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
+		GLShaderProgram* shader = GLContext::getShader("2d"));
 		~Button();
 
 		void
-			draw() const;
+			draw() const override;
 
 		/** Update the button's state according to inputs
 		 */
-		virtual void
-			update(const mft::vec2i& mousePos, const InputState inputState);
+		void
+			update(const mft::vec2i& mousePos, const InputState inputState) override;
 
 		//	Accessors
 
@@ -94,8 +97,8 @@ namespace notrealengine
 		void
 			setTextColor(const mft::vec4& color);
 
-		virtual void
-			setPos(const mft::vec2i&& newPos);
+		void
+			setPos(const mft::vec2i&& newPos) override;
 
 	private:
 		InputState	state;

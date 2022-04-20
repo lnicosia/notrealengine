@@ -2,14 +2,10 @@
 
 namespace notrealengine
 {
-	UIElement::UIElement(GLShaderProgram* shader, std::shared_ptr<Texture> image,
-		mft::vec2i pos) :
-		shader(shader),
-		image(image),
-		pos(pos),
-		active(true), visible(true),
-		size(image->getSize()),
-		children()
+	UIElement::UIElement(mft::vec2i pos, std::shared_ptr<Texture> image,
+		GLShaderProgram* shader) :
+		shader(shader), image(image), pos(pos), size(image->getSize()),
+		active(true), visible(true), children()
 	{
 	}
 
@@ -22,17 +18,35 @@ namespace notrealengine
 		return pos;
 	}
 
+	const mft::vec2i& UIElement::getSize() const
+	{
+		return size;
+	}
+
 	void	UIElement::setPos(const mft::vec2i&& newPos)
 	{
-		pos = newPos;
+		this->pos = newPos;
+	}
+
+	void	UIElement::setSize(const mft::vec2i&& newSize)
+	{
+		this->size = newSize;
 	}
 
 	void	UIElement::draw() const
 	{
-		image->draw(pos, size, 0.0f, mft::vec4(1.0f));
+		if (image != nullptr)
+			image->draw(pos, size, 0.0f, mft::vec4(1.0f));
 		for (auto& child : children)
 		{
 			child->draw();
+		}
+		for (const auto& text: this->texts)
+		{
+			if (text.font != nullptr)
+			{
+				text.font->RenderText(text.text, this->pos + text.pos, text.scale, text.color);
+			}
 		}
 	}
 

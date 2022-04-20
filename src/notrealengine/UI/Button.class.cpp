@@ -3,13 +3,13 @@
 
 namespace notrealengine
 {
-	Button::Button(GLShaderProgram* shader,
+	Button::Button(mft::vec2i pos,
 		std::shared_ptr<Texture> imgReleased,
 		std::shared_ptr<Texture> imgPressed,
 		std::shared_ptr<Texture> imgHovered,
-		mft::vec2i pos)
+		GLShaderProgram* shader)
 		:
-		UIElement(shader, imgReleased, pos),
+		UIElement(pos, imgReleased, shader),
 		state(InputState::NRE_RELEASED),
 		text(""), textPos(mft::vec2i()), textScale(1.0f), textColor(mft::vec4(1.0f)),
 		sizeReleased(image->getSize()),
