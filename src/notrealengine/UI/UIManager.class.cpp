@@ -18,11 +18,18 @@ namespace notrealengine
 
 	void	UIManager::update(const mft::vec2i& mousePos, const InputState mouseState)
 	{
-		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		for (auto& element : elements)
 		{
 			if (element->active == true)
 				element->update(mousePos, mouseState);
+		}
+	}
+
+	void	UIManager::draw( void )
+	{
+		GLCallThrow(glDisable, GL_DEPTH_TEST);
+		for (auto& element : elements)
+		{
 			if (element->visible == true)
 				element->draw();
 		}

@@ -35,6 +35,7 @@ namespace notrealengine
 		std::vector<MouseBinding> mouseBindings;
 
 		mft::vec2i	mousePos;
+		InputState	mouseState;
 
 		std::vector<Binding>	bindings;
 

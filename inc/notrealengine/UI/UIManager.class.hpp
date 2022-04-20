@@ -14,10 +14,15 @@ namespace notrealengine
 		UIManager();
 		~UIManager();
 
-		/**	Draw and update elements according to their state
+		/**	Update elements state according to the mouse's pos
 		*/
 		void
 			update(const mft::vec2i& mousePos, const InputState mouseState);
+
+		/**	Draw elements according to their state
+		*/
+		void
+			draw( void );
 
 		/**
 		*/

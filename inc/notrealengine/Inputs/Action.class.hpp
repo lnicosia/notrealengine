@@ -24,7 +24,7 @@ namespace notrealengine
     }
   };
 
-  template < typename ... Args>
+  template < typename ... Args >
   class Action: public ActionWrapper
   {
   public:
