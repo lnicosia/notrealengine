@@ -90,8 +90,6 @@ namespace notrealengine
 				getMeshes() const;
 			std::map<std::string, BoneInfo>&
 				getBones();
-			const int
-				getNbBones() const;
 			const unsigned int
 				getShader() const;
 			const AnimationState&
@@ -146,13 +144,7 @@ namespace notrealengine
 
 		private:
 
-			mft::vec3	max;
-			mft::vec3	min;
-			bool		isRangeInit;
-
 			std::vector<std::shared_ptr<Mesh>>	meshes;
-
-			std::string	directory;
 
 			//	All the bones of the object. Named BoneInfo to differenciate from
 			//	animations' bones
@@ -160,7 +152,6 @@ namespace notrealengine
 			//	Save the whole mesh hierarchy as a map too to access it
 			//	in an easier way when applying a solid animation
 			std::map<std::string, std::shared_ptr<Mesh>> meshesMap;
-			int	nbBones;
 
 			unsigned int	shader;
 

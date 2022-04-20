@@ -41,9 +41,8 @@ namespace notrealengine
 	GLObject::GLObject(const std::string& path)
 		: Asset(path),
 		transform(), polygonMode(GL_FILL),
-		directory(""), meshes(), bones(), nbBones(0),
-		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		meshes(), bones(),
+		shader(GLContext::getShader("default")->programID), visible(true),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
@@ -67,9 +66,8 @@ namespace notrealengine
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset(),
 		transform(), polygonMode(GL_FILL),
-		directory(""), meshes(meshes), bones(), nbBones(0),
-		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		meshes(meshes), bones(),
+		shader(GLContext::getShader("default")->programID), visible(true),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
@@ -81,7 +79,20 @@ namespace notrealengine
 
 	GLObject& GLObject::operator=(GLObject const& ref)
 	{
-		// TODO
+		this->transform = ref.transform;
+		this->visible = true;
+		this->animationRepeat = ref.animationRepeat;
+		this->animationSpeed = ref.animationSpeed;
+		this->meshes = ref.meshes;
+		this->bones = ref.bones;
+		this->meshesMap = ref.meshesMap;
+		this->shader = ref.shader;
+		this->polygonMode = GL_FILL;
+		this->anim = ref.anim;
+		this->startTime = 0;
+		this->pauseTime = 0;
+		this->currentTime = 0;
+		this->animationState = AnimationState::Stopped;
 		return *this;
 	}
 
@@ -131,19 +142,14 @@ namespace notrealengine
 
 		importer->ReadFile(path, flags);
 
-		this->max = importer->max;
-		this->min = importer->min;
-		this->isRangeInit = importer->isRangeInit;
-
-		this->meshes = importer->meshes;
-		this->bones = importer->bones;
-		this->nbBones = importer->nbBones;
+		this->meshes = std::move(importer->meshes);
+		this->bones = std::move(importer->bones);
 
 		//	Scale the object
 
-		float rangeX = this->max.x - this->min.x;
-		float rangeY = this->max.y - this->min.y;
-		float rangeZ = this->max.z - this->min.z;
+		float rangeX = importer->max.x - importer->min.x;
+		float rangeY = importer->max.y - importer->min.y;
+		float rangeZ = importer->max.z - importer->min.z;
 
 		float minRange;
 		if (rangeX == 0)
@@ -413,11 +419,6 @@ namespace notrealengine
 	std::map<std::string, BoneInfo>&	GLObject::getBones()
 	{
 		return bones;
-	}
-
-	const int GLObject::getNbBones() const
-	{
-		return nbBones;
 	}
 
 	const std::string GLObject::getAssetType() const
