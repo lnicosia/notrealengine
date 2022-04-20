@@ -255,7 +255,7 @@ namespace notrealengine
 			GLCallThrow(glUniform3fv, location, 1, &ambient[0]);
 			name = "pointLights[" + std::to_string(i) + "].diffuse";
 			location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
-			mft::vec3 diffuse(0.5f, 0.5f, 0.5f);
+			mft::vec3 diffuse(1.0f, 1.0f, 1.0f);
 			GLCallThrow(glUniform3fv, location, 1, &diffuse[0]);
 			name = "pointLights[" + std::to_string(i) + "].specular";
 			location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
