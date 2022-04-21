@@ -3,7 +3,8 @@
 
 namespace notrealengine
 {
-	SDLEvents::SDLEvents(): e(), bindings()
+	SDLEvents::SDLEvents(): e(), bindings(), mouseBindings(),
+		mousePos(), mouseGlobalPos(), mouseState(InputState::NRE_RELEASED)
 	{
 
 	}
@@ -86,6 +87,10 @@ namespace notrealengine
 
 	int	SDLEvents::updateInputsState()
 	{
+		if (mouseState == InputState::NRE_PRESS)
+			mouseState = InputState::NRE_PRESSED;
+		if (mouseState == InputState::NRE_RELEASE)
+			mouseState = InputState::NRE_RELEASED;
 		while (SDL_PollEvent(&e))
 		{
 			switch (e.type)
@@ -134,6 +139,9 @@ namespace notrealengine
 							}
 						}
 					}
+					if (e.button.button == SDL_BUTTON_LEFT
+						&& mouseState == InputState::NRE_RELEASED)
+							mouseState = InputState::NRE_PRESS;
 					break;
 				}
 				case SDL_MOUSEBUTTONUP:
@@ -148,6 +156,12 @@ namespace notrealengine
 								mouseBinding.setState(InputState::NRE_RELEASE);
 							}
 						}
+					}
+					if (e.button.button == SDL_BUTTON_LEFT
+						&& mouseState == InputState::NRE_PRESSED)
+					{
+						std::cout << "RELEASE!" << std::endl;
+						mouseState = InputState::NRE_RELEASE;
 					}
 					break;
 				}

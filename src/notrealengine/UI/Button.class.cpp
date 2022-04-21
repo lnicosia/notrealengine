@@ -124,8 +124,8 @@ namespace notrealengine
 		switch (mouseState)
 		{
 		case InputState::NRE_PRESS:
-			if (mousePos.x >= pos.x && mousePos.x <= pos.x + sizePressed.x
-				&& mousePos.y >= pos.y - sizeReleased.y && mousePos.y <= pos.y)
+			if (mousePos.x >= pos.x && mousePos.x <= pos.x + sizeReleased.x
+				&& mousePos.y >= pos.y && mousePos.y <= pos.y + sizeReleased.y)
 			{
 				state = InputState::NRE_PRESSED;
 				if (onPress)
@@ -149,7 +149,7 @@ namespace notrealengine
 			break;
 		case InputState::NRE_RELEASED:
 			if (mousePos.x >= pos.x && mousePos.x <= pos.x + sizeReleased.x
-				&& mousePos.y >= pos.y - sizeReleased.y && mousePos.y <= pos.y)
+				&& mousePos.y >= pos.y && mousePos.y <= pos.y + sizeReleased.y)
 			{
 				state = InputState::NRE_HOVERED;
 				if (whenHovered)
