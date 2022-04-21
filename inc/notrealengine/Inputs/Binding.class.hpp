@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 enum class InputState
 {
@@ -38,10 +39,10 @@ namespace notrealengine
 
 		//	Events
 		//	Actions to perform in each event type
-		ActionWrapper*	onRelease;
-		ActionWrapper*	onPress;
-		ActionWrapper*	whenReleased;
-		ActionWrapper*	whenPressed;
+		std::shared_ptr<ActionWrapper>	onRelease;
+		std::shared_ptr<ActionWrapper>	onPress;
+		std::shared_ptr<ActionWrapper>	whenReleased;
+		std::shared_ptr<ActionWrapper>	whenPressed;
 
 		Binding& operator=(Binding const& ref);
 

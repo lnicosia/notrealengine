@@ -1,7 +1,7 @@
 #ifndef _BUTTON_CLASS_H_
 #define _BUTTON_CLASS_H_
 
-#include "Inputs/Binding.class.hpp"
+#include "Inputs/Action.class.hpp"
 #include "Object/Texture.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "mft/mft.hpp"
@@ -83,13 +83,13 @@ namespace notrealengine
 		//	Set the function for each state
 
 		void
-			setHoveredFunc(std::function<int> func);
+			setWhenHovered(ActionWrapper* func);
 		void
-			setPressedFunc(std::function<int>& func);
+			setWhenPressed(ActionWrapper* func);
 		void
-			setPressFunc(std::function<int>& func);
+			setOnPress(ActionWrapper* func);
 		void
-			setReleaseFunc(const std::function<int(void)>& func);
+			setOnRelease(ActionWrapper* func);
 
 		void
 			setText(const std::string& text);
@@ -102,19 +102,20 @@ namespace notrealengine
 		void
 			setPos(const mft::vec2i&& newPos) override;
 
+		std::shared_ptr<ActionWrapper>	whenHovered;
+		std::shared_ptr<ActionWrapper>	whenPressed;
+		std::shared_ptr<ActionWrapper>	onRelease;
+		std::shared_ptr<ActionWrapper>	onPress;
+
 	private:
 		InputState	state;
 
 		std::shared_ptr<Texture>	imgReleased;
 		std::shared_ptr<Texture>	imgPressed;
 		std::shared_ptr<Texture>	imgHovered;
-		mft::vec2i					sizeReleased;
-		mft::vec2i					sizePressed;
-		mft::vec2i					sizeHovered;
-		std::function<int(void)>	funcHovered;
-		std::function<int(void)>	funcRelease;
-		std::function<int(void)>	funcPressed;
-		std::function<int(void)>	funcPress;
+		mft::vec2i		sizeReleased;
+		mft::vec2i		sizePressed;
+		mft::vec2i		sizeHovered;
 
 		std::string	text;
 		mft::vec2i	textPos;

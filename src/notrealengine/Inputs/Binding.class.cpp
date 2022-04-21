@@ -4,8 +4,8 @@ namespace notrealengine
 {
 	Binding::Binding(std::string name, uint32_t key1, uint32_t key2, bool editable):
 		name(name), key1(key1), key2(key2), editable(editable),
-		state(InputState::NRE_RELEASED), onRelease(nullptr),
-		onPress(nullptr), whenPressed(nullptr), whenReleased(nullptr)
+		state(InputState::NRE_RELEASED),
+		onRelease(), onPress(), whenPressed(), whenReleased()
 	{
 
 	}
@@ -18,7 +18,6 @@ namespace notrealengine
 
 	Binding::~Binding()
 	{
-
 	}
 
 	//	Accessors

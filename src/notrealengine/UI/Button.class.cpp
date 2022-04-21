@@ -16,7 +16,7 @@ namespace notrealengine
 		sizePressed(image->getSize()),
 		sizeHovered(image->getSize()),
 		imgReleased(imgReleased), imgPressed(imgPressed), imgHovered(imgHovered),
-		funcHovered(), funcPressed(), funcPress(), funcRelease()
+		whenHovered(), whenPressed(), onRelease(), onPress()
 	{
 	}
 
@@ -63,11 +63,6 @@ namespace notrealengine
 	{
 		pos = newPos;
 		updateDrawData();
-	}
-
-	void	Button::setReleaseFunc(const std::function<int(void)>& func)
-	{
-		funcRelease = func;
 	}
 
 	void	Button::updateDrawData()
@@ -133,23 +128,23 @@ namespace notrealengine
 				&& mousePos.y >= pos.y - sizeReleased.y && mousePos.y <= pos.y)
 			{
 				state = InputState::NRE_PRESSED;
-				if (funcPress)
-					funcPress();
+				if (onPress)
+					onPress->execute();
 			}
 			break;
 		case InputState::NRE_PRESSED:
 			if (state == InputState::NRE_PRESSED)
 			{
-				if (funcPressed)
-					funcPressed();
+				if (whenPressed)
+					whenPressed->execute();
 			}
 			break;
 		case InputState::NRE_RELEASE:
 			if (state == InputState::NRE_PRESSED)
 			{
 				state = InputState::NRE_RELEASED;
-				if (funcRelease)
-					funcRelease();
+				if (onRelease)
+					onRelease->execute();
 			}
 			break;
 		case InputState::NRE_RELEASED:
@@ -157,8 +152,8 @@ namespace notrealengine
 				&& mousePos.y >= pos.y - sizeReleased.y && mousePos.y <= pos.y)
 			{
 				state = InputState::NRE_HOVERED;
-				if (funcHovered)
-					funcHovered();
+				if (whenHovered)
+					whenHovered->execute();
 			}
 			else
 				state = InputState::NRE_RELEASED;

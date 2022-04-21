@@ -10,17 +10,6 @@ namespace notrealengine
 
 	SDLEvents::~SDLEvents()
 	{
-		for (auto binding: this->bindings)
-		{
-			if (binding.onRelease)
-				delete binding.onRelease;
-			if (binding.onPress)
-				delete binding.onPress;
-			if (binding.whenPressed)
-				delete binding.whenPressed;
-			if (binding.whenReleased)
-				delete binding.whenReleased;
-		}
 	}
 
 	void	SDLEvents::processInputs()
