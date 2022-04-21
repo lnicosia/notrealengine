@@ -335,7 +335,7 @@ namespace notrealengine
 		this->shader = shader;
 	}
 
-	void	GLFont::RenderText(std::string text, mft::vec2i pos, float scale, const mft::vec4& color,
+	void	GLFont::RenderText(std::string text, mft::vec2i pos, float size, const mft::vec4& color,
 		GLShaderProgram* shader)
 	{
 		if (shader == nullptr)
@@ -351,6 +351,8 @@ namespace notrealengine
 		bindMatrix(shader->programID, "model", mft::mat4());
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
+
+		float scale = size / this->characters['C']->getSize().y;
 
 		for (auto c : text)
 		{
@@ -390,6 +392,8 @@ namespace notrealengine
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
 		GLCallThrow(glBindVertexArray, VAO);
+
+		float scale = size / this->cellSize.y;
 
 		for (auto c: text)
 		{

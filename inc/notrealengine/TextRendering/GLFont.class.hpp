@@ -37,7 +37,7 @@ namespace notrealengine
 		**	- Not const to get characters from the map
 		*/
 		void
-			RenderText(std::string text, mft::vec2i pos, float scale, const mft::vec4& color,
+			RenderText(std::string text, mft::vec2i pos, float size, const mft::vec4& color,
 				GLShaderProgram* shader = nullptr);
 
 		//	Getters

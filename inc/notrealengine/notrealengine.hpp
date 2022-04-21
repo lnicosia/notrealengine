@@ -1,21 +1,19 @@
-#ifndef  __NOTREALENGINE_HPP__
-# define __NOTREALENGINE_HPP__
+#ifndef _NOT_REAL_ENGINE_H_
+#define _NOT_REAL_ENGINE_H_
 
-//	SDL/OpenGL
-# include "SDL.class.hpp"
-# include "GLContext_SDL.class.hpp"
-# include "SDLWindow.class.hpp"
-# include "GL.hpp"
+//  UI
 
-//	Objects
+#include "TextRendering/GLFont.class.hpp"
 
-# include "Object/AssetManager.class.hpp"
+//  Objects
 
-//	Text
+#include "Object/GLObject.class.hpp"
+#include "Object/AssetManager.class.hpp"
+#include "Object/Scene.class.hpp"
 
-# include "TextRendering/GLFont.class.hpp"
+//  SDL/OpenGL
 
-namespace nre = notrealengine;
+#include "SDLWindow.class.hpp"
+#include "GLContext_SDL.class.hpp"
 
-#endif
-
+#endif // !_NOT_REAL_ENGINE_H_

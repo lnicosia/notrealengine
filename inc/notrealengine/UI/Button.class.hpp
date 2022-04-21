@@ -72,11 +72,13 @@ namespace notrealengine
 		//	Set the size for each state
 
 		void
-			setHoveredSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setHoveredSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
 		void
-			setPressedSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setPressedSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
 		void
-			setReleasedSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setReleasedSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
+		void
+			setAllSizes(const mft::vec2i&& size);
 
 		//	Set the function for each state
 
@@ -116,10 +118,12 @@ namespace notrealengine
 
 		std::string	text;
 		mft::vec2i	textPos;
-		float		textScale;
+		float		textSize;
 		std::shared_ptr<GLFont>	font;
 		mft::vec4	textColor;
 
+		/**	Update the position of relative elements, like the text
+		*/
 		void
 			updateDrawData();
 	};

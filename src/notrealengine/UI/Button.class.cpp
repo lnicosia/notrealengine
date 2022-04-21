@@ -11,7 +11,7 @@ namespace notrealengine
 		:
 		UIElement(pos, imgReleased, shader),
 		state(InputState::NRE_RELEASED),
-		text(""), textPos(mft::vec2i()), textScale(1.0f), textColor(mft::vec4(1.0f)),
+		text(""), textPos(mft::vec2i()), textSize(16.0f), textColor(mft::vec4(1.0f)),
 		sizeReleased(image->getSize()),
 		sizePressed(image->getSize()),
 		sizeHovered(image->getSize()),
@@ -50,6 +50,15 @@ namespace notrealengine
 		this->textColor = color;
 	}
 
+	void	Button::setAllSizes(const mft::vec2i&& size)
+	{
+		this->sizeReleased = size;
+		this->sizePressed = size;
+		this->sizeHovered = size;
+		this->size = size;
+		updateDrawData();
+	}
+
 	void	Button::setPos(const mft::vec2i&& newPos)
 	{
 		pos = newPos;
@@ -66,22 +75,27 @@ namespace notrealengine
 		if (!font)
 			return;
 #ifdef USING_EXTERNAL_LIBS
-		mft::vec2i size(font->getCharacter('C')->getSize().x * text.length(),
-			font->getCharacter('C')->getSize().y);
+		mft::vec2i characterSize = font->getCharacter('C')->getSize();
 #else
-		mft::vec2i size(font->getCharacterSize('C').x * text.length(),
-			font->getCharacterSize('C').y);
+		mft::vec2i characterSize = font->getCharacterSize('C');
 #endif
+
+		float textWidth = 0.0f;
+		for (char c : text)
+		{
+			textWidth += font->getCharacterSize(c).x;
+		}
+		mft::vec2 textSize(textWidth, characterSize.y);
 		mft::vec2 scale;
-		if (size.x > this->size.x * 0.75)
-			scale.x = (this->size.x * 0.75) / size.x;
-		if (size.y > this->size.y * 0.75)
-			scale.y = (this->size.y * 0.75) / size.y;
-		textScale = scale.x < scale.y ? scale.x : scale.y;
-		size.x *= textScale;
-		size.y *= textScale;
-		textPos = mft::vec2i(this->pos.x + this->size.x / 2 - size.x / 2,
-			this->pos.y + this->size.y / 2 - size.y / 2);
+		scale.x = (this->size.x * 0.75) / (float)textSize.x;
+		scale.y = (this->size.y * 0.75) / (float)textSize.y;
+		mft::vec2 size(0.75 * this->size.x / this->text.length(),
+			0.75 * this->size.y);
+		this->textSize = characterSize.y * std::min(scale.x, scale.y);
+		textSize *= std::min(scale.x, scale.y);
+		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2,
+			this->pos.y + this->size.y / 2 - textSize.y / 2);
+		
 	}
 
 	void	Button::draw() const
@@ -104,7 +118,7 @@ namespace notrealengine
 		}
 		if (text != "" && font != nullptr)
 		{
-			font->RenderText(text, textPos, textScale, textColor);
+			font->RenderText(text, textPos, textSize, textColor);
 		}
 	}
 

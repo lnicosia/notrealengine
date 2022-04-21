@@ -23,6 +23,13 @@ namespace notrealengine
 		return size;
 	}
 
+	std::shared_ptr<UIElement>	UIElement::getChild(size_t index)
+	{
+		if (index >= this->children.size())
+			return nullptr;
+		return this->children[index];
+	}
+
 	void	UIElement::setPos(const mft::vec2i&& newPos)
 	{
 		this->pos = newPos;
@@ -83,6 +90,11 @@ namespace notrealengine
 	{
 		child->setPos(child->getPos() + this->pos);
 		this->children.push_back(child);
+	}
+
+	void UIElement::clearChildren()
+	{
+		this->children.clear();
 	}
 
 }

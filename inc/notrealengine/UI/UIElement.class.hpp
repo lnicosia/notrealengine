@@ -74,6 +74,9 @@ namespace notrealengine
 		const mft::vec2i&
 			getSize() const;
 
+		std::shared_ptr<UIElement>
+			getChild(size_t index = 0);
+
 		//	Setters
 
 		virtual void
@@ -84,6 +87,11 @@ namespace notrealengine
 
 		void
 			addChild(std::shared_ptr<UIElement> child);
+		
+		/**	Release the shared ptrs
+		*/
+		void
+			clearChildren();
 
 		std::vector<UIText>	texts;
 
