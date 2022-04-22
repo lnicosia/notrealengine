@@ -77,6 +77,9 @@ namespace notrealengine
 		std::shared_ptr<UIElement>
 			getChild(size_t index = 0);
 
+		const std::vector<std::shared_ptr<UIElement>>&
+			getChildren();
+
 		//	Setters
 
 		virtual void
@@ -87,6 +90,8 @@ namespace notrealengine
 
 		virtual void
 			setSize(const mft::vec2i&& newSize);
+		void
+			setImage(std::shared_ptr<Texture> image);
 
 		void
 			addChild(std::shared_ptr<UIElement> child);

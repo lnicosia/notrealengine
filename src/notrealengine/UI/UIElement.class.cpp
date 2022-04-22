@@ -30,9 +30,19 @@ namespace notrealengine
 		return this->children[index];
 	}
 
+	const std::vector<std::shared_ptr<UIElement>>&	UIElement::getChildren()
+	{
+		return this->children;
+	}
+
 	void	UIElement::setPos(const mft::vec2i&& newPos)
 	{
 		this->pos = newPos;
+	}
+
+	void	UIElement::setImage(std::shared_ptr<Texture> image)
+	{
+		this->image = image;
 	}
 
 	void	UIElement::addPos(const mft::vec2i& pos)
