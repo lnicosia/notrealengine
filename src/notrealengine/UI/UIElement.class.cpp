@@ -35,6 +35,15 @@ namespace notrealengine
 		this->pos = newPos;
 	}
 
+	void	UIElement::addPos(const mft::vec2i& pos)
+	{
+		this->pos += pos;
+		for (auto child : this->children)
+		{
+			child->addPos(pos);
+		}
+	}
+
 	void	UIElement::setSize(const mft::vec2i&& newSize)
 	{
 		this->size = newSize;
@@ -42,12 +51,14 @@ namespace notrealengine
 
 	void	UIElement::draw() const
 	{
-		if (image != nullptr)
+		if (image != nullptr && this->visible == true)
 			image->draw(pos, size, 0.0f, mft::vec4(1.0f));
 		for (auto& child : children)
 		{
 			child->draw();
 		}
+		if (this->visible == false)
+			return;
 		for (const auto& text: this->texts)
 		{
 			if (text.font != nullptr)
@@ -88,7 +99,7 @@ namespace notrealengine
 
 	void UIElement::addChild(std::shared_ptr<UIElement> child)
 	{
-		child->setPos(child->getPos() + this->pos);
+		child->addPos(this->pos);
 		this->children.push_back(child);
 	}
 

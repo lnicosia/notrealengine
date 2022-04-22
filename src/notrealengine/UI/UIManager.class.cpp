@@ -30,8 +30,7 @@ namespace notrealengine
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		for (const auto& element : this->elements)
 		{
-			if (element->visible == true)
-				element->draw();
+			element->draw();
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}

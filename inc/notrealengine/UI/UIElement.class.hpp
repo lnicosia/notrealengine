@@ -82,6 +82,9 @@ namespace notrealengine
 		virtual void
 			setPos(const mft::vec2i&& newPos);
 
+		void
+			addPos(const mft::vec2i& pos);
+
 		virtual void
 			setSize(const mft::vec2i&& newSize);
 

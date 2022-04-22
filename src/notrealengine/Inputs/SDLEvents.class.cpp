@@ -160,7 +160,6 @@ namespace notrealengine
 					if (e.button.button == SDL_BUTTON_LEFT
 						&& mouseState == InputState::NRE_PRESSED)
 					{
-						std::cout << "RELEASE!" << std::endl;
 						mouseState = InputState::NRE_RELEASE;
 					}
 					break;
