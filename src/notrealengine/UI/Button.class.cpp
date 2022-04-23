@@ -65,6 +65,16 @@ namespace notrealengine
 		updateDrawData();
 	}
 
+	void	Button::addPos(const mft::vec2i& pos)
+	{
+		this->pos += pos;
+		for (auto child : this->children)
+		{
+			child->addPos(pos);
+		}
+		updateDrawData();
+	}
+
 	void	Button::updateDrawData()
 	{
 		if (!font)

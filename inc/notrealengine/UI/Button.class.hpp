@@ -102,6 +102,9 @@ namespace notrealengine
 		void
 			setPos(const mft::vec2i&& newPos) override;
 
+		void
+			addPos(const mft::vec2i& pos) override;
+
 		std::shared_ptr<ActionWrapper>	whenHovered;
 		std::shared_ptr<ActionWrapper>	whenPressed;
 		std::shared_ptr<ActionWrapper>	onRelease;
