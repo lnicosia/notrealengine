@@ -393,10 +393,14 @@ namespace notrealengine
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
 		GLCallThrow(glBindVertexArray, VAO);
 
-		float scale = size / this->cellSize.y;
+		float scale = size / (float)this->cellSize.y;
 
+		std::cout << "text = '" << text << "'" << std::endl;
+		std::cout << "Cell size y = " << this->cellSize.y << std::endl;
+		std::cout << "Scale = " << scale << std::endl;
 		for (auto c: text)
 		{
+			std::cout << "Char = '" << c << "'" << std::endl;
 			unsigned int row = (c - this->firstChar) / this->charsPerLine;
 			unsigned int col = (c - this->firstChar) - row * this->charsPerLine;
 
@@ -411,6 +415,10 @@ namespace notrealengine
 
 			float xend = xpos + this->widths[c] * scale;
 			float yend = ypos + this->cellSize.y * scale;
+			std::cout << "ystart = " << ypos << std::endl;
+			std::cout << "yend = " << yend << std::endl;
+			std::cout << "xstart = " << xpos << std::endl;
+			std::cout << "xend = " << xend << std::endl;
 
 			float	vertices[] =
 			{
@@ -431,6 +439,7 @@ namespace notrealengine
 
 			pos.x = xend;
 		}
+		std::cout << std::endl;
 
 #endif
 

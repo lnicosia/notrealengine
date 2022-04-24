@@ -123,6 +123,7 @@ namespace notrealengine
 		}
 		if (text != "" && font != nullptr)
 		{
+			std::cout << "Rendering text " << text << " at button pos " << this->pos << " text pos = " << textPos << " of size " << textSize << std::endl;
 			font->RenderText(text, textPos, textSize, textColor);
 		}
 	}
