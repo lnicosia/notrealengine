@@ -269,6 +269,38 @@ namespace mft
 
 	template<typename T>
 		requires std::is_floating_point_v<T>
+	constexpr vec<T, T, T> quaternion<T>::euler( const quaternion<T>& q )
+	{
+		vec<T, T, T> res;
+
+		double sqw = q.w * q.w;
+    double sqx = q.x * q.x;
+    double sqy = q.y * q.y;
+    double sqz = q.z * q.z;
+		double unit = sqx + sqy + sqz + sqw;
+		double test = q.x * q.y + q.z * q.w;
+		if (test > 0.499 * unit)
+		{ // singularity at north pole
+			res.x = 2 * std::atan2(q.x, q.w);
+			res.y = M_PI / 2;
+			res.z = 0;
+			return res;
+		}
+		if (test < -0.499 * unit)
+		{ // singularity at south pole
+			res.x = -2 * std::atan2(q.x, q.w);
+			res.y = -M_PI / 2;
+			res.z = 0;
+			return res;
+		}
+	  res.y = std::atan2(2 * q.y * q.w-2 * q.x * q.z , sqx - sqy - sqz + sqw);
+		res.z = std::asin(2 * test / unit);
+		res.x = std::atan2(2 * q.x * q.w-2 * q.y * q.z , -sqx + sqy - sqz + sqw);
+		return res;
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
 	constexpr T quaternion<T>::dot( const quaternion<T>& x, const quaternion<T>& y )
 	{
 		return (x.a * y.a + x.b * y.b + x.c * y.c + x.d * y.d);
