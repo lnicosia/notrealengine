@@ -148,25 +148,25 @@ namespace notrealengine
 				mesh->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(j) + "]");
 				mesh->localTransform.move(mft::vec3(i, 0.0f, j));
-				mesh->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh);
 				std::shared_ptr<Mesh> mesh2(new Mesh(square));
 				mesh2->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(-j) + "]");
 				mesh2->localTransform.move(mft::vec3(-i, 0.0f, -j));
-				mesh2->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh2->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh2);
 				std::shared_ptr<Mesh> mesh3(new Mesh(square));
 				mesh3->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(-j) + "]");
 				mesh3->localTransform.move(mft::vec3(i, 0.0f, -j));
-				mesh3->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh3->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh3);
 				std::shared_ptr<Mesh> mesh4(new Mesh(square));
 				mesh4->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(j) + "]");
 				mesh4->localTransform.move(mft::vec3(-i, 0.0f, j));
-				mesh4->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh4->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh4);
 			}
 		}

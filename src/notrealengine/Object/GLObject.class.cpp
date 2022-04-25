@@ -162,7 +162,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		this->transform.scale(mft::vec3(scale));
+		this->transform.setScale(mft::vec3(scale));
 	}
 
 	//	Drawing functions
@@ -184,10 +184,10 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		Mesh	cube(GLContext::centeredCube);
-		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
+		cube.setColor(mft::vec4(204.0f / 255.0f, 0.0f, 204.0f / 255.0f, 1.0f));
 		cube.setShader(shader);
 
-		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
+		cube.setColor(mft::vec4(0.0f, 1.0f, 0.0f, 1.0f));
 		const mft::vec3& objScale = this->transform.getScale();
 		mft::vec3 invObjScale = 0.05f / objScale;
 		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
