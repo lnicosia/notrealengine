@@ -19,12 +19,6 @@ namespace notrealengine
 	{
 		std::cout << "Loading animation " << index << " of '" << path;
 
-		std::filesystem::path	fPath(path);
-		if (!std::filesystem::exists(fPath))
-		{
-			std::cerr << std::endl << "nre: Unable to open file \"" << path << "\"" << std::endl;
-			return;
-		}
 		if (!IsReg(path))
 		{
 			std::cerr << std::endl << "nre: Invalid file type" << std::endl;
@@ -202,12 +196,6 @@ namespace notrealengine
 
 		std::vector<std::shared_ptr<Animation>> animations;
 
-		std::filesystem::path	fPath(path);
-		if (!std::filesystem::exists(fPath))
-		{
-			std::cerr << std::endl << "nre: Unable to open file \"" << path << "\"" << std::endl;
-			return animations;
-		}
 		if (!IsReg(path))
 		{
 			std::cerr << std::endl << "nre: Invalid file type" << std::endl;

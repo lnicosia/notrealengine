@@ -48,12 +48,6 @@ namespace notrealengine
 		animationRepeat(AnimationRepeat::Repeat),
 		animationSpeed(1.0)
 	{
-		std::filesystem::path	fPath(path);
-		if (!std::filesystem::exists(fPath))
-		{
-			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
-			return;
-		}
 		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file type" << std::endl;
@@ -162,7 +156,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		this->transform.setScale(mft::vec3(scale));
+		this->meshes[0]->localTransform.setScale(mft::vec3(scale));
 	}
 
 	//	Drawing functions

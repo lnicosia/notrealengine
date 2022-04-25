@@ -2,6 +2,7 @@
 #define _ASSET_MANAGER_CLASS_H_
 
 #include "Object/Asset.class.hpp"
+#include "CheckFileType.hpp"
 
 #include <map>
 #include <iostream>
@@ -27,13 +28,14 @@ namespace notrealengine
 		template <typename T, typename ... Args>
 		std::shared_ptr<T> loadAsset(const std::string& path, Args... args)
 		{
+			if (!IsReg(path))
+				return nullptr;
 			for (const auto& pair : this->assets)
 			{
 				std::shared_ptr<Asset> asset = pair.second;
-				if (std::filesystem::exists(std::filesystem::path(path))
-					&& std::filesystem::exists(asset->getPath())
-					&& std::filesystem::equivalent(std::filesystem::path(asset->getPath()),
-						std::filesystem::path(path)))
+				if (std::filesystem::exists(asset->getPath())
+					&& std::filesystem::equivalent(asset->getPath(),
+					std::filesystem::path(path)))
 				{
 					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
 					//	If the cast successed, we found our asset. Return it instead of
