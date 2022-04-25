@@ -83,13 +83,13 @@ namespace notrealengine
 		//	Set the function for each state
 
 		void
-			setWhenHovered(ActionWrapper* func);
+			setWhenHovered(std::shared_ptr<ActionWrapper> func);
 		void
-			setWhenPressed(ActionWrapper* func);
+			setWhenPressed(std::shared_ptr<ActionWrapper> func);
 		void
-			setOnPress(ActionWrapper* func);
+			setOnPress(std::shared_ptr<ActionWrapper> func);
 		void
-			setOnRelease(ActionWrapper* func);
+			setOnRelease(std::shared_ptr<ActionWrapper> func);
 
 		void
 			setText(const std::string& text);

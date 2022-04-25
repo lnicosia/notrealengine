@@ -59,6 +59,26 @@ namespace notrealengine
 		updateDrawData();
 	}
 
+	void	Button::setWhenHovered(std::shared_ptr<ActionWrapper> func)
+	{
+		this->whenHovered = func;
+	}
+
+	void	Button::setWhenPressed(std::shared_ptr<ActionWrapper> func)
+	{
+		this->whenPressed = func;
+	}
+
+	void	Button::setOnPress(std::shared_ptr<ActionWrapper> func)
+	{
+		this->onPress = func;
+	}
+
+	void	Button::setOnRelease(std::shared_ptr<ActionWrapper> func)
+	{
+		this->onRelease = func;
+	}
+
 	void	Button::setPos(const mft::vec2i&& newPos)
 	{
 		pos = newPos;
@@ -92,15 +112,15 @@ namespace notrealengine
 		}
 		mft::vec2 textSize(textWidth, characterSize.y);
 		mft::vec2 scale;
-		scale.x = (this->size.x * 0.75) / (float)textSize.x;
-		scale.y = (this->size.y * 0.75) / (float)textSize.y;
-		mft::vec2 size(0.75 * this->size.x / this->text.length(),
-			0.75 * this->size.y);
+		scale.x = (this->size.x * 0.8) / (float)textSize.x;
+		scale.y = (this->size.y * 0.8) / (float)textSize.y;
+		mft::vec2 size(0.8 * this->size.x / this->text.length(),
+			0.8 * this->size.y);
 		this->textSize = characterSize.y * std::min(scale.x, scale.y);
 		textSize *= std::min(scale.x, scale.y);
 		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2,
-			this->pos.y + this->size.y / 2 - textSize.y / 2);
-		
+			this->pos.y + this->size.y / 2 - textSize.y / 2 + 2);
+
 	}
 
 	void	Button::draw() const
@@ -123,7 +143,7 @@ namespace notrealengine
 		}
 		if (text != "" && font != nullptr)
 		{
-			std::cout << "Rendering text " << text << " at button pos " << this->pos << " text pos = " << textPos << " of size " << textSize << std::endl;
+			//std::cout << "Rendering text " << text << " at button pos " << this->pos << " text pos = " << textPos << " of size " << textSize << std::endl;
 			font->RenderText(text, textPos, textSize, textColor);
 		}
 	}
