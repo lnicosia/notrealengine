@@ -16,15 +16,10 @@ namespace notrealengine
 	{
 		UIText(std::string text, mft::vec2i pos = mft::vec2i(0, 0), float scale = 1.0f,
 			const mft::vec4& color = mft::vec4(1.0f),
-			std::shared_ptr<GLFont> font = nullptr):
+			std::shared_ptr<GLFont> font =
+				AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/pt-sans-48.bff")):
 			text(text), pos(pos), scale(scale), color(color), font(font)
 		{
-
-			//	Set the font to the first loaded one if it exists
-			std::vector<std::shared_ptr<GLFont>> fonts =
-				AssetManager::getInstance().getAssetsOfType<GLFont>();
-			if (!fonts.empty())
-				this->font = fonts[0];
 		}
 		UIText() = delete;
 		~UIText()
