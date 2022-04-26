@@ -100,6 +100,8 @@ namespace notrealengine
 			getYaw( void ) const;
 		const float
 			getPitch( void ) const;
+		const float
+			getCameraSpeed( void ) const;
 
 		void
 			setYaw(float yaw);

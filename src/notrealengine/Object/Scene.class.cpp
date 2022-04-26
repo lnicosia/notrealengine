@@ -120,6 +120,11 @@ namespace notrealengine
 		return this->drawMode;
 	}
 
+	const float	Scene::getCameraSpeed() const
+	{
+		return this->camera.speed;
+	}
+
 	void	Scene::setYaw(float yaw)
 	{
 		this->camera.yaw = yaw;

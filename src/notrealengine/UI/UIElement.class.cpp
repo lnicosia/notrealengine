@@ -67,8 +67,6 @@ namespace notrealengine
 		{
 			child->draw();
 		}
-		if (this->visible == false)
-			return;
 		for (const auto& text: this->texts)
 		{
 			if (text.font != nullptr)
