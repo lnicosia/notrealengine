@@ -79,6 +79,21 @@ namespace notrealengine
 		this->onRelease = func;
 	}
 
+	void	Button::setHoveredImg(std::shared_ptr<Texture> img)
+	{
+		this->imgHovered = img;
+	}
+
+	void	Button::setPressedImg(std::shared_ptr<Texture> img)
+	{
+		this->imgPressed = img;
+	}
+
+	void	Button::setReleasedImg(std::shared_ptr<Texture> img)
+	{
+		this->imgReleased = img;
+	}
+
 	void	Button::setPos(const mft::vec2i&& newPos)
 	{
 		pos = newPos;
