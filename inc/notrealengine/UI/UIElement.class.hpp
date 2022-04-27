@@ -27,8 +27,8 @@ namespace notrealengine
 		}
 		std::string				text;
 		mft::vec2i				pos;
-		float							scale;
-		mft::vec4					color;
+		float					scale;
+		mft::vec4				color;
 		std::shared_ptr<GLFont>	font;
 	};
 
@@ -85,7 +85,7 @@ namespace notrealengine
 
 		virtual void
 			setSize(const mft::vec2i&& newSize);
-			
+
 		void
 			setImage(std::shared_ptr<Texture> image);
 

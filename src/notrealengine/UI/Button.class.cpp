@@ -1,5 +1,6 @@
 #include "UI/Button.class.hpp"
 #include "UsingExternalLibs.hpp"
+#include "NotRealEngine.hpp"
 
 namespace notrealengine
 {
@@ -179,6 +180,7 @@ namespace notrealengine
 				&& mousePos.y >= pos.y && mousePos.y <= pos.y + sizeReleased.y)
 			{
 				state = InputState::NRE_PRESSED;
+				isMouseOnUI = true;
 				if (onPress)
 					onPress->execute();
 			}
@@ -203,6 +205,7 @@ namespace notrealengine
 				&& mousePos.y >= pos.y && mousePos.y <= pos.y + sizeReleased.y)
 			{
 				state = InputState::NRE_HOVERED;
+				isMouseOnUI = true;
 				if (whenHovered)
 					whenHovered->execute();
 			}
