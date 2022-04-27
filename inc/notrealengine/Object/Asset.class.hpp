@@ -69,10 +69,11 @@ namespace notrealengine
 		*/
 		std::vector<std::filesystem::path> paths;
 
+		bool					loaded;
+
 	private:
 
 		uint32_t				id;
-		bool					loaded;
 
 		static uint32_t			count;
 	};

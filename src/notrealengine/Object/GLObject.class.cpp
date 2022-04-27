@@ -48,9 +48,10 @@ namespace notrealengine
 		animationRepeat(AnimationRepeat::Repeat),
 		animationSpeed(1.0)
 	{
+		std::cout << "Loading object '" << path;
 		if (!IsReg(path))
 		{
-			std::cerr << "nre: Invalid file type" << std::endl;
+			std::cerr << std::endl << "nre: Invalid file" << std::endl;
 			return ;
 		}
 		loadObject(path);
@@ -123,7 +124,6 @@ namespace notrealengine
 
 	void	GLObject::loadObject(const std::string& path, unsigned int flags)
 	{
-		std::cout << "Loading object '" << path;
 
 		std::unique_ptr<ObjectImporter>	importer;
 #ifdef USING_EXTERNAL_LIBS
@@ -134,7 +134,11 @@ namespace notrealengine
 		std::cout << "' with custom parser..." << std::endl;
 #endif // USING_EXTERNAL_LIBS
 
-		importer->ReadFile(path, flags);
+		if (importer->ReadFile(path, flags) == false)
+		{
+			this->loaded = false;
+			return ;
+		}
 
 		this->meshes = std::move(importer->meshes);
 		this->bones = std::move(importer->bones);

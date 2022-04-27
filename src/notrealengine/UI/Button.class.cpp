@@ -13,12 +13,14 @@ namespace notrealengine
 		UIElement(pos, imgReleased, shader),
 		state(InputState::NRE_RELEASED),
 		text(""), textPos(mft::vec2i()), textSize(16.0f), textColor(mft::vec4(1.0f)),
-		sizeReleased(image->getSize()),
-		sizePressed(image->getSize()),
-		sizeHovered(image->getSize()),
+		sizeReleased(),
+		sizePressed(),
+		sizeHovered(),
 		imgReleased(imgReleased), imgPressed(imgPressed), imgHovered(imgHovered),
 		whenHovered(), whenPressed(), onRelease(), onPress()
 	{
+		if (image)
+			setSize(std::move(image->getSize()));
 	}
 
 	Button::~Button()
@@ -151,15 +153,18 @@ namespace notrealengine
 		switch (state)
 		{
 		case InputState::NRE_HOVERED:
-			imgHovered->draw(pos, sizeHovered, 0.0f, mft::vec4(1.0f));
+			if (imgHovered != nullptr)
+				imgHovered->draw(pos, sizeHovered, 0.0f, mft::vec4(1.0f));
 			break;
 		case InputState::NRE_PRESS:
 		case InputState::NRE_PRESSED:
-			imgPressed->draw(pos, sizePressed, 0.0f, mft::vec4(1.0f));
+			if (imgPressed != nullptr)
+				imgPressed->draw(pos, sizePressed, 0.0f, mft::vec4(1.0f));
 			break;
 		case InputState::NRE_RELEASE:
 		case InputState::NRE_RELEASED:
-			imgReleased->draw(pos, sizeReleased, 0.0f, mft::vec4(1.0f));
+			if (imgReleased != nullptr)
+				imgReleased->draw(pos, sizeReleased, 0.0f, mft::vec4(1.0f));
 			break;
 		}
 		if (text != "" && font != nullptr)

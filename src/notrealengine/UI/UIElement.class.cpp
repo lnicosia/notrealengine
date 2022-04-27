@@ -4,9 +4,11 @@ namespace notrealengine
 {
 	UIElement::UIElement(mft::vec2i pos, std::shared_ptr<Texture> image,
 		GLShaderProgram* shader) :
-		shader(shader), image(image), pos(pos), size(image->getSize()),
+		shader(shader), image(image), pos(pos), size(),
 		active(true), visible(true), children()
 	{
+		if (image)
+			size = image->getSize();
 	}
 
 	UIElement::~UIElement()

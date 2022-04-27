@@ -14,7 +14,7 @@ namespace notrealengine
 	{
 	}
 
-	void	AssimpObjectImporter::ReadFile(const std::string& path, unsigned int flags)
+	bool	AssimpObjectImporter::ReadFile(const std::string& path, unsigned int flags)
 	{
 		this->path = path;
 		Assimp::Importer	importer;
@@ -29,14 +29,14 @@ namespace notrealengine
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
-			return;
+			return false;
 		}
 		this->directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
 		//readMissingBones(scene);
-
+		return true;
 	}
 
 	void	AssimpObjectImporter::SetVertexBoneData(Vertex& vertex, int id, float weight)

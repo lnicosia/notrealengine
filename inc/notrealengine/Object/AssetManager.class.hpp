@@ -49,6 +49,10 @@ namespace notrealengine
 			}
 
 			std::shared_ptr<T> ptr(new T(path, std::forward<Args>(args)...));
+			if (ptr->isLoaded() == false)
+			{
+				return nullptr;
+			}
 			assets.emplace(std::make_pair(ptr->getId(), ptr));
 			return ptr;
 		}

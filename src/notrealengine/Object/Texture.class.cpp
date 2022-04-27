@@ -2,6 +2,7 @@
 #include "GL.hpp"
 #include "GLContext.class.hpp"
 #include "UsingExternalLibs.hpp"
+#include "CheckFileType.hpp"
 
 
 //	OpenGL includes
@@ -32,6 +33,11 @@ namespace notrealengine
 		: Asset({ path }), type(type), glId(0), VAO(0), VBO(0), size(0, 0),
 		shader(GLContext::getShader("2d"))
 	{
+		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		if (!IsReg(path))
+		{
+			std::cerr << "nre: Invalid file" << std::endl;
+		}
 		//	2D Image setup
 		float	vertices[] =
 		{
@@ -57,7 +63,6 @@ namespace notrealengine
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 
-		std::cout << "Loading texture '" << path << "'..." << std::endl;
 		int	nChannels;
 
 #ifdef USING_EXTERNAL_LIBS
@@ -113,7 +118,11 @@ namespace notrealengine
 	{
 
 		int	w, h, nChannels;
-		std::cout << "Loading embedded texture in '" << path << "'..." << std::endl;
+		std::cout << "Loading embedded texture in'" << path << "'..." << std::endl;
+		if (!IsReg(path))
+		{
+			std::cerr << "nre: Invalid file" << std::endl;
+		}
 
 #ifdef USING_EXTERNAL_LIBS
 
