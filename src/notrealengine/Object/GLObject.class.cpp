@@ -248,6 +248,7 @@ namespace notrealengine
 			}
 		}
 		this->animationState = AnimationState::Stopped;
+		this->currentTime = 0.0f;
 	}
 
 	void	GLObject::pauseAnimation( void )
@@ -270,6 +271,7 @@ namespace notrealengine
 	void	GLObject::stopAnimation( void )
 	{
 		this->animationState = AnimationState::Stopped;
+		this->currentTime = 0.0f;
 	}
 
 	void	GLObject::updateSolidAnim( void )
