@@ -32,6 +32,10 @@ namespace notrealengine
 		void	backward(uint32_t time);
 		void	left(uint32_t time);
 		void	right(uint32_t time);
+		void	forward(float value);
+		void	backward(float value);
+		void	left(float value);
+		void	right(float value);
 
 	private:
 

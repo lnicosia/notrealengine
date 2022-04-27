@@ -100,6 +100,31 @@ namespace notrealengine
 		bindCamera();
 	}
 
+
+	void	Scene::forward(float value)
+	{
+		this->camera.forward(value);
+		bindCamera();
+	}
+
+	void	Scene::backward(float value)
+	{
+		this->camera.backward(value);
+		bindCamera();
+	}
+
+	void	Scene::left(float value)
+	{
+		this->camera.left (value);
+		bindCamera();
+	}
+
+	void	Scene::right(float value)
+	{
+		this->camera.right(value);
+		bindCamera();
+	}
+
 	const	float	Scene::getYaw( void ) const
 	{
 		return this->camera.yaw;
@@ -135,6 +160,13 @@ namespace notrealengine
 	void	Scene::setPitch(float pitch)
 	{
 		this->camera.pitch = pitch;
+		this->camera.update();
+		bindCamera();
+	}
+
+	void	Scene::setCameraPos(const mft::vec3& pos)
+	{
+		this->camera.pos = pos;
 		this->camera.update();
 		bindCamera();
 	}

@@ -94,6 +94,23 @@ namespace notrealengine
 		void
 			right(uint32_t time);
 
+		/**	Move the main camera forward into the scene
+		*/
+		void
+			forward(float value);
+		/**	Move the main camera backward into the scene
+		*/
+		void
+			backward(float value);
+		/**	Move the main camera left into the scene
+		*/
+		void
+			left(float value);
+		/**	Move the main camera right into the scene
+		*/
+		void
+			right(float value);
+
 		//	View functions
 
 		const float
@@ -107,6 +124,8 @@ namespace notrealengine
 			setYaw(float yaw);
 		void
 			setPitch(float pitch);
+		void
+			setCameraPos(const mft::vec3& pos);
 		void
 			lookDown(uint32_t time);
 		void

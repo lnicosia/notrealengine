@@ -59,4 +59,30 @@ namespace notrealengine
 		pos += mft::vec3::normalized(mft::vec3::cross(front, up)) * (time * speed * 0.005f);
 		view = mft::mat4::lookAt(pos, pos + front, up);
 	}
+
+
+
+	void	Camera::forward(float value)
+	{
+		pos -= value * front;
+		view = mft::mat4::lookAt(pos, pos + front, up);
+	}
+
+	void	Camera::backward(float value)
+	{
+		pos += value * front;
+		view = mft::mat4::lookAt(pos, pos + front, up);
+	}
+
+	void	Camera::left(float value)
+	{
+		pos -= mft::vec3::normalized(mft::vec3::cross(front, up)) * value;
+		view = mft::mat4::lookAt(pos, pos + front, up);
+	}
+
+	void	Camera::right(float value)
+	{
+		pos += mft::vec3::normalized(mft::vec3::cross(front, up)) * value;
+		view = mft::mat4::lookAt(pos, pos + front, up);
+	}
 }
