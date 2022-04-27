@@ -65,7 +65,7 @@ namespace notrealengine
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
-		animationSpeed(0.0)
+		animationSpeed(1.0)
 	{
 		std::cout << "Building object from meshes..." << std::endl;
 		BuildMeshesMap();
@@ -340,7 +340,8 @@ namespace notrealengine
 			this->resetPose();
 			return;
 		}
-		this->currentTime = (static_cast<float>(SDL_GetTicks()) - this->startTime);
+		this->currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
+		this->currentTime *= this->animationSpeed;
 		if (this->currentTime >= anim->getDuration())
 		{
 			this->animationState = AnimationState::Stopped;
