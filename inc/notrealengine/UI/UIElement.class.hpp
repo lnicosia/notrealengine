@@ -85,12 +85,13 @@ namespace notrealengine
 
 		virtual void
 			setSize(const mft::vec2i&& newSize);
+			
 		void
 			setImage(std::shared_ptr<Texture> image);
 
 		void
 			addChild(std::shared_ptr<UIElement> child);
-		
+
 		/**	Release the shared ptrs
 		*/
 		void

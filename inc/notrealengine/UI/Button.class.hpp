@@ -79,6 +79,8 @@ namespace notrealengine
 			setReleasedSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
 		void
 			setAllSizes(const mft::vec2i&& size);
+		void
+			setSize(const mft::vec2i&& newSize) override;
 
 		//	Set the function for each state
 

@@ -59,6 +59,11 @@ namespace notrealengine
 		updateDrawData();
 	}
 
+	void	Button::setSize(const mft::vec2i&& size)
+	{
+		setAllSizes(std::move(size));
+	}
+
 	void	Button::setWhenHovered(std::shared_ptr<ActionWrapper> func)
 	{
 		this->whenHovered = func;
