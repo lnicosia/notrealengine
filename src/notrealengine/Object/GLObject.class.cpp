@@ -420,6 +420,11 @@ namespace notrealengine
 		return bones;
 	}
 
+	const size_t GLObject::getNbBones() const
+	{
+		return bones.size();
+	}
+
 	const std::string GLObject::getAssetType() const
 	{
 		return std::string("GLObject");

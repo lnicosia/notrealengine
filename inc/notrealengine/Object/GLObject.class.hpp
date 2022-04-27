@@ -90,6 +90,8 @@ namespace notrealengine
 				getMeshes() const;
 			std::map<std::string, BoneInfo>&
 				getBones();
+			const size_t
+				getNbBones() const;
 			const unsigned int
 				getShader() const;
 			const AnimationState&
