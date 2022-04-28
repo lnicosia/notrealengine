@@ -410,11 +410,6 @@ namespace notrealengine
 		this->startTime = static_cast<float>(SDL_GetTicks());
 	}
 
-	void	GLObject::forward(float value)
-	{
-
-	}
-
 	//	Accessors
 
 	const std::vector<std::shared_ptr<Mesh>>&	GLObject::getMeshes() const
