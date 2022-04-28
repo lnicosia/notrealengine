@@ -332,13 +332,14 @@ namespace mft
 	{
 		T cosTheta = dot(q1, q2);
 		quaternion<T> q3 = q2;
+		float epsilon = std::numeric_limits<float>::epsilon();
 
 		if (cosTheta < 0.0)
 		{
 			q3 = -q2;
 			cosTheta = -cosTheta;
 		}
-		if (cosTheta > 1.0 - std::numeric_limits<float>::epsilon())
+		if (cosTheta > 1.0 - epsilon)
 		{
 			return quaternion<T>(
 				q1.a + (q3.a - q1.a) * percentage,
@@ -350,8 +351,8 @@ namespace mft
 		else
 		{
 			float theta = std::acos(cosTheta);
-			if (std::sin(theta) > 0.0 - std::numeric_limits<float>::epsilon()
-				&& std::sin(theta) < 0.0 + std::numeric_limits<float>::epsilon())
+			//	Why did I do this?
+			if (std::sin(theta) > 0.0 - epsilon && std::sin(theta) < 0.0 + epsilon)
 				std::cout << "DIVISION BY 0" << std::endl;
 			return quaternion<T>(
 				normalized((q1 * std::sin((1.0 - percentage) * theta)

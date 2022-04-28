@@ -66,7 +66,7 @@ namespace notrealengine
 			/**	Launch a given animation for this object
 			*/
 			void
-				playAnimation(Animation* anim,
+				playAnimation(std::shared_ptr<Animation> anim,
 					AnimationRepeat	animationRepeat = AnimationRepeat::Repeat);
 
 			/**	Pause the current object's animation
@@ -84,6 +84,7 @@ namespace notrealengine
 			void
 				stopAnimation( void );
 
+
 			//	Accessors
 
 			const std::vector<std::shared_ptr<Mesh>>&
@@ -96,6 +97,8 @@ namespace notrealengine
 				getShader() const;
 			const AnimationState&
 				getAnimationState() const;
+			const std::shared_ptr<Animation>
+				getAnimation() const;
 			std::map<std::string, std::shared_ptr<Mesh>>&
 				getMeshesMap();
 			/**	Returns the start time of the current anim
@@ -111,7 +114,7 @@ namespace notrealengine
 			const std::string
 				getAnimationStateStr() const;
 
-			//	Asset class
+			//	Asset inheritence
 
 			const std::string
 				getAssetType() const override;
@@ -129,11 +132,12 @@ namespace notrealengine
 			void
 				setBoneLocalMatrix(const mft::mat4& ref);
 			void
-				setAnimation(Animation* anim);
+				setAnimation(std::shared_ptr<Animation> anim);
 
 			//	Texture utility
 
-			void	addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
+			void
+				addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
 
 			// Transform is public so its non-const operations can be called efficiently
 			Transform	transform;
@@ -164,7 +168,7 @@ namespace notrealengine
 
 			//	Animations
 
-			Animation*		anim;
+			std::shared_ptr<Animation>		anim;
 			/**	Start time of the current animation (in ms)
 			*/
 			float			startTime;
@@ -200,7 +204,8 @@ namespace notrealengine
 			void
 				BuildMeshesMap();
 
-			/**
+			/**	Recursive function to store the mesh hierarchy in one single map
+			**	Called by BuildMeshesMap on the root mesh
 			*/
 			void
 				SaveMeshInMap(const std::shared_ptr<Mesh>& mesh);

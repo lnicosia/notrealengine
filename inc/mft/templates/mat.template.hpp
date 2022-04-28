@@ -253,7 +253,7 @@ namespace mft
 		return mat<T1, T1, T1, T1>(
 			{ Right.x,		Right.y,	Right.z,	-vec3::dot(Right, pos)},
 			{ Up.x,			Up.y,		Up.z,		-vec3::dot(Up, pos)},
-			{ -Forward.x,	-Forward.y,	-Forward.z,	vec3::dot(Forward, pos)},
+			{ Forward.x,	Forward.y,	Forward.z,	-vec3::dot(Forward, pos)},
 			{ 0,			0,			0,			1});
 	 }
 

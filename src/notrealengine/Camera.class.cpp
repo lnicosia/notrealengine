@@ -3,7 +3,7 @@
 namespace notrealengine
 {
 	Camera::Camera(mft::vec3 pos)
-		: pos(pos), up(mft::vec3(0.0f, 1.0f, 0.0f)), front(mft::vec3(0.0f, 0.0f, -1.0f)),
+		: pos(pos), up(mft::vec3(0.0f, 1.0f, 0.0f)), front(mft::vec3(0.0f, 0.0f, 1.0f)),
 		yaw(-90.0f), pitch(0.0f), speed(1.0f), sensitivity(0.25f)
 	{
 		update();
@@ -38,13 +38,13 @@ namespace notrealengine
 
 	void	Camera::forward(uint32_t time)
 	{
-		pos -= (time * speed * 0.005f) * front;
+		pos += (time * speed * 0.005f) * front;
 		view = mft::mat4::lookAt(pos, pos + front, up);
 	}
 
 	void	Camera::backward(uint32_t time)
 	{
-		pos += (time * speed * 0.005f) * front;
+		pos -= (time * speed * 0.005f) * front;
 		view = mft::mat4::lookAt(pos, pos + front, up);
 	}
 
@@ -64,13 +64,13 @@ namespace notrealengine
 
 	void	Camera::forward(float value)
 	{
-		pos -= value * front;
+		pos += value * front;
 		view = mft::mat4::lookAt(pos, pos + front, up);
 	}
 
 	void	Camera::backward(float value)
 	{
-		pos += value * front;
+		pos -= value * front;
 		view = mft::mat4::lookAt(pos, pos + front, up);
 	}
 

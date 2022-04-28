@@ -16,4 +16,6 @@
 #include "SDLWindow.class.hpp"
 #include "GLContext_SDL.class.hpp"
 
+extern bool isMouseOnUI;
+
 #endif // !_NOT_REAL_ENGINE_H_

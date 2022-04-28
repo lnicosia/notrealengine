@@ -400,7 +400,7 @@ namespace notrealengine
 		this->bindBones();
 	}
 
-	void	GLObject::playAnimation(Animation* anim, AnimationRepeat animationRepeat)
+	void	GLObject::playAnimation(std::shared_ptr<Animation> anim, AnimationRepeat animationRepeat)
 	{
 		if (anim == nullptr)
 			return;
@@ -408,6 +408,11 @@ namespace notrealengine
 		this->animationState = AnimationState::Playing;
 		this->animationRepeat = animationRepeat;
 		this->startTime = static_cast<float>(SDL_GetTicks());
+	}
+
+	void	GLObject::forward(float value)
+	{
+
 	}
 
 	//	Accessors
@@ -445,6 +450,11 @@ namespace notrealengine
 	const AnimationState& GLObject::getAnimationState() const
 	{
 		return animationState;
+	}
+
+	const std::shared_ptr<Animation> GLObject::getAnimation() const
+	{
+		return anim;
 	}
 
 	const float GLObject::getStartTime() const
@@ -492,7 +502,7 @@ namespace notrealengine
 		this->shader = shader->programID;
 	}
 
-	void GLObject::setAnimation(Animation* anim)
+	void GLObject::setAnimation(std::shared_ptr<Animation> anim)
 	{
 		this->anim = anim;
 		AnimationState state = this->animationState;
