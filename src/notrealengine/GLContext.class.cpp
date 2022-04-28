@@ -21,6 +21,7 @@ namespace notrealengine
 		registerShader("unlit", "shaders/skeletal.vs", "shaders/unlit.fs");
 		registerShader("2dProjected", "shaders/2dProjected.vs", "shaders/2dProjected.fs");
 		registerShader("2d", "shaders/2d.vs", "shaders/2d.fs");
+		registerShader("skybox", "shaders/skybox.vs", "shaders/skybox.fs");
 		registerShader("text", "shaders/2d.vs", "shaders/text.fs");
 
 		std::vector<Vertex>	vertices;

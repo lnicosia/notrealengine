@@ -37,6 +37,7 @@ namespace notrealengine
 		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file" << std::endl;
+			return;
 		}
 		//	2D Image setup
 		float	vertices[] =
@@ -122,6 +123,7 @@ namespace notrealengine
 		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file" << std::endl;
+			return;
 		}
 
 #ifdef USING_EXTERNAL_LIBS

@@ -47,8 +47,10 @@ namespace notrealengine
 
 		//	Setters
 
-		void	setType(const std::string& type);
-		void	setShader(GLShaderProgram* shader);
+		void
+			setType(const std::string& type);
+		void
+			setShader(GLShaderProgram* shader);
 
 		//	Draw
 

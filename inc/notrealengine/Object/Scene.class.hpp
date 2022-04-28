@@ -3,6 +3,7 @@
 
 #include "Object/GLObject.class.hpp"
 #include "Object/Light.class.hpp"
+#include "Object/Skybox.class.hpp"
 #include "Camera.class.hpp"
 
 #define MAX_LIGHTS 4
@@ -41,6 +42,8 @@ namespace notrealengine
 
 		void
 			addLight(std::shared_ptr<Light>& light);
+		void
+			setSkybox(std::shared_ptr<Skybox>);
 
 		void
 			bindMatrices(unsigned int shader) const;
@@ -64,6 +67,9 @@ namespace notrealengine
 
 		const DrawMode
 			getDrawMode() const;
+
+		const std::shared_ptr<Skybox>
+			getSkybox() const;
 
 		//	Setters
 
@@ -150,6 +156,7 @@ namespace notrealengine
 			clear( void );
 
 		bool	drawGrid;
+		bool	drawSkybox;
 
 	private:
 		std::string	name;
@@ -159,6 +166,7 @@ namespace notrealengine
 
 		std::vector<std::shared_ptr<GLObject>>	objects;
 		std::vector<std::shared_ptr<Light>>		lights;
+		std::shared_ptr<Skybox>	skybox;
 		/**	Keep track of all the shaders used in the scene
 		*/
 		std::vector<unsigned int>	shaders;

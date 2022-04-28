@@ -24,6 +24,7 @@ SRC =		\
 		$S/notrealengine/Object/ObjectImporter.class.cpp \
 		$S/notrealengine/Object/AssimpObjectImporter.class.cpp \
 		$S/notrealengine/Object/CustomObjectImporter.class.cpp \
+		$S/notrealengine/Object/Skybox.class.cpp \
 		$S/notrealengine/SDL.class.cpp \
 		$S/notrealengine/SDLWindow.class.cpp \
 		$S/notrealengine/GLException.class.cpp \
