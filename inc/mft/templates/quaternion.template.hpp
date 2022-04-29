@@ -268,6 +268,23 @@ namespace mft
 	}
 
 	template<typename T>
+	requires std::is_floating_point_v<T>
+		constexpr quaternion<T> quaternion<T>::rotate( const vec<T,T,T>& rot, AngleType angleType )
+	{
+		quaternion<T> q;
+		vec<T, T, T> finalRot = rot;
+		if (angleType == AngleDegrees)
+			finalRot = vec<T, T, T>(mft::radians(rot.x), mft::radians(rot.y), mft::radians(rot.z));
+		if (finalRot.x != 0)
+			q *= rotation(vec<T, T, T>(1.0f, 0.0f, 0.0f), finalRot.x);
+		if (finalRot.y != 0)
+			q *= rotation(vec<T, T, T>(0.0f, 1.0f, 0.0f), finalRot.y);
+		if (finalRot.z != 0)
+			q *= rotation(vec<T, T, T>(0.0f, 0.0f, 1.0f), finalRot.z);
+		return q;
+	}
+
+	template<typename T>
 		requires std::is_floating_point_v<T>
 	constexpr vec<T, T, T> quaternion<T>::euler( const quaternion<T>& q )
 	{

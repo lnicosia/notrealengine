@@ -8,6 +8,12 @@
 
 namespace mft
 {
+	enum AngleType
+	{
+		AngleRadians,
+		AngleDegrees,
+	};
+
 	template<typename T>
 		requires std::is_floating_point_v<T>
 	struct quaternion; // Pre-declaration to declare friend operators
@@ -65,6 +71,7 @@ namespace mft
 		quaternion<T> & operator*=( const quaternion<T> & v2 );
 
 		static constexpr quaternion<T> rotation( const vec<T,T,T> axis, T radians );
+		static constexpr quaternion<T> rotate( const vec<T, T, T>& rot, AngleType = AngleRadians);
 		static constexpr vec<T, T, T>	euler( const quaternion<T>& q );
 		static constexpr T dot( const quaternion<T>& x, const quaternion<T>& y );
 		static constexpr T length( const quaternion<T>& quat );
