@@ -404,6 +404,7 @@ namespace notrealengine
 	{
 		if (anim == nullptr)
 			return;
+		this->resetPose();
 		this->anim = anim;
 		this->animationState = AnimationState::Playing;
 		this->animationRepeat = animationRepeat;

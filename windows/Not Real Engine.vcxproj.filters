@@ -42,6 +42,7 @@
     <ClCompile Include="src\notrealengine\GLShaderProgram.class.cpp" />
     <ClCompile Include="src\notrealengine\SDL.class.cpp" />
     <ClCompile Include="src\notrealengine\SDLWindow.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Skybox.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\glad\glad.h" />
@@ -94,5 +95,6 @@
     <ClInclude Include="inc\notrealengine\notrealengine.hpp" />
     <ClInclude Include="inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
   </ItemGroup>
 </Project>

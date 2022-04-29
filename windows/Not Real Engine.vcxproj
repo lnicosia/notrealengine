@@ -64,6 +64,7 @@
     <ClCompile Include="src\notrealengine\Object\MeshData.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\ObjectImporter.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Scene.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Skybox.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Texture.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Transform.class.cpp" />
     <ClCompile Include="src\notrealengine\SDL.class.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="inc\notrealengine\Object\MeshData.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\ObjectImporter.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Scene.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Texture.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Transform.class.hpp" />
     <ClInclude Include="inc\notrealengine\SDL.class.hpp" />

@@ -141,7 +141,7 @@ namespace notrealengine
 			0.8 * this->size.y);
 		this->textSize = characterSize.y * std::min(scale.x, scale.y);
 		textSize *= std::min(scale.x, scale.y);
-		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2,
+		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2 + 2,
 			this->pos.y + this->size.y / 2 - textSize.y / 2 + 2);
 
 	}
