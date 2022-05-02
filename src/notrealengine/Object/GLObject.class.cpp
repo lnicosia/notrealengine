@@ -186,13 +186,16 @@ namespace notrealengine
 		cube.setShader(shader);
 
 		cube.setColor(mft::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-		const mft::vec3& objScale = this->transform.getScale();
+		const mft::vec3& objScale = this->transform.getScale()
+		* this->meshes[0]->localTransform.getScale();
 		mft::vec3 invObjScale = 0.05f / objScale;
 		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
 		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),
+			transform.getMatrix() * this->meshes[0]->localTransform.getMatrix()
+			* it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
