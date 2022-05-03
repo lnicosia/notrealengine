@@ -9,9 +9,94 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <math.h>
 
 namespace notrealengine
 {
+	std::shared_ptr<GLMesh> CreateSphere(float radius, unsigned int horizontal, unsigned int vertical)
+	{
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		float H = 1.0f / static_cast<float>(horizontal - 1.0f);
+		float V = 1.0f / static_cast<float>(vertical - 1.0f);
+		float lengthInv = 1.0f / radius;
+		for (unsigned int h = 0; h < horizontal; h++)
+		{
+			for (unsigned int v = 0; v < vertical; v++)
+			{
+				//	+ radius to decenter the sphere
+				mft::vec3 pos(cosf(2 * M_PI * v * V) * sinf(M_PI * h * H),
+					sinf(-M_PI_2 + M_PI * h * H),
+					sinf(2 * M_PI * v * V) * sinf(M_PI * h * H));
+				mft::vec3 norm = pos * lengthInv;
+				mft::vec2 tex(static_cast<float>(v) / static_cast<float>(vertical),
+					static_cast<float>(h) / static_cast<float>(vertical));
+				pos = pos * radius + radius;
+				vertices.push_back(Vertex(pos, norm, tex));
+				
+				if (h < horizontal - 1)
+				{
+					unsigned int row = h * vertical;
+					unsigned int nextRow = (h + 1) * vertical;
+					unsigned int nextV = (v + 1) % vertical;
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + v);
+					indices.push_back(nextRow + nextV);
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + nextV);
+					indices.push_back(row + nextV);
+				}
+			}
+		}
+		MeshData	data(vertices, indices);
+		std::vector<std::shared_ptr<Texture>> textures;
+		return std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+	}
+
+	std::shared_ptr<GLMesh> CreateCenteredSphere(float radius, unsigned int horizontal, unsigned int vertical)
+	{
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		float H = 1.0f / static_cast<float>(horizontal - 1.0f);
+		float V = 1.0f / static_cast<float>(vertical - 1.0f);
+		float lengthInv = 1.0f / radius;
+		for (unsigned int h = 0; h < horizontal; h++)
+		{
+			for (unsigned int v = 0; v < vertical; v++)
+			{
+				//	+ radius to decenter the sphere
+				mft::vec3 pos(cosf(2 * M_PI * v * V) * sinf(M_PI * h * H),
+					sinf(-M_PI_2 + M_PI * h * H),
+					sinf(2 * M_PI * v * V) * sinf(M_PI * h * H));
+				mft::vec3 norm = pos * lengthInv;
+				mft::vec2 tex(static_cast<float>(v) / static_cast<float>(vertical),
+					static_cast<float>(h) / static_cast<float>(vertical));
+				pos = pos * radius;
+				vertices.push_back(Vertex(pos, norm, tex));
+
+				if (h < horizontal - 1)
+				{
+					unsigned int row = h * vertical;
+					unsigned int nextRow = (h + 1) * vertical;
+					unsigned int nextV = (v + 1) % vertical;
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + v);
+					indices.push_back(nextRow + nextV);
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + nextV);
+					indices.push_back(row + nextV);
+				}
+			}
+		}
+		MeshData	data(vertices, indices);
+		std::vector<std::shared_ptr<Texture>> textures;
+		return std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+	}
+
 	GLContext::GLContext()
 	{
 		registerShader("color", "shaders/solid.vs", "shaders/color.fs");
@@ -175,6 +260,8 @@ namespace notrealengine
 		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
 		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);
+
+		sphere = CreateSphere(0.5f, 15, 15);
 	}
 
 	GLContext::~GLContext()
@@ -257,6 +344,7 @@ namespace notrealengine
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
 	std::map<std::string, GLShaderProgram> GLContext::shaders = std::map<std::string, GLShaderProgram>();
 	std::shared_ptr<GLMesh>	GLContext::cube = std::shared_ptr<GLMesh>();
+	std::shared_ptr<GLMesh>	GLContext::sphere = std::shared_ptr<GLMesh>();
 	std::shared_ptr<GLMesh>	GLContext::centeredCube = std::shared_ptr<GLMesh>();
 	std::shared_ptr<GLObject>	GLContext::grid = std::shared_ptr<GLObject>();
 	long GLContext::CurrentContext = 0;
