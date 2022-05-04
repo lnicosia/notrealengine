@@ -20,7 +20,7 @@ namespace notrealengine
 		AssimpObjectImporter();
 		~AssimpObjectImporter();
 
-		void
+		bool
 			ReadFile(const std::string& path, unsigned int flags) override;
 	private:
 		void

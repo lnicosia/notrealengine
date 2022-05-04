@@ -48,6 +48,7 @@ namespace notrealengine
 				return this->mNumAmbients;
 				break;
 			}
+			return 0;
 		}
 
 		void
@@ -289,7 +290,7 @@ namespace notrealengine
 		/**	Parse the given file and
 		**	construct a scene from it
 		*/
-		cpScene*
+		const cpScene*
 			ReadFile(const std::string& path, unsigned int flags);
 
 		Axis	axis;
@@ -307,6 +308,8 @@ namespace notrealengine
 
 		//	We may fight nodes with no name, use this to assign auto names to them
 		unsigned int unamedNodes;
+
+		cpScene* scene;
 
 		/**	Save all the nodes ptr in a vector
 		**	to run through them easily (without recursion)

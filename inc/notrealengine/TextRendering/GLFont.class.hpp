@@ -37,7 +37,7 @@ namespace notrealengine
 		**	- Not const to get characters from the map
 		*/
 		void
-			RenderText(std::string text, mft::vec2i pos, float scale, const mft::vec4& color,
+			RenderText(std::string text, mft::vec2i pos, float size, const mft::vec4& color,
 				GLShaderProgram* shader = nullptr);
 
 		//	Getters
@@ -50,13 +50,15 @@ namespace notrealengine
 			getCharacter(char c);
 #endif
 
-		virtual const std::string
-			getAssetType() const;
-
 		const GLShaderProgram*
 			getShader() const;
 		const unsigned int
 			getShaderID() const;
+
+		//	Asset class
+
+		const std::string
+			getAssetType() const override;
 
 		//	Setters
 

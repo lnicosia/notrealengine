@@ -14,7 +14,7 @@ namespace notrealengine
 	{
 	}
 
-	void	AssimpObjectImporter::ReadFile(const std::string& path, unsigned int flags)
+	bool	AssimpObjectImporter::ReadFile(const std::string& path, unsigned int flags)
 	{
 		this->path = path;
 		Assimp::Importer	importer;
@@ -29,14 +29,14 @@ namespace notrealengine
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			std::cerr << "assimp: " << importer.GetErrorString() << std::endl;
-			return;
+			return false;
 		}
 		this->directory = path.substr(0, path.find_last_of('/'));
 		processNode(scene->mRootNode, scene);
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
 		//readMissingBones(scene);
-
+		return true;
 	}
 
 	void	AssimpObjectImporter::SetVertexBoneData(Vertex& vertex, int id, float weight)
@@ -183,8 +183,8 @@ namespace notrealengine
 			std::make_move_iterator(specularMaps.end()));
 
 		MeshData	data = MeshData(vertices, indices);
-		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
+		std::shared_ptr<GLMesh>	glMesh = std::make_shared<GLMesh>(data, textures);
+		std::shared_ptr<Mesh>	res = std::make_shared<Mesh>(glMesh);
 		res->setName(mesh->mName.C_Str());
 		return res;
 	}

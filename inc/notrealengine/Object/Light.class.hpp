@@ -17,7 +17,7 @@ enum LightType
 
 namespace notrealengine
 {
-	class Light
+	class Light: public Asset
 	{
 	public:
 		Light(LightType type);
@@ -38,9 +38,13 @@ namespace notrealengine
 		const bool
 			isDirty() const;
 
+		//	Asset
+
+		const std::string
+			getAssetType() const override;
+
 	private:
 		int	type;
-		std::string	name;
 
 		unsigned int	VBO, VAO, texture;
 

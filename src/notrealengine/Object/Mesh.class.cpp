@@ -9,7 +9,7 @@ namespace notrealengine
 		glMesh(glMesh), visible(true),
 		globalMatrix(), normalMatrix(),
 		shader(GLContext::getShader("default")->programID),
-		color(mft::vec3(0.239f, 0.282f, 0.286f))
+		color(mft::vec4(0.239f, 0.282f, 0.286f, 1.0f))
 	{
 
 	}
@@ -35,7 +35,7 @@ namespace notrealengine
 		return name;
 	}
 
-	mft::vec3 const& Mesh::getColor() const
+	mft::vec4 const& Mesh::getColor() const
 	{
 		return color;
 	}
@@ -52,7 +52,7 @@ namespace notrealengine
 		this->name = name;
 	}
 
-	void	Mesh::setColor(mft::vec3 color)
+	void	Mesh::setColor(mft::vec4 color)
 	{
 		this->color = color;
 	}
@@ -120,7 +120,7 @@ namespace notrealengine
 		{
 			GLCallThrow(glUseProgram, finalShader);
 			GLint location = GLCallThrow(glGetUniformLocation, finalShader, "baseColor");
-			GLCallThrow(glUniform3f, location, color.x, color.y, color.z);
+			GLCallThrow(glUniform4f, location, color.r, color.g, color.b, color.a);
 			glMesh->draw(finalShader, this->globalMatrix, this->normalMatrix);
 		}
 		for (auto child: children)

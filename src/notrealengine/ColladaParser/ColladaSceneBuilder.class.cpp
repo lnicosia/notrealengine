@@ -14,12 +14,13 @@ namespace notrealengine
 {
 	ColladaSceneBuilder::ColladaSceneBuilder():
 		meshes(), anims(), textures(), meshIDs(), matIndices(), materials(),
-		unamedNodes(0)
+		unamedNodes(0), scene(nullptr)
 	{
 	}
 
 	ColladaSceneBuilder::~ColladaSceneBuilder()
 	{
+		delete this->scene;
 		for (auto& mesh: this->meshes)
 		{
 			deleteMesh(mesh);
@@ -112,10 +113,8 @@ namespace notrealengine
 		delete node;
 	}
 
-	cpScene* ColladaSceneBuilder::ReadFile(const std::string& path, unsigned int flags)
+	const cpScene* ColladaSceneBuilder::ReadFile(const std::string& path, unsigned int flags)
 	{
-		cpScene* scene = nullptr;
-
 		ColladaParser	parser;
 		parser.ReadFile(path, flags);
 
@@ -124,19 +123,20 @@ namespace notrealengine
 			std::cerr << "Empty Collada file" << std::endl;
 			return nullptr;
 		}
-		scene = new cpScene();
+
+		this->scene = new cpScene();
 
 		try
 		{
-			BuildMaterials(parser, scene);
-			scene->mRootNode = new cpNode();
-			BuildNode(parser, scene->mRootNode, parser.rootNode);
+			BuildMaterials(parser, this->scene);
+			this->scene->mRootNode = new cpNode();
+			BuildNode(parser, this->scene->mRootNode, parser.rootNode);
 
-			SaveNodeAsVector(scene->mRootNode);
+			SaveNodeAsVector(this->scene->mRootNode);
 
 			if (parser.axis == Axis::X_UP)
 			{
-				scene->mRootNode->mTransformation *=
+				this->scene->mRootNode->mTransformation *=
 					mft::mat4(
 						{ 0, -1, 0, 0 },
 						{ 1, 0, 0, 0 },
@@ -145,7 +145,7 @@ namespace notrealengine
 			}
 			else if (parser.axis == Axis::Z_UP)
 			{
-				scene->mRootNode->mTransformation *=
+				this->scene->mRootNode->mTransformation *=
 					mft::mat4(
 						{ 1, 0, 0, 0 },
 						{ 0, 0, 1, 0 },
@@ -155,36 +155,35 @@ namespace notrealengine
 
 			this->axis = parser.axis;
 
-			ResolveBonesName(parser, scene->mRootNode);
+			ResolveBonesName(parser, this->scene->mRootNode);
 
-			scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
-			scene->mMeshes = new cpMesh * [scene->mNumMeshes]();
-			std::copy(this->meshes.begin(), this->meshes.end(), scene->mMeshes);
+			this->scene->mNumMeshes = static_cast<unsigned int>(this->meshes.size());
+			this->scene->mMeshes = new cpMesh * [this->scene->mNumMeshes]();
+			std::copy(this->meshes.begin(), this->meshes.end(), this->scene->mMeshes);
 			this->meshes.clear();
 
-			scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
-			scene->mMaterials = new cpMaterial * [scene->mNumMaterials]();
-			for (unsigned int i = 0; i < scene->mNumMaterials; i++)
+			this->scene->mNumMaterials = static_cast<unsigned int>(this->materials.size());
+			this->scene->mMaterials = new cpMaterial * [this->scene->mNumMaterials]();
+			for (unsigned int i = 0; i < this->scene->mNumMaterials; i++)
 			{
-				scene->mMaterials[i] = this->materials[i];
+				this->scene->mMaterials[i] = this->materials[i];
 			}
 			this->materials.clear();
 
-			scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
-			scene->mTextures = new cpTexture * [scene->mNumTextures]();
-			std::copy(this->textures.begin(), this->textures.end(), scene->mTextures);
+			this->scene->mNumTextures = static_cast<unsigned int>(this->textures.size());
+			this->scene->mTextures = new cpTexture * [this->scene->mNumTextures]();
+			std::copy(this->textures.begin(), this->textures.end(), this->scene->mTextures);
 			this->textures.clear();
 
-			BuildAnimations(parser, scene);
+			BuildAnimations(parser, this->scene);
 
 		}
 		catch (const ColladaException& e)
 		{
 			std::cerr << e.what() << std::endl;
-			delete scene;
 			return nullptr;
 		}
-		return scene;
+		return this->scene;
 	}
 
 	void ColladaSceneBuilder::ResolveBonesName(const ColladaParser& parser, const cpNode* node)
@@ -461,10 +460,10 @@ namespace notrealengine
 		for (const auto& child: anim.children)
 		{
 
-			BuildAnimation(parser, scene, child, name);
+			BuildAnimation(parser, this->scene, child, name);
 		}
 		if (!anim.channels.empty())
-			CreateAnimation(parser, scene, anim, name);
+			CreateAnimation(parser, this->scene, anim, name);
 	}
 
 	void ColladaSceneBuilder::BuildAnimations(const ColladaParser& parser,
@@ -472,7 +471,7 @@ namespace notrealengine
 	{
 		for (const auto& anim: parser.animations)
 		{
-			BuildAnimation(parser, scene, anim.second, "");
+			BuildAnimation(parser, this->scene, anim.second, "");
 		}
 
 		//std::cout << "Before "
@@ -547,9 +546,9 @@ namespace notrealengine
 
 		if (this->animations.empty())
 			return;
-		scene->mNumAnimations = static_cast<unsigned int>(this->animations.size());
-		scene->mAnimations = new cpAnimation * [scene->mNumAnimations]();
-		std::copy(this->animations.begin(), this->animations.end(), scene->mAnimations);
+		this->scene->mNumAnimations = static_cast<unsigned int>(this->animations.size());
+		this->scene->mAnimations = new cpAnimation * [this->scene->mNumAnimations]();
+		std::copy(this->animations.begin(), this->animations.end(), this->scene->mAnimations);
 	}
 
 	void ColladaSceneBuilder::BuildNode(ColladaParser& parser,
@@ -646,7 +645,7 @@ namespace notrealengine
 
 
 				//	Resolve material reference
-				//	Nodes in <library_visual_scenes> give material instances
+				//	Nodes in <library_visual_this->scenes> give material instances
 				//	but also the <triangles>/<vertices>/etc submeshes in
 				//	<library_geometry>
 				//	Do it now because we are supposed to apply some effects

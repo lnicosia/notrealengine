@@ -335,7 +335,7 @@ namespace notrealengine
 		this->shader = shader;
 	}
 
-	void	GLFont::RenderText(std::string text, mft::vec2i pos, float scale, const mft::vec4& color,
+	void	GLFont::RenderText(std::string text, mft::vec2i pos, float size, const mft::vec4& color,
 		GLShaderProgram* shader)
 	{
 		if (shader == nullptr)
@@ -351,6 +351,8 @@ namespace notrealengine
 		bindMatrix(shader->programID, "model", mft::mat4());
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindVertexArray, VAO);
+
+		float scale = size / this->characters['C']->getSize().y;
 
 		for (auto c : text)
 		{
@@ -391,8 +393,14 @@ namespace notrealengine
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
 		GLCallThrow(glBindVertexArray, VAO);
 
+		float scale = size / (float)this->cellSize.y;
+
+		/*std::cout << "text = '" << text << "'" << std::endl;
+		std::cout << "Cell size y = " << this->cellSize.y << std::endl;
+		std::cout << "Scale = " << scale << std::endl;*/
 		for (auto c: text)
 		{
+			//std::cout << "Char = '" << c << "'" << std::endl;
 			unsigned int row = (c - this->firstChar) / this->charsPerLine;
 			unsigned int col = (c - this->firstChar) - row * this->charsPerLine;
 
@@ -407,6 +415,15 @@ namespace notrealengine
 
 			float xend = xpos + this->widths[c] * scale;
 			float yend = ypos + this->cellSize.y * scale;
+			/*std::cout << "ystart = " << ypos << std::endl;
+			std::cout << "yend = " << yend << std::endl;
+			std::cout << "xstart = " << xpos << std::endl;
+			std::cout << "xend = " << xend << std::endl;
+
+			std::cout << "u = " << u << std::endl;
+			std::cout << "v = " << v << std::endl;
+			std::cout << "u1 = " << u1 << std::endl;
+			std::cout << "v1 = " << v1 << std::endl;*/
 
 			float	vertices[] =
 			{
@@ -427,6 +444,7 @@ namespace notrealengine
 
 			pos.x = xend;
 		}
+		//std::cout << std::endl;
 
 #endif
 

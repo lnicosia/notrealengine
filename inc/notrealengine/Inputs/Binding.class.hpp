@@ -1,8 +1,12 @@
-#ifndef _BINDING_CLASS_HPP_
-# define _BINDING_CLASS_HPP_
+#ifndef _BINDING_CLASS_H_
+#define _BINDING_CLASS_H_
+
+#include "Inputs/Action.class.hpp"
+#include "mft/mft.hpp"
 
 #include <string>
 #include <vector>
+#include <memory>
 
 enum class InputState
 {
@@ -19,32 +23,32 @@ namespace notrealengine
 	class Binding
 	{
 	public:
-		Binding(std::string name, uint8_t key1, uint8_t key2, bool editable);
+		Binding(std::string name, uint32_t key1, uint32_t key2, bool editable);
 		~Binding();
 
 		//	Accessors
 
 		std::string const	getName() const;
-		uint8_t const	getKey1() const;
-		uint8_t const	getKey2() const;
+		uint32_t const	getKey1() const;
+		uint32_t const	getKey2() const;
 		InputState const	getState() const;
 
-		void	setKey1(uint8_t key);
-		void	setKey2(uint8_t key);
+		void	setKey1(uint32_t key);
+		void	setKey2(uint32_t key);
 		void	setState(InputState state);
 
 		//	Events
 		//	Actions to perform in each event type
-		std::vector<int	(*)()>	onRelease;
-		std::vector<int	(*)()>	onPress;
-		std::vector<int	(*)()>	whenReleased;
-		std::vector<int	(*)()>	whenPressed;
+		std::shared_ptr<ActionWrapper>	onRelease;
+		std::shared_ptr<ActionWrapper>	onPress;
+		std::shared_ptr<ActionWrapper>	whenReleased;
+		std::shared_ptr<ActionWrapper>	whenPressed;
 
 		Binding& operator=(Binding const& ref);
 
 	private:
-		uint8_t	key1;
-		uint8_t	key2;
+		uint32_t	key1;
+		uint32_t	key2;
 
 		InputState	state;
 
@@ -54,6 +58,12 @@ namespace notrealengine
 
 	};
 
+	struct MouseBinding: public Binding
+	{
+		MouseBinding(std::string name, uint32_t key1, uint32_t key2, bool editable);
+		mft::vec2i	start;
+	};
+
 }
 
-#endif
+#endif // !_BINDINGS_CLASS_H_

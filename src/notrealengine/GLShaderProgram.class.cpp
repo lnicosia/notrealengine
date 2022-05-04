@@ -19,7 +19,7 @@ namespace notrealengine
 			if (!success)
 			{
 				GLCallThrow(glGetProgramInfoLog, programID, 512, NULL, infoLog);
-				std::cerr << "Failed to link shader:" << infoLog << std::endl;
+				std::cerr << std::endl << "Failed to link shader:" << infoLog << std::endl;
 			}
 		} catch (std::exception e) {
 			GLCallThrow(glDeleteProgram, programID);
@@ -45,7 +45,7 @@ namespace notrealengine
 			if (!success)
 			{
 				GLCallThrow(glGetShaderInfoLog, shaderID, 512, NULL, infoLog);
-				std::cerr << "Failed to compile shader:" << infoLog << std::endl;
+				std::cerr << std::endl << "Failed to compile shader:" << infoLog << std::endl;
 			}
 		} catch (std::exception e) {
 			GLCallThrow(glDeleteShader, shaderID);
@@ -63,7 +63,7 @@ namespace notrealengine
 			if (!success)
 			{
 				GLCallThrow(glGetShaderInfoLog, shaderID, 512, NULL, infoLog);
-				std::cerr << "Failed to delete shader:" << infoLog << std::endl;
+				std::cerr << std::endl << "Failed to delete shader:" << infoLog << std::endl;
 			}
 		} catch (std::exception e) {
 			std::cerr << "Exception caught in destructor (!) :" << std::endl << e.what();
@@ -143,4 +143,3 @@ namespace notrealengine
 		GLCallThrow(glUniform4f, location, vec.x, vec.y, vec.z, vec.w);
 	}
 }
-

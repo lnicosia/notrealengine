@@ -5,10 +5,9 @@
 namespace notrealengine
 {
 	Light::Light(LightType type)
-		: transform(),
+		: Asset(), transform(),
 		VBO(0), VAO(0), texture(0),
-		shader(GLContext::getShader("2dProjected")->programID),
-		name(""), dirty(false)
+		shader(GLContext::getShader("2dProjected")->programID), dirty(false)
 	{
 		name = "Light" + std::to_string(count);
 		count++;
@@ -72,16 +71,19 @@ namespace notrealengine
 		return dirty;
 	}
 
+	const std::string Light::getAssetType() const
+	{
+		return std::string("Light");
+	}
+
 	void	Light::draw() const
 	{
 		GLCallThrow(glUseProgram, shader);
-		GLint location = GLCallThrow(glGetUniformLocation, shader, "model");
-		GLCallThrow(glUniformMatrix4fv, location, 1, GL_TRUE, static_cast<const float*>(transform.getMatrix()));
+		bindMatrix(shader, "model", transform.getMatrix());
 
 		GLCallThrow(glActiveTexture, GL_TEXTURE0);
 		GLCallThrow(glBindTexture, GL_TEXTURE_2D, texture);
-		location = GLCallThrow(glGetUniformLocation, shader, ("image"));
-		GLCallThrow(glUniform1i, location, 0);
+		bindInt(shader, "image", 0);
 
 		GLCallThrow(glBindVertexArray, VAO);
 		GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 6);

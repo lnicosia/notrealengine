@@ -1,6 +1,8 @@
 #ifndef _VEC_H_
 # define _VEC_H_
 
+# define _USE_MATH_DEFINES
+# include <cmath>
 # include <cstddef>
 # include <type_traits>
 # include <initializer_list>
