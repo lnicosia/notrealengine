@@ -269,6 +269,7 @@ namespace notrealengine
 	{
 		cube.reset();
 		centeredCube.reset();
+		sphere.reset();
 		grid.reset();
 		shaders.clear();
 	}
