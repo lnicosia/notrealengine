@@ -48,7 +48,7 @@ namespace notrealengine
 				}
 			}
 
-			std::shared_ptr<T> ptr(new T(path, std::forward<Args>(args)...));
+			std::shared_ptr<T> ptr = std::make_shared<T>(path, std::forward<Args>(args)...);
 			if (ptr->isLoaded() == false)
 			{
 				return nullptr;

@@ -224,10 +224,10 @@ namespace notrealengine
 			std::cerr << path << " does not contain any animation" << std::endl;
 			return animations;
 		}
-		for(unsigned int i = 0; i < scene->mNumAnimations; i++)
+		for (unsigned int i = 0; i < scene->mNumAnimations; i++)
 		{
 			std::shared_ptr<Animation> anim =
-				std::shared_ptr<Animation>(new Animation());
+				std::make_shared<Animation>();
 			anim->Setup(scene, i);
 			animations.push_back(anim);
 			AssetManager::getInstance().addAsset(anim);

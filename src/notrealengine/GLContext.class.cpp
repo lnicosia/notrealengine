@@ -53,7 +53,7 @@ namespace notrealengine
 		}
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
-		return std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+		return std::make_shared<GLMesh>(data, textures);
 	}
 
 	std::shared_ptr<GLMesh> CreateCenteredSphere(float radius, unsigned int horizontal, unsigned int vertical)
@@ -95,7 +95,7 @@ namespace notrealengine
 		}
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
-		return std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+		return std::make_shared<GLMesh>(data, textures);
 	}
 
 	GLContext::GLContext()
@@ -161,7 +161,7 @@ namespace notrealengine
 
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
-		cube = std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+		cube = std::make_shared<GLMesh>(data, textures);
 
 		vertices.clear();
 		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f));
@@ -213,7 +213,7 @@ namespace notrealengine
 
 		MeshData	data1(vertices, indices);
 		textures.clear();
-		centeredCube = std::shared_ptr<GLMesh>(new GLMesh(data1, textures));
+		centeredCube = std::make_shared<GLMesh>(data1, textures);
 
 		vertices.clear();
 		vertices.push_back(Vertex(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
@@ -225,31 +225,31 @@ namespace notrealengine
 
 		MeshData	data2(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures2;
-		std::shared_ptr<GLMesh> square = std::shared_ptr<GLMesh>(new GLMesh(data2, textures2));
+		std::shared_ptr<GLMesh> square = std::make_shared<GLMesh>(data2, textures2);
 		std::vector<std::shared_ptr<Mesh>>	meshes;
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				std::shared_ptr<Mesh> mesh(new Mesh(square));
+				std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(square);
 				mesh->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(j) + "]");
 				mesh->localTransform.move(mft::vec3(i, 0.0f, j));
 				mesh->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh);
-				std::shared_ptr<Mesh> mesh2(new Mesh(square));
+				std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(square);
 				mesh2->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(-j) + "]");
 				mesh2->localTransform.move(mft::vec3(-i, 0.0f, -j));
 				mesh2->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh2);
-				std::shared_ptr<Mesh> mesh3(new Mesh(square));
+				std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(square);
 				mesh3->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(-j) + "]");
 				mesh3->localTransform.move(mft::vec3(i, 0.0f, -j));
 				mesh3->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh3);
-				std::shared_ptr<Mesh> mesh4(new Mesh(square));
+				std::shared_ptr<Mesh> mesh4 = std::make_shared<Mesh>(square);
 				mesh4->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(j) + "]");
 				mesh4->localTransform.move(mft::vec3(-i, 0.0f, j));
@@ -258,7 +258,7 @@ namespace notrealengine
 			}
 		}
 
-		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
+		grid = std::make_shared<GLObject>(meshes);
 		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);
 

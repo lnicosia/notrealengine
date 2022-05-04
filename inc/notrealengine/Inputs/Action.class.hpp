@@ -37,6 +37,8 @@ namespace notrealengine
 
     }
 
+    ~Action() {}
+
     void execute( void ) const override
     {
       if (this->func)

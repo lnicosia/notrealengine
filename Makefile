@@ -107,12 +107,12 @@ $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
 $(LIB_TARGET): undefexternallibs $(OBJ) project.mk
-	ar -rc $@ $(OBJ)
-	ranlib $@
+	llvm-ar-10 rc $@ $(OBJ)
+	llvm-ranlib-10 $@
 
 $(LIB_TARGET_EXTERNAL): defineexternallibs $(OBJ) project.mk
-	ar -rc $@ $(OBJ)
-	ranlib $@
+	llvm-ar-10 rc $@ $(OBJ)
+	llvm-ranlib-10 $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)

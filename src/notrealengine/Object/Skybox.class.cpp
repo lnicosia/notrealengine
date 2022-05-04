@@ -136,6 +136,22 @@ namespace notrealengine
 		GLCallThrow(glDeleteVertexArrays, 1, &this->VBO);
 	}
 
+	Skybox::Skybox(Skybox&& ref) noexcept
+		: Asset(std::move(ref)), VAO(std::exchange(ref.VAO, 0)), VBO(std::exchange(ref.VBO, 0)),
+		glId(std::exchange(ref.glId, 0)), shader(std::exchange(ref.shader, nullptr))
+	{
+	}
+
+	Skybox& Skybox::operator=(Skybox&& ref)
+	{
+		Asset::operator=(std::move(ref));
+		VAO = std::exchange(ref.VAO, 0);
+		VBO= std::exchange(ref.VBO, 0);
+		glId= std::exchange(ref.glId, 0);
+		shader =std::exchange(ref.shader, nullptr);
+		return *this;
+	}
+
 	//	Accessors
 
 	const unsigned int& Skybox::getGLId() const

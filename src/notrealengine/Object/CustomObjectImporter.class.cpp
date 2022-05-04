@@ -201,8 +201,8 @@ namespace notrealengine
 			std::make_move_iterator(specularMaps.end()));
 
 		MeshData	data = MeshData(vertices, indices);
-		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
+		std::shared_ptr<GLMesh>	glMesh = std::make_shared<GLMesh>(data, textures);
+		std::shared_ptr<Mesh>	res = std::make_shared<Mesh>(glMesh);
 		res->setName(mesh->mName);
 		return res;
 	}
