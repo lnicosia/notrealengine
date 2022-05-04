@@ -2,9 +2,9 @@
 #ifndef  _QUATERNIONS_HPP_
 # define _QUATERNIONS_HPP_
 
-# include <type_traits>
 # include "mft/templates/vec.template.hpp"
 # include "mft/mat.hpp"
+# include <type_traits>
 
 namespace mft
 {

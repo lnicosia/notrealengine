@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+# define _USE_MATH_DEFINES_
 #include <math.h>
 
 namespace notrealengine

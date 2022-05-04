@@ -96,5 +96,6 @@
     <ClInclude Include="inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\Action.class.hpp" />
   </ItemGroup>
 </Project>

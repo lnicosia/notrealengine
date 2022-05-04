@@ -2,7 +2,6 @@
 # define _VEC_TEMPLATE_H_
 
 # include "mft/vec.hpp"
-# include <cmath>
 # include <stdexcept>
 
 namespace	mft

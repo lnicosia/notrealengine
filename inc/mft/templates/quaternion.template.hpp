@@ -2,6 +2,8 @@
 #ifndef  _QUATERNIONS_TEMPLATE_HPP_
 # define _QUATERNIONS_TEMPLATE_HPP_
 
+# define _USE_MATH_DEFINES
+# include <math.h>
 # include "mft/quaternion.hpp"
 
 namespace mft
