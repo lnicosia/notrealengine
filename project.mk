@@ -48,8 +48,8 @@ SRC =		\
 		$S/notrealengine/UI/UIManager.class.cpp \
 		$S/notrealengine/CheckFileType.cpp
 
-CC = clang++ --std=c++20 -O3 -flto
-CPPFLAGS =
+CC = clang++ --std=c++20
+CPPFLAGS = -O3 -flto
 LDFLAGS =
 INCLUDE =
 
