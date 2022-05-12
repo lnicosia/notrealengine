@@ -25,8 +25,8 @@ RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not e
 
 AR := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
 RANLIB := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
-AR += $(word 1,$(AR) ar)
-RANLIB += $(word 1,$(RANLIB) ranlib)
+AR = $(word 1,$(AR) ar)
+RANLIB = $(word 1,$(RANLIB) ranlib)
 
 DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
