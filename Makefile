@@ -23,6 +23,9 @@ endif
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
+LLVM_AR = $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+LLVM_RANLIB = $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+
 DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
 
@@ -113,18 +116,16 @@ $(LIB):
 	$(call submodule_init,$(DIR))
 	$(MAKE) -C $(DIR) $($(MOD)_LIB) L='$(abspath $L)'
 
-LLVM_VERSION = $(shell clang --version | grep version | cut -d' ' -f4 | cut -d'.' -f1)
-
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
 $(LIB_TARGET): $(OBJ) project.mk
-	llvm-ar-$(LLVM_VERSION) rc $@ $(OBJ)
-	llvm-ranlib-$(LLVM_VERSION) $@
+	$(LLVM_AR) rc $@ $(OBJ)
+	$(LLVM_RANLIB) $@
 
 $(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
-	llvm-ar-$(LLVM_VERSION) rc $@ $(OBJ)
-	llvm-ranlib-$(LLVML_VERSION) $@
+	$(LLVM_AR) rc $@ $(OBJ)
+	$(LLVM_RANLIB)) $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)
