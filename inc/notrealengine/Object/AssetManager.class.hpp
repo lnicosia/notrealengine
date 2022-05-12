@@ -2,6 +2,7 @@
 #define _ASSET_MANAGER_CLASS_H_
 
 #include "Object/Asset.class.hpp"
+#include "CheckFileType.hpp"
 
 #include <map>
 #include <iostream>
@@ -20,10 +21,51 @@ namespace notrealengine
 		static AssetManager&
 			getInstance();
 
+		/**	For a given type, path and args, search the content of the manager
+		**	for an existing and corresponding asset. If found, return it.
+		**	If not, load it with its own load function
+		*/
 		template <typename T, typename ... Args>
 		std::shared_ptr<T> loadAsset(const std::string& path, Args... args)
 		{
-			for (const auto& pair : assets)
+			if (!IsReg(path))
+				return nullptr;
+			for (const auto& pair : this->assets)
+			{
+				std::shared_ptr<Asset> asset = pair.second;
+				if (std::filesystem::exists(asset->getPath())
+					&& std::filesystem::equivalent(asset->getPath(),
+					std::filesystem::path(path)))
+				{
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
+					//	If the cast successed, we found our asset. Return it instead of
+					//	loading it again
+					if (tmp)
+						return tmp;
+					//	If not, it can be an asset with the same path but of different type.
+					//	For example, embedded textures or animations share the same path
+					//	with their object
+				}
+			}
+
+			std::shared_ptr<T> ptr = std::make_shared<T>(path, std::forward<Args>(args)...);
+			if (ptr->isLoaded() == false)
+			{
+				return nullptr;
+			}
+			assets.emplace(std::make_pair(ptr->getId(), ptr));
+			return ptr;
+		}
+
+		/**	Same as loadAsset but does not load if not found.
+		**	Use this function when you know for sure that the asset is already loaded
+		**	Paths are not unique, so the first asset found with this path
+		**	will be returned
+		*/
+		template <typename T>
+		std::shared_ptr<T> getAsset(const std::string& path)
+		{
+			for (const auto& pair : this->assets)
 			{
 				std::shared_ptr<Asset> asset = pair.second;
 				if (std::filesystem::exists(std::filesystem::path(path))
@@ -31,21 +73,68 @@ namespace notrealengine
 					&& std::filesystem::equivalent(std::filesystem::path(asset->getPath()),
 						std::filesystem::path(path)))
 				{
-					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(assets[asset->getId()]);
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
 					if (tmp)
 						return tmp;
 				}
 			}
-
-			std::shared_ptr<T> ptr(new T(path, std::forward<Args>(args)...));
-			assets.emplace(std::make_pair(ptr->getId(), ptr));
-			return ptr;
+			return nullptr;
 		}
 
-		template <typename T, typename ... Args>
+		/**	Retrieve an asset by its ID if found or nullptr.
+		**	IDs are unique
+		*/
+		template <typename T>
 		std::shared_ptr<T> getAsset(uint32_t id)
 		{
-			return assets[id];
+			std::map<uint32_t, std::shared_ptr<Asset>>::iterator it =
+				this->assets.find(id);
+			if (it == this->assets.end())
+				return nullptr;
+			std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(it->second);
+			if (tmp)
+				return tmp;
+			return nullptr;
+		}
+
+		/**	Retrieve an asset by its name if found or nullptr.
+		**	Names are not unique, so the first asset found with this name
+		**	will be returned
+		*/
+		template <typename T>
+		std::shared_ptr<T> getAssetByName(const std::string& name)
+		{
+			for (const auto& pair : this->assets)
+			{
+				std::shared_ptr<Asset> asset = pair.second;
+				if (asset->getName() == name)
+				{
+					std::shared_ptr<T> tmp = dynamic_pointer_cast<T>(this->assets[asset->getId()]);
+					if (tmp)
+						return tmp;
+				}
+			}
+			return nullptr;
+		}
+
+		template <typename T>
+		void addAsset(std::shared_ptr<T> asset)
+		{
+			if (this->assets.find(asset->getId()) == this->assets.end())
+				assets.emplace(std::make_pair(asset->getId(), asset));
+		}
+
+		template <typename T>
+		std::vector<std::shared_ptr<T>> getAssetsOfType()
+		{
+			std::vector<std::shared_ptr<T>> res;
+			for (const auto& pair: this->assets)
+			{
+				std::shared_ptr<T> asset = dynamic_pointer_cast<T>(this->assets[pair.second->getId()]);
+				if (asset)
+					res.push_back(asset);
+			}
+			return res;
 		}
 
 		void

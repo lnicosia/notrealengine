@@ -31,8 +31,6 @@ namespace notrealengine
 
 		const unsigned int&
 			getGLId() const;
-		virtual const std::string
-			getAssetType() const;
 		const std::string&
 			getType() const;
 		const mft::vec2i&
@@ -42,10 +40,17 @@ namespace notrealengine
 		const unsigned int
 			getShaderID() const;
 
+		//	Asset class
+
+		const std::string
+			getAssetType() const override;
+
 		//	Setters
 
-		void	setType(const std::string& type);
-		void	setShader(GLShaderProgram* shader);
+		void
+			setType(const std::string& type);
+		void
+			setShader(GLShaderProgram* shader);
 
 		//	Draw
 

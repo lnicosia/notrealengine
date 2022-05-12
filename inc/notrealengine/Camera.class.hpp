@@ -11,7 +11,8 @@ namespace notrealengine
 		Camera(mft::vec3 pos = mft::vec3(0.0f, 0.0f, 0.0f));
 		~Camera();
 
-		mft::mat4 const	getViewMatrix() const;
+		const mft::mat4
+			getViewMatrix() const;
 
 		mft::vec3	pos;
 		mft::vec3	front;
@@ -24,14 +25,27 @@ namespace notrealengine
 		float	speed;
 		float	sensitivity;
 
-		void	update();
+		void
+			update();
 
 		//	Movements
 
-		void	forward(uint32_t time);
-		void	backward(uint32_t time);
-		void	left(uint32_t time);
-		void	right(uint32_t time);
+		void
+			forward(uint32_t time);
+		void
+			backward(uint32_t time);
+		void
+			left(uint32_t time);
+		void
+			right(uint32_t time);
+		void
+			forward(float value);
+		void
+			backward(float value);
+		void
+			left(float value);
+		void
+			right(float value);
 
 	private:
 

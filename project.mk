@@ -19,11 +19,11 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/notrealengine/Object/Asset.class.cpp \
 		$S/notrealengine/Object/Light.class.cpp \
 		$S/notrealengine/Object/Scene.class.cpp \
-		$S/notrealengine/Object/InitBobby.cpp \
 		$S/notrealengine/Object/AssimpHelpers.cpp \
 		$S/notrealengine/Object/ObjectImporter.class.cpp \
 		$S/notrealengine/Object/AssimpObjectImporter.class.cpp \
 		$S/notrealengine/Object/CustomObjectImporter.class.cpp \
+		$S/notrealengine/Object/Skybox.class.cpp \
 		$S/notrealengine/SDL.class.cpp \
 		$S/notrealengine/SDLWindow.class.cpp \
 		$S/notrealengine/GLException.class.cpp \
@@ -50,13 +50,13 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/pngparser/Deflate.class.cpp \
 		$S/pngparser/BitStream.class.cpp \
 
-CC = clang++ --std=c++20 -O3
-CPPFLAGS =
+CC = clang++ --std=c++20
+CPPFLAGS = -O3 -flto
 LDFLAGS =
 INCLUDE =
 
 LIB_MOD =
-CMAKE_LIB_MOD = SDL 
+CMAKE_LIB_MOD = SDL
 
 SDL_LIB =
 SDL_INC = include

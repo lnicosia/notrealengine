@@ -8,3 +8,5 @@ windows/*
 .vs/
 test/logs/*
 *.out
+obj/*
+dep/*

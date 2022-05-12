@@ -22,7 +22,7 @@ namespace notrealengine
 			getChildren() const;
 		std::string const&
 			getName() const;
-		mft::vec3 const&
+		mft::vec4 const&
 			getColor() const;
 		unsigned int const&
 				getShader() const;
@@ -42,7 +42,7 @@ namespace notrealengine
 		void
 			setName(std::string name);
 		void
-			setColor(mft::vec3 color);
+			setColor(mft::vec4 color);
 		void
 			setShader(unsigned int shader);
 		void
@@ -75,7 +75,7 @@ namespace notrealengine
 		mft::mat4	globalMatrix;
 		mft::mat3	normalMatrix;
 
-		mft::vec3	color;
+		mft::vec4	color;
 
 		unsigned int	shader;
 

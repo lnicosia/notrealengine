@@ -3,6 +3,7 @@
 
 #include "Object/GLObject.class.hpp"
 #include "Object/Light.class.hpp"
+#include "Object/Skybox.class.hpp"
 #include "Camera.class.hpp"
 
 #define MAX_LIGHTS 4
@@ -25,6 +26,7 @@ namespace notrealengine
 	public:
 
 		Scene();
+		Scene(const std::string& name);
 		~Scene();
 
 		void
@@ -40,6 +42,8 @@ namespace notrealengine
 
 		void
 			addLight(std::shared_ptr<Light>& light);
+		void
+			setSkybox(std::shared_ptr<Skybox>);
 
 		void
 			bindMatrices(unsigned int shader) const;
@@ -63,6 +67,9 @@ namespace notrealengine
 
 		const DrawMode
 			getDrawMode() const;
+
+		const std::shared_ptr<Skybox>
+			getSkybox() const;
 
 		//	Setters
 
@@ -93,17 +100,38 @@ namespace notrealengine
 		void
 			right(uint32_t time);
 
+		/**	Move the main camera forward into the scene
+		*/
+		void
+			forward(float value);
+		/**	Move the main camera backward into the scene
+		*/
+		void
+			backward(float value);
+		/**	Move the main camera left into the scene
+		*/
+		void
+			left(float value);
+		/**	Move the main camera right into the scene
+		*/
+		void
+			right(float value);
+
 		//	View functions
 
 		const float
 			getYaw( void ) const;
 		const float
 			getPitch( void ) const;
+		const float
+			getCameraSpeed( void ) const;
 
 		void
 			setYaw(float yaw);
 		void
 			setPitch(float pitch);
+		void
+			setCameraPos(const mft::vec3& pos);
 		void
 			lookDown(uint32_t time);
 		void
@@ -119,7 +147,16 @@ namespace notrealengine
 		void
 			setDrawMode(DrawMode mode);
 
+		//	Free function
+
+		/**	Release all shared ptrs so they can be freed before OpenGL.
+		**	Needs to be called manually if the scene is a global object
+		*/
+		void
+			clear( void );
+
 		bool	drawGrid;
+		bool	drawSkybox;
 
 	private:
 		std::string	name;
@@ -129,6 +166,7 @@ namespace notrealengine
 
 		std::vector<std::shared_ptr<GLObject>>	objects;
 		std::vector<std::shared_ptr<Light>>		lights;
+		std::shared_ptr<Skybox>	skybox;
 		/**	Keep track of all the shaders used in the scene
 		*/
 		std::vector<unsigned int>	shaders;

@@ -13,31 +13,21 @@ namespace notrealengine
 {
 	bool	IsReg(const std::string& path)
 	{
-#ifdef NRE_WINDOWS
-		return true;
-#else
-		struct stat fileStats;
-		lstat(path.c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
-		{
-			return false;
-		}
-		return true;
-#endif
+		return IsReg(std::filesystem::path(path));
 	}
 
 	bool	IsReg(const std::filesystem::path& path)
 	{
-#ifdef NRE_WINDOWS
-		return true;
-#else
-		struct stat fileStats;
-		lstat(path.string().c_str(), &fileStats);
-		if (!S_ISREG(fileStats.st_mode))
+		if (!std::filesystem::exists(path))
 		{
+			std::cerr << std::endl << "nre: " << path << " does not exist" << std::endl;
+			return false;
+		}
+		if (!std::filesystem::is_regular_file(path))
+		{
+			std::cerr << std::endl << "nre: " << path << " is not a regular file" << std::endl;
 			return false;
 		}
 		return true;
-#endif
 	}
 }

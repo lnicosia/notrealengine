@@ -1,7 +1,7 @@
 #ifndef _BUTTON_CLASS_H_
 #define _BUTTON_CLASS_H_
 
-#include "Inputs/Binding.class.hpp"
+#include "Inputs/Action.class.hpp"
 #include "Object/Texture.class.hpp"
 #include "Object/AssetManager.class.hpp"
 #include "mft/mft.hpp"
@@ -15,20 +15,23 @@ namespace notrealengine
 	class Button: public UIElement
 	{
 	public:
-		Button(GLShaderProgram* shader,
-			std::shared_ptr<Texture> imgReleased = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-released.png", "UI"),
-			std::shared_ptr<Texture> imgPressed = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-pressed.png", "UI"),
-			std::shared_ptr<Texture> imgHovered = AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
-			mft::vec2i pos = mft::vec2i(0, 0));
+		Button(mft::vec2i pos = mft::vec2i(0, 0),
+		std::shared_ptr<Texture> imgReleased =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-released.png", "UI"),
+		std::shared_ptr<Texture> imgPressed =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-pressed.png", "UI"),
+		std::shared_ptr<Texture> imgHovered =
+		AssetManager::getInstance().loadAsset<Texture>("resources/UI/defaultUI-hovered.png", "UI"),
+		GLShaderProgram* shader = GLContext::getShader("2d"));
 		~Button();
 
 		void
-			draw() const;
+			draw() const override;
 
 		/** Update the button's state according to inputs
 		 */
-		virtual void
-			update(const mft::vec2i& mousePos, const InputState inputState);
+		void
+			update(const mft::vec2i& mousePos, const InputState inputState) override;
 
 		//	Accessors
 
@@ -69,22 +72,26 @@ namespace notrealengine
 		//	Set the size for each state
 
 		void
-			setHoveredSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setHoveredSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
 		void
-			setPressedSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setPressedSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
 		void
-			setReleasedSize(std::shared_ptr<Texture> img, mft::vec2i size);
+			setReleasedSize(std::shared_ptr<Texture> img, const mft::vec2i&& size);
+		void
+			setAllSizes(const mft::vec2i&& size);
+		void
+			setSize(const mft::vec2i&& newSize) override;
 
 		//	Set the function for each state
 
 		void
-			setHoveredFunc(std::function<int> func);
+			setWhenHovered(std::shared_ptr<ActionWrapper> func);
 		void
-			setPressedFunc(std::function<int>& func);
+			setWhenPressed(std::shared_ptr<ActionWrapper> func);
 		void
-			setPressFunc(std::function<int>& func);
+			setOnPress(std::shared_ptr<ActionWrapper> func);
 		void
-			setReleaseFunc(const std::function<int(void)>& func);
+			setOnRelease(std::shared_ptr<ActionWrapper> func);
 
 		void
 			setText(const std::string& text);
@@ -94,8 +101,16 @@ namespace notrealengine
 		void
 			setTextColor(const mft::vec4& color);
 
-		virtual void
-			setPos(const mft::vec2i&& newPos);
+		void
+			setPos(const mft::vec2i&& newPos) override;
+
+		void
+			addPos(const mft::vec2i& pos) override;
+
+		std::shared_ptr<ActionWrapper>	whenHovered;
+		std::shared_ptr<ActionWrapper>	whenPressed;
+		std::shared_ptr<ActionWrapper>	onRelease;
+		std::shared_ptr<ActionWrapper>	onPress;
 
 	private:
 		InputState	state;
@@ -103,20 +118,18 @@ namespace notrealengine
 		std::shared_ptr<Texture>	imgReleased;
 		std::shared_ptr<Texture>	imgPressed;
 		std::shared_ptr<Texture>	imgHovered;
-		mft::vec2i					sizeReleased;
-		mft::vec2i					sizePressed;
-		mft::vec2i					sizeHovered;
-		std::function<int(void)>	funcHovered;
-		std::function<int(void)>	funcRelease;
-		std::function<int(void)>	funcPressed;
-		std::function<int(void)>	funcPress;
+		mft::vec2i		sizeReleased;
+		mft::vec2i		sizePressed;
+		mft::vec2i		sizeHovered;
 
 		std::string	text;
 		mft::vec2i	textPos;
-		float		textScale;
+		float		textSize;
 		std::shared_ptr<GLFont>	font;
 		mft::vec4	textColor;
 
+		/**	Update the position of relative elements, like the text
+		*/
 		void
 			updateDrawData();
 	};

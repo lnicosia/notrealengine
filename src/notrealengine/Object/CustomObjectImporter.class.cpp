@@ -12,7 +12,7 @@ namespace notrealengine
 	{
 	}
 
-	void	CustomObjectImporter::ReadFile(const std::string& path, unsigned int flags)
+	bool	CustomObjectImporter::ReadFile(const std::string& path, unsigned int flags)
 	{
 		this->path = path;
 		ColladaSceneBuilder importer;
@@ -21,7 +21,7 @@ namespace notrealengine
 		if (!scene || !scene->mRootNode)
 		{
 			std::cerr << "Collada parser failed to import object" << std::endl;
-			return;
+			return false;
 		}
 		this->axis = importer.axis;
 		this->directory = path.substr(0, path.find_last_of('/'));
@@ -49,9 +49,7 @@ namespace notrealengine
 			axisTransform = mft::mat4();
 		processNodeBones(scene->mRootNode, scene, mft::mat4());
 
-		delete scene;
-		//readMissingBones(scene);
-
+		return true;
 	}
 
 	void	CustomObjectImporter::SetVertexBoneData(Vertex& vertex, int id, float weight)
@@ -203,8 +201,8 @@ namespace notrealengine
 			std::make_move_iterator(specularMaps.end()));
 
 		MeshData	data = MeshData(vertices, indices);
-		std::shared_ptr<GLMesh>	glMesh(new GLMesh(data, textures));
-		std::shared_ptr<Mesh>	res(new Mesh(glMesh));
+		std::shared_ptr<GLMesh>	glMesh = std::make_shared<GLMesh>(data, textures);
+		std::shared_ptr<Mesh>	res = std::make_shared<Mesh>(glMesh);
 		res->setName(mesh->mName);
 		return res;
 	}
@@ -294,6 +292,7 @@ namespace notrealengine
 			else
 			{*/
 				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
+
 			textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
 			//}
 		}

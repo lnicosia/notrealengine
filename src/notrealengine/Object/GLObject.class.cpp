@@ -33,31 +33,25 @@ namespace notrealengine
 	{
 	}
 
-	GLObject::GLObject(GLObject const& ref): Asset(ref.getPaths())
+	GLObject::GLObject(GLObject const& ref)
 	{
 		*this = ref;
 	}
 
 	GLObject::GLObject(const std::string& path)
-		: Asset({path}),
+		: Asset(path),
 		transform(), polygonMode(GL_FILL),
-		directory(""), meshes(), bones(), nbBones(0),
-		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		meshes(), bones(),
+		shader(GLContext::getShader("default")->programID), visible(true),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
 		animationSpeed(1.0)
 	{
-		std::filesystem::path	fPath(path);
-		if (!std::filesystem::exists(fPath))
-		{
-			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
-			return;
-		}
+		std::cout << "Loading object '" << path;
 		if (!IsReg(path))
 		{
-			std::cerr << "nre: Invalid file type" << std::endl;
+			std::cerr << std::endl << "nre: Invalid file" << std::endl;
 			return ;
 		}
 		loadObject(path);
@@ -67,13 +61,12 @@ namespace notrealengine
 	GLObject::GLObject(std::vector<std::shared_ptr<Mesh>>& meshes)
 		: Asset(),
 		transform(), polygonMode(GL_FILL),
-		directory(""), meshes(meshes), bones(), nbBones(0),
-		shader(GLContext::getShader("default")->programID),
-		visible(true), max(0.0f), min(0.0f), isRangeInit(false),
+		meshes(meshes), bones(),
+		shader(GLContext::getShader("default")->programID), visible(true),
 		anim(nullptr), startTime(0.0f), pauseTime(0.0f), currentTime(0.0f),
 		animationState(AnimationState::Stopped),
 		animationRepeat(AnimationRepeat::Repeat),
-		animationSpeed(0.0)
+		animationSpeed(1.0)
 	{
 		std::cout << "Building object from meshes..." << std::endl;
 		BuildMeshesMap();
@@ -81,7 +74,20 @@ namespace notrealengine
 
 	GLObject& GLObject::operator=(GLObject const& ref)
 	{
-		// TODO
+		this->transform = ref.transform;
+		this->visible = true;
+		this->animationRepeat = ref.animationRepeat;
+		this->animationSpeed = ref.animationSpeed;
+		this->meshes = ref.meshes;
+		this->bones = ref.bones;
+		this->meshesMap = ref.meshesMap;
+		this->shader = ref.shader;
+		this->polygonMode = GL_FILL;
+		this->anim = ref.anim;
+		this->startTime = 0;
+		this->pauseTime = 0;
+		this->currentTime = 0;
+		this->animationState = AnimationState::Stopped;
 		return *this;
 	}
 
@@ -118,7 +124,6 @@ namespace notrealengine
 
 	void	GLObject::loadObject(const std::string& path, unsigned int flags)
 	{
-		std::cout << "Loading object '" << path;
 
 		std::unique_ptr<ObjectImporter>	importer;
 #ifdef USING_EXTERNAL_LIBS
@@ -129,21 +134,20 @@ namespace notrealengine
 		std::cout << "' with custom parser..." << std::endl;
 #endif // USING_EXTERNAL_LIBS
 
-		importer->ReadFile(path, flags);
+		if (importer->ReadFile(path, flags) == false)
+		{
+			this->loaded = false;
+			return ;
+		}
 
-		this->max = importer->max;
-		this->min = importer->min;
-		this->isRangeInit = importer->isRangeInit;
-
-		this->meshes = importer->meshes;
-		this->bones = importer->bones;
-		this->nbBones = importer->nbBones;
+		this->meshes = std::move(importer->meshes);
+		this->bones = std::move(importer->bones);
 
 		//	Scale the object
 
-		float rangeX = this->max.x - this->min.x;
-		float rangeY = this->max.y - this->min.y;
-		float rangeZ = this->max.z - this->min.z;
+		float rangeX = importer->max.x - importer->min.x;
+		float rangeY = importer->max.y - importer->min.y;
+		float rangeZ = importer->max.z - importer->min.z;
 
 		float minRange;
 		if (rangeX == 0)
@@ -156,7 +160,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		this->transform.scale(mft::vec3(scale));
+		this->meshes[0]->localTransform.setScale(mft::vec3(scale));
 	}
 
 	//	Drawing functions
@@ -178,17 +182,20 @@ namespace notrealengine
 		GLCallThrow(glUseProgram, shader);
 		GLCallThrow(glDisable, GL_DEPTH_TEST);
 		Mesh	cube(GLContext::centeredCube);
-		cube.setColor(mft::vec3(204.0f / 255.0f, 0.0f, 204.0f / 255.0f));
+		cube.setColor(mft::vec4(204.0f / 255.0f, 0.0f, 204.0f / 255.0f, 1.0f));
 		cube.setShader(shader);
 
-		cube.setColor(mft::vec3(0.0f, 1.0f, 0.0f));
-		const mft::vec3& objScale = this->transform.getScale();
+		cube.setColor(mft::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+		const mft::vec3& objScale = this->transform.getScale()
+		* this->meshes[0]->localTransform.getScale();
 		mft::vec3 invObjScale = 0.05f / objScale;
 		mft::mat4 invObjScaleMatrix = mft::mat4::scale(invObjScale);
 		std::map<std::string, BoneInfo>::const_iterator it;
 		for (it = bones.begin(); it != bones.end(); it++)
 		{
-			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f), transform.getMatrix() * it->second.modelMatrix * invObjScaleMatrix);
+			cube.draw(mft::vec3(1.0f, 1.0f, 1.0f),
+			transform.getMatrix() * this->meshes[0]->localTransform.getMatrix()
+			* it->second.modelMatrix * invObjScaleMatrix);
 		}
 		GLCallThrow(glEnable, GL_DEPTH_TEST);
 	}
@@ -244,6 +251,7 @@ namespace notrealengine
 			}
 		}
 		this->animationState = AnimationState::Stopped;
+		this->currentTime = 0.0f;
 	}
 
 	void	GLObject::pauseAnimation( void )
@@ -266,6 +274,7 @@ namespace notrealengine
 	void	GLObject::stopAnimation( void )
 	{
 		this->animationState = AnimationState::Stopped;
+		this->currentTime = 0.0f;
 	}
 
 	void	GLObject::updateSolidAnim( void )
@@ -340,7 +349,8 @@ namespace notrealengine
 			this->resetPose();
 			return;
 		}
-		this->currentTime = (static_cast<float>(SDL_GetTicks()) - this->startTime);
+		this->currentTime = static_cast<float>(SDL_GetTicks()) - this->startTime;
+		this->currentTime *= this->animationSpeed;
 		if (this->currentTime >= anim->getDuration())
 		{
 			this->animationState = AnimationState::Stopped;
@@ -393,7 +403,7 @@ namespace notrealengine
 		this->bindBones();
 	}
 
-	void	GLObject::playAnimation(Animation* anim, AnimationRepeat animationRepeat)
+	void	GLObject::playAnimation(std::shared_ptr<Animation> anim, AnimationRepeat animationRepeat)
 	{
 		if (anim == nullptr)
 			return;
@@ -415,9 +425,9 @@ namespace notrealengine
 		return bones;
 	}
 
-	const int GLObject::getNbBones() const
+	const size_t GLObject::getNbBones() const
 	{
-		return nbBones;
+		return bones.size();
 	}
 
 	const std::string GLObject::getAssetType() const
@@ -438,6 +448,11 @@ namespace notrealengine
 	const AnimationState& GLObject::getAnimationState() const
 	{
 		return animationState;
+	}
+
+	const std::shared_ptr<Animation> GLObject::getAnimation() const
+	{
+		return anim;
 	}
 
 	const float GLObject::getStartTime() const
@@ -485,7 +500,7 @@ namespace notrealengine
 		this->shader = shader->programID;
 	}
 
-	void GLObject::setAnimation(Animation* anim)
+	void GLObject::setAnimation(std::shared_ptr<Animation> anim)
 	{
 		this->anim = anim;
 		AnimationState state = this->animationState;

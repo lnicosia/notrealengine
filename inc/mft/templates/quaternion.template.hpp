@@ -2,6 +2,8 @@
 #ifndef  _QUATERNIONS_TEMPLATE_HPP_
 # define _QUATERNIONS_TEMPLATE_HPP_
 
+# define _USE_MATH_DEFINES
+# include <math.h>
 # include "mft/quaternion.hpp"
 
 namespace mft
@@ -268,6 +270,55 @@ namespace mft
 	}
 
 	template<typename T>
+	requires std::is_floating_point_v<T>
+		constexpr quaternion<T> quaternion<T>::rotate( const vec<T,T,T>& rot, AngleType angleType )
+	{
+		quaternion<T> q;
+		vec<T, T, T> finalRot = rot;
+		if (angleType == AngleDegrees)
+			finalRot = vec<T, T, T>(mft::radians(rot.x), mft::radians(rot.y), mft::radians(rot.z));
+		if (finalRot.x != 0)
+			q *= rotation(vec<T, T, T>(1.0f, 0.0f, 0.0f), finalRot.x);
+		if (finalRot.y != 0)
+			q *= rotation(vec<T, T, T>(0.0f, 1.0f, 0.0f), finalRot.y);
+		if (finalRot.z != 0)
+			q *= rotation(vec<T, T, T>(0.0f, 0.0f, 1.0f), finalRot.z);
+		return q;
+	}
+
+	template<typename T>
+		requires std::is_floating_point_v<T>
+	constexpr vec<T, T, T> quaternion<T>::euler( const quaternion<T>& q )
+	{
+		vec<T, T, T> res;
+
+		double sqw = q.w * q.w;
+    double sqx = q.x * q.x;
+    double sqy = q.y * q.y;
+    double sqz = q.z * q.z;
+		double unit = sqx + sqy + sqz + sqw;
+		double test = q.x * q.y + q.z * q.w;
+		if (test > 0.499 * unit)
+		{ // singularity at north pole
+			res.x = 2 * std::atan2(q.x, q.w);
+			res.y = M_PI / 2;
+			res.z = 0;
+			return res;
+		}
+		if (test < -0.499 * unit)
+		{ // singularity at south pole
+			res.x = -2 * std::atan2(q.x, q.w);
+			res.y = -M_PI / 2;
+			res.z = 0;
+			return res;
+		}
+	  res.y = std::atan2(2 * q.y * q.w-2 * q.x * q.z , sqx - sqy - sqz + sqw);
+		res.z = std::asin(2 * test / unit);
+		res.x = std::atan2(2 * q.x * q.w-2 * q.y * q.z , -sqx + sqy - sqz + sqw);
+		return res;
+	}
+
+	template<typename T>
 		requires std::is_floating_point_v<T>
 	constexpr T quaternion<T>::dot( const quaternion<T>& x, const quaternion<T>& y )
 	{
@@ -300,13 +351,14 @@ namespace mft
 	{
 		T cosTheta = dot(q1, q2);
 		quaternion<T> q3 = q2;
+		float epsilon = std::numeric_limits<float>::epsilon();
 
 		if (cosTheta < 0.0)
 		{
 			q3 = -q2;
 			cosTheta = -cosTheta;
 		}
-		if (cosTheta > 1.0 - std::numeric_limits<float>::epsilon())
+		if (cosTheta > 1.0 - epsilon)
 		{
 			return quaternion<T>(
 				q1.a + (q3.a - q1.a) * percentage,
@@ -318,8 +370,8 @@ namespace mft
 		else
 		{
 			float theta = std::acos(cosTheta);
-			if (std::sin(theta) > 0.0 - std::numeric_limits<float>::epsilon()
-				&& std::sin(theta) < 0.0 + std::numeric_limits<float>::epsilon())
+			//	Why did I do this?
+			if (std::sin(theta) > 0.0 - epsilon && std::sin(theta) < 0.0 + epsilon)
 				std::cout << "DIVISION BY 0" << std::endl;
 			return quaternion<T>(
 				normalized((q1 * std::sin((1.0 - percentage) * theta)

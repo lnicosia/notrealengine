@@ -1,4 +1,5 @@
 #include "Object/MeshData.class.hpp"
+# define _USE_MATH_DEFINES_
 #include <math.h>
 #include <string>
 
