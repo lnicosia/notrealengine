@@ -13,6 +13,8 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/Object/Texture.class.cpp \
 		$S/Object/TextureLoader.class.cpp \
 		$S/pngparser/Png.class.cpp \
+		$S/pngparser/Deflate.class.cpp \
+		$S/pngparser/BitStream.class.cpp \
 		$S/SDL.class.cpp \
 		$S/SDLWindow.class.cpp \
 		$S/GLException.class.cpp \
