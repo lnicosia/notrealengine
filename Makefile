@@ -23,7 +23,7 @@ endif
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
-DEP =	$(SRC:$S/%.cpp=$D/%.d)
+DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
 
 TMP_DIRS=$(sort $(foreach DIRS,$(OBJ) $(DEP),$(dir $(shell echo '$(DIRS)' | sed ':do;p;s,^\(.*\)/[^/]*$$,\1,;\%^\(.*\)/[^/]*$$%b do;d'))))
@@ -39,6 +39,7 @@ LDFLAGS += $(foreach LIBRARY,$(LIB),-L$(dir $(LIBRARY)) -l$(patsubst lib%.a,%,$(
 LIB_DEP = $(LIB:%=%.d)
 
 $(foreach MOD,$(CMAKE_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
+$(foreach MOD,$(EXTERNAL_LIB_MOD),$(eval $(MOD)_DIR?=$L/$(MOD)))
 
 CMAKE_LIB = $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_LIB),$(patsubst %,$($(MOD)_DIR)/build/%,$($(MOD)_LIB))))
 INCLUDES += $(foreach MOD,$(CMAKE_LIB_MOD),$(if $($(MOD)_INC),$(patsubst %,$($(MOD)_DIR)/%,$($(MOD)_INC))))
@@ -63,14 +64,24 @@ all: $(LIB_TARGET) $(EXEC_TARGET)
 $(TMP_DIRS) $I:
 	@mkdir -p $@
 
+.SECONDARY:
 .SECONDEXPANSION:
-$D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
+$D/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$O/$$*.flags" -),,$$(if $$(shell diff "$O/$$*.flags" "$$@"),force)) | $$(dir $$@)
+	@echo $(CPPFLAGS)>$@
+
+.SECONDEXPANSION:
+$D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
 	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
 
+.SECONDARY:
 .SECONDEXPANSION:
-$(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
+$O/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$$@" -),force) | $$(dir $$@)
+	@echo $(CPPFLAGS)>$@
+
+.SECONDEXPANSION:
+$(OBJ): $O/%.o: $S/%.cpp $O/%.flags | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
@@ -109,6 +120,11 @@ $(LIB_TARGET): $(OBJ) project.mk
 	ar -rc $@ $(OBJ)
 	ranlib $@
 
+$(LIB_TARGET_EXTERNAL): 
+$(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
+	ar -rc $@ $(OBJ)
+	ranlib $@
+
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)
 
@@ -137,7 +153,11 @@ relib: libclean all
 force:
 	@true
 
+externallibs:
+	@make -j4 CMAKE_LIB_MOD="SDL assimp freetype" $(LIB_TARGET_EXTERNAL) "CPPFLAGS=-D USING_EXTERNAL_LIBS"
+
 -include customrules.mk
+
 
 ifeq ($(filter %clean relib re %.d,$(MAKECMDGOALS)),)
 -include $(patsubst $O/%.o,$D/%.d,$(wildcard $(OBJ)))

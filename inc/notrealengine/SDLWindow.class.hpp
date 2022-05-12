@@ -12,7 +12,7 @@ namespace notrealengine
 {
 	class SDLWindow {
 		public:
-			SDLWindow( std::string, std::pair<int, int> = {600, 800} );
+			SDLWindow( const std::string& name, std::pair<int, int> = {600, 800} );
 			~SDLWindow( void );
 
 			SDL_Window* getWindow();
@@ -21,6 +21,9 @@ namespace notrealengine
 		private:
 			SDL_Window * windowHandle;
 			SDL_GLContext glHandle;
+
+			void
+				loadGLfunctions( void );
 	};
 }
 

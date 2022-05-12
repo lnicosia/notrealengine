@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -17,6 +17,119 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="UsingExternalLibs-Debug|Win32">
+      <Configuration>UsingExternalLibs-Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="UsingExternalLibs-Debug|x64">
+      <Configuration>UsingExternalLibs-Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="UsingExternalLibs-Release|Win32">
+      <Configuration>UsingExternalLibs-Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="UsingExternalLibs-Release|x64">
+      <Configuration>UsingExternalLibs-Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\glad\glad.c" />
+    <ClCompile Include="src\LXML\LXML.class.cpp" />
+    <ClCompile Include="src\mft\math_utils.cpp" />
+    <ClCompile Include="src\notrealengine\Camera.class.cpp" />
+    <ClCompile Include="src\notrealengine\CheckFileType.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaException.class.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaParser.class.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaSceneBuilder.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLContext.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLContext_SDL.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLException.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLException.cpp" />
+    <ClCompile Include="src\notrealengine\GLShaderProgram.class.cpp" />
+    <ClCompile Include="src\notrealengine\Inputs\Binding.class.cpp" />
+    <ClCompile Include="src\notrealengine\Inputs\SDLEvents.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Animation.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Asset.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssetManager.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssimpHelpers.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssimpObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Bone.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\CustomObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\GLMesh.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\GLObject.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\InitBobby.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Light.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Mesh.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\MeshData.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\ObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Scene.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Texture.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Transform.class.cpp" />
+    <ClCompile Include="src\notrealengine\SDL.class.cpp" />
+    <ClCompile Include="src\notrealengine\SDLWindow.class.cpp" />
+    <ClCompile Include="src\notrealengine\Tests\ColladaParserTests.cpp" />
+    <ClCompile Include="src\notrealengine\Tests\RunTests.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\Freetype.class.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\GLCharacter.class.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\GLFont.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\Button.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\UIElement.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\UIManager.class.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\glad\glad.h" />
+    <ClInclude Include="inc\KHR\khrplatform.h" />
+    <ClInclude Include="inc\LXML\LXML.class.hpp" />
+    <ClInclude Include="inc\mft\mat.hpp" />
+    <ClInclude Include="inc\mft\math_utils.hpp" />
+    <ClInclude Include="inc\mft\mft.hpp" />
+    <ClInclude Include="inc\mft\quaternion.hpp" />
+    <ClInclude Include="inc\mft\templates\mat.template.hpp" />
+    <ClInclude Include="inc\mft\templates\quaternion.template.hpp" />
+    <ClInclude Include="inc\mft\templates\vec.template.hpp" />
+    <ClInclude Include="inc\mft\vec.hpp" />
+    <ClInclude Include="inc\notrealengine\Camera.class.hpp" />
+    <ClInclude Include="inc\notrealengine\CheckFileType.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaException.class.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaParser.class.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaSceneBuilder.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GL.hpp" />
+    <ClInclude Include="inc\notrealengine\GLContext.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLContext_SDL.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLException.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLShaderProgram.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\Binding.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\SDLEvents.class.hpp" />
+    <ClInclude Include="inc\notrealengine\notrealengine.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Animation.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Asset.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssetManager.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssimpHelpers.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssimpObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Bone.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\CustomObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\GLMesh.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\GLObject.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\InitBobby.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Light.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Mesh.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\MeshData.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\ObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Scene.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Texture.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Transform.class.hpp" />
+    <ClInclude Include="inc\notrealengine\SDL.class.hpp" />
+    <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Tests\ColladaParserTests.hpp" />
+    <ClInclude Include="inc\notrealengine\Tests\RunTests.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\Freetype.class.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\GLCharacter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\GLFont.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\Button.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\UIElement.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\UIManager.class.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -30,18 +143,38 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
@@ -53,29 +186,78 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\inc\notrealengine;..\inc;..\lib\SDL\include;$(IncludePath)</IncludePath>
+    <TargetName>NotRealEngined</TargetName>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|x64'">
     <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath)</IncludePath>
-    <TargetExt>.dll</TargetExt>
-    <TargetName>NotRealEngine</TargetName>
+    <TargetName>NotRealEngined</TargetName>
     <LibraryPath>..\lib\freetype\build-windows\Debug;..\lib\assimp\build-windows\lib\Debug;..\lib\SDL\build-windows\Debug;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>NotRealEngine</TargetName>
+    <LibraryPath>$(LibraryPath);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>..\inc\notrealengine;..\inc;..\lib\SDL\include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|x64'">
+    <TargetName>NotRealEngine</TargetName>
+    <LibraryPath>..\lib\freetype\build-windows\Release;..\lib\assimp\build-windows\lib\Release;..\lib\SDL\build-windows\Release;$(LibraryPath);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>..\lib\freetype\include;..\inc\notrealengine;..\lib\assimp\build-windows\include;..\lib\assimp\include;..\inc;..\..\SDL\include;..\lib\SDL\include;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NOTREALENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;NOTREALENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\lib\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -106,6 +288,22 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;NOTREALENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <AdditionalDependencies>freetyped.lib;assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -113,67 +311,59 @@
     <ClCompile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>cmd.exe /c "GetSDL.bat"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Debug|x64'">
+    <Link>
+      <AdditionalDependencies>freetyped.lib;assimpd.lib;opengl32.lib;SDL2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:preprocessor  /D USING_EXTERNAL_LIBS %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessorDefinitions>USING_EXTERNAL_LIBS</PreprocessorDefinitions>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>cmd.exe /c "GetExternalLibs.bat"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\Inputs\Binding.class.cpp" />
-    <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp" />
-    <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="..\src\glad\glad.c" />
-    <ClCompile Include="..\src\GLContext.class.cpp" />
-    <ClCompile Include="..\src\GLContext_SDL.class.cpp" />
-    <ClCompile Include="..\src\GLException.class.cpp" />
-    <ClCompile Include="..\src\GLException.cpp" />
-    <ClCompile Include="..\src\GLShaderProgram.class.cpp" />
-    <ClCompile Include="..\src\mft\math_utils.cpp" />
-    <ClCompile Include="..\src\mft\matrix_project.cpp" />
-    <ClCompile Include="..\src\mft\matrix_transform.cpp" />
-    <ClCompile Include="..\src\mft\vertex_utils.cpp" />
-    <ClCompile Include="..\src\Object\GLMesh.class.cpp" />
-    <ClCompile Include="..\src\Object\Mesh.class.cpp" />
-    <ClCompile Include="..\src\Object\MeshData.class.cpp" />
-    <ClCompile Include="..\src\object\GLObject.class.cpp" />
-    <ClCompile Include="..\src\Object\Texture.class.cpp" />
-    <ClCompile Include="..\src\Object\TextureLoader.class.cpp" />
-    <ClCompile Include="..\src\SDL.class.cpp" />
-    <ClCompile Include="..\src\SDLWindow.class.cpp" />
-    <ClCompile Include="..\src\TextRendering\Freetype.class.cpp" />
-    <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp" />
-    <ClCompile Include="..\src\TextRendering\GLFont.class.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\inc\Inputs\Binding.class.hpp" />
-    <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp" />
-    <ClInclude Include="..\inc\mft\mat.hpp" />
-    <ClInclude Include="..\inc\mft\math_utils.hpp" />
-    <ClInclude Include="..\inc\mft\mft.hpp" />
-    <ClInclude Include="..\inc\mft\templates\mat.template.hpp" />
-    <ClInclude Include="..\inc\mft\templates\vec.template.hpp" />
-    <ClInclude Include="..\inc\mft\vec.hpp" />
-    <ClInclude Include="..\inc\notrealengine\GL.hpp" />
-    <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp" />
-    <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp" />
-    <ClInclude Include="..\inc\notrealengine\GLException.class.hpp" />
-    <ClInclude Include="..\inc\notrealengine\GLShaderProgram.class.hpp" />
-    <ClInclude Include="..\inc\notrealengine\notrealengine.hpp" />
-    <ClInclude Include="..\inc\notrealengine\SDL.class.hpp" />
-    <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp" />
-    <ClInclude Include="..\inc\Object\GLMesh.class.hpp" />
-    <ClInclude Include="..\inc\Object\Mesh.class.hpp" />
-    <ClInclude Include="..\inc\Object\MeshData.class.hpp" />
-    <ClInclude Include="..\inc\Object\GLObject.class.hpp" />
-    <ClInclude Include="..\inc\Object\Texture.class.hpp" />
-    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp" />
-    <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp" />
-    <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp" />
-    <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\resources\shaders\text.fs" />
-    <None Include="..\resources\shaders\text.vs" />
-    <None Include="..\test\shaders\test.fs" />
-    <None Include="..\test\shaders\test.vs" />
-  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|x64'">
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>cmd.exe /c "GetSDL.bat"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='UsingExternalLibs-Release|x64'">
+    <ClCompile>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:preprocessor </AdditionalOptions>
+      <PreprocessorDefinitions>USING_EXTERNAL_LIBS</PreprocessorDefinitions>
+    </ClCompile>
+    <PreBuildEvent>
+      <Command>cmd.exe /c "GetExternalLibs.bat"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

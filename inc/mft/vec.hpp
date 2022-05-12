@@ -23,6 +23,7 @@ namespace	mft
 		union {
 			std::array<T,2> data;
 			struct { T x, y; };
+			struct { T u, v; };
 		};
 		constexpr vec_union<T,T>( T e1, T e2 ): data{e1, e2} {};
 		constexpr vec_union<T,T>( std::array<T,2> from ): data(from) {};
@@ -33,6 +34,8 @@ namespace	mft
 		union {
 			std::array<T,3> data;
 			struct { T x, y, z; };
+			struct { T s, t, p; };
+			struct { T r, g, b; };
 		};
 		constexpr vec_union<T,T,T>( T e1, T e2, T e3 ): data{e1, e2, e3} {};
 		constexpr vec_union<T,T,T>( std::array<T,3> from ): data(from) {};
@@ -43,6 +46,7 @@ namespace	mft
 		union {
 			std::array<T,4> data;
 			struct { T x, y, z, w; };
+			struct { T r, g, b, a; };
 		};
 		constexpr vec_union<T,T,T,T>( T e1, T e2, T e3, T e4 ): data{e1, e2, e3, e4} {};
 		constexpr vec_union<T,T,T,T>( std::array<T,4> from ): data(from) {};
@@ -96,18 +100,12 @@ namespace	mft
 		// No need to define vec/scalar operations as scalars can
 		// implicitly be converted to vectors through the constructor
 		constexpr vec<T1,Tn...>			operator+( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator+ <>( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator-( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator- <>( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator*( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator* <>( T1, const vec<T1,Tn...> & v2 );
 		constexpr vec<T1,Tn...>			operator/( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr vec<T1,Tn...>	operator/ <>( T1, const vec<T1,Tn...> & v2 );
 
 		constexpr bool					operator==( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator== <>( T1, const vec<T1,Tn...> & v2 );
 		constexpr bool					operator!=( const vec<T1,Tn...> & v2 ) const;
-		friend constexpr bool			operator!= <>( T1, const vec<T1,Tn...> & v2 );
 
 		// Other operators
 		friend std::ostream & operator<< <>( std::ostream & o, const vec<T1,Tn...> & v );
@@ -124,6 +122,20 @@ namespace	mft
 		static constexpr T1 dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 );
 		static constexpr vec<T1,T1,T1> cross( const vec<T1,T1,T1> & v1, const vec<T1,T1,T1> & v2 );
 	};
+	
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator+(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator-(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator*(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, Tn...>	operator/(T1, const vec<T1, Tn...>& v2);
+
+	template<typename T1, typename ... Tn>
+	constexpr bool			operator==(T1, const vec<T1, Tn...>& v2);
+	template<typename T1, typename ... Tn>
+	constexpr bool			operator!=(T1, const vec<T1, Tn...>& v2);
 }
 
 #endif

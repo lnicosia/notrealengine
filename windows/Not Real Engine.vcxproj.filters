@@ -1,173 +1,100 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
-    </Filter>
+    <ClCompile Include="src\notrealengine\Object\Animation.class.cpp" />
+    <ClCompile Include="src\glad\glad.c" />
+    <ClCompile Include="src\LXML\LXML.class.cpp" />
+    <ClCompile Include="src\mft\math_utils.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaException.class.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaParser.class.cpp" />
+    <ClCompile Include="src\notrealengine\ColladaParser\ColladaSceneBuilder.class.cpp" />
+    <ClCompile Include="src\notrealengine\Inputs\Binding.class.cpp" />
+    <ClCompile Include="src\notrealengine\Inputs\SDLEvents.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Asset.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssetManager.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssimpHelpers.cpp" />
+    <ClCompile Include="src\notrealengine\Object\AssimpObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Bone.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\CustomObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\GLMesh.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\GLObject.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\InitBobby.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Light.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Mesh.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\MeshData.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\ObjectImporter.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Scene.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Texture.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Transform.class.cpp" />
+    <ClCompile Include="src\notrealengine\Tests\ColladaParserTests.cpp" />
+    <ClCompile Include="src\notrealengine\Tests\RunTests.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\Freetype.class.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\GLCharacter.class.cpp" />
+    <ClCompile Include="src\notrealengine\TextRendering\GLFont.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\Button.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\UIElement.class.cpp" />
+    <ClCompile Include="src\notrealengine\UI\UIManager.class.cpp" />
+    <ClCompile Include="src\notrealengine\Camera.class.cpp" />
+    <ClCompile Include="src\notrealengine\CheckFileType.cpp" />
+    <ClCompile Include="src\notrealengine\GLContext.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLContext_SDL.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLException.class.cpp" />
+    <ClCompile Include="src\notrealengine\GLException.cpp" />
+    <ClCompile Include="src\notrealengine\GLShaderProgram.class.cpp" />
+    <ClCompile Include="src\notrealengine\SDL.class.cpp" />
+    <ClCompile Include="src\notrealengine\SDLWindow.class.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Object\GLMesh.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\glad\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\object\GLObject.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Object\MeshData.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GLContext.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GLContext_SDL.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GLException.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GLException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\GLShaderProgram.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SDL.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\SDLWindow.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\TextRendering\GLCharacter.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\TextRendering\GLFont.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\TextRendering\Freetype.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\mft\math_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Object\Mesh.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Object\Texture.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Object\TextureLoader.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Inputs\SDLEvents.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Inputs\Binding.class.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\inc\mft\mat.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\mft.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\vec.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\GLMesh.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\GLObject.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\MeshData.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\GL.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\GLContext.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Inputs\Binding.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Inputs\SDLEvents.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\GLContext_SDL.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\GLException.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\GLShaderProgram.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\notrealengine.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\SDL.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\notrealengine\SDLWindow.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\TextRendering\GLCharacter.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\TextRendering\GLFont.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\TextRendering\Freetype.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\templates\mat.template.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\templates\vec.template.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\mft\math_utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\Mesh.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\TextureLoader.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\inc\Object\Texture.class.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\test\shaders\test.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\test\shaders\test.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\resources\shaders\text.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\resources\shaders\text.fs">
-      <Filter>Resource Files</Filter>
-    </None>
+    <ClInclude Include="inc\glad\glad.h" />
+    <ClInclude Include="inc\KHR\khrplatform.h" />
+    <ClInclude Include="inc\LXML\LXML.class.hpp" />
+    <ClInclude Include="inc\mft\templates\mat.template.hpp" />
+    <ClInclude Include="inc\mft\templates\quaternion.template.hpp" />
+    <ClInclude Include="inc\mft\templates\vec.template.hpp" />
+    <ClInclude Include="inc\mft\mat.hpp" />
+    <ClInclude Include="inc\mft\math_utils.hpp" />
+    <ClInclude Include="inc\mft\mft.hpp" />
+    <ClInclude Include="inc\mft\quaternion.hpp" />
+    <ClInclude Include="inc\mft\vec.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaException.class.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaParser.class.hpp" />
+    <ClInclude Include="inc\notrealengine\ColladaParser\ColladaSceneBuilder.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\Binding.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\SDLEvents.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Animation.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Asset.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssetManager.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssimpHelpers.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\AssimpObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Bone.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\CustomObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\GLMesh.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\GLObject.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\InitBobby.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Light.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Mesh.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\MeshData.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\ObjectImporter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Scene.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Texture.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Transform.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Tests\ColladaParserTests.hpp" />
+    <ClInclude Include="inc\notrealengine\Tests\RunTests.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\Freetype.class.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\GLCharacter.class.hpp" />
+    <ClInclude Include="inc\notrealengine\TextRendering\GLFont.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\Button.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\UIElement.class.hpp" />
+    <ClInclude Include="inc\notrealengine\UI\UIManager.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Camera.class.hpp" />
+    <ClInclude Include="inc\notrealengine\CheckFileType.hpp" />
+    <ClInclude Include="inc\notrealengine\GL.hpp" />
+    <ClInclude Include="inc\notrealengine\GLContext.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLContext_SDL.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLException.class.hpp" />
+    <ClInclude Include="inc\notrealengine\GLShaderProgram.class.hpp" />
+    <ClInclude Include="inc\notrealengine\notrealengine.hpp" />
+    <ClInclude Include="inc\notrealengine\SDL.class.hpp" />
+    <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
   </ItemGroup>
 </Project>

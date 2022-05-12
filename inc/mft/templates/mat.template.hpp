@@ -40,6 +40,14 @@ namespace mft
 	}
 
 	template<typename T1, typename ... Tn>
+	constexpr mat<T1, Tn...>::mat( const Row& r1,
+								   const Row& r2,
+								   const Row& r3) :
+		Rows(r1, r2, r3)
+	{
+	}
+
+	template<typename T1, typename ... Tn>
 	constexpr vec<T1,Tn...> & mat<T1,Tn...>::operator[]( size_t index )
 	{
 		if (index >= 0 && index <= sizeof...(Tn))
@@ -63,13 +71,20 @@ namespace mft
 		return static_cast<T1 *>(&(*this)[0][0]);
 	}
 
-	template <typename T1, typename ... Tn>
-	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v )
+	template<typename T1, typename ... Tn>
+	mat<T1,Tn...>::operator const T1*() const
 	{
-		vec<T1,Tn...> ret(	vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0));
+		return static_cast<const T1 *>(&(*this)[0][0]);
+	}
+
+	template <typename T1, typename ... Tn>
+	constexpr vec<T1,Tn...> mat<T1,Tn...>::operator*( const vec<T1,Tn...> & v ) const
+	{
+		vec<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = 0;
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
@@ -80,30 +95,66 @@ namespace mft
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 )
+	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator+( const mat<T1,Tn...> & m2 ) const
 	{
-		mat<T1,Tn...> ret(	vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0),
-							vec<T1, Tn...>(0));
+		mat<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = (*this)[i][j] + m2[i][j];
+			return ret;
+	}
+
+
+		template <typename T1, typename ... Tn>
+		constexpr mat<T1,Tn...> mat<T1,Tn...>::operator-( const mat<T1,Tn...> & m2 ) const
+		{
+			mat<T1,Tn...> ret;
+
+			for (int i = 0; i <= sizeof...(Tn); i++)
+				for (int j = 0; j <= sizeof...(Tn); j++)
+					ret[i][j] = (*this)[i][j] - m2[i][j];
+			return ret;
+		}
+
+	template <typename T1, typename ... Tn>
+	constexpr mat<T1,Tn...> mat<T1,Tn...>::operator*( const mat<T1,Tn...> & m2 ) const
+	{
+		mat<T1,Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = 0;
 
 		for (int i = 0; i <= sizeof...(Tn); i++)
 			for (int j = 0; j <= sizeof...(Tn); j++)
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += (*this)[k][j] * m2[i][k];
+					ret[i][j] += (*this)[i][k] * m2[k][j];
 				}
 		return ret;
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 )
+	constexpr mat<T1, Tn...> mat<T1, Tn...>::operator*(const T1 & scalar) const
 	{
-		return Rows::operator==(*this, m2);
+		mat<T1, Tn...> ret;
+
+		for (int i = 0; i <= sizeof...(Tn); i++)
+			for (int j = 0; j <= sizeof...(Tn); j++)
+				ret[i][j] = (*this)[i][j] * scalar;
+
+		return ret;
 	}
 
 	template <typename T1, typename ... Tn>
-	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 )
+	constexpr bool mat<T1,Tn...>::operator==( const mat<T1,Tn...> & m2 ) const
+	{
+		return Rows::operator==(m2);
+	}
+
+	template <typename T1, typename ... Tn>
+	constexpr bool mat<T1,Tn...>::operator!=( const mat<T1,Tn...> & m2 ) const
 	{
 		return !(*this == m2);
 	}
@@ -136,7 +187,7 @@ namespace mft
 			for (int j = 0; j <= sizeof...(Tn); j++)
 				for (int k = 0; k <= sizeof...(Tn); k++)
 				{
-					ret[i][j] += (*this)[k][j] * m2[i][k];
+					ret[i][j] += (*this)[i][k] * m2[k][j];
 				}
 		*this = ret;
 		return *this;
@@ -155,7 +206,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::scale( const vec<T1,T1,T1> & v )
-	{ 
+	{
 		return mat<T1,T1,T1,T1>(
 				{ v.x, 0, 0, 0 },
 				{ 0, v.y, 0, 0 },
@@ -166,7 +217,7 @@ namespace mft
 
 	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const T1 angle, const vec<T1,T1,T1> & axis )
-	{ 
+	{
 		const float			c = std::cos(angle);
 		const float			s = std::sin(angle);
 		const float			minc = 1 - c;
@@ -181,26 +232,79 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::look_at( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
-	{ 
-		using vec3 = vec<T1,T1,T1>;
-		vec3 right = vec3::normalized(vec3::cross(vec3::normalized(up), target));
-
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::rotate( const quaternion<T1> r )
+	{
 		return mat<T1,T1,T1,T1>(
-				{ right.x , right.y , right.z , 0 },
-				{ up.x	  , up.y	, up.z	  , 0 },
-				{ target.x, target.y, target.z, 0 },
-				{ 0		  , 0		, 0		  , 1 }
-				) * mat<T1, T1, T1, T1>(
-					{ 1, 0, 0, -pos.x },
-					{ 0, 1, 0, -pos.y },
-					{ 0, 0, 1, -pos.z },
-					{ 0, 0, 0, 1 });
+				{ 1 - 2 * r.j * r.j - 2 * r.k * r.k, -2 * r.r * r.k + 2 * r.i * r.j	  , 2 * r.r * r.j + 2 * r.i * r.k	 , 0 },
+				{ 2 * r.r * r.k + 2 * r.i * r.j	   , 1 - 2 * r.i * r.i - 2 * r.k * r.k, -2 * r.r * r.i + 2 * r.j * r.k	 , 0 },
+				{ -2 * r.r * r.j + 2 * r.i * r.k   , 2 * r.r * r.i + 2 * r.j * r.k	  , 1 - 2 * r.i * r.i - 2 * r.j * r.j, 0 },
+				{ 0								   , 0								  , 0								 , 1 }
+				);
 	 }
 
 	template<typename T1, typename ... Tn>
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::lookAt( const vec<T1,T1,T1> & pos, const vec<T1,T1,T1> & target, const vec<T1,T1,T1> & up)
+	{
+		using vec3 = vec<T1, T1, T1>;
+		vec3 const Forward = vec3::normalized(target - pos);
+		vec3 const Right = vec3::normalized(vec3::cross(Forward, up));
+		vec3 const Up = vec3::cross(Right, Forward);
+
+		return mat<T1, T1, T1, T1>(
+			{ Right.x,		Right.y,	Right.z,	-vec3::dot(Right, pos)},
+			{ Up.x,			Up.y,		Up.z,		-vec3::dot(Up, pos)},
+			{ -Forward.x,	-Forward.y,	-Forward.z,	vec3::dot(Forward, pos)},
+			{ 0,			0,			0,			1});
+	 }
+
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, T1, T1> mat<T1, Tn...>::getTranslation(const mat<T1, T1, T1, T1>& m)
+	{
+		return vec<T1, T1, T1>(m[0][3], m[1][3], m[2][3]);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr quaternion<T1> mat<T1, Tn...>::getRotation(const mat<T1, T1, T1, T1>& m)
+	{
+		return vec<T1, T1, T1>(m[0][3], m[1][3], m[2][3]);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr vec<T1, T1, T1> mat<T1, Tn...>::getScale(const mat<T1, T1, T1, T1>& m)
+	{
+		vec<T1, T1, T1> scale;
+		vec<T1, T1, T1> columns[3] =
+		{
+			{ m[0][0], m[1][0], m[2][0] },
+			{ m[0][1], m[1][1], m[2][1] },
+			{ m[0][2], m[1][2], m[2][2] }
+		};
+
+		scale.x = vec<T1, T1, T1>::length(columns[0]);
+		scale.y = vec<T1, T1, T1>::length(columns[1]);
+		scale.z = vec<T1, T1, T1>::length(columns[2]);
+		return scale;
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr void mat<T1, Tn...>::decompose(const mat<T1, T1, T1, T1>& m,
+		vec<T1, T1, T1>& pos, quaternion<T1>& rot, vec<T1, T1, T1>& scale)
+	{
+		pos = getTranslation(m);
+		scale = getScale(m);
+
+		float m3x3[3][3] =
+		{
+			{ m[0][0], m[0][1], m[0][2] },
+			{ m[1][0], m[1][1], m[1][2] },
+			{ m[2][0], m[2][1], m[2][2] }
+		};
+		rot = quaternion<T1>(m3x3);
+	}
+
+	template<typename T1, typename ... Tn>
 	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top )
-	{ 
+	{
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0, -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom) },
@@ -210,38 +314,128 @@ namespace mft
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far )
-	{ 
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::ortho( const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 nearPlane, const T1 farPlane )
+	{
 		return mat<T1,T1,T1,T1>(
 				{ 2 / (right - left), 0					, 0					  , -(right + left) / (right - left) },
 				{ 0					, 2 / (top - bottom), 0					  , -(top + bottom) / (top - bottom) },
-				{ 0					, 0					, -2.0f / (far - near), -(far + near) / (far - near)	 },
+				{ 0					, 0					, 1 / (farPlane - nearPlane)	  ,	-nearPlane / (farPlane - nearPlane)			 },
 				{ 0					, 0					, 0					  , 1								 }
 				);
 	 }
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 near, const T1 far)
-	{ 
+	constexpr mat<T1,T1,T1,T1> mat<T1,Tn...>::perspective( const T1 fovy, const T1 aspect, const T1 nearPlane, const T1 farPlane)
+	{
 		const T1 tang = std::tan(fovy * 0.5f);
 
-		return mat<T1,T1,T1,T1>(
-				{ 1 / (aspect * tang), 0	   , 0	  , 0  },
-				{ 0					 , 1 / tang, 0	  , 0  },
-				{ 0					 , 0	   , far / (far - near)	  , 1 },
-				{ 0					 , 0	   , -(far * near) / (far - near), 0  }
-				);
+		return mat<T1, T1, T1, T1>(
+			{ 1 / (aspect * tang), 0	   , 0,									0 },
+			{ 0					 , 1 / tang, 0,									0 },
+			{ 0					 , 0	   , farPlane / (farPlane - nearPlane),	-(farPlane * nearPlane) / (farPlane - nearPlane) },
+			{ 0					 , 0	   , 1,									0 }
+		);
+	}
+
+	// Does not work??
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 nearPlane, const T1 farPlane)
+	{
+		return mat<T1, T1, T1, T1>(
+			{ (2 * nearPlane) / (right - left),	0,	(right + left) / (right - left), 0 },
+			{ 0,			(2 * nearPlane) / (top - bottom), (top + bottom) / (top - bottom), 0 },
+			{ 0,			0,			farPlane / (farPlane - nearPlane),	-(farPlane * nearPlane) / (farPlane - nearPlane) },
+			{ 0,			0,			1,								0 }
+		);
 	}
 
 	template<typename T1, typename ... Tn>
-	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::perspective(const T1 left, const T1 right, const T1 bottom, const T1 top, const T1 near, const T1 far)
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::transpose(const mat<T1, T1, T1, T1>& m)
 	{
 		return mat<T1, T1, T1, T1>(
-			{ near / right, 0	   , 0	  , 0 },
-			{ 0					 , near / top, 0	  , 0 },
-			{ 0					 , 0	   , -(far + near) / (far - near)	  , 1 },
-			{ 0					 , 0	   , -(far * near) / (far - near), 0 }
+			{ m[0][0], m[1][0], m[2][0], m[3][0] },
+			{ m[0][1], m[1][1], m[2][1], m[3][1] },
+			{ m[0][2], m[1][2], m[2][2], m[3][2] },
+			{ m[0][3], m[1][3], m[2][3], m[3][3] }
 		);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr mat<T1, T1, T1, T1> mat<T1, Tn...>::inverse(const mat<T1, T1, T1, T1>& m2)
+	{
+		mat<T1, T1, T1, T1> m = transpose(m2);
+		T1 Coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+		T1 Coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+		T1 Coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+
+		T1 Coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+		T1 Coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+		T1 Coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+
+		T1 Coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+		T1 Coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+		T1 Coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+
+		T1 Coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+		T1 Coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+		T1 Coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+
+		T1 Coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+		T1 Coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+		T1 Coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+
+		T1 Coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+		T1 Coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+		T1 Coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+
+		vec<T1,T1,T1,T1> Fac0(Coef00, Coef00, Coef02, Coef03);
+		vec<T1,T1,T1,T1> Fac1(Coef04, Coef04, Coef06, Coef07);
+		vec<T1,T1,T1,T1> Fac2(Coef08, Coef08, Coef10, Coef11);
+		vec<T1,T1,T1,T1> Fac3(Coef12, Coef12, Coef14, Coef15);
+		vec<T1,T1,T1,T1> Fac4(Coef16, Coef16, Coef18, Coef19);
+		vec<T1,T1,T1,T1> Fac5(Coef20, Coef20, Coef22, Coef23);
+
+		vec<T1,T1,T1,T1> Vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
+		vec<T1,T1,T1,T1> Vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
+		vec<T1,T1,T1,T1> Vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
+		vec<T1,T1,T1,T1> Vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
+
+		vec<T1,T1,T1,T1> Inv0(Vec1 * Fac0 - Vec2 * Fac1 + Vec3 * Fac2);
+		vec<T1,T1,T1,T1> Inv1(Vec0 * Fac0 - Vec2 * Fac3 + Vec3 * Fac4);
+		vec<T1,T1,T1,T1> Inv2(Vec0 * Fac1 - Vec1 * Fac3 + Vec3 * Fac5);
+		vec<T1,T1,T1,T1> Inv3(Vec0 * Fac2 - Vec1 * Fac4 + Vec2 * Fac5);
+
+		vec<T1,T1,T1,T1> SignA(+1, -1, +1, -1);
+		vec<T1,T1,T1,T1> SignB(-1, +1, -1, +1);
+		mat<T1,T1,T1,T1> Inverse(Inv0 * SignA, Inv1 * SignB, Inv2 * SignA, Inv3 * SignB);
+
+		vec<T1,T1,T1,T1> Row0(Inverse[0][0], Inverse[1][0], Inverse[2][0], Inverse[3][0]);
+
+		vec<T1,T1,T1,T1> Dot0(m[0] * Row0);
+		T1 Dot1 = (Dot0.x + Dot0.y) + (Dot0.z + Dot0.w);
+
+		T1 OneOverDeterminant = static_cast<T1>(1) / Dot1;
+
+		return transpose(Inverse * OneOverDeterminant);
+	}
+
+	template<typename T1, typename ... Tn>
+	constexpr T1 mat<T1, Tn...>::determinant(const mat<T1, T1, T1, T1>& m)
+	{
+		return m[0][0]*m[1][1]*m[2][2]*m[3][3] - m[0][0]*m[1][1]*m[2][3]*m[3][2]
+			+ m[0][0]*m[1][2]*m[2][3]*m[3][1] - m[0][0]*m[1][2]*m[2][1]*m[3][3]
+			+ m[0][0]*m[1][3]*m[2][1]*m[3][2] - m[0][0]*m[1][3]*m[2][2]*m[3][1]
+			- m[0][1]*m[1][2]*m[2][3]*m[3][0] + m[0][1]*m[1][2]*m[2][0]*m[3][3]
+
+			- m[0][1]*m[1][3]*m[2][0]*m[3][2] + m[0][1]*m[1][3]*m[2][2]*m[3][0]
+			- m[0][1]*m[1][0]*m[2][2]*m[3][3] + m[0][1]*m[1][0]*m[2][3]*m[3][2]
+			+ m[0][2]*m[1][3]*m[2][0]*m[3][1] - m[0][2]*m[1][3]*m[2][1]*m[3][0]
+			+ m[0][2]*m[1][0]*m[2][1]*m[3][3] - m[0][2]*m[1][0]*m[2][3]*m[3][1]
+
+			+ m[0][2]*m[1][1]*m[2][3]*m[3][0] - m[0][2]*m[1][1]*m[2][0]*m[3][3]
+			- m[0][3]*m[1][0]*m[2][1]*m[3][2] + m[0][3]*m[1][0]*m[2][2]*m[3][1]
+			- m[0][3]*m[1][1]*m[2][2]*m[3][0] + m[0][3]*m[1][1]*m[2][0]*m[3][2]
+			- m[0][3]*m[1][2]*m[2][0]*m[3][1] + m[0][3]*m[1][2]*m[2][1]*m[3][0];
 	}
 }
 
