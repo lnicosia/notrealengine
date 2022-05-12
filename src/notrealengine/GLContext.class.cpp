@@ -9,19 +9,106 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+# define _USE_MATH_DEFINES_
+#include <math.h>
 
 namespace notrealengine
 {
+	std::shared_ptr<GLMesh> CreateSphere(float radius, unsigned int horizontal, unsigned int vertical)
+	{
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		float H = 1.0f / static_cast<float>(horizontal - 1.0f);
+		float V = 1.0f / static_cast<float>(vertical - 1.0f);
+		float lengthInv = 1.0f / radius;
+		for (unsigned int h = 0; h < horizontal; h++)
+		{
+			for (unsigned int v = 0; v < vertical; v++)
+			{
+				//	+ radius to decenter the sphere
+				mft::vec3 pos(cosf(2 * M_PI * v * V) * sinf(M_PI * h * H),
+					sinf(-M_PI_2 + M_PI * h * H),
+					sinf(2 * M_PI * v * V) * sinf(M_PI * h * H));
+				mft::vec3 norm = pos * lengthInv;
+				mft::vec2 tex(static_cast<float>(v) / static_cast<float>(vertical),
+					static_cast<float>(h) / static_cast<float>(vertical));
+				pos = pos * radius + radius;
+				vertices.push_back(Vertex(pos, norm, tex));
+				
+				if (h < horizontal - 1)
+				{
+					unsigned int row = h * vertical;
+					unsigned int nextRow = (h + 1) * vertical;
+					unsigned int nextV = (v + 1) % vertical;
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + v);
+					indices.push_back(nextRow + nextV);
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + nextV);
+					indices.push_back(row + nextV);
+				}
+			}
+		}
+		MeshData	data(vertices, indices);
+		std::vector<std::shared_ptr<Texture>> textures;
+		return std::make_shared<GLMesh>(data, textures);
+	}
+
+	std::shared_ptr<GLMesh> CreateCenteredSphere(float radius, unsigned int horizontal, unsigned int vertical)
+	{
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+		float H = 1.0f / static_cast<float>(horizontal - 1.0f);
+		float V = 1.0f / static_cast<float>(vertical - 1.0f);
+		float lengthInv = 1.0f / radius;
+		for (unsigned int h = 0; h < horizontal; h++)
+		{
+			for (unsigned int v = 0; v < vertical; v++)
+			{
+				//	+ radius to decenter the sphere
+				mft::vec3 pos(cosf(2 * M_PI * v * V) * sinf(M_PI * h * H),
+					sinf(-M_PI_2 + M_PI * h * H),
+					sinf(2 * M_PI * v * V) * sinf(M_PI * h * H));
+				mft::vec3 norm = pos * lengthInv;
+				mft::vec2 tex(static_cast<float>(v) / static_cast<float>(vertical),
+					static_cast<float>(h) / static_cast<float>(vertical));
+				pos = pos * radius;
+				vertices.push_back(Vertex(pos, norm, tex));
+
+				if (h < horizontal - 1)
+				{
+					unsigned int row = h * vertical;
+					unsigned int nextRow = (h + 1) * vertical;
+					unsigned int nextV = (v + 1) % vertical;
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + v);
+					indices.push_back(nextRow + nextV);
+
+					indices.push_back(row + v);
+					indices.push_back(nextRow + nextV);
+					indices.push_back(row + nextV);
+				}
+			}
+		}
+		MeshData	data(vertices, indices);
+		std::vector<std::shared_ptr<Texture>> textures;
+		return std::make_shared<GLMesh>(data, textures);
+	}
+
 	GLContext::GLContext()
 	{
-		registerShader("color", "shaders/test.vs", "shaders/color.fs");
-		registerShader("colorUnlit", "shaders/test.vs", "shaders/colorUnlit.fs");
-		registerShader("bonesInfluence", "shaders/anim.vs", "shaders/bonesInfluence.fs");
-		registerShader("default", "shaders/anim.vs", "shaders/test.fs");
-		registerShader("unlit", "shaders/anim.vs", "shaders/unlit.fs");
+		registerShader("color", "shaders/solid.vs", "shaders/color.fs");
+		registerShader("colorUnlit", "shaders/solid.vs", "shaders/colorUnlit.fs");
+		registerShader("bonesInfluence", "shaders/skeletal.vs", "shaders/bonesInfluence.fs");
+		registerShader("default", "shaders/skeletal.vs", "shaders/default.fs");
+		registerShader("unlit", "shaders/skeletal.vs", "shaders/unlit.fs");
 		registerShader("2dProjected", "shaders/2dProjected.vs", "shaders/2dProjected.fs");
 		registerShader("2d", "shaders/2d.vs", "shaders/2d.fs");
-		registerShader("text", "shaders/text.vs", "shaders/text.fs");
+		registerShader("skybox", "shaders/skybox.vs", "shaders/skybox.fs");
+		registerShader("text", "shaders/2d.vs", "shaders/text.fs");
 
 		std::vector<Vertex>	vertices;
 
@@ -74,7 +161,7 @@ namespace notrealengine
 
 		MeshData	data(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures;
-		cube = std::shared_ptr<GLMesh>(new GLMesh(data, textures));
+		cube = std::make_shared<GLMesh>(data, textures);
 
 		vertices.clear();
 		vertices.push_back(Vertex(-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f));
@@ -126,7 +213,7 @@ namespace notrealengine
 
 		MeshData	data1(vertices, indices);
 		textures.clear();
-		centeredCube = std::shared_ptr<GLMesh>(new GLMesh(data1, textures));
+		centeredCube = std::make_shared<GLMesh>(data1, textures);
 
 		vertices.clear();
 		vertices.push_back(Vertex(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
@@ -138,48 +225,51 @@ namespace notrealengine
 
 		MeshData	data2(vertices, indices);
 		std::vector<std::shared_ptr<Texture>> textures2;
-		std::shared_ptr<GLMesh> square = std::shared_ptr<GLMesh>(new GLMesh(data2, textures2));
+		std::shared_ptr<GLMesh> square = std::make_shared<GLMesh>(data2, textures2);
 		std::vector<std::shared_ptr<Mesh>>	meshes;
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				std::shared_ptr<Mesh> mesh(new Mesh(square));
+				std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(square);
 				mesh->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(j) + "]");
 				mesh->localTransform.move(mft::vec3(i, 0.0f, j));
-				mesh->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh);
-				std::shared_ptr<Mesh> mesh2(new Mesh(square));
+				std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(square);
 				mesh2->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(-j) + "]");
 				mesh2->localTransform.move(mft::vec3(-i, 0.0f, -j));
-				mesh2->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh2->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh2);
-				std::shared_ptr<Mesh> mesh3(new Mesh(square));
+				std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(square);
 				mesh3->setName("Grid component ["
 				+ std::to_string(i) + "][" + std::to_string(-j) + "]");
 				mesh3->localTransform.move(mft::vec3(i, 0.0f, -j));
-				mesh3->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh3->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh3);
-				std::shared_ptr<Mesh> mesh4(new Mesh(square));
+				std::shared_ptr<Mesh> mesh4 = std::make_shared<Mesh>(square);
 				mesh4->setName("Grid component ["
 				+ std::to_string(-i) + "][" + std::to_string(j) + "]");
 				mesh4->localTransform.move(mft::vec3(-i, 0.0f, j));
-				mesh4->setColor(mft::vec3(1.0f, 1.0f, 1.0f));
+				mesh4->setColor(mft::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 				meshes.push_back(mesh4);
 			}
 		}
 
-		grid = std::shared_ptr<GLObject>(new GLObject(meshes));
+		grid = std::make_shared<GLObject>(meshes);
 		grid->setName("Grid");
 		grid->setShader(this->getShader("colorUnlit")->programID);
+
+		sphere = CreateSphere(0.5f, 15, 15);
 	}
 
 	GLContext::~GLContext()
 	{
 		cube.reset();
 		centeredCube.reset();
+		sphere.reset();
 		grid.reset();
 		shaders.clear();
 	}
@@ -190,16 +280,10 @@ namespace notrealengine
  		std::cout << name << "\"";
 
 		if (!IsReg(vertex))
-		{
-			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
-			return ;
-		}
+			throw std::invalid_argument("\nnre: Invalid vertex shader file type");
 
 		if (!IsReg(fragment))
-		{
-			std::cerr << "nre: Invalid vertex shader file type" << std::endl;
-			return ;
-		}
+			throw std::invalid_argument("\nnre: Invalid fragment shader file type");
 
 		if (shaders.contains(name))
 			throw std::invalid_argument( "Shader '" + name + "' has already been registered!" );
@@ -262,6 +346,7 @@ namespace notrealengine
 	std::filesystem::path GLContext::DefaultShaderPath = "shaders/";
 	std::map<std::string, GLShaderProgram> GLContext::shaders = std::map<std::string, GLShaderProgram>();
 	std::shared_ptr<GLMesh>	GLContext::cube = std::shared_ptr<GLMesh>();
+	std::shared_ptr<GLMesh>	GLContext::sphere = std::shared_ptr<GLMesh>();
 	std::shared_ptr<GLMesh>	GLContext::centeredCube = std::shared_ptr<GLMesh>();
 	std::shared_ptr<GLObject>	GLContext::grid = std::shared_ptr<GLObject>();
 	long GLContext::CurrentContext = 0;

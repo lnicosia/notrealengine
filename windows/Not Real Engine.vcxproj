@@ -59,12 +59,12 @@
     <ClCompile Include="src\notrealengine\Object\CustomObjectImporter.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\GLMesh.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\GLObject.class.cpp" />
-    <ClCompile Include="src\notrealengine\Object\InitBobby.cpp" />
     <ClCompile Include="src\notrealengine\Object\Light.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Mesh.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\MeshData.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\ObjectImporter.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Scene.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Skybox.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Texture.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Transform.class.cpp" />
     <ClCompile Include="src\notrealengine\SDL.class.cpp" />
@@ -100,6 +100,7 @@
     <ClInclude Include="inc\notrealengine\GLContext_SDL.class.hpp" />
     <ClInclude Include="inc\notrealengine\GLException.class.hpp" />
     <ClInclude Include="inc\notrealengine\GLShaderProgram.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\Action.class.hpp" />
     <ClInclude Include="inc\notrealengine\Inputs\Binding.class.hpp" />
     <ClInclude Include="inc\notrealengine\Inputs\SDLEvents.class.hpp" />
     <ClInclude Include="inc\notrealengine\notrealengine.hpp" />
@@ -112,12 +113,12 @@
     <ClInclude Include="inc\notrealengine\Object\CustomObjectImporter.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\GLMesh.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\GLObject.class.hpp" />
-    <ClInclude Include="inc\notrealengine\Object\InitBobby.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Light.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Mesh.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\MeshData.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\ObjectImporter.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Scene.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Texture.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Transform.class.hpp" />
     <ClInclude Include="inc\notrealengine\SDL.class.hpp" />

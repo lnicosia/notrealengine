@@ -2,17 +2,22 @@
 
 namespace notrealengine
 {
-	Binding::Binding(std::string name, uint8_t key1, uint8_t key2, bool editable)
-		: name(name),
-		key1(key1), key2(key2), editable(editable), state(InputState::NRE_RELEASED),
+	Binding::Binding(std::string name, uint32_t key1, uint32_t key2, bool editable):
+		name(name), key1(key1), key2(key2), editable(editable),
+		state(InputState::NRE_RELEASED),
 		onRelease(), onPress(), whenPressed(), whenReleased()
+	{
+
+	}
+
+	MouseBinding::MouseBinding(std::string name, uint32_t key1, uint32_t key2, bool editable):
+		Binding(name, key1, key2, editable), start(mft::vec2i())
 	{
 
 	}
 
 	Binding::~Binding()
 	{
-
 	}
 
 	//	Accessors
@@ -22,12 +27,12 @@ namespace notrealengine
 		return name;
 	}
 
-	uint8_t const	Binding::getKey1() const
+	uint32_t const	Binding::getKey1() const
 	{
 		return key1;
 	}
 
-	uint8_t const	Binding::getKey2() const
+	uint32_t const	Binding::getKey2() const
 	{
 		return key2;
 	}
@@ -39,12 +44,12 @@ namespace notrealengine
 
 	//	Setters
 
-	void	Binding::setKey1(uint8_t key)
+	void	Binding::setKey1(uint32_t key)
 	{
 		this->key1 = key;
 	}
 
-	void	Binding::setKey2(uint8_t key)
+	void	Binding::setKey2(uint32_t key)
 	{
 		this->key2 = key;
 	}

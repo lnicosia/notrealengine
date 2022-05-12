@@ -5,13 +5,17 @@
 
 namespace notrealengine
 {
-	Scene::Scene(): name(), camera(mft::vec3(0.0f, 3.0f, -5.0f)),
-		objects(), lights(), shaders(),
+	Scene::Scene()
+	{
+	}
+
+	Scene::Scene(const std::string& name): name(name), camera(mft::vec3(0.0f, 3.0f, 5.0f)),
+		objects(), lights(), shaders(), skybox(),
 		projection(mft::mat4::perspective(mft::radians(45.0f), 16.0f / 9.0f, 0.1f, 10000.0f)),
 		view(), lightingMode(LightingMode::Unlit), drawMode(DrawMode::Fill),
-		drawGrid(false)
+		drawGrid(false), drawSkybox(false)
 	{
-		camera.pitch += 15;
+		camera.pitch -= 15;
 		camera.update();
 
 		shaders.push_back(GLContext::getShader("2dProjected")->programID);
@@ -22,6 +26,8 @@ namespace notrealengine
 		//	Binding matrices and light manually for global shaders
 		bindMatrices(GLContext::getShader("2dProjected")->programID);
 
+		bindMatrices(GLContext::getShader("skybox")->programID);
+
 		bindMatrices(GLContext::getShader("color")->programID);
 		bindLights(GLContext::getShader("color")->programID);
 
@@ -30,10 +36,19 @@ namespace notrealengine
 
 		bindMatrices(GLContext::getShader("bonesInfluence")->programID);
 		bindLights(GLContext::getShader("bonesInfluence")->programID);
+
+		bindCamera();
 	}
 
 	Scene::~Scene()
 	{
+	}
+
+	void Scene::clear( void )
+	{
+		objects.clear();
+		lights.clear();
+		skybox.reset();
 	}
 
 	//	Accessors
@@ -46,6 +61,11 @@ namespace notrealengine
 	const Camera& Scene::getCamera() const
 	{
 		return camera;
+	}
+
+	const std::shared_ptr<Skybox>	Scene::getSkybox() const
+	{
+		return skybox;
 	}
 
 	//	Setters
@@ -90,6 +110,31 @@ namespace notrealengine
 		bindCamera();
 	}
 
+
+	void	Scene::forward(float value)
+	{
+		this->camera.forward(value);
+		bindCamera();
+	}
+
+	void	Scene::backward(float value)
+	{
+		this->camera.backward(value);
+		bindCamera();
+	}
+
+	void	Scene::left(float value)
+	{
+		this->camera.left (value);
+		bindCamera();
+	}
+
+	void	Scene::right(float value)
+	{
+		this->camera.right(value);
+		bindCamera();
+	}
+
 	const	float	Scene::getYaw( void ) const
 	{
 		return this->camera.yaw;
@@ -110,6 +155,16 @@ namespace notrealengine
 		return this->drawMode;
 	}
 
+	const float	Scene::getCameraSpeed() const
+	{
+		return this->camera.speed;
+	}
+
+	void	Scene::setSkybox(std::shared_ptr<Skybox> skybox)
+	{
+		this->skybox = skybox;
+	}
+
 	void	Scene::setYaw(float yaw)
 	{
 		this->camera.yaw = yaw;
@@ -120,6 +175,13 @@ namespace notrealengine
 	void	Scene::setPitch(float pitch)
 	{
 		this->camera.pitch = pitch;
+		this->camera.update();
+		bindCamera();
+	}
+
+	void	Scene::setCameraPos(const mft::vec3& pos)
+	{
+		this->camera.pos = pos;
 		this->camera.update();
 		bindCamera();
 	}
@@ -216,9 +278,16 @@ namespace notrealengine
 			bindMatrix(obj->getShader(), "view", this->camera.getViewMatrix());
 		}
 		//	Manually bind global shaders
+		
 		bindMatrix(GLContext::getShader("color")->programID, "view", this->camera.getViewMatrix());
 		bindMatrix(GLContext::getShader("colorUnlit")->programID, "view", this->camera.getViewMatrix());
 		bindMatrix(GLContext::getShader("bonesInfluence")->programID, "view", this->camera.getViewMatrix());
+
+		mft::mat4 view = this->camera.getViewMatrix();
+		view[0][3] = 0.0f;
+		view[1][3] = 0.0f;
+		view[2][3] = 0.0f;
+		bindMatrix(GLContext::getShader("skybox")->programID, "view", view);
 	}
 
 	void	Scene::bindLights(unsigned int shader) const
@@ -245,7 +314,7 @@ namespace notrealengine
 			GLCallThrow(glUniform3fv, location, 1, &ambient[0]);
 			name = "pointLights[" + std::to_string(i) + "].diffuse";
 			location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
-			mft::vec3 diffuse(0.5f, 0.5f, 0.5f);
+			mft::vec3 diffuse(1.0f, 1.0f, 1.0f);
 			GLCallThrow(glUniform3fv, location, 1, &diffuse[0]);
 			name = "pointLights[" + std::to_string(i) + "].specular";
 			location = GLCallThrow(glGetUniformLocation, shader, name.c_str());
@@ -303,20 +372,18 @@ namespace notrealengine
 
 	void	Scene::render()
 	{
-		/*for (const auto& pair: shaders)
-		{
-			std::vector<std::shared_ptr<Mesh>> meshes = pair.second;
-			for (const auto& mesh: meshes)
-			{
-				mesh->draw(mft::mat4());
-			}
-		}*/
 		if (this->drawMode == DrawMode::Wireframe || this->drawGrid == true)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
 		if (this->drawGrid == true)
+		{
 			GLContext::grid->draw();
+		}
 		if (this->drawMode != DrawMode::Wireframe)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
+		if (this->drawSkybox == true)
+		{
+			this->skybox->draw();
+		}
 		for (const auto& object: objects)
 		{
 			if (object->visible == true)

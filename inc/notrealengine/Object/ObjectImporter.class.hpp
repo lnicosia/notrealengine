@@ -47,7 +47,7 @@ namespace notrealengine
 
 		std::map<std::string, BoneInfo>	bones;
 		int	nbBones;
-		virtual void
+		virtual bool
 			ReadFile(const std::string& path, unsigned int flags) = 0;
 		Axis axis;
 

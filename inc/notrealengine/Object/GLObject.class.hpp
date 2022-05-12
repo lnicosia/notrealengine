@@ -66,7 +66,7 @@ namespace notrealengine
 			/**	Launch a given animation for this object
 			*/
 			void
-				playAnimation(Animation* anim,
+				playAnimation(std::shared_ptr<Animation> anim,
 					AnimationRepeat	animationRepeat = AnimationRepeat::Repeat);
 
 			/**	Pause the current object's animation
@@ -84,18 +84,21 @@ namespace notrealengine
 			void
 				stopAnimation( void );
 
+
 			//	Accessors
 
 			const std::vector<std::shared_ptr<Mesh>>&
 				getMeshes() const;
 			std::map<std::string, BoneInfo>&
 				getBones();
-			const int
+			const size_t
 				getNbBones() const;
 			const unsigned int
 				getShader() const;
 			const AnimationState&
 				getAnimationState() const;
+			const std::shared_ptr<Animation>
+				getAnimation() const;
 			std::map<std::string, std::shared_ptr<Mesh>>&
 				getMeshesMap();
 			/**	Returns the start time of the current anim
@@ -110,6 +113,8 @@ namespace notrealengine
 			*/
 			const std::string
 				getAnimationStateStr() const;
+
+			//	Asset inheritence
 
 			const std::string
 				getAssetType() const override;
@@ -127,11 +132,12 @@ namespace notrealengine
 			void
 				setBoneLocalMatrix(const mft::mat4& ref);
 			void
-				setAnimation(Animation* anim);
+				setAnimation(std::shared_ptr<Animation> anim);
 
 			//	Texture utility
 
-			void	addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
+			void
+				addTexture(unsigned int mesh, std::shared_ptr < Texture> & text);
 
 			// Transform is public so its non-const operations can be called efficiently
 			Transform	transform;
@@ -144,13 +150,7 @@ namespace notrealengine
 
 		private:
 
-			mft::vec3	max;
-			mft::vec3	min;
-			bool		isRangeInit;
-
 			std::vector<std::shared_ptr<Mesh>>	meshes;
-
-			std::string	directory;
 
 			//	All the bones of the object. Named BoneInfo to differenciate from
 			//	animations' bones
@@ -158,7 +158,6 @@ namespace notrealengine
 			//	Save the whole mesh hierarchy as a map too to access it
 			//	in an easier way when applying a solid animation
 			std::map<std::string, std::shared_ptr<Mesh>> meshesMap;
-			int	nbBones;
 
 			unsigned int	shader;
 
@@ -169,7 +168,7 @@ namespace notrealengine
 
 			//	Animations
 
-			Animation*		anim;
+			std::shared_ptr<Animation>		anim;
 			/**	Start time of the current animation (in ms)
 			*/
 			float			startTime;
@@ -205,7 +204,8 @@ namespace notrealengine
 			void
 				BuildMeshesMap();
 
-			/**
+			/**	Recursive function to store the mesh hierarchy in one single map
+			**	Called by BuildMeshesMap on the root mesh
 			*/
 			void
 				SaveMeshInMap(const std::shared_ptr<Mesh>& mesh);

@@ -37,6 +37,8 @@ namespace notrealengine
 		static std::shared_ptr<GLMesh>
 			cube;
 		static std::shared_ptr<GLMesh>
+			sphere;
+		static std::shared_ptr<GLMesh>
 			centeredCube;
 		static std::shared_ptr<GLObject>
 			grid;

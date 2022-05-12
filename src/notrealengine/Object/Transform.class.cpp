@@ -105,7 +105,7 @@ namespace notrealengine
 
 	void Transform::scale( vec3 s )
 	{
-		setScale(tScale * s);
+		setScale(tScale + s);
 	}
 
 	const mat4 & Transform::getPosMatrix( void ) const

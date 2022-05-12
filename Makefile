@@ -113,17 +113,18 @@ $(LIB):
 	$(call submodule_init,$(DIR))
 	$(MAKE) -C $(DIR) $($(MOD)_LIB) L='$(abspath $L)'
 
+LLVM_VERSION = $(shell clang --version | grep version | cut -d' ' -f4 | cut -d'.' -f1)
+
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
 $(LIB_TARGET): $(OBJ) project.mk
-	ar -rc $@ $(OBJ)
-	ranlib $@
+	llvm-ar-$(LLVM_VERSION) rc $@ $(OBJ)
+	llvm-ranlib-$(LLVM_VERSION) $@
 
-$(LIB_TARGET_EXTERNAL): 
 $(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
-	ar -rc $@ $(OBJ)
-	ranlib $@
+	llvm-ar-$(LLVM_VERSION) rc $@ $(OBJ)
+	llvm-ranlib-$(LLVML_VERSION) $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)

@@ -19,12 +19,6 @@ namespace lxml
 
 	void	Importer::ReadFile(const std::string& path, unsigned int flags)
 	{
-		std::filesystem::path	fPath(path);
-		if (!std::filesystem::exists(fPath))
-		{
-			std::cerr << "lxml: Unable to open file \"" << path << "\"" << std::endl;
-			return;
-		}
 		if (!notrealengine::IsReg(path))
 		{
 			std::cerr << "lxml: Invalid xml file type" << std::endl;

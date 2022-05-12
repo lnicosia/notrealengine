@@ -18,7 +18,6 @@
     <ClCompile Include="src\notrealengine\Object\CustomObjectImporter.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\GLMesh.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\GLObject.class.cpp" />
-    <ClCompile Include="src\notrealengine\Object\InitBobby.cpp" />
     <ClCompile Include="src\notrealengine\Object\Light.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Mesh.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\MeshData.class.cpp" />
@@ -43,6 +42,7 @@
     <ClCompile Include="src\notrealengine\GLShaderProgram.class.cpp" />
     <ClCompile Include="src\notrealengine\SDL.class.cpp" />
     <ClCompile Include="src\notrealengine\SDLWindow.class.cpp" />
+    <ClCompile Include="src\notrealengine\Object\Skybox.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\glad\glad.h" />
@@ -70,7 +70,6 @@
     <ClInclude Include="inc\notrealengine\Object\CustomObjectImporter.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\GLMesh.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\GLObject.class.hpp" />
-    <ClInclude Include="inc\notrealengine\Object\InitBobby.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Light.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Mesh.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\MeshData.class.hpp" />
@@ -96,5 +95,7 @@
     <ClInclude Include="inc\notrealengine\notrealengine.hpp" />
     <ClInclude Include="inc\notrealengine\SDL.class.hpp" />
     <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
+    <ClInclude Include="inc\notrealengine\Inputs\Action.class.hpp" />
   </ItemGroup>
 </Project>

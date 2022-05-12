@@ -16,9 +16,13 @@ namespace notrealengine
 		Asset(const std::vector<std::filesystem::path>& paths);
 		/**	Constructor for creating assets from code
 		*/
-		Asset(const std::string& name);
+		Asset(const std::string& path);
+		/**	The goal of assets is to keep their unicity
+		*/
 		Asset(const Asset& ref) = delete;
 		Asset(Asset&& ref);
+		/**	The goal of assets is to keep their unicity
+		*/
 		Asset& operator=(const Asset& ref) = delete;
 		Asset& operator=(Asset&& ref);
 		~Asset();
@@ -57,15 +61,19 @@ namespace notrealengine
 			setPaths(const std::vector<std::filesystem::path>& paths);
 
 	protected:
+
 		std::string				name;
+
 		/**	Some assets (including Shaders) may have 2 or even more paths defining them
 		**	In this case all of their paths will be checked when requesting them
 		*/
 		std::vector<std::filesystem::path> paths;
+
+		bool					loaded;
+
 	private:
 
 		uint32_t				id;
-		bool					loaded;
 
 		static uint32_t			count;
 	};

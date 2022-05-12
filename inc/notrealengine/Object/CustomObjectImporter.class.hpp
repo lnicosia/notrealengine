@@ -12,7 +12,7 @@ namespace notrealengine
 		CustomObjectImporter();
 		~CustomObjectImporter();
 
-		void
+		bool
 			ReadFile(const std::string& path, unsigned int flags) override;
 	private:
 		void
@@ -32,6 +32,7 @@ namespace notrealengine
 		*/
 		void
 			readMissingBones(const cpScene* scene);
+
 	};
 }
 
