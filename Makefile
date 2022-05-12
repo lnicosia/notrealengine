@@ -23,8 +23,10 @@ endif
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
-LLVM_AR = $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
-LLVM_RANLIB = $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+AR := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+RANLIB := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+AR += $(word 1,$(AR) ar)
+RANLIB += $(word 1,$(RANLIB) ranlib)
 
 DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
@@ -120,12 +122,12 @@ $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
 $(LIB_TARGET): $(OBJ) project.mk
-	$(LLVM_AR) rc $@ $(OBJ)
-	$(LLVM_RANLIB) $@
+	$(AR) rc $@ $(OBJ)
+	$(RANLIB) $@
 
 $(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
-	$(LLVM_AR) rc $@ $(OBJ)
-	$(LLVM_RANLIB)) $@
+	$(AR) rc $@ $(OBJ)
+	$(RANLIB)) $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)
