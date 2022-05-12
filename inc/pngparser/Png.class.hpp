@@ -16,7 +16,7 @@ namespace notrealengine
 
 	public:
 
-		Png( std::filesystem::path file );
+		Png( std::istream istream );
 		~Png( void );
 
 		const mft::vec2i &

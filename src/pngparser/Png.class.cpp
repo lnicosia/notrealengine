@@ -9,23 +9,19 @@
 
 namespace notrealengine
 {
-	Png::Png( std::filesystem::path file )
+	Png::Png( std::istream fstream )
 	{
-		std::ifstream fstream;
-
-		try {
-			fstream.open(file);
-		} catch (std::ifstream::failure & e) {
-			std::cerr <<  "Could not open Png file '" << file.string() << "'" << std::endl;
-		}
-
 		try {
 			parse(fstream);
 		} catch (std::ifstream::failure & e) {
-			std::cerr << "Error while reading PNG file '" << file.string() << "'" << std::endl;
+			std::stringstream tmp;
+			tmp << "Error while reading PNG stream";
+			throw png_exception(tmp.str());
 		} catch (std::exception & e) {
-			std::cerr << "Error while parsing PNG file '" << file.string() << "'" << std::endl;
-			std::cerr << e.what() << std::endl;
+			std::stringstream tmp;
+			tmp << "Error while parsing PNG stream" << std::endl;
+			tmp << e.what();
+			throw png_exception(tmp.str());
 		}
 	}
 
@@ -216,20 +212,23 @@ namespace notrealengine
 		if (fdict)
 			throw png_exception("Preset dictionaried are unsupported");
 
+		unsigned int alder32 = 0;
+		unsigned int alder32checksum = 0;
 		try {
-			unsigned int alder32 = Deflate::parse(in, out);
+			alder32 = Deflate::parse(in, out);
 			in.discardLeftoverBits();
-			unsigned int alder32checksum =
+			alder32checksum =
 				(in.getBits(8) << 24) +
 				(in.getBits(8) << 16) +
 				(in.getBits(8) << 8) +
 				in.getBits(8);
-			if (alder32 != alder32checksum)
-				throw png_exception("Incorrect alder32 checksum for zlib stream!");
 		} catch (std::exception & e) {
-			std::cerr << "Error while parsing deflate stream" << std::endl;
-			std::cerr << e.what() << std::endl;
+			std::stringstream tmp;
+			tmp << "Error while parsing deflate stream : " << std::endl << e.what();
+			throw png_exception(tmp.str());
 		}
+		if (alder32 != alder32checksum)
+			throw png_exception("Incorrect alder32 checksum for zlib stream!");
 	}
 
 	Png::Chunk::Chunk( std::istream & fstream )
