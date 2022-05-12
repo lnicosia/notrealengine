@@ -6,8 +6,7 @@ LIB_TARGET = libnre.a
 LIB_TARGET_EXTERNAL = libnre-external.a
 EXEC_TARGET =
 
-SRC =		\
-		$S/mft/math_utils.cpp \
+SRC =	$S/mft/math_utils.cpp \
 		$S/notrealengine/Object/GLMesh.class.cpp \
 		$S/notrealengine/Object/GLObject.class.cpp \
 		$S/notrealengine/Object/MeshData.class.cpp \
@@ -34,7 +33,7 @@ SRC =		\
 		$S/notrealengine/TextRendering/GLCharacter.class.cpp \
 		$S/notrealengine/TextRendering/GLFont.class.cpp \
 		$S/notrealengine/TextRendering/Freetype.class.cpp \
-    $S/notrealengine/Inputs/Binding.class.cpp \
+		$S/notrealengine/Inputs/Binding.class.cpp \
 		$S/notrealengine/Inputs/SDLEvents.class.cpp \
 		$S/notrealengine/Camera.class.cpp \
 		$S/notrealengine/ColladaParser/ColladaParser.class.cpp \
@@ -46,7 +45,10 @@ SRC =		\
 		$S/notrealengine/UI/Button.class.cpp \
 		$S/notrealengine/UI/UIElement.class.cpp \
 		$S/notrealengine/UI/UIManager.class.cpp \
-		$S/notrealengine/CheckFileType.cpp
+		$S/notrealengine/CheckFileType.cpp \
+		$S/pngparser/Png.class.cpp \
+		$S/pngparser/Deflate.class.cpp \
+		$S/pngparser/BitStream.class.cpp \
 
 CC = clang++ --std=c++20
 CPPFLAGS = -O3 -flto
