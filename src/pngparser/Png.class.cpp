@@ -322,4 +322,9 @@ namespace notrealengine
 	{
 		return size;
 	}
+
+	const std::vector<unsigned char> & Png::getPixels()
+	{
+		return pixel_bytes;
+	}
 }

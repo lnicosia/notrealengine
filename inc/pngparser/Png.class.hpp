@@ -19,7 +19,10 @@ namespace notrealengine
 		Png( std::filesystem::path file );
 		~Png( void );
 
-		const mft::vec2i &	getSize();
+		const mft::vec2i &
+			getSize();
+		const std::vector<unsigned char> &
+			getPixels();
 
 	private:
 
