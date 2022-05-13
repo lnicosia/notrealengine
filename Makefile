@@ -23,10 +23,10 @@ endif
 RM = rm -fv $1
 RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not empty, not removed"),rmdir $1))
 
-AR := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
-RANLIB := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
-AR = $(word 1,$(AR) ar)
-RANLIB = $(word 1,$(RANLIB) ranlib)
+OS_AR := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
+OS_RANLIB := $(shell find "/usr/bin" -name "llvm-ranlib*" | sort -n | head -n1 )
+AR = $(word 1,$(OS_AR) ar)
+RANLIB = $(word 1,$(OS_RANLIB) ranlib)
 
 DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
