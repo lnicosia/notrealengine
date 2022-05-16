@@ -25,8 +25,8 @@ RMDIR = $(if $(wildcard $1),$(if $(if $1,$(shell ls $1),),$(warning "$1 is not e
 
 OS_AR := $(shell find "/usr/bin" -name "llvm-ar*" | sort -n | head -n1 )
 OS_RANLIB := $(shell find "/usr/bin" -name "llvm-ranlib*" | sort -n | head -n1 )
-AR = $(word 1,$(OS_AR) ar)
-RANLIB = $(word 1,$(OS_RANLIB) ranlib)
+AR = $(word 1,ar)
+RANLIB = $(word 1,ranlib)
 
 DEP =	$(SRC:$S/%.cpp=$D/%.d) $(CPPFLAGS)
 OBJ =	$(SRC:$S/%.cpp=$O/%.o)
@@ -127,7 +127,7 @@ $(LIB_TARGET): $(OBJ) project.mk
 
 $(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
 	$(AR) rc $@ $(OBJ)
-	$(RANLIB)) $@
+	$(RANLIB) $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
 	@$(call RM,$*)

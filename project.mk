@@ -51,7 +51,7 @@ SRC =	$S/mft/math_utils.cpp \
 		$S/pngparser/BitStream.class.cpp \
 
 CC = clang++ --std=c++20
-CPPFLAGS = -O3 -flto
+CPPFLAGS = -O3
 LDFLAGS =
 INCLUDE =
 

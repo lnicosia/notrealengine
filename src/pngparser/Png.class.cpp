@@ -9,7 +9,7 @@
 
 namespace notrealengine
 {
-	Png::Png( std::istream fstream )
+	Png::Png( std::istream & fstream )
 	{
 		try {
 			parse(fstream);
@@ -162,7 +162,7 @@ namespace notrealengine
 						current_line.push_back(in.get() + previous_line[j + pixel_size]);
 						break;
 					case 3:
-						current_line.push_back(in.get() + (current_line[j] + previous_line[j + pixel_size]) / 2);
+						current_line.push_back(in.get() + (current_line[j] + (unsigned int)previous_line[j + pixel_size]) / 2);
 						break;
 					case 4:
 						current_line.push_back(in.get() + paeth_predictor(current_line[j], previous_line[j + pixel_size], previous_line[j]));

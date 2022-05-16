@@ -18,4 +18,6 @@
 
 extern bool isMouseOnUI;
 
+namespace nre = notrealengine;
+
 #endif // !_NOT_REAL_ENGINE_H_
