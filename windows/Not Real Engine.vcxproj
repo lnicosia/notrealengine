@@ -137,6 +137,7 @@
     <ClInclude Include="inc\pngparser\BitStream.class.hpp" />
     <ClInclude Include="inc\pngparser\Deflate.class.hpp" />
     <ClInclude Include="inc\pngparser\Png.class.hpp" />
+    <ClInclude Include="inc\UsingExternalLibs.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
