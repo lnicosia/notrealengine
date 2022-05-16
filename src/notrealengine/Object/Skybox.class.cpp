@@ -1,7 +1,9 @@
 #include "Object/Skybox.class.hpp"
 #include "CheckFileType.hpp"
 #include "GLContext.class.hpp"
+#include "pngparser/Png.class.hpp"
 
+#ifdef USING_EXTERNAL_LIBS
 //	Image loading library
 # ifdef __unix__
 #  pragma GCC diagnostic push
@@ -11,13 +13,14 @@
 # ifdef __unix__
 #  pragma GCC diagnostic pop
 # endif
+#endif
 
 namespace notrealengine
 {
 	Skybox::Skybox(const std::string& path, const std::string paths[6]):
 		Asset(path), VAO(0), VBO(0), glId(0), shader(GLContext::getShader("skybox"))
 	{
-		std::cout << "Loading skybox " << path << "..." << std::endl;
+		std::cout << "Loading skybox '" << path << "':" << std::endl;
 		float skybox_vertices[] = {
 			-1.0f,  1.0f, -1.0f,
 			-1.0f, -1.0f, -1.0f,
@@ -76,6 +79,7 @@ namespace notrealengine
 		GLCallThrow(glBindTexture, GL_TEXTURE_CUBE_MAP, this->glId);
 		for (int i = 0; i < 6; i++)
 		{
+			std::cout << "Loading skybox texture '" << paths[i];
 			if (!IsReg(paths[i]))
 			{
 				std::cerr << "nre: Invalid file" << std::endl;
@@ -85,7 +89,10 @@ namespace notrealengine
 
 #ifdef USING_EXTERNAL_LIBS
 
+			std::cout  << "' with stbi..." << std::endl;
+
 			stbi_set_flip_vertically_on_load(true);
+			mft::vec2i size;
 			unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
 			if (!img)
 			{
@@ -94,21 +101,6 @@ namespace notrealengine
 				stbi_image_free(img);
 				return;
 			}
-#else
-
-			//	Put custom PNG parser here
-
-			stbi_set_flip_vertically_on_load(false);
-			mft::vec2i size;
-			unsigned char* img = stbi_load(paths[i].c_str(), &size.x, &size.y, &nChannels, 0);
-			if (!img)
-			{
-				std::cerr << "Failed to load texture '" + paths[i] << " '" << std::endl;
-				std::cerr << stbi_failure_reason() << std::endl;
-				stbi_image_free(img);
-				return;
-			}
-#endif
 
 			GLenum	format;
 			if (nChannels == 1)
@@ -118,14 +110,50 @@ namespace notrealengine
 			else if (nChannels == 4)
 				format = GL_RGBA;
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+			GLCallThrow(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 				0, GL_RGB, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, img);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
 			stbi_image_free(img);
+
+#else
+
+			//	Put custom PNG parser here
+
+			std::cout << "' with custom parser..." << std::endl;
+
+			std::filebuf fb;
+			if (!fb.open(paths[i], std::ios::in))
+			{
+				std::cerr << std::endl << "nre:: Unable to open file \"" << path << "\"" << std::endl;
+				return;
+			}
+
+			std::istream is(&fb);
+
+			try
+			{
+				Png png(is);
+
+				mft::vec2i size = png.getSize();
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, png.getPixels().data());
+				fb.close();
+			}
+			catch (png_exception& e)
+			{
+				std::cerr << std::endl << e.what() << std::endl;
+				return;
+			}		
+
+			fb.close();
+#endif
+
+			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			
 		}
 	}
 

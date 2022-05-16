@@ -43,6 +43,9 @@
     <ClCompile Include="src\notrealengine\SDL.class.cpp" />
     <ClCompile Include="src\notrealengine\SDLWindow.class.cpp" />
     <ClCompile Include="src\notrealengine\Object\Skybox.class.cpp" />
+    <ClCompile Include="src\pngparser\BitStream.class.cpp" />
+    <ClCompile Include="src\pngparser\Deflate.class.cpp" />
+    <ClCompile Include="src\pngparser\Png.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\glad\glad.h" />
@@ -97,5 +100,8 @@
     <ClInclude Include="inc\notrealengine\SDLWindow.class.hpp" />
     <ClInclude Include="inc\notrealengine\Object\Skybox.class.hpp" />
     <ClInclude Include="inc\notrealengine\Inputs\Action.class.hpp" />
+    <ClInclude Include="inc\pngparser\BitStream.class.hpp" />
+    <ClInclude Include="inc\pngparser\Deflate.class.hpp" />
+    <ClInclude Include="inc\pngparser\Png.class.hpp" />
   </ItemGroup>
 </Project>

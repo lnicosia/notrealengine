@@ -1450,7 +1450,8 @@ namespace notrealengine
 			}
 			outIndex++;
 		}
-		out[outIndex] = '\0';
+		for (size_t i = outIndex; i < size; i++)
+			out[i] = '\0';
 	}
 
 	const ColladaParser::ColladaNode* FindNode(const ColladaParser::ColladaNode* node,

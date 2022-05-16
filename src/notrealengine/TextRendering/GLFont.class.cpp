@@ -4,16 +4,6 @@
 #include "CheckFileType.hpp"
 #include "GLContext.class.hpp"
 
-//	Image loading library
-#ifdef __unix__
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wconversion"
-#endif
-# include "../lib/stb_image.h"
-#ifdef __unix__
-#  pragma GCC diagnostic pop
-#endif
-
 #include <fstream>
 #include <string.h>
 
@@ -77,47 +67,6 @@ namespace notrealengine
 #else
 
 		LoadBFF(path);
-		return ;
-
-		int	nChannels;
-		unsigned char* img = stbi_load(path.c_str(), &this->imgSize.x, &this->imgSize.y, &nChannels, 0);
-		if (!img)
-		{
-			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
-			std::cerr << stbi_failure_reason() << std::endl;
-			stbi_image_free(img);
-			return;
-		}
-		GLenum	format;
-		if (nChannels == 1)
-			format = GL_RED;
-		else if (nChannels == 3)
-			format = GL_RGB;
-		else if (nChannels == 4)
-			format = GL_RGBA;
-
-		GLCallThrow(glGenBuffers, 1, &VBO);
-		GLCallThrow(glGenVertexArrays, 1, &VAO);
-
-		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, VBO);
-		GLCallThrow(glBufferData, GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_STATIC_DRAW);
-
-		GLCallThrow(glBindVertexArray, VAO);
-		GLCallThrow(glEnableVertexAttribArray, 0);
-		GLCallThrow(glVertexAttribPointer, 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-
-		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
-		GLCallThrow(glBindVertexArray, 0);
-
-		GLCallThrow(glGenTextures, 1, &glId);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, glId);
-		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, this->imgSize.x, this->imgSize.y, 0, format, GL_UNSIGNED_BYTE, img);
-		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		stbi_image_free(img);
 
 #endif
 

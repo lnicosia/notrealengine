@@ -131,7 +131,11 @@ namespace notrealengine
 		float textWidth = 0.0f;
 		for (char c : text)
 		{
+#ifdef USING_EXTERNAL_LIBS
+			textWidth += font->getCharacter(c)->getSize().x;
+#else
 			textWidth += font->getCharacterSize(c).x;
+#endif
 		}
 		mft::vec2 textSize(textWidth, characterSize.y);
 		mft::vec2 scale;

@@ -3,6 +3,7 @@
 #include "GLContext.class.hpp"
 #include "UsingExternalLibs.hpp"
 #include "CheckFileType.hpp"
+#include "pngparser/Png.class.hpp"
 
 
 //	OpenGL includes
@@ -14,6 +15,7 @@
 #include <GL/gl.h>
 #endif
 
+#ifdef USING_EXTERNAL_LIBS
 //	Image loading library
 # ifdef __unix__
 #  pragma GCC diagnostic push
@@ -24,8 +26,10 @@
 # ifdef __unix__
 #  pragma GCC diagnostic pop
 # endif
+#endif
 
 #include <iostream>
+#include <fstream>
 
 namespace notrealengine
 {
@@ -33,12 +37,13 @@ namespace notrealengine
 		: Asset({ path }), type(type), glId(0), VAO(0), VBO(0), size(0, 0),
 		shader(GLContext::getShader("2d"))
 	{
-		std::cout << "Loading texture '" << path << "'..." << std::endl;
+		std::cout << "Loading texture '" << path;
 		if (!IsReg(path))
 		{
-			std::cerr << "nre: Invalid file" << std::endl;
+			std::cerr << std::endl << "nre: Invalid file" << std::endl;
 			return;
 		}
+
 		//	2D Image setup
 		float	vertices[] =
 		{
@@ -64,33 +69,26 @@ namespace notrealengine
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 
-		int	nChannels;
+		//	Texture generation
+
+		GLCallThrow(glGenTextures, 1, &this->glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
 
 #ifdef USING_EXTERNAL_LIBS
 
-		stbi_set_flip_vertically_on_load(true);
-		unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
-		if (!img)
-		{
-			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
-			std::cerr << stbi_failure_reason() << std::endl;
-			stbi_image_free(img);
-			return;
-		}
-#else
+		std::cout << "' with stbi..." << std::endl;
 
-		//	Put custom PNG parser here
+		int	nChannels;
 
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
 		if (!img)
 		{
-			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			std::cerr << std::endl << "Failed to load texture '" + path << " '" << std::endl;
 			std::cerr << stbi_failure_reason() << std::endl;
 			stbi_image_free(img);
 			return;
 		}
-#endif
 
 		GLenum	format;
 		if (nChannels == 1)
@@ -100,16 +98,48 @@ namespace notrealengine
 		else if (nChannels == 4)
 			format = GL_RGBA;
 
-		GLCallThrow(glGenTextures, 1, &this->glId);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
 		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format,
 			this->size.x, this->size.y, 0, format, GL_UNSIGNED_BYTE, img);
+		stbi_image_free(img);
+
+#else
+
+		std::cout << "' with custom parser..." << std::endl;
+
+		std::filebuf fb;
+		if (!fb.open(path, std::ios::in))
+		{
+			std::cerr << std::endl << "nre:: Unable to open file \"" << path << "\"" << std::endl;
+			return;
+		}
+
+		std::istream is(&fb);
+		
+		try
+		{
+			Png png(is);
+
+			this->size = png.getSize();
+			GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)GL_RGBA,
+				this->size.x, this->size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, png.getPixels().data());
+
+			fb.close();
+		}
+		catch (png_exception& e)
+		{
+			std::cerr << std::endl << e.what() << std::endl;
+			return;
+		}
+		
+		fb.close();
+
+#endif
+
 		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		stbi_image_free(img);
 
 	}
 
@@ -126,6 +156,11 @@ namespace notrealengine
 			return;
 		}
 
+		//	Texture generation
+
+		GLCallThrow(glGenTextures, 1, &this->glId);
+		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
+
 #ifdef USING_EXTERNAL_LIBS
 
 		unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
@@ -137,21 +172,6 @@ namespace notrealengine
 			return;
 		}
 
-#else
-
-	//	Put custom PNG parser here
-
-	unsigned char* img = stbi_load_from_memory(data, width, &w, &h, &nChannels, 0);
-	if (!img)
-	{
-		std::cerr << "Failed to load texture '" + path << " '" << std::endl;
-		std::cerr << stbi_failure_reason() << std::endl;
-		stbi_image_free(img);
-		return;
-	}
-
-#endif
-
 		GLenum	format;
 		if (nChannels == 1)
 			format = GL_RED;
@@ -160,15 +180,23 @@ namespace notrealengine
 		else if (nChannels == 4)
 			format = GL_RGBA;
 
-		GLCallThrow(glGenTextures, 1, &this->glId);
-		GLCallThrow(glBindTexture, GL_TEXTURE_2D, this->glId);
 		GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)format, w, h, 0, format, GL_UNSIGNED_BYTE, img);
+		stbi_image_free(img);
+
+#else
+
+
+		//	Put custom PNG parser here
+		return;
+
+#endif
+
 		GLCallThrow(glGenerateMipmap, GL_TEXTURE_2D);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		stbi_image_free(img);
+		
 	}
 
 	Texture::Texture(Texture && ref) noexcept

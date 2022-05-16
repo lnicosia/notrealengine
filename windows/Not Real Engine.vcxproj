@@ -77,6 +77,9 @@
     <ClCompile Include="src\notrealengine\UI\Button.class.cpp" />
     <ClCompile Include="src\notrealengine\UI\UIElement.class.cpp" />
     <ClCompile Include="src\notrealengine\UI\UIManager.class.cpp" />
+    <ClCompile Include="src\pngparser\BitStream.class.cpp" />
+    <ClCompile Include="src\pngparser\Deflate.class.cpp" />
+    <ClCompile Include="src\pngparser\Png.class.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\glad\glad.h" />
@@ -131,6 +134,9 @@
     <ClInclude Include="inc\notrealengine\UI\Button.class.hpp" />
     <ClInclude Include="inc\notrealengine\UI\UIElement.class.hpp" />
     <ClInclude Include="inc\notrealengine\UI\UIManager.class.hpp" />
+    <ClInclude Include="inc\pngparser\BitStream.class.hpp" />
+    <ClInclude Include="inc\pngparser\Deflate.class.hpp" />
+    <ClInclude Include="inc\pngparser\Png.class.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
