@@ -59,7 +59,7 @@ namespace notrealengine
 		void unfilter_lines( std::istream &, std::ostream &, const EncodingData & );
 		void generate_pixels( std::istream &, const EncodingData & );
 
-		unsigned char paeth_predictor(unsigned char, unsigned char, unsigned char);
+		unsigned char paeth_predictor(int, int, int);
 
 		unsigned int static parse_uint( std::istream &, bool );
 		std::string static parse_bytes( std::istream &, unsigned int );

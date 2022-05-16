@@ -50,7 +50,6 @@ namespace notrealengine
 			else if ((newchunk.type[0] & 0x20) == 0)
 				throw png_exception("PNG : Unsupported critical chunk '" + newchunk.type + "'");
 		}
-
 		std::stringstream filtered_lines;
 		filtered_lines.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		parse_zlib(zlib_stream, filtered_lines);
@@ -162,7 +161,7 @@ namespace notrealengine
 						current_line.push_back(in.get() + previous_line[j + pixel_size]);
 						break;
 					case 3:
-						current_line.push_back(in.get() + (current_line[j] + (unsigned int)previous_line[j + pixel_size]) / 2);
+						current_line.push_back(in.get() + (current_line[j] + (int)previous_line[j + pixel_size]) / 2);
 						break;
 					case 4:
 						current_line.push_back(in.get() + paeth_predictor(current_line[j], previous_line[j + pixel_size], previous_line[j]));
@@ -177,7 +176,7 @@ namespace notrealengine
 		}
 	}
 
-	unsigned char Png::paeth_predictor(unsigned char a, unsigned char b, unsigned char c)
+	unsigned char Png::paeth_predictor(int a, int b, int c)
 	{
 		int p = a + b - c,
 			pa = std::abs(p - a),
