@@ -183,7 +183,7 @@ namespace notrealengine
 			pb = std::abs(p - b),
 			pc = std::abs(p - c);
 
-		return (pa < pb && pa < pc ? a : (pb < pc ? b : c));
+		return (pa <= pb && pa <= pc ? a : (pb <= pc ? b : c));
 	}
 
 	void Png::parse_zlib( BitStream & in, std::ostream & out )
