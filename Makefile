@@ -13,7 +13,10 @@ CC = clang++ --std=c++17
 
 include project.mk
 
-ifneq ($L,)
+ifeq ($L,)
+	LIB_MOD := 
+	CMAKE_LIB_MOD := 
+else
 	ifeq ($(wildcard $L),)
 $(error lib directory not found : "$L"$n\
 	If you are calling make from another directory, please give the path to the lib folder to this makefile)
@@ -69,21 +72,11 @@ all: $(LIB_TARGET) $(EXEC_TARGET)
 $(TMP_DIRS) $I:
 	@mkdir -p $@
 
-.SECONDARY:
 .SECONDEXPANSION:
-$D/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$O/$$*.flags" -),,$$(if $$(shell diff "$O/$$*.flags" "$$@"),force)) | $$(dir $$@)
-	@echo $(CPPFLAGS)>$@
-
-.SECONDEXPANSION:
-$D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
+$D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
 	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
-
-.SECONDARY:
-.SECONDEXPANSION:
-$O/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$$@" -),force) | $$(dir $$@)
-	echo $(CPPFLAGS)>$@
 
 .SECONDEXPANSION:
 $(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
@@ -141,11 +134,11 @@ clean: $(TMP_DIRS:%=clean@%)
 
 fclean: clean $(patsubst %,clean@%,$(EXEC_TARGET) $(LIB_TARGET))
 
-$(LIB_MOD:%=libclean@$L/%):
-	$(MAKE) -s -C $% fclean "L="
+$(LIB_MOD:%=libclean@$L/%): libclean@%:
+	$(MAKE) -s -C $* fclean "L="
 
-$(CMAKE_LIB_MOD:%=libclean@$L/%/build):
-	rm -Rf $%
+$(CMAKE_LIB_MOD:%=libclean@$L/%/build): libclean@%:
+	rm -Rf $*
 
 libclean: $(LIB_MOD:%=libclean@$L/%)
 
