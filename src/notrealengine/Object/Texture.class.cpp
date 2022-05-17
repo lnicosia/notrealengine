@@ -114,14 +114,26 @@ namespace notrealengine
 		}
 
 		std::istream is(&fb);
-		
+
 		try
 		{
 			Png png(is);
 
 			this->size = png.getSize();
+			const std::vector<unsigned char>& pixels = png.getPixels();
+			std::vector<unsigned char> flipped(pixels.size(), 0);
+			for (size_t y = 0; y < size.y; y++)
+			{
+				for (size_t x = 0; x < size.x * 4; x += 4)
+				{
+					flipped[x + y * size.x * 4 + 0] = pixels[x + (size.y - 1 - y) * size.x * 4 + 0];
+					flipped[x + y * size.x * 4 + 1] = pixels[x + (size.y - 1 - y) * size.x * 4 + 1];
+					flipped[x + y * size.x * 4 + 2] = pixels[x + (size.y - 1 - y) * size.x * 4 + 2];
+					flipped[x + y * size.x * 4 + 3] = pixels[x + (size.y - 1 - y) * size.x * 4 + 3];
+				}
+			}
 			GLCallThrow(glTexImage2D, GL_TEXTURE_2D, 0, (GLint)GL_RGBA,
-				this->size.x, this->size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, png.getPixels().data());
+				this->size.x, this->size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, flipped.data());
 
 			fb.close();
 		}
@@ -130,7 +142,7 @@ namespace notrealengine
 			std::cerr << std::endl << e.what() << std::endl;
 			return;
 		}
-		
+
 		fb.close();
 
 #endif
@@ -196,7 +208,7 @@ namespace notrealengine
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		GLCallThrow(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
+
 	}
 
 	Texture::Texture(Texture && ref) noexcept

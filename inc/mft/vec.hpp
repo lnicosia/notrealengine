@@ -26,6 +26,7 @@ namespace	mft
 			std::array<T,2> data;
 			struct { T x, y; };
 			struct { T u, v; };
+			struct { T w, h; };
 		};
 		constexpr vec_union<T,T>( T e1, T e2 ): data{e1, e2} {};
 		constexpr vec_union<T,T>( std::array<T,2> from ): data(from) {};
@@ -124,7 +125,7 @@ namespace	mft
 		static constexpr T1 dot( const vec<T1,Tn...> & v1, const vec<T1,Tn...> & v2 );
 		static constexpr vec<T1,T1,T1> cross( const vec<T1,T1,T1> & v1, const vec<T1,T1,T1> & v2 );
 	};
-	
+
 	template<typename T1, typename ... Tn>
 	constexpr vec<T1, Tn...>	operator+(T1, const vec<T1, Tn...>& v2);
 	template<typename T1, typename ... Tn>
