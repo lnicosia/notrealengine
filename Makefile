@@ -83,10 +83,10 @@ $D/%.d: $S/%.cpp $D/%.flags Makefile | $$(dir $$@) $(INCLUDES)
 .SECONDARY:
 .SECONDEXPANSION:
 $O/%.flags: $$(if $$(shell echo "$$(CPPFLAGS)"|diff "$$@" -),force) | $$(dir $$@)
-	@echo $(CPPFLAGS)>$@
+	echo $(CPPFLAGS)>$@
 
 .SECONDEXPANSION:
-$(OBJ): $O/%.o: $S/%.cpp $O/%.flags | $$(dir $$@) $(INCLUDES)
+$(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
