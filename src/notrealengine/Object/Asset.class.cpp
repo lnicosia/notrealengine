@@ -4,17 +4,6 @@
 
 namespace notrealengine
 {
-	/*Asset::Asset(const std::vector<std::filesystem::path>& paths)
-	: paths(paths), loaded(true)
-	{
-		id = count;
-		count++;
-		for (int i = 0; i < paths.size(); i++)
-			this->paths[i].make_preferred();
-			std::cout << "Creating asset '" << paths[0] << std::endl;
-		name = this->paths[0].filename().string();
-		std::cout << "Filename = " << this->paths[0].filename() << std::endl;
-	}*/
 
 	Asset::Asset(const std::string& path): paths({std::filesystem::path(path)}),
 	name(""), loaded(true)

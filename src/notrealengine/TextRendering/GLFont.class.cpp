@@ -21,24 +21,35 @@ namespace notrealengine
 #endif
 	{
 
-		std::cout << "Loading font '" << path << "'..." << std::endl;
+		std::cout << "Loading font '" << path << "'";
+
+		if (!IsReg(path))
+		{
+			std::cerr << std::endl << "nre: Invalid font file type" << std::endl;
+			this->loaded = false;
+			return ;
+		}
 
 #ifdef USING_EXTERNAL_LIBS
 
+		std::cout << " with freetype..." << std::endl;
 		Freetype::Init();
 
 		FT_Library const& ft = Freetype::getFT();
 		FT_Face	face;
 		if (FT_New_Face(ft, path.c_str(), 0, &face))
 		{
-			std::cerr << "Could not init font " << path << std::endl;
+			std::cerr << std::endl << "Could not init font " << path << std::endl;
+			this->loaded = false;
+			return ;
 		}
 
 		FT_Set_Pixel_Sizes(face, 0, 48);
 
 		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
 		{
-			std::cerr << "Could not load Glyph" << std::endl;
+			std::cerr << std::endl << "Could not load Glyph" << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -66,6 +77,7 @@ namespace notrealengine
 
 #else
 
+		std::cout << " with custom parser..." << std::endl;
 		LoadBFF(path);
 
 #endif
@@ -126,16 +138,12 @@ namespace notrealengine
 	void GLFont::LoadBFF(const std::string& path)
 	{
 		std::ifstream file;
-		if (!IsReg(path))
-		{
-			std::cerr << "nre: Invalid font file type" << std::endl;
-			return ;
-		}
 		file.open(path, std::ios_base::binary | std::ios_base::in);
 
 		if (file.fail())
 		{
-			std::cerr << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			std::cerr << std::endl << "nre: Unable to open file \"" << path << "\"" << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -147,7 +155,8 @@ namespace notrealengine
 
 		if (file.fail())
 		{
-			std::cerr << "nre: Unable to read file \"" << path << "\"" << std::endl;
+			std::cerr << std::endl << "nre: Unable to read file \"" << path << "\"" << std::endl;
+			this->loaded = false;
 			file.close();
 			delete[] str;
 			return;
@@ -158,6 +167,7 @@ namespace notrealengine
 		if (size < 20)
 		{
 			std::cerr << "Bitmap font size is too low (" << size << ")" << std::endl;
+			this->loaded = false;
 			delete[] str;
 			return ;
 		}
@@ -175,6 +185,7 @@ namespace notrealengine
 			std::cerr << "Expected file size = ";
 			std ::cerr << MAP_DATA_OFFSET + imgSize.x * imgSize.y * bpp / 8 << std::endl;
 			std::cerr << "Actual file sisze = " << size << std::endl;
+			this->loaded = false;
 			delete[] str;
 			return ;
 		}
@@ -183,6 +194,7 @@ namespace notrealengine
 		if (this->charsPerLine == 0 || this->cellSize.x == 0)
 		{
 			std::cerr << "Invalid font size" << std::endl;
+			this->loaded = false;
 			delete[] str;
 			return;
 		}
@@ -219,6 +231,7 @@ namespace notrealengine
 			default:
 			{
 				std::cerr << "Unsupported bits per pixel: " << bpp << std::endl;
+				this->loaded = false;
 				delete [] img;
 				return ;
 			}

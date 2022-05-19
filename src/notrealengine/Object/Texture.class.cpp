@@ -41,6 +41,7 @@ namespace notrealengine
 		if (!IsReg(path))
 		{
 			std::cerr << std::endl << "nre: Invalid file" << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -85,6 +86,7 @@ namespace notrealengine
 		if (!img)
 		{
 			std::cerr << std::endl << "Failed to load texture '" + path << " '" << std::endl;
+			this->loaded = false;
 			std::cerr << stbi_failure_reason() << std::endl;
 			stbi_image_free(img);
 			return;
@@ -110,6 +112,7 @@ namespace notrealengine
 		if (!fb.open(path, std::ios::in))
 		{
 			std::cerr << std::endl << "nre:: Unable to open file \"" << path << "\"" << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -140,6 +143,7 @@ namespace notrealengine
 		catch (png_exception& e)
 		{
 			std::cerr << std::endl << e.what() << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -165,6 +169,7 @@ namespace notrealengine
 		if (!IsReg(path))
 		{
 			std::cerr << "nre: Invalid file" << std::endl;
+			this->loaded = false;
 			return;
 		}
 
@@ -179,6 +184,7 @@ namespace notrealengine
 		if (!img)
 		{
 			std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+			this->loaded = false;
 			std::cerr << stbi_failure_reason() << std::endl;
 			stbi_image_free(img);
 			return;

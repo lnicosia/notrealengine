@@ -83,6 +83,7 @@ namespace notrealengine
 			if (!IsReg(paths[i]))
 			{
 				std::cerr << "nre: Invalid file" << std::endl;
+				this->loaded = false;
 				return;
 			}
 			int	nChannels;
@@ -91,12 +92,13 @@ namespace notrealengine
 
 			std::cout  << "' with stbi..." << std::endl;
 
-			stbi_set_flip_vertically_on_load(true);
 			mft::vec2i size;
-			unsigned char* img = stbi_load(path.c_str(), &size.x, &size.y, &nChannels, 0);
+			stbi_set_flip_vertically_on_load(false);
+			unsigned char* img = stbi_load(paths[i].c_str(), &size.x, &size.y, &nChannels, 0);
 			if (!img)
 			{
 				std::cerr << "Failed to load texture '" + path << " '" << std::endl;
+				this->loaded = false;
 				std::cerr << stbi_failure_reason() << std::endl;
 				stbi_image_free(img);
 				return;
@@ -125,6 +127,7 @@ namespace notrealengine
 			if (!fb.open(paths[i], std::ios::in))
 			{
 				std::cerr << std::endl << "nre:: Unable to open file \"" << path << "\"" << std::endl;
+				this->loaded = false;
 				return;
 			}
 
@@ -142,8 +145,9 @@ namespace notrealengine
 			catch (png_exception& e)
 			{
 				std::cerr << std::endl << e.what() << std::endl;
+				this->loaded = false;
 				return;
-			}		
+			}
 
 			fb.close();
 #endif
@@ -153,7 +157,7 @@ namespace notrealengine
 			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			GLCallThrow(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-			
+
 		}
 	}
 
@@ -222,7 +226,7 @@ namespace notrealengine
 			return;
 		GLCallThrow(glUseProgram, shader->programID);
 		bindInt(shader->programID, "cubemap", 0);
-			
+
 		GLCallThrow(glBindVertexArray, this->VAO);
 		GLCallThrow(glBindTexture, GL_TEXTURE_CUBE_MAP, this->glId);
 		GLCallThrow(glDrawArrays, GL_TRIANGLES, 0, 36);

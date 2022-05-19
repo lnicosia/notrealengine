@@ -123,9 +123,11 @@ namespace notrealengine
 		if (!font)
 			return;
 #ifdef USING_EXTERNAL_LIBS
+		double wantedScale = 0.55;
 		mft::vec2i characterSize = font->getCharacter('C')->getSize();
 #else
 		mft::vec2i characterSize = font->getCharacterSize('C');
+		double wantedScale = 0.8;
 #endif
 
 		float textWidth = 0.0f;
@@ -139,14 +141,19 @@ namespace notrealengine
 		}
 		mft::vec2 textSize(textWidth, characterSize.y);
 		mft::vec2 scale;
-		scale.x = (this->size.x * 0.8) / (float)textSize.x;
-		scale.y = (this->size.y * 0.8) / (float)textSize.y;
-		mft::vec2 size(0.8 * this->size.x / this->text.length(),
-			0.8 * this->size.y);
+		scale.x = (this->size.x * wantedScale) / (float)textSize.x;
+		scale.y = (this->size.y * wantedScale) / (float)textSize.y;
+		mft::vec2 size(wantedScale * this->size.x / this->text.length(),
+			wantedScale * this->size.y);
 		this->textSize = characterSize.y * std::min(scale.x, scale.y);
 		textSize *= std::min(scale.x, scale.y);
+#ifdef USING_EXTERNAL_LIBS
+		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2 - 2,
+			this->pos.y + this->size.y / 2 - textSize.y / 2);
+#else
 		this->textPos = mft::vec2i(this->pos.x + this->size.x / 2 - textSize.x / 2 + 2,
 			this->pos.y + this->size.y / 2 - textSize.y / 2 + 2);
+#endif
 
 	}
 

@@ -22,6 +22,7 @@ namespace notrealengine
 		if (!IsReg(path))
 		{
 			std::cerr << std::endl << "nre: Invalid file type" << std::endl;
+			this->loaded = false;
 			return ;
 		}
 #ifdef USING_EXTERNAL_LIBS
@@ -40,11 +41,13 @@ namespace notrealengine
 #else
 			std::cerr << "Custom parser failed to import animation" << std::endl;
 #endif
+			this->loaded = false;
 			return;
 		}
 		if (scene->HasAnimations() == false || index >= scene->mNumAnimations)
 		{
 			std::cerr << "Animation " << index << " does not exist" << std::endl;
+			this->loaded = false;
 			return;
 		}
 		Setup(scene, index);

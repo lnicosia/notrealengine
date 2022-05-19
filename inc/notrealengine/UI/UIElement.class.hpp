@@ -17,10 +17,18 @@ namespace notrealengine
 		UIText(std::string text, mft::vec2i pos = mft::vec2i(0, 0), float scale = 1.0f,
 			const mft::vec4& color = mft::vec4(1.0f),
 			std::shared_ptr<GLFont> font =
+#ifdef USING_EXTERNAL_LIBS
+				AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/arial.ttf")):
+#else
 				AssetManager::getInstance().loadAsset<GLFont>("resources/fonts/pt-sans-48.bff")):
+#endif
 			text(text), pos(pos), scale(scale), color(color), font(font)
 		{
+#ifdef USING_EXTERNAL_LIBS
+			this->scale *= 0.55f;
+#endif
 		}
+
 		UIText() = delete;
 		~UIText()
 		{
