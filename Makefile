@@ -101,7 +101,7 @@ $(CMAKE_LIB):
 	@echo "Creating lib $@"
 	@$(call submodule_init,$($(MOD)_DIR))
 	@mkdir -p $(DIR)
-	@sh -c "cd $(DIR); cmake .."
+	sh -c "cd $(DIR); cmake .. $(CMAKE_FLAGS)"
 	@$(MAKE) -C $(DIR)
 
 $(foreach MOD,$(LIB_MOD),$(eval $($(MOD)_DIR)/$($(MOD)_LIB): MOD = $(MOD)))
@@ -114,15 +114,22 @@ $(LIB):
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
-$(LIB_TARGET): $(OBJ) project.mk
+$(LIB_TARGET): $(if $(wildcard $(LIB_TARGET_EXTERNAL)),fclean) $(OBJ) project.mk
 	$(AR) rc $@ $(OBJ)
 	$(RANLIB) $@
 
-$(LIB_TARGET_EXTERNAL): $(OBJ) project.mk
+ifdef EXTERNAL_DEPS
+$(LIB_TARGET_EXTERNAL): CPPFLAGS += -D USING_EXTERNAL_LIBS
+$(LIB_TARGET_EXTERNAL): $(CMAKE_LIB) $(OBJ) project.mk
 	$(AR) rc $@ $(OBJ)
 	$(RANLIB) $@
+else
+.PHONY: $(LIB_TARGET_EXTERNAL)
+$(LIB_TARGET_EXTERNAL): $(if $(wildcard $(LIB_TARGET)),fclean)
+	$(MAKE) -j4 CMAKE_LIB_MOD="SDL assimp freetype" EXTERNAL_DEPS="1" $@
+endif
 
-$(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET)): clean@%:
+$(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET) $(LIB_TARGET_EXTERNAL)): clean@%:
 	@$(call RM,$*)
 
 $(foreach FILE,$(OBJ) $(DEP) $(TMP_DIR),$(eval $(if $(filter-out ./,$(dir $(FILE))),clean@$(dir $(FILE)): clean@$(FILE),)))
@@ -132,7 +139,7 @@ $(TMP_DIRS:%=clean@%):
 
 clean: $(TMP_DIRS:%=clean@%)
 
-fclean: clean $(patsubst %,clean@%,$(EXEC_TARGET) $(LIB_TARGET))
+fclean: clean $(patsubst %,clean@%,$(EXEC_TARGET) $(LIB_TARGET) $(LIB_TARGET_EXTERNAL))
 
 $(LIB_MOD:%=libclean@$L/%): libclean@%:
 	$(MAKE) -s -C $* fclean "L="
@@ -149,9 +156,6 @@ relib: libclean all
 
 force:
 	@true
-
-externallibs:
-	@make -j4 CMAKE_LIB_MOD="SDL assimp freetype" $(LIB_TARGET_EXTERNAL) "CPPFLAGS=-D USING_EXTERNAL_LIBS"
 
 -include customrules.mk
 

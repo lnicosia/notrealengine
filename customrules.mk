@@ -1,1 +1,1 @@
-#$(SRC): $(assimp_DIR)/build/$(assimp_LIB)
+lib/assimp/build/bin/libassimp.a: CMAKE_FLAGS += -D BUILD_SHARED_LIBS=OFF
