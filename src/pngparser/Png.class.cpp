@@ -15,7 +15,8 @@ namespace notrealengine
 			parse(fstream);
 		} catch (std::ifstream::failure & e) {
 			std::stringstream tmp;
-			tmp << "Error while reading PNG stream";
+			tmp << "Error while reading PNG stream" << std::endl;
+			tmp << e.what();
 			throw png_exception(tmp.str());
 		} catch (std::exception & e) {
 			std::stringstream tmp;
@@ -31,7 +32,7 @@ namespace notrealengine
 
 	void Png::parse( std::istream & fstream )
 	{
-		fstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		//fstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		check_signature(fstream);
 		Chunk IHDR(fstream);
 		if (IHDR.type.compare("IHDR") != 0)
@@ -64,6 +65,11 @@ namespace notrealengine
 	void Png::check_signature( std::istream & fstream )
 	{
 		std::string bytes = parse_bytes(fstream, 8);
+
+		//for (int i = 0; i < 8; i++)
+		//{
+		//	std::cout << "Byte[" << i << "] = " << (int)(bytes[i]) << std::endl;
+		//}
 
 		if (bytes.compare(std::string({(char)137, 80, 78, 71, 13, 10, 26, 10})) != 0)
 			throw png_exception(std::string("Invalid PNG signature : ") + bytes);

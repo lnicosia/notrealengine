@@ -138,7 +138,7 @@ namespace notrealengine
 				Png png(is);
 
 				mft::vec2i size = png.getSize();
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				GLCallThrow(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 					0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, png.getPixels().data());
 				fb.close();
 			}
@@ -221,9 +221,9 @@ namespace notrealengine
 
 	void	Skybox::draw() const
 	{
-		glDepthFunc(GL_LEQUAL);
 		if (this->shader == nullptr)
 			return;
+		glDepthFunc(GL_LEQUAL);
 		GLCallThrow(glUseProgram, shader->programID);
 		bindInt(shader->programID, "cubemap", 0);
 

@@ -326,9 +326,9 @@ namespace notrealengine
 
 	void	Scene::addMesh(const std::shared_ptr<Mesh>& mesh)
 	{
-		//shaders[mesh->getShader()].push_back(mesh);
+		if (mesh == nullptr)
+			return;
 		unsigned int	shader = mesh->getShader();
-		//	Add this mesh's shader to the scene
 		if (std::find(shaders.begin(), shaders.end(), shader) == shaders.end())
 		{
 			shaders.push_back(shader);
@@ -348,6 +348,8 @@ namespace notrealengine
 
 	void	Scene::addObject(const std::shared_ptr<GLObject>& object)
 	{
+		if (object == nullptr)
+			return;
 		std::vector<std::shared_ptr<Mesh>>	meshes = object->getMeshes();
 		for (const auto& mesh: meshes)
 		{
@@ -374,24 +376,24 @@ namespace notrealengine
 	{
 		if (this->drawMode == DrawMode::Wireframe || this->drawGrid == true)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_LINE);
-		if (this->drawGrid == true)
+		if (this->drawGrid == true && GLContext::grid != nullptr)
 		{
 			GLContext::grid->draw();
 		}
 		if (this->drawMode != DrawMode::Wireframe)
 			GLCallThrow(glPolygonMode, GL_FRONT_AND_BACK, GL_FILL);
-		if (this->drawSkybox == true)
+		if (this->drawSkybox == true && this->skybox != nullptr)
 		{
 			this->skybox->draw();
 		}
 		for (const auto& object: objects)
 		{
-			if (object->visible == true)
+			if (object != nullptr && object->visible == true)
 				object->draw();
 		}
 		for (const auto& light: lights)
 		{
-			if (light->isDirty())
+			if (light != nullptr && light->isDirty())
 			{
 				bindLights(GLContext::getShader("default")->programID);
 				bindLights(GLContext::getShader("color")->programID);
@@ -406,7 +408,7 @@ namespace notrealengine
 	{
 		for (const auto& object : objects)
 		{
-			if (object->visible == true)
+			if (object != nullptr && object->visible == true)
 				object->drawBones();
 		}
 	}

@@ -41,7 +41,12 @@ namespace notrealengine
 		GLCallThrow(glBindBuffer, GL_ARRAY_BUFFER, 0);
 		GLCallThrow(glBindVertexArray, 0);
 
-		texture = AssetManager::getInstance().loadAsset<Texture>("resources/images/bulb-light.png", "diffuse")->getGLId();
+		std::shared_ptr<Texture> lightText =
+			AssetManager::getInstance().loadAsset<Texture>("resources/images/bulb-light.png", "diffuse");
+		if (lightText != nullptr)
+			texture = lightText->getGLId();
+		else
+			this->loaded = false;
 	}
 
 	Light::~Light()
