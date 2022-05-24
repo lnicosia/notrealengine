@@ -64,7 +64,7 @@ else
 $(error OS not supported)
 endif
 
-.PHONY: all, clean, clean(), fclean, libclean, libclean(), realclean, re, relib, space, force
+.PHONY: all, clean, fclean, libclean, realclean, re, relib, space, force, cmakelibs
 .PHONY: $(foreach MOD,$(LIB_MOD),$(if $(filter 1,$(shell make -C $($(MOD)_DIR) -q $($(MOD)_LIB) >/dev/null; echo $$?)),$($(MOD)_DIR)/$($(MOD)_LIB),))
 
 all: $(LIB_TARGET) $(EXEC_TARGET)
@@ -83,7 +83,7 @@ $(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
-$(if $(shell git submodule status $(1) | grep '^-'),git submodule update --init $(1),)
+$(if $(wildcard $(1)),,tar -xf $(1).tar -C $(dir $(1)))
 endef
 
 define init_includes
@@ -119,15 +119,16 @@ $(LIB_TARGET): $(if $(wildcard $(LIB_TARGET_EXTERNAL)),fclean) $(OBJ) project.mk
 	$(RANLIB) $@
 
 ifdef EXTERNAL_DEPS
-$(LIB_TARGET_EXTERNAL): CPPFLAGS += -D USING_EXTERNAL_LIBS
-$(LIB_TARGET_EXTERNAL): $(CMAKE_LIB) $(OBJ) project.mk
-	$(AR) rc $@ $(OBJ)
-	$(RANLIB) $@
+cmake_lib: $(CMAKE_LIB)
 else
-.PHONY: $(LIB_TARGET_EXTERNAL)
-$(LIB_TARGET_EXTERNAL): $(if $(wildcard $(LIB_TARGET)),fclean)
+cmake_lib: $(if $(wildcard $(LIB_TARGET)),fclean)
 	$(MAKE) -j4 CMAKE_LIB_MOD="SDL assimp freetype" EXTERNAL_DEPS="1" $@
 endif
+
+$(LIB_TARGET_EXTERNAL): CPPFLAGS += -D USING_EXTERNAL_LIBS -Ilib/assimp/include -Ilib/assimp/build/include -Ilib/freetype/include
+$(LIB_TARGET_EXTERNAL): $(if $(wildcard $(LIB_TARGET)),fclean) cmake_lib $(OBJ) project.mk
+	$(AR) rc $@ $(OBJ)
+	$(RANLIB) $@
 
 $(patsubst %,clean@%,$(OBJ) $(DEP) $(EXEC_TARGET) $(LIB_TARGET) $(LIB_TARGET_EXTERNAL)): clean@%:
 	@$(call RM,$*)
