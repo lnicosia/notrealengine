@@ -10,3 +10,6 @@ test/logs/*
 *.out
 obj/*
 dep/*
+lib/SDL
+lib/assimp
+lib/freetype
