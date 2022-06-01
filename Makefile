@@ -65,7 +65,7 @@ $(error OS not supported)
 endif
 
 .PHONY: all, clean, fclean, libclean, realclean, re, relib, space, force, cmakelibs
-.PHONY: $(foreach MOD,$(LIB_MOD),$(if $(filter 1,$(shell make -C $($(MOD)_DIR) -q $($(MOD)_LIB) >/dev/null; echo $$?)),$($(MOD)_DIR)/$($(MOD)_LIB),))
+.PHONY: $(foreach MOD,$(LIB_MOD),$(if $(shell $(MAKE) -C $($(MOD)_DIR) -q $($(MOD)_LIB) || echo false),,$($(MOD)_DIR)/$($(MOD)_LIB),))
 
 all: $(LIB_TARGET) $(EXEC_TARGET)
 
@@ -83,11 +83,11 @@ $(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
-$(if $(wildcard $(1)),,tar -xf $(1).tar -C $(dir $(1)))
+$(if $(wildcard $(1)),,echo init includes $(1); tar -xf $(1).tar -C $(dir $(1)))
 endef
 
 define init_includes
-$($(1)_DIR)/$($(1)_INC):
+$($(1)_INC:%=$($(1)_DIR)/%):
 	$(call submodule_init,$($(1)_DIR))
 
 endef
@@ -118,15 +118,8 @@ $(LIB_TARGET): $(if $(wildcard $(LIB_TARGET_EXTERNAL)),fclean) $(OBJ) project.mk
 	$(AR) rc $@ $(OBJ)
 	$(RANLIB) $@
 
-ifdef EXTERNAL_DEPS
-cmake_lib: $(CMAKE_LIB)
-else
-cmake_lib: $(if $(wildcard $(LIB_TARGET)),fclean)
-	$(MAKE) -j4 CMAKE_LIB_MOD="SDL assimp freetype" EXTERNAL_DEPS="1" $@
-endif
-
-$(LIB_TARGET_EXTERNAL): CPPFLAGS += -D USING_EXTERNAL_LIBS -Ilib/assimp/include -Ilib/assimp/build/include -Ilib/freetype/include
-$(LIB_TARGET_EXTERNAL): $(if $(wildcard $(LIB_TARGET)),fclean) cmake_lib $(OBJ) project.mk
+$(LIB_TARGET_EXTERNAL): CPPFLAGS += -D USING_EXTERNAL_LIBS
+$(LIB_TARGET_EXTERNAL): $(if $(wildcard $(LIB_TARGET)),fclean) $(OBJ) $(CMAKE_LIB) project.mk
 	$(AR) rc $@ $(OBJ)
 	$(RANLIB) $@
 
