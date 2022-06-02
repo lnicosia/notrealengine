@@ -83,7 +83,7 @@ $(OBJ): $O/%.o: $S/%.cpp | $$(dir $$@) $(INCLUDES)
 	$(CC) -c -o $@ $(CPPFLAGS) $(INCLUDES:%=-I%) $<
 
 define submodule_init
-$(if $(wildcard $(1)),,echo init includes $(1); tar -xf $(1).tar -C $(dir $(1)))
+$(if $(wildcard $(1)),,tar -xf $(1).tar -C $(dir $(1)))
 endef
 
 define init_includes
@@ -114,6 +114,7 @@ $(LIB):
 $(EXEC_TARGET): $(OBJ) $(LIB) project.mk | $(CMAKE_LIB)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
+$(LIB_TARGET): CMAKE_LIB_MOD = SDL
 $(LIB_TARGET): $(if $(wildcard $(LIB_TARGET_EXTERNAL)),fclean) $(OBJ) project.mk
 	$(AR) rc $@ $(OBJ)
 	$(RANLIB) $@
