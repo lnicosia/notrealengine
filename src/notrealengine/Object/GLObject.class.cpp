@@ -160,7 +160,7 @@ namespace notrealengine
 			minRange = std::min(std::min(rangeX, rangeY), rangeZ);
 
 		float scale = 2.0f / minRange;
-		this->meshes[0]->localTransform.setScale(mft::vec3(scale));
+		this->transform.setScale(scale);
 	}
 
 	//	Drawing functions
@@ -509,6 +509,7 @@ namespace notrealengine
 			this->animationState = AnimationState::Stopped;
 		else
 			this->animationState = state;
+		this->animationSpeed = anim->getTicksFactor();
 	}
 
 	std::ostream& operator<<(std::ostream& o, GLObject const& obj)
