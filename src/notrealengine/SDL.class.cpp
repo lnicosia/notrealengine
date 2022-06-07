@@ -18,6 +18,7 @@ namespace notrealengine
 			if (std::atexit(Quit) != 0)
 			{
 				SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+				SDL_Quit();
 				throw std::runtime_error( "Failed to setup SDL cleanup function\n" );
 			}
 
