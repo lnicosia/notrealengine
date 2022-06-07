@@ -32,6 +32,9 @@ namespace notrealengine
 		virtual const std::string&
 			getName() const;
 
+		virtual const std::string&
+			getEmbeddedName() const;
+
 		const uint32_t&
 			getId() const;
 
@@ -52,6 +55,9 @@ namespace notrealengine
 		void
 			setName(const std::string& name);
 
+		void
+			setEmbeddedName(const std::string& name);
+
 		//	No setter for ID
 
 		void
@@ -68,6 +74,11 @@ namespace notrealengine
 		**	In this case all of their paths will be checked when requesting them
 		*/
 		std::vector<std::filesystem::path> paths;
+
+		/**	Assets can be embedded inside a file. In this case, differenciate
+		**	them with a name
+		*/
+		std::string	embeddedName;
 
 		bool					loaded;
 

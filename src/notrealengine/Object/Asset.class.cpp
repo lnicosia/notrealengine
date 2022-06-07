@@ -6,7 +6,7 @@ namespace notrealengine
 {
 
 	Asset::Asset(const std::string& path): paths({std::filesystem::path(path)}),
-	name(""), loaded(true)
+	name(""), embeddedName(""), loaded(true)
 	{
 		id = count;
 		count++;
@@ -19,7 +19,7 @@ namespace notrealengine
 		}
 	}
 
-	Asset::Asset(): paths({""}), name(), loaded(true)
+	Asset::Asset(): paths({""}), name(),  embeddedName(""), loaded(true)
 	{
 		id = count;
 		count++;
@@ -27,6 +27,7 @@ namespace notrealengine
 
 	Asset::Asset(Asset&& ref):
 		name(std::move(ref.name)),
+		embeddedName(std::move(ref.embeddedName)),
 		paths(std::move(ref.paths)),
 		id(std::exchange(ref.id, 0)),
 		loaded(std::exchange(ref.loaded, false))
@@ -37,6 +38,7 @@ namespace notrealengine
 	Asset&	Asset::operator=(Asset&& ref)
 	{
 		this->name = std::move(ref.name);
+		this->embeddedName = std::move(ref.embeddedName);
 		this->paths = std::move(ref.paths);
 		this->id = std::exchange(ref.id, 0);
 		this->loaded = std::exchange(ref.loaded, false);
@@ -53,6 +55,11 @@ namespace notrealengine
 	const std::string& Asset::getName() const
 	{
 		return name;
+	}
+
+	const std::string& Asset::getEmbeddedName() const
+	{
+		return embeddedName;
 	}
 
 	const uint32_t& Asset::getId() const
@@ -87,6 +94,11 @@ namespace notrealengine
 		this->name = name;
 	}
 
+	void	Asset::setEmbeddedName(const std::string& name)
+	{
+		this->embeddedName = name;
+	}
+
 	void	Asset::setPath(const std::filesystem::path& path, int index)
 	{
 		if (index >= paths.size())
@@ -104,8 +116,14 @@ namespace notrealengine
 
 	std::ostream& operator<<(std::ostream& o, Asset const& asset)
 	{
-		std::cout << "- " << asset.getAssetType() << " '" << asset.getName();
-		std::cout << "': ID = " << asset.getId() << ", path = ";
+		std::cout << "- ";
+		if (asset.getEmbeddedName() != "")
+			std::cout << "Embedded ";
+		std::cout << asset.getAssetType() << " \"" << asset.getName();
+		std::cout << "\"";
+		if (asset.getEmbeddedName() != "")
+			std::cout << " (" << asset.getEmbeddedName() << ")";
+		std::cout << ": ID = " << asset.getId() << ", path = ";
 		std::cout << asset.getPath();
 		/*if (asset.isLoaded())
 			std::cout << ", is loaded";

@@ -258,22 +258,27 @@ namespace notrealengine
 			mat->GetTexture(type, i, &str);
 			std::filesystem::path textPath(str.C_Str());
 			textPath.make_preferred();
-			std::string	path = directory + '/' + textPath.string();
+			std::string	pathStr = directory + '/' + textPath.string();
+			std::string filename = pathStr.substr(pathStr.find_last_of("/") + 1);
 			const aiTexture* texture;
 			if ((texture = scene->GetEmbeddedTexture(str.C_Str())))
 			{
 				if (texture->mHeight == 0)
-					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path,
-						reinterpret_cast<unsigned char*>(texture->pcData),
+				{
+					textures.push_back(AssetManager::getInstance().loadEmbeddedAsset<Texture>(this->path,
+						filename, reinterpret_cast<unsigned char*>(texture->pcData),
 						texture->mWidth, typeName));
+				}
 				else
-						textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path,
-						reinterpret_cast<unsigned char *>(texture->pcData),
+				{
+					textures.push_back(AssetManager::getInstance().loadEmbeddedAsset<Texture>(this->path,
+						filename, reinterpret_cast<unsigned char *>(texture->pcData),
 						texture->mWidth * texture->mHeight, typeName));
+				}
 			}
 			else
 			{
-				textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
+				textures.push_back(AssetManager::getInstance().loadAsset<Texture>(pathStr, typeName));
 			}
 		}
 		return textures;
