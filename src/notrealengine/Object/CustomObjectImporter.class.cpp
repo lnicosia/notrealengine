@@ -277,24 +277,10 @@ namespace notrealengine
 			std::filesystem::path textPath(str);
 			textPath.make_preferred();
 			std::string	path = directory + '/' + textPath.string();
-			/*const cpTexture* texture;
-			if ((texture = scene->GetEmbeddedTexture(str)))
-			{
-				if (texture->mHeight == 0)
-					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path,
-						reinterpret_cast<unsigned char*>(texture->pcData),
-						texture->mWidth, typeName));
-				else
-					textures.push_back(AssetManager::getInstance().loadAsset<Texture>(this->path,
-						reinterpret_cast<unsigned char*>(texture->pcData),
-						texture->mWidth * texture->mHeight, typeName));
-			}
-			else
-			{*/
-				//std::cout << "Loading " << typeName << " " << str.C_Str() << " from material" << std::endl;
-
-			textures.push_back(AssetManager::getInstance().loadAsset<Texture>(path, typeName));
-			//}
+			std::shared_ptr<Texture> assetTexture =
+				AssetManager::getInstance().loadAsset<Texture>(path, typeName);
+			if (assetTexture != nullptr)
+				textures.push_back(assetTexture);
 		}
 		return textures;
 	}
