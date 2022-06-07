@@ -75,7 +75,7 @@ $(TMP_DIRS) $I:
 .SECONDEXPANSION:
 $D/%.d: $S/%.cpp Makefile | $$(dir $$@) $(INCLUDES)
 	$(info Updating dep list for $<)
-	@$(CC) -MM -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
+	@$(CC) -MM -MG -MP $(CPPFLAGS) $(INCLUDES:%=-I%) $< | \
 		sed 's,$(notdir $*)\.o[ :]*,$O/$*.o $@ : ,g' > $@; \
 
 .SECONDEXPANSION:
