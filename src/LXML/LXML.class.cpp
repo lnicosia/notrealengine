@@ -9,7 +9,7 @@
 
 namespace lxml
 {
-	Importer::Importer()
+	Importer::Importer(): tags(), RootTag()
 	{
 	}
 
