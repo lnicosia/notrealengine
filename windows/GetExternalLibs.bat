@@ -5,14 +5,16 @@ if not exist ..\lib\SDL\include\SDL.h (
 	git submodule update --init ..\lib\SDL
 )
 
-#assimp needs to be built to create config.h
+:: assimp needs to be built to create config.h
+
+echo Buildling assimp...
 
 if not exist ..\lib\assimp\build-windows\lib\Debug\assimp-vc142-mtd.lib (
 
 	if not exist ..\lib\assimp\build-windows\Assimp.sln (
 
 		if not exist ..\lib\assimp\include\assimp\Importer.h (
-			git submodule update --init ..\lib\assimp
+			git submodule update --init
 		)
 		if not exist ..\lib\assimp\build-windows (
 			md ..\lib\assimp\build-windows
