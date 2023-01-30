@@ -1084,7 +1084,8 @@ namespace notrealengine
 		}
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
-			const cpNode* node = FindCpNode(node->mChildren[i], name);
+			const cpNode* node = nullptr;
+			node = FindCpNode(node->mChildren[i], name);
 			if (node != nullptr)
 				return node;
 		}
