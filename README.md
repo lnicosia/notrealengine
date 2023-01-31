@@ -48,7 +48,7 @@ Run `make`. That will produce a `libnre.a` static library.
 
 #### Windows
 
-Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder. Debug configuration will produce a `NotRealEngined.lib` static library file in `windows/x64/Debug` and Release configuration will produce a `NotRealEngine.lib`  static library file in `windows/x64/Release`.
+Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder.
 
 ## Features
 
