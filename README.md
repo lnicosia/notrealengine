@@ -6,8 +6,8 @@ Cross platform C++ 3D library (OpenGL) aimed to be simple, flexible and usable i
 * [Introduction](#introduction)
 * [Technologies](#technologies)
 * [Constraints](#constraints)
-* [Installation](#installation)
 * [Features](#features)
+* [Installation](#installation)
 * [Authors](#authors)
 
 ## Introduction
@@ -33,22 +33,6 @@ The library is coded in C++ and uses:
 
 42 projects require to code everything from scratch, except for windows and events handling and OpenGL linking. Even though the project was delivered with  SDL and glad only, the default compilation now uses assimp, stb image and freetype.
 The library can still be compiled to use its own parsers instead.
-
-## Installation
-
-Tested on Linux, Windows 10 and WSL (needs an X server like Xming).
-
-OpenGL 4.0 is required (hence it is not going to work on Virtual Box's Linux machines since they can handle OpenGL 3.3 at most).
-
-#### Linux, WSL
-
-`clang` version compatible with C++20 is required.
-
-Run `make`. That will produce a `libnre.a` static library.
-
-#### Windows
-
-Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder.
 
 ## Features
 
@@ -84,6 +68,22 @@ Still no library allowed :). Required for collada parsing.
 ### Collada (.dae) object and animation parser.
 
 The last parser that needed to be coded from scratch.
+
+## Installation
+
+Tested on Linux, Windows 10 and WSL (needs an X server like Xming).
+
+OpenGL 4.0 is required (hence it is not going to work on Virtual Box's Linux machines since they can handle OpenGL 3.3 at most).
+
+#### Linux, WSL
+
+`clang` version compatible with C++20 is required.
+
+Run `make`. That will produce a `libnre.a` static library.
+
+#### Windows
+
+Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder.
 
 ## Authors
 
