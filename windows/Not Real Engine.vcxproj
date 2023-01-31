@@ -365,7 +365,7 @@
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zc:preprocessor </AdditionalOptions>
+      <AdditionalOptions>/Zc:preprocessor  /D USING_EXTERNAL_LIBS </AdditionalOptions>
       <PreprocessorDefinitions>USING_EXTERNAL_LIBS</PreprocessorDefinitions>
     </ClCompile>
     <PreBuildEvent>
