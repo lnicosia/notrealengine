@@ -9,7 +9,7 @@ namespace notrealengine
 	void SDL::Init( void )
 	{
 		if (!initialized) {
-			if (SDL_InitSubSystem(SDL_INIT_EVERYTHING) != 0) {
+			if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
 				throw std::runtime_error( "Couldn't initialize SDL : \n" + std::string(SDL_GetError()) );
 			}
 
@@ -17,7 +17,7 @@ namespace notrealengine
 
 			if (std::atexit(Quit) != 0)
 			{
-				SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+				SDL_QuitSubSystem(SDL_INIT_VIDEO);
 				SDL_Quit();
 				throw std::runtime_error( "Failed to setup SDL cleanup function\n" );
 			}
@@ -41,7 +41,7 @@ namespace notrealengine
 	void SDL::Quit( void )
 	{
 		if (initialized) {
-			SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
 			SDL_Quit();
 			initialized = false;
 		}
