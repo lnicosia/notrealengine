@@ -31,7 +31,7 @@ The library is coded in C++ and uses:
 
 ## Constraints
 
-42 projects require to code everything from scratch, except for windows and events handling and OpenGL linking. Even though the project was delivered with  SDL and glad only, the default compilation now uses assimp, stb image and freetype.
+42 projects require to code everything from scratch, except for windows and events handling and OpenGL linking. Even though the project was delivered with SDL and glad only, the default compilation now uses assimp, stb image and freetype.
 The library can still be compiled to use its own parsers instead.
 
 ## Features
@@ -79,11 +79,13 @@ OpenGL 4.0 is required (hence it is not going to work on Virtual Box's Linux mac
 
 `clang` version compatible with C++20 is required.
 
-Run `make`. That will produce a `libnre.a` static library.
+Run `make`. That will produce a `libnre-external.a` static library that uses the external libraries mentioned above.
+Run `make libnre.a` to build the library without linking to any external library instead (except for SDL and glad).
 
 #### Windows
 
 Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder.
+Choose between the configurations to build with or without external libraries.
 
 ## Authors
 
