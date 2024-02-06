@@ -553,7 +553,7 @@ static int compareParsers(const std::string& path)
 #endif
   try
   {
-    out.open(outputPath);
+    out.open(outputPath, std::ios_base::in | std::ios_base::binary);
   }
   catch (std::ios_base::failure& e)
   {

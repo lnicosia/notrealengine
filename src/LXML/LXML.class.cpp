@@ -30,7 +30,7 @@ namespace lxml
 		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try
 		{
-			file.open(path);
+			file.open(path, std::ios_base::in | std::ios_base::binary);
 			stream << file.rdbuf();
 			file.close();
 

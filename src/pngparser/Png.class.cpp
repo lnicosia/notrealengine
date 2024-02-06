@@ -66,13 +66,10 @@ namespace notrealengine
 	{
 		std::string bytes = parse_bytes(fstream, 8);
 
-		//for (int i = 0; i < 8; i++)
-		//{
-		//	std::cout << "Byte[" << i << "] = " << (int)(bytes[i]) << std::endl;
-		//}
-
-		if (bytes.compare(std::string({(char)137, 80, 78, 71, 13, 10, 26, 10})) != 0)
-			throw png_exception(std::string("Invalid PNG signature : ") + bytes);
+		if (bytes.compare(std::string({-119, 80, 78, 71, 13, 10, 26, 10})) != 0)
+		{
+			throw png_exception(std::string("Invalid PNG signature, expected: ") + std::string({-119, 80, 78, 71, 13, 10, 26, 10}) + std::string(", got :") + bytes);
+		}
 	}
 
 	Png::EncodingData Png::parse_IHDR_data( Chunk & IHDR )

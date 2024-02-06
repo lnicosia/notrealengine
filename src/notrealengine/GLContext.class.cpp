@@ -297,7 +297,7 @@ namespace notrealengine
 
 		vert_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {
-			vert_file.open(vertex);
+			vert_file.open(vertex, std::ios_base::in | std::ios_base::binary);
 			std::stringstream vert_in_stream;
 			vert_in_stream << vert_file.rdbuf();
 			vert_file.close();
@@ -309,7 +309,7 @@ namespace notrealengine
 
 		frag_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try {
-			frag_file.open(fragment);
+			frag_file.open(fragment, std::ios_base::in | std::ios_base::binary);
 			std::stringstream frag_in_stream;
 			frag_in_stream << frag_file.rdbuf();
 			frag_file.close();

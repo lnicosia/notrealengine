@@ -35,7 +35,7 @@ void runTests(const std::string& testFile)
 
   try
   {
-    ifs.open(testFile);
+    ifs.open(testFile, std::ios_base::in | std::ios_base::binary);
   }
   catch (std::ifstream::failure& e)
   {

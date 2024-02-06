@@ -124,7 +124,7 @@ namespace notrealengine
 			std::cout << "' with custom parser..." << std::endl;
 
 			std::filebuf fb;
-			if (!fb.open(paths[i], std::ios::in))
+			if (!fb.open(paths[i], std::ios_base::in | std::ios_base::binary))
 			{
 				std::cerr << std::endl << "nre:: Unable to open file \"" << path << "\"" << std::endl;
 				this->loaded = false;
