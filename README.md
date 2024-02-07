@@ -84,6 +84,7 @@ Run `make libnre.a` to build the library without linking to any external library
 
 #### Windows
 
+Only working with Visual Studio 16 2019 (v142).
 Open and build the `Not Real Engine.sln`  solution file located in the `windows/` folder.
 Choose between the configurations to build with or without external libraries.
 
