@@ -5,7 +5,7 @@ if not exist ..\lib\SDL\include\SDL.h (
 	git submodule update --init ..\lib\SDL
 )
 
-:: assimp needs to be built to create config.h
+:: assimp needs to be built to create config.h so the library needs to build it only for this.
 
 echo Buildling assimp...
 
@@ -19,7 +19,7 @@ if not exist ..\lib\assimp\build-windows\lib\Debug\assimp-vc142-mtd.lib (
 		if not exist ..\lib\assimp\build-windows (
 			md ..\lib\assimp\build-windows
 		)
-		cmake -S ..\lib\assimp\ -D BUILD_SHARED_LIBS=OFF -B ..\lib\assimp\build-windows
+		cmake -S ..\lib\assimp\ -G "Visual Studio 16 2019" -T "v142" -D BUILD_SHARED_LIBS=OFF -B ..\lib\assimp\build-windows
 		cmake --build ..\lib\assimp\build-windows
 		
 	)
