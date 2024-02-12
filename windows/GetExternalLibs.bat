@@ -19,7 +19,7 @@ if not exist ..\lib\assimp\build-windows\lib\Debug\assimp-vc142-mtd.lib (
 		if not exist ..\lib\assimp\build-windows (
 			md ..\lib\assimp\build-windows
 		)
-		cmake -S ..\lib\assimp\ -G "Visual Studio 16 2019" -T "v142" -D BUILD_SHARED_LIBS=OFF -B ..\lib\assimp\build-windows
+		cmake -S ..\lib\assimp\ -G "Visual Studio 16 2019" -T "v142" -B ..\lib\assimp\build-windows
 		cmake --build ..\lib\assimp\build-windows
 		
 	)
