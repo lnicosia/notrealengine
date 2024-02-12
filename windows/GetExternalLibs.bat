@@ -29,3 +29,11 @@ if not exist ..\lib\freetype\include\freetype\freetype.h (
 	git config --global http.sslverify false
 	git submodule update --init ..\lib\freetype
 )
+
+if not exist src (
+	mklink /j src ..\src
+)
+
+if not exist inc (
+	mklink /j inc ..\inc
+)
