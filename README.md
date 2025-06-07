@@ -77,7 +77,7 @@ OpenGL 4.0 is required (hence it is not going to work on Virtual Box's Linux mac
 
 #### Linux, WSL
 
-`clang` version compatible with C++20 is required.
+`clang` version compatible with C++20, `make` and `cmake` are required.
 
 Run `make`. That will produce a `libnre-external.a` static library that uses the external libraries mentioned above.
 Run `make libnre.a` to build the library without linking to any external library instead (except for SDL and glad).
